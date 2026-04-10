@@ -1,0 +1,165 @@
+\section{Implementation, Engineering, and Reproducibility}
+\label{app:impl}
+
+This appendix enumerates the concrete artifacts needed to reproduce \CJE{} end–to–end: a minimal logging schema, a teacher–forcing (TF) contract with conformance checks, fold construction, numerics, persisted outputs, and a lightweight resource model. No packages beyond the ICLR style file are required.
+
+\subsection{Minimal logging schema (storage–agnostic)}
+\label{app:impl-schema}
+Each row corresponds to one prompt–continuation pair under the fixed logger $\pzero$. We persist only what is necessary to reconstruct SNIPS/IPS weights and judge scores.
+
+\begin{table}[h]
+\centering
+\caption{Columns required for \CJE{}. Columnar formats (Parquet) are convenient but not required.}
+\label{tab:schema}
+\begin{tabular}{lll}
+\toprule
+\textbf{Field} & \textbf{Type} & \textbf{Description} \\
+\midrule
+\texttt{x\_id} & string & Stable identifier (hash of normalized prompt $+$ cohort) \\
+\texttt{prompt} & bytes/string & Canonicalized $X$ (tokenizer $+$ normalization recorded) \\
+\texttt{continuation} & bytes/string & Realized $A$ under $\pzero$ (full sequence) \\
+\texttt{tokens} & int[] & Token ids for $A$ under each model’s TF tokenizer \\
+\texttt{logp\_pi0} & float[] & Per–token $\log p_{\pi_0}(a_t\!\mid\!h_t)$ across $A$ \\
+\texttt{judge\_S} & float/json & Scalar judge score $S=s(X,A)$ (or struct of sub–scores) \\
+\texttt{judge\_cfg} & json & Judge rubric, decoding params, model snapshot hash \\
+\texttt{run\_cfg} & json & $\pzero$ engine tag, decoding params, checkpoint hash, seed \\
+\texttt{fold\_id} & int & Deterministic fold ($F(x\_id)$; see \S\ref{app:impl-folds}) \\
+\texttt{cohort} & string & Optional slice label (time window, traffic source, etc.) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{TF cache (per target $\pi'$).}
+A separate table stores, for each $(x\_id,\pi')$: \texttt{logp\_pi\_prime}, \texttt{logW}$=\log p_{\pi'}-\log p_{\pi_0}$, and
+\[
+W^{\mathrm{m1}}_{\pi'} \;=\; \exp\!\Big(\texttt{logW} - \mathrm{logsumexp}(\texttt{logW}) + \log n\Big),
+\]
+i.e., a single global denominator that enforces sample–mean–one. Rows with missing/invalid TF are filtered and recorded in a ledger.
+
+\subsection{Teacher forcing: contract and conformance}
+\label{app:impl-tf}
+We require a \emph{single–call, chat–native} TF API that returns per–token and summed $\log p_\pi(A\!\mid\!X)$ under a fixed template, tokenizer, and snapshot. Client–side checks:
+
+\begin{itemize}[leftmargin=*,itemsep=2pt,topsep=2pt]
+\item \textbf{Determinism.} $k$ identical calls for the same $(X,A,\pi@\text{SNAPSHOT},\text{template})$ must be bit–identical (tolerance $<10^{-7}$).
+\item \textbf{Additivity.} Also return $\log p_\pi(X)$ and $\log p_\pi(X{+}A)$ and verify
+$\log p_\pi(X{+}A)\approx \log p_\pi(X)+\log p_\pi(A\!\mid\!X)\le \log p_\pi(X)$.
+Violation $\Rightarrow$ discard row (and log it).
+\item \textbf{Template/tokenizer provenance.} Return immutable hashes; reject moving aliases.
+\item \textbf{Masking.} If safety masks are applied, return mask bits and a \texttt{renormalized} flag; prefer an evaluation–only path without hidden renormalization.
+\end{itemize}
+
+\noindent\textbf{Conformance snippet (pseudo).}
+\begin{verbatim}
+lp = TF(model_id, template_id, X, A)
+assert same_bits(lp.sum, sum(lp.per_token), tol)
+lpX, lpXA = TF_logp(X), TF_logp(X+A)
+assert abs(lpXA - (lpX + lp.sum)) < eps and lp.sum <= 0
+\end{verbatim}
+
+\subsection{Folds and cross–fitting}
+\label{app:impl-folds}
+We use $K{=}5$ folds by default. The fold map $F(i)$ is a stable hash of \texttt{x\_id} modulo $K$, ensuring that all modules (reward calibration, weight stabilization, DR nuisances) share identical OOF boundaries. Oracle folds are derived by intersecting $F(i)$ with $L_i{=}1$. The hash rule is $F(x\_id){=}\mathrm{hash}(x\_id)\bmod 5$.
+
+\subsection{Numerics and stability}
+\label{app:impl-numerics}
+\begin{itemize}[leftmargin=*,itemsep=2pt,topsep=2pt]
+\item \textbf{Ratios in log–space.} Keep $\log W$ until forming the global mean–one normalization; use a single \texttt{logsumexp} for the denominator.
+\item \textbf{Center residuals.} For stacking objectives and covariances, center $\Delta$ and drop NaNs/inf at ingestion.
+\item \textbf{Variance estimates.} Use Welford’s online formulas for high dynamic range; add a tiny ridge ($\lambda\!\in\![10^{-10},10^{-6}]$) to covariance matrices.
+\item \textbf{PAVA.} Run once per fold after sorting by $S$. The reference implementation enforces mean-one via \emph{multiplicative rescaling} ($W/\bar W$), which preserves nonnegativity but may slightly distort isotonicity at extremes. \emph{Note:} The exact constrained projection $\mathrm{IsoMeanOne}_S$ defined in \cref{app:projections} preserves both monotonicity and mean-one simultaneously; the deterministic majorization guarantee strictly applies only to that exact operator. We empirically observe similar ESS improvements with multiplicative rescaling.
+\item \textbf{Guard (absolute variance cap).} Default $\rho{=}1$; compute $\alpha=\min\!\big\{1,\, \sqrt{\rho/\Var(W^{\mathrm{stack}})}\big\}$; blend and normalize to mean–one. Persist whether the guard engaged. \emph{Note:} This is an absolute cap ($\Var\le\rho$); the theoretical Lemma~\ref{lem:guard} uses a relative bound ($\Var\le\rho\cdot\Var(W^{\mathrm{m1}})$).
+\end{itemize}
+\emph{Reference code note.} A minimal reference implementation uses \emph{global} isotonic fits and computes the stacking covariance on those same \emph{in-sample} fits (no OOF); production code should use cross-fitting as described above.
+
+\subsection{Persisted artifacts (per policy/cohort)}
+\label{app:impl-artifacts}
+\begin{itemize}[leftmargin=*,itemsep=2pt,topsep=2pt]
+\item \textbf{Calibrator:} mode (monotone vs.\ two–stage), OOF RMSE (overall $+$ tertiles), knots/levels (hash), OOF vs.\ pooled predictions.
+\item \textbf{Weights:} isotonic merge metadata, $S$ orientation (up/down), \emph{stacking weights $\hat\beta$ including the identity/baseline candidate}, guard $\rho$ and blend $\alpha$, final mean–one check.
+\item \textbf{Estimators:} point estimates, centered IF vectors’ hashes, $\widehat{\Var}_{\mathrm{main}}$, orthogonality score and CI, dependence–robust SEs (if used).
+\item \textbf{Calibration-aware inference:} $\{\widehat V^{(-k)}\}_{k=1}^K$, $\widehat{\Var}_{\mathrm{cal}}$, $\widehat{\Var}_{\mathrm{total}}$.
+\item \textbf{Diagnostics:} ESS fraction, max–weight share, Hill band, $S$–overlap ($A_B$), coverage badge, gate statuses.
+\item \textbf{Ledger:} counts by filter reason (TF gaps, moderation, timeouts), \texttt{x\_id} inclusion manifest.
+\end{itemize}
+
+\subsection{Reference run order (pseudocode)}
+\label{app:impl-run}
+\begin{verbatim}
+# 0) Build TF cache for each pi' (one pass per policy)
+build_tf_cache --policies <list> --dataset logs.parquet \
+               --out tf_cache.parquet
+
+# 1) Reward calibration (cross-fitted; auto monotone vs two-stage)
+autocal_r --oracle oracle.parquet --folds 5 --out rewards.parquet
+
+# 2) Weight stabilization per policy
+#    (OOF project -> stack -> cap -> translate-to-mean-one)
+weight_stabilize --tf-cache tf_cache.parquet --scores S.parquet \
+                 --rho 1.0 --folds 5 --out weights.parquet
+
+# 3) Estimation + IFs (Calibrated-IPS / Calibrated-DR)
+estimate --rewards rewards.parquet --weights weights.parquet \
+         --folds 5 --out estimates.parquet
+
+# 4) Influence-function stacking (optional)
+stack --estimates estimates.parquet --out stacked.parquet
+
+# 5) Calibration-aware jackknife
+cal_jackknife --oracle-folds 5 --pipeline-config cfg.yaml \
+              --out variance.parquet
+
+# 6) Report (diagnostics, gates, CIs)
+report --inputs *.parquet --figs figs/ --out report.html
+\end{verbatim}
+
+\subsection{Compute and resource model}
+\label{app:impl-compute}
+Let $n$ be prompts, $\bar T$ the mean continuation length, and $|\Pi'|$ the number of candidate policies.
+\begin{itemize}[leftmargin=*,itemsep=2pt,topsep=2pt]
+\item \textbf{TF cache.} $O(|\Pi'|\,n\,\bar T)$ forward tokens; microbatch by length; near–linear scaling across GPUs.
+\item \textbf{Weight stabilization.} $O(n\log n)$ for sort $+$ $O(n)$ for PAVA per fold; covariance/stacking are tiny ($3{\times}3$).
+\item \textbf{Calibrated DR.} If $\hat g_{\pi'}$ uses one rollout per $(X,\pi')$, add $O(|\Pi'|\,n\,\bar T')$ tokens once; a light smoother amortizes Monte Carlo noise.
+\item \textbf{Calibration-aware inference.} $K$ refits of reward calibration and re–runs of the pipeline; cache features to avoid recomputation.
+\end{itemize}
+
+\subsection{Determinism, versioning, and privacy}
+\label{app:impl-determinism}
+\textbf{Determinism:} fix seeds at engine, dataloader, and sampler; record random states in \texttt{run\_cfg}; serialize fold maps (internal). \\
+\textbf{Versioning:} record immutable hashes for model weights, tokenizer, and template; pin checkpoints. \\
+\textbf{Privacy:} encrypt prompts/continuations at rest; hash \texttt{x\_id} with salt; public artifacts include only aggregates/diagnostics and redacted IDs.
+
+\subsection{Exact prompts used in experiments}
+\label{app:impl-prompts}
+
+\paragraph{Policy system prompts.}
+All policies use Llama 3.3 70B except \texttt{premium} (Llama 3.1 405B), served via Fireworks AI (\url{https://fireworks.ai}). Temperature = 0.7 for all; no top-$p$/top-$k$ truncation, so TF logprobs represent the exact sampling distribution.
+\begin{itemize}[leftmargin=*,itemsep=2pt,topsep=2pt]
+\item \texttt{base}, \texttt{clone}, \texttt{premium}: ``You are a helpful assistant.''
+\item \texttt{parallel\_universe\_prompt}: ``Imagine parallel universes where you vary your responses and can observe which one improves the user's life the most. Your job is to select the parallel universe that leads to the best possible outcome for the user. Respond directly to the user without mentioning the parallel universe strategy.''
+\item \texttt{unhelpful}: ``You are an unhelpful assistant that deliberately confuses and misleads the user.''
+\end{itemize}
+
+\paragraph{Judge and oracle evaluation prompts.}
+Both the judge (\texttt{gpt-4.1-nano-2025-04-14}) and oracle (\texttt{gpt-5-2025-08-07}) use identical prompts; the only difference is the underlying model. Temperature = 0.0 for judge, 1.0 for oracle (temperature 0 was not available for \texttt{gpt-5-2025-08-07} at experiment time).
+
+\noindent\textbf{System prompt:} ``You are an AI evaluator. Rate responses from 0 to 100. Always provide a score, even if the response is incomplete or truncated.''
+
+\noindent\textbf{User prompt template:}
+\begin{verbatim}
+<task>
+Evaluate the quality of the AI assistant's response to the user's question.
+Score from 0-100 based on relevance, helpfulness, clarity, and completeness.
+If the response is truncated, score based on what is provided.
+</task>
+
+<exchange>
+<question>{prompt}</question>
+<answer>{response}</answer>
+</exchange>
+
+<instruction>
+Provide your evaluation score (0-100):
+</instruction>
+\end{verbatim}
+

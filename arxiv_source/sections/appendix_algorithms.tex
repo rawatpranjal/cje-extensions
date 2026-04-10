@@ -1,0 +1,122 @@
+\section{Algorithms (extended)}
+\label{app:algorithms}
+
+This appendix gives compact, cross-fitted pseudocode for \CJE{} modules: reward calibration, weight stabilization, estimators (calibrated IPS, calibrated DR), influence-function stacking, calibration-aware variance estimation, and cluster bootstrap for Direct mode. We reuse the same $K$-fold map $F(i)\!\in\!\{1{:}K\}$ across all modules. ``OOF'' denotes \emph{out-of-fold} predictions used along the IF path.
+
+% ------------------------------------------------------------
+\begin{algorithm}[t]
+\caption{\textsc{Reward-Calibration}: mean-preserving calibration (cross-fitted; automatic two-stage fallback)}
+\label{alg:autocalr}
+\begin{algorithmic}[1]
+\STATE \textbf{Inputs:} Oracle pairs $\{(S_i,Y_i):L_i{=}1\}$; optional covariates $\{X_i\}$; folds $F(\cdot)$; smooth index class $g(\cdot)$
+\STATE \textbf{Outputs:} Calibrated rewards $R_i$ and OOF $R^{\mathrm{OOF}}_i$
+\FOR{$k=1$ to $K$}
+  \STATE Train set $O_{\neg k}\!=\!\{i:L_i{=}1,\,F(i)\neq k\}$; test set $O_k\!=\!\{i:L_i{=}1,\,F(i)=k\}$
+  \STATE \emph{Monotone candidate:} $\hat f^{(-k)}_{\uparrow}\!\in\!\arg\min_{f\in \mathcal M_{\uparrow}}\sum_{i\in O_{\neg k}}(Y_i-f(S_i))^2$; set $R^{\mathrm{OOF}}_{\uparrow,i}\!=\!\hat f^{(-k)}_{\uparrow}(S_i)$ for $i\!\in\!O_k$
+  \STATE \emph{Two-stage candidate:} fit $g^{(-k)}(S,X)$ on $O_{\neg k}$; ranks $U_i\!=\!\mathrm{ECDF}_{O_{\neg k}}(g^{(-k)}(S_i,X_i))$; fit $\hat h^{(-k)}_{\uparrow}\!\in\!\arg\min_{h\in \mathcal M_{\uparrow}}\sum_{i\in O_{\neg k}}(Y_i-h(U_i))^2$; set $R^{\mathrm{OOF}}_{2s,i}\!=\!\hat h^{(-k)}_{\uparrow}(U_i)$ for $i\!\in\!O_k$
+\ENDFOR
+\STATE Default: use two-stage mode (recommended when covariates like response length are available); use monotone-only as fallback
+\STATE Refit the selected mode on the full oracle slice to obtain \emph{global} $R_i$ for all $i\in\{1{:}n\}$; retain $R^{\mathrm{OOF}}_i$ per fold for IFs
+\STATE \textit{Note:} The terminal isotonic step preserves the oracle-slice mean exactly.
+\end{algorithmic}
+\end{algorithm}
+
+% ------------------------------------------------------------
+\begin{algorithm}[t]
+\caption{\textsc{Weight-Stabilization}: surrogate-indexed, unit-mean monotone calibration (OOF project $\to$ stack $\to$ cap $\to$ normalize)}
+\label{alg:simcalw}
+\begin{algorithmic}[1]
+\STATE \textbf{Inputs:} Baseline mean-one ratios $W^{\mathrm{m1}}_{\pi'}$; scores $S$; residuals $\Delta$ (\emph{IPS:} $\Delta{=}R$; \emph{DR:} $\Delta{=}R-\hat q$); folds $F(\cdot)$; variance cap $\rho\!\ge\!1$ (default $1$)
+\STATE \textbf{Output:} Calibrated weights $\hat W_{\pi'}$ (mean-one, approximately $S$-monotone)
+\FOR{$k=1$ to $K$}
+  \STATE Train $I_{\neg k}=\{i:F(i)\neq k\}$; test $I_k=\{i:F(i)=k\}$ \COMMENT{OOF candidate projections}
+  \STATE Fit isotonic regression of $W^{\mathrm{m1}}_{\pi'}$ on $S$ over $I_{\neg k}$: increasing $m^{(-k)}_{\uparrow}(S)$ and decreasing $m^{(-k)}_{\downarrow}(S)$ (via $-S$); rescale each to mean one on $I_{\neg k}$
+  \STATE Predict on $I_k$: $W^{\mathrm{OOF}}_{\uparrow}=m^{(-k)}_{\uparrow}(S)$,\ \ $W^{\mathrm{OOF}}_{\downarrow}=m^{(-k)}_{\downarrow}(S)$,\ \ and optionally include $W^{\mathrm{OOF}}_{\mathrm{base}}\equiv 1$
+\ENDFOR
+\STATE \textbf{OOF stacking (variance-aware).} Form $U_c=W^{\mathrm{OOF}}_c\,\Delta$ for $c\in\{\mathrm{base},\uparrow,\downarrow\}$; compute $\hat\Sigma_{cd}=\mathrm{cov}(U_c,U_d)+\lambda \mathbf{1}_{c=d}$
+\STATE Choose $\hat\beta\in \arg\min_{\beta\in\Delta_3}\beta^\top \hat\Sigma\,\beta$; set $W^{\mathrm{stack}}=\sum_c \hat\beta_c\,W^{\mathrm{OOF}}_c$; renormalize $W^{\mathrm{stack}}$ to sample mean one
+\STATE \textbf{Light variance guard (optional).} $\alpha = \min\!\left\{1,\ \sqrt{\rho/\Var(W^{\mathrm{stack}})}\right\}$; set $W^{\mathrm{blend}}=1+\alpha\,(W^{\mathrm{stack}}-1)$
+\STATE \textbf{Mean normalization.} $\hat W_{\pi'} \leftarrow W^{\mathrm{blend}}/\bar W^{\mathrm{blend}}$ \hfill(\emph{restores sample mean one})
+\end{algorithmic}
+\end{algorithm}
+
+% ------------------------------------------------------------
+\begin{algorithm}[t]
+\caption{\textsc{Cal-IPS}: calibrated importance sampling}
+\label{alg:calips}
+\begin{algorithmic}[1]
+\STATE \textbf{Inputs:} Calibrated rewards $R,R^{\mathrm{OOF}}$ (Alg.~\ref{alg:autocalr}); calibrated weights $\hat W_{\pi'}$ (Alg.~\ref{alg:simcalw})
+\STATE \textbf{Outputs:} $\widehat V_{\IPS}$ and IF $\phi^{\IPS}$
+\STATE $\displaystyle \widehat V_{\IPS}=\frac{1}{n}\sum_{i=1}^n \hat W_{\pi',i}\,R_i$, \quad $\phi^{\IPS}_i=\hat W_{\pi',i}\,R^{\mathrm{OOF}}_i-\widehat V_{\IPS}$
+\end{algorithmic}
+\end{algorithm}
+
+% ------------------------------------------------------------
+\begin{algorithm}[t]
+\caption{\textsc{Calibrated-DR}: sequence-aware doubly robust estimator (cross-fitted)}
+\label{alg:drcpo}
+\begin{algorithmic}[1]
+\STATE \textbf{Inputs:} $\hat W_{\pi'}$; $R$ and $R^{\mathrm{OOF}}$ from Alg.~\ref{alg:autocalr}; folds $F(\cdot)$
+\STATE \textbf{Outputs:} $\widehat V_{\DR}$ and IF $\phi^{\DR}$
+\FOR{$k=1$ to $K$}
+  \STATE Train $\hat q^{(-k)}(x,a)\!\approx\!\E[R\mid x,a]$ on $\{i:F(i)\neq k\}$; predict OOF $\hat q^{\mathrm{OOF}}_i=\hat q^{(-k)}(X_i,A_i)$ for $i\in I_k$
+  \STATE Approximate $\hat g^{(-k)}_{\pi'}(x)=\E_{A\sim \pi'(\cdot\mid x)}[\hat q^{(-k)}(x,A)]$ via one rollout $A'\sim\pi'(\cdot\mid X)$ and optional smoothing; obtain OOF $g^{\mathrm{OOF}}_{\pi',i}$ for $i\in I_k$
+\ENDFOR
+\STATE $\displaystyle \widehat V_{\DR}=\frac{1}{n}\sum_{i=1}^n \left\{ \hat g_{\pi'}(X_i)+\hat W_{\pi',i}\big(R_i-\hat q(X_i,A_i)\big)\right\}$
+\STATE $\displaystyle \phi^{\DR}_i=\hat g_{\pi'}(X_i)+\hat W_{\pi',i}\big(R^{\mathrm{OOF}}_i-\hat q^{\mathrm{OOF}}_i\big)-\widehat V_{\DR}$
+\end{algorithmic}
+\end{algorithm}
+
+% ------------------------------------------------------------
+\begin{algorithm}[t]
+\caption{\textsc{Influence-Function Stacking}: variance-optimal convex ensembling in influence-function space}
+\label{alg:ifstack}
+\begin{algorithmic}[1]
+\STATE \textbf{Inputs:} Candidates $\{\widehat V^{(e)},\phi^{(e)}\}_{e\in\mathcal E}$ (centered IFs; same folds); ridge $\lambda$
+\STATE \textbf{Outputs:} $\widehat V^{(\hat\alpha)}$ and $\phi^{(\hat\alpha)}$
+\STATE Form $\Phi=[\phi^{(e)}]_{e\in\mathcal E}$; $\hat\Sigma=(1/n)\Phi^\top\Phi+\lambda I$
+\STATE Solve $\hat\alpha\in\arg\min_{\alpha\in\Delta}\alpha^\top \hat\Sigma\,\alpha$
+\STATE $\widehat V^{(\hat\alpha)}=\sum_{e\in\mathcal E}\hat\alpha_e\,\widehat V^{(e)}$,\quad $\phi^{(\hat\alpha)}=\sum_{e\in\mathcal E}\hat\alpha_e\,\phi^{(e)}$
+\STATE \textbf{Optional outer split:} learn $\hat\alpha$ on one half; apply to the other to reduce selection optimism
+\STATE \textit{Support note (Carath\'eodory).} If $\mathrm{rank}(\Phi)=r$, the variance-optimal stack uses at most $r{+}1$ base estimators.
+\end{algorithmic}
+\end{algorithm}
+
+% ------------------------------------------------------------
+\begin{algorithm}[t]
+\caption{\textsc{Cal-Aware-Jackknife}: calibration-uncertainty-aware variance addition}
+\label{alg:oua}
+\begin{algorithmic}[1]
+\STATE \textbf{Inputs:} Oracle folds $\{O_k\}_{k=1}^K$; end-to-end estimator $\widehat V(\cdot)$
+\STATE \textbf{Outputs:} $\widehat{\Var}_{\mathrm{cal}}$ and $\widehat{\Var}_{\mathrm{total}}=\widehat{\Var}_{\mathrm{main}}+\widehat{\Var}_{\mathrm{cal}}$
+\FOR{$k=1$ to $K$}
+  \STATE Refit reward calibration on $O\setminus O_k$; recompute $R^{(-k)}$ and all downstream nuisances \& weights; run the full pipeline to get $\widehat V^{(-k)}$
+\ENDFOR
+\STATE $\displaystyle \bar V=\tfrac{1}{K}\sum_k \widehat V^{(-k)}$,\quad $\widehat{\Var}_{\mathrm{cal}}=\frac{K-1}{K}\sum_k\big(\widehat V^{(-k)}-\bar V\big)^2$
+\STATE \textbf{Return:} $\widehat{\Var}_{\mathrm{total}}=\widehat{\Var}_{\mathrm{main}}+\widehat{\Var}_{\mathrm{cal}}$
+\end{algorithmic}
+\end{algorithm}
+
+% ------------------------------------------------------------
+\begin{algorithm}[t]
+\caption{\textsc{Bootstrap-Direct}: cluster bootstrap with calibrator refit for Direct mode}
+\label{alg:bootstrap-direct}
+\begin{algorithmic}[1]
+\STATE \textbf{Inputs:} Eval data $\{(X_i, S_i, Y_i, C_i)\}_{i=1}^n$ with cluster IDs $C_i \in \{1,\ldots,M\}$; calibrator mode $m$ (fixed from full-data selection); oracle mask $L$; replicates $B{=}2000$; min oracle count $n_{\min}{=}30$
+\STATE \textbf{Outputs:} Point estimates $\{\hat\theta_p\}$, 95\% CIs for each policy $p$
+\STATE Fit calibrator $\hat f$ on oracle slice; compute $\hat\theta_p^{\mathrm{aug}}$ for each policy via \cref{eq:theta-aug}
+\FOR{$b=1$ to $B$}
+  \REPEAT
+    \STATE Draw $M$ clusters with replacement: $\{C_1^*, \ldots, C_M^*\}$
+    \STATE Form bootstrap sample $\mathcal{D}^* = \bigcup_{j=1}^M \{i : C_i = C_j^*\}$
+  \UNTIL{$|L \cap \mathcal{D}^*| \geq n_{\min}$} \COMMENT{Resample-until-valid}
+  \STATE Refit calibrator $\hat f^{(b)}$ on $\{(S_i, Y_i) : i \in L \cap \mathcal{D}^*\}$ with mode $m$
+  \STATE Compute $\hat\theta_p^{(b)}$ for each policy using $\hat f^{(b)}$ and $\hat\theta_{\mathrm{aug}}$ on $\mathcal{D}^*$
+\ENDFOR
+\STATE \textbf{Percentile CIs:} $[\hat\theta_p^{\mathrm{lo}}, \hat\theta_p^{\mathrm{hi}}] = [\hat\theta_p^{(0.025B)}, \hat\theta_p^{(0.975B)}]$
+\end{algorithmic}
+\end{algorithm}
+
+\vspace{-2pt}
+\paragraph{Complexity notes.}
+PAVA is $O(n)$ after a shared sort by $S$. Weight stabilization is linear-time per fold; the stacking QP is $3{\times}3$ (weights) or a small $|\mathcal E|{\times}|\mathcal E|$ system. Calibrated DR adds one rollout\,+\,judge per $(X,\pi')$. The calibration-aware jackknife refits the calibrator $K$ times and reruns the pipeline. \textsc{Bootstrap-Direct} requires $B{=}2{,}000$ refits of the reward calibrator; since isotonic regression is $O(n\log n)$, total cost is $O(Bn\log n)$. TF caches and precomputed features amortize cost.

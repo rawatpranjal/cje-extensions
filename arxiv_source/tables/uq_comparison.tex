@@ -1,0 +1,26 @@
+\begin{table}[t]
+\centering
+\caption{Coverage by UQ Method (target: 95\%). Bootstrap with calibrator refit achieves near-nominal coverage; cluster-robust and jackknife-only methods undercover.}
+\label{tab:uq-comparison}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccc}
+\toprule
+& \multicolumn{2}{c}{Analytic} & \multicolumn{2}{c}{Bootstrap} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+Regime & Cluster-Robust & Cal-Aware Jackknife & $B{=}500$ & $B{=}2000$ \\
+\midrule
+$n{=}250$, 5\% oracle & \textcolor{red}{21} & \textcolor{red}{85} & 94 & 93 \\
+$n{=}250$, 25\% oracle & \textcolor{red}{43} & \textcolor{red}{86} & 95 & 97 \\
+$n{=}500$, 5\% oracle & \textcolor{red}{28} & \textcolor{red}{89} & 96 & 97 \\
+$n{=}500$, 25\% oracle & \textcolor{red}{40} & \textcolor{red}{84} & 98 & 99 \\
+$n{=}1000$, 5\% oracle & \textcolor{red}{21} & \textcolor{red}{75} & 95 & 95 \\
+$n{=}1000$, 25\% oracle & \textcolor{red}{35} & \textcolor{red}{83} & 95 & 95 \\
+$n{=}2500$, 5\% oracle & \textcolor{red}{15} & \textcolor{red}{70} & 97 & 97 \\
+$n{=}2500$, 25\% oracle & \textcolor{red}{52} & \textcolor{red}{85} & 98 & 99 \\
+\bottomrule
+\end{tabular}
+
+\vspace{1mm}
+\footnotesize{\textcolor{red}{Red}: $< 90\%$ (undercoverage). Bootstrap with $\hat\theta_{\mathrm{aug}}$ recommended.}
+\end{table}

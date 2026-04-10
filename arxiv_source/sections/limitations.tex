@@ -1,0 +1,81 @@
+\section{Limitations}
+\label{sec:limitations}
+
+\paragraph{Oracle alignment (scope).}
+We assume the operational oracle $Y$ aligns with stakeholder values; oracle selection itself is a governance question outside the scope of this work (Assumption~A0 in App.~\ref{app:assumptions-ledger}).
+
+\paragraph{Overlap (positivity).}
+IPS requires support overlap between $\pi_0$ and each $\pi'$; DR benefits from overlap but remains consistent via its outcome model when overlap is poor; Direct requires no overlap (it generates fresh responses under $\pi'$).
+When overlap is poor, raw ratios are heavy-tailed and uncertainty inflates.
+\emph{Mitigations:} Weight stabilization reduces dispersion and raises $\ESS$; if tails persist we (i) gate on $\ESS$ and Hill indices, (ii) use overlap weighting or cohort restriction, and (iii) run an online check when $\widehat{\alpha}_{\text{Hill}}{<}1$ or single–row dominance persists (App.~\ref{app:diagnostics}).
+
+\paragraph{Judge assumptions (surrogate validity).}
+Our calibration model uses a monotone single-index restriction (J2-M/J2-SI) as a stability/regularization choice. Correctness of level claims across policies is governed by \emph{mean transport} ($\E_{\pi'}[Y - f(S,X)] = 0$), which we audit; when the audit fails or evidence is weak, we widen/refresh the oracle slice or refuse level claims.
+\emph{Mitigations:} (i) \textbf{With audit}: run the mean transport test per policy (\cref{prop:mean-transport}); fail $\to$ recalibrate or refuse levels. (ii) \textbf{Without audit}: surface reliability curves as indirect evidence; when evidence is weak, target labels where error concentrates.
+
+\paragraph{Calibration failure modes.}
+Reward calibration can fail in three distinct ways, each with observable signatures:
+\begin{enumerate}[leftmargin=*,nosep]
+\item \textbf{Policy-specific calibration:} The $S \to Y$ mapping differs across policies.
+\emph{Signature:} Within-policy rankings accurate, cross-policy comparisons fail.
+\emph{Test:} Policy-wise mean transport test (\cref{prop:mean-transport}). If $\E_{\pi'}[Y - f(S,X)] \neq 0$, surrogate values are biased for that policy.
+\item \textbf{Extrapolation beyond range:} Target policy produces $S$ values outside the calibration range.
+\emph{Signature:} Boundary flatness; \texttt{OutOfRange} $> 5\%$.
+\emph{Test:} Coverage diagnostic (App.~\ref{app:diagnostics}).
+\item \textbf{Temporal drift:} The $S \to Y$ mapping changes over time.
+\emph{Signature:} Recent residuals larger than historical; calibration accuracy degrades.
+\emph{Test:} Periodic mean transport test on fresh oracle batches.
+\end{enumerate}
+
+\paragraph{Scope of the mean transport test.}
+The policy-wise mean transport test (\cref{prop:mean-transport}) is a \emph{necessary but not sufficient} condition for full surrogate transportability (S2): it guarantees that the surrogate is unbiased for policy-wise mean values, but does not rule out conditional miscalibration within subgroups or at the tails of the score distribution.
+\emph{Mitigations:} perform subgroup-specific transport tests when fairness concerns apply; monitor reliability diagrams for regional deviations; use richer moment conditions for stronger tests (see remark after \cref{prop:mean-transport}).
+
+\paragraph{Calibration coverage (identification).}
+If a $\pi'$ pushes $S$ outside the labeled range, isotonic calibration flattens at the boundary and levels are not point–identified.
+\emph{Mitigations:} flag \textsc{Limited Calibration Support} and set \RefuseLevel\ (report rankings and partial–ID bounds) until targeted labels cover the uncovered $S$ region (App.~\ref{app:diagnostics}).
+
+\paragraph{Approximate sufficiency (bias modulus).}
+When $\E[Y\mid X,A,S]\neq \mu(S)$, the residual $\Delta(X,A,S)$ induces bias proportional to calibration error.
+\emph{Mitigations:} by Cauchy–Schwarz, $|\mathrm{Bias}|\le \|m-W_{\pi'}\|_2\,\|\Delta\|_2$; weight stabilization shrinks $\|m-W_{\pi'}\|_2$, so bias is second order when either calibration is tight or the violation small; we surface this via diagnostics and invoke \RefuseLevel\ when unbounded.
+
+\paragraph{Temporal dependence and logger drift.}
+Non–stationarity (launches, safety updates) can bias or widen intervals.
+\emph{Mitigations:} report dependence–robust SEs (block/stationary bootstrap), shorten analysis windows, and monitor judge drift via rank–based/residual change detection with FDR control.
+
+\paragraph{Oracle independence and leakage.}
+Calibration-aware inference assumes the oracle slice is i.i.d.\ with non-overlapping folds.
+\emph{Mitigations:} reuse deterministic folds across modules, de–duplicate the slice, and periodically refresh it.
+
+\paragraph{Selection and multiplicity.}
+Scanning many $\pi'$ inflates winner's curse.
+\emph{Mitigations:} use FDR control (BH/BY), optionally an outer split for influence-function stacking to reduce selection optimism, and emphasize pre–specified contrasts.
+
+\paragraph{Teacher forcing and API drift.}
+Accurate propensities require deterministic, chat–native TF (stable tokenizer/template) with additivity/conditionality invariants; missing/invalid TF corrupts ratios.
+In our experiments, 39 of 5,000 prompts (0.8\%) were filtered: 11 due to base-policy TF conformance failures, and 28 due to missing target-policy logprobs. While small, we report this explicitly: practitioners should expect some data loss from TF gaps, and filtering should always be logged for reproducibility. This also highlights the current state of TF support from LLM providers: major closed-source providers (OpenAI, Anthropic, Google) do not currently support teacher forcing for chat models, and among open-weight hosting providers, Fireworks AI was the only service we found with reliable TF support.
+Even for our TF reliability test (clone = base with different seed), raw ESS is 26\% rather than the theoretical 100\%, reflecting API-level non-determinism and floating-point divergence in log-probability summation; weight stabilization restores this to 99\% (\cref{tab:weight-diagnostics}). This 26\% is substantially higher than other policies (0.4--0.7\%), confirming TF captures real distributional similarity, but it is far from the theoretical 100\% and suggests propensity estimates carry meaningful error even before overlap considerations.
+OPE failure in our experiments reflects two compounding issues: (i) TF brittleness corrupts propensity estimates, and (ii) CLE limits precision even with perfect propensities. We cannot cleanly separate their contributions, but both matter: if TF were the only problem, weight stabilization should improve ranking more than it does; if CLE were the only problem, clone should have ESS $\approx$ 100\%.
+\emph{Mitigations:} enforce schema/conformance checks, ledger failures, and treat results as conditional on TF quality (App.~\ref{app:impl}).
+
+\paragraph{Subgroups and fairness.}
+Calibration quality and ESS gains may differ across subgroups.
+\emph{Mitigations:} provide subgroup diagnostics (ESS, reliability) and, when feasible, use subgroup–specific calibration/weights or constrained pooling.
+
+\paragraph{Judge informativeness (garbling).}
+Coarser judges raise the surrogate information bound and widen CIs.
+\emph{Mitigations:} prefer richer rubrics (multi–dimensional $S$ with stable aggregation) and validate with coarsening ablations (empirical Blackwell monotonicity).
+
+\paragraph{Compute.}
+Calibrated DR adds one rollout\,+\,judge per $(X,\pi')$; reward calibration refits for calibration-aware inference add modest overhead.
+We amortize via TF caches, shared folds, and a small stacking library.
+
+\noindent\textbf{Ethics Statement.}
+We analyze retrospective logs that may include sensitive content.
+Diagnostics/gates prevent overconfident claims under poor overlap/coverage and surface judge drift.
+When identification fails, we report rankings only (\RefuseLevel) and recommend targeted labeling or online checks.
+Any deployment should assess subgroup reliability and adopt privacy safeguards for logs.
+
+\noindent\textbf{Reproducibility Statement.}
+Exact prompts, schema, TF contract, pseudocode, and numerics appear in the appendices.
+Code and data are available at \url{https://github.com/cimo-labs/cje-arena-experiments}; the CJE library is available via \texttt{pip install cje-eval} (\url{https://github.com/cimo-labs/cje}).

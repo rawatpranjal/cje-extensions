@@ -1,0 +1,22 @@
+# Paper PDF (kept locally for reference, too large for git)
+*.pdf
+
+# Auto-generated plots
+plots/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Editor / OS cruft
+.DS_Store
+.vscode/
+.idea/
+
+# Temporary / scratch files
+*.tmp
+_scratch*

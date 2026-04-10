@@ -1,0 +1,97 @@
+\documentclass{article}
+
+% NOTE: this repo includes local style files named iclr2026_conference.*
+% Keep the package name in sync with those files. Change to the official
+% ICLR year package when submitting if needed.
+\usepackage{iclr2026_conference,times}
+
+% ----------------------------- Packages -----------------------------
+% Math & algorithms
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+
+% Figures & tables
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
+% Formatting & links
+\usepackage{microtype}
+\usepackage{url}
+\usepackage{hyperref}
+\hypersetup{
+  pdftitle={Causal Judge Evaluation: Calibrated Surrogate Metrics for LLM Systems},
+  pdfauthor={Eddie Landesberg, Manjari Narayan}
+}
+\usepackage[capitalize,noabbrev]{cleveref}
+\usepackage{enumitem}
+
+% Custom math macros and theorem environments only (no spacing tweaks)
+\input{macros}
+
+% Auto-generated metrics from experiment results (DO NOT EDIT)
+\input{variables}
+
+% Macros used in prose
+\newcommand{\CJE}{\textsc{CJE}}
+\newcommand{\RefuseLevel}{\textsc{Refuse-Level}}
+
+% Figures directory shortcuts
+\graphicspath{{figures/}{figs/}}
+
+% --------------------------- Title & authors ------------------------
+\title{Causal Judge Evaluation: Calibrated \mbox{Surrogate} Metrics for LLM Systems}
+
+\iclrfinalcopy            % <-- enable to show authors in this style
+
+\author{Eddie Landesberg\thanks{\texttt{edward.landesberg@gmail.com}} \quad Manjari Narayan}
+
+
+\begin{document}
+\maketitle
+
+% ------------------------------ Abstract ----------------------------
+\input{sections/abstract}
+
+% ------------------------------ Main text ---------------------------
+\input{sections/introduction}
+
+% Concise setup (notation, OPE basics, variance/overlap) + DbP overview
+\input{sections/setup_dbp}
+
+% Methods (reward calibration, weight stabilization, calibrated DR, IF stacking, calibration-aware inference; brief diagnostics/gates)
+\input{sections/method}
+
+% Theory: EIF & Convex-Knowledge Projection statements (proofs in appendix)
+\input{sections/theory}
+
+% Experiments (results + minimal diagnostics panel)
+\input{sections/experiments}
+
+% Limitations (with brief ethics & reproducibility notes)
+\input{sections/limitations}
+
+\input{sections/conclusion}
+\input{sections/related_work}
+\input{sections/acknowledgements}
+
+% ----------------------------- References ---------------------------
+\bibliography{references}
+\bibliographystyle{iclr2026_conference}
+
+% ------------------------------ Appendix ----------------------------
+\appendix
+\input{sections/appendix_notation}     % formal setup & notation
+\input{sections/appendix_algorithms}   % pseudocode (reward calibration, weight stabilization, calibrated DR, stacking, calibration-aware inference)
+\input{sections/appendix_theory}       % proofs: EIF, CKP, bounds, isotonic properties, CLTs
+\input{sections/appendix_diagnostics}  % metrics, gates, thresholds, dependence-robust SEs, multiplicity
+\input{sections/appendix_impl}         % engineering & TF cache, configs, seeds, schema
+\input{sections/appendix_budget}       % optimal budget allocation between surrogate and oracle
+\input{sections/appendix_mbpp}         % code generation experiment (domain generalization)
+
+\end{document}

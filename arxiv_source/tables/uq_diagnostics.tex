@@ -1,0 +1,38 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{UQ diagnostics for Direct mode.} Coverage, centering ($\bar{Z}$), and calibration (SD$(Z)$) across oracle fractions. Well-calibrated intervals have coverage $\approx 95\%$, $\bar{Z} \approx 0$, and SD$(Z) \approx 1$.}
+\label{tab:uq-diagnostics}
+\small
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+\textbf{Oracle} & \textbf{Method} & \textbf{Coverage} & \textbf{$\bar{Z}$} & \textbf{SD$(Z)$} \\
+\midrule
+\multirow{3}{*}{5\%}
+& Cluster-Robust & 22\% & $+1.52$ & 9.01 \\
+& Cal-Aware Jackknife & 80\% & $+0.48$ & 3.11 \\
+& Bootstrap + $\hat\theta_{\mathrm{aug}}$ & \textbf{95\%} & $+0.10$ & 0.98 \\
+\midrule
+\multirow{3}{*}{10\%}
+& Cluster-Robust & 30\% & $+1.12$ & 6.34 \\
+& Cal-Aware Jackknife & 80\% & $+0.40$ & 2.52 \\
+& Bootstrap + $\hat\theta_{\mathrm{aug}}$ & \textbf{96\%} & $+0.15$ & 0.98 \\
+\midrule
+\multirow{3}{*}{25\%}
+& Cluster-Robust & 42\% & $+0.36$ & 3.46 \\
+& Cal-Aware Jackknife & 84\% & $+0.18$ & 2.09 \\
+& Bootstrap + $\hat\theta_{\mathrm{aug}}$ & \textbf{97\%} & $+0.08$ & 0.95 \\
+\midrule
+\multirow{3}{*}{50\%}
+& Cluster-Robust & 56\% & $-0.07$ & 2.63 \\
+& Cal-Aware Jackknife & 87\% & $-0.05$ & 1.96 \\
+& Bootstrap + $\hat\theta_{\mathrm{aug}}$ & \textbf{97\%} & $+0.11$ & 0.92 \\
+\bottomrule
+\end{tabular}
+\vspace{1mm}
+
+\footnotesize{
+$Z = (\hat\theta - \theta) / \widehat{\mathrm{SE}}$ is the normalized error.
+$N{=}600$ experiments per cell (4 sample sizes $\times$ 50 seeds $\times$ 3 policies).
+$\hat\theta_{\mathrm{aug}}$ corrects the plug-in bias via AIPW-style residual augmentation.
+}
+\end{table}

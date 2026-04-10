@@ -1,0 +1,6 @@
+\begin{abstract}
+Measuring long-run LLM outcomes (user satisfaction, expert judgment, downstream KPIs) is expensive. Teams default to cheap LLM judges, but uncalibrated proxies can invert rankings entirely. \textbf{Causal Judge Evaluation (CJE)} makes it affordable to aim at the right target: calibrate cheap scores against a small oracle slice, then evaluate at scale with valid uncertainty.
+We treat surrogate validity as \emph{auditable}: for each policy or deployment context, a small oracle sample tests whether calibration remains unbiased, turning an uncheckable identification condition into a falsifiable diagnostic.
+On 4,961 Arena prompts with 5 policies and a 16$\times$ oracle/judge cost ratio: at 5\% oracle fraction, CJE achieves 99\% pairwise ranking accuracy at 14$\times$ lower cost; across all configurations (5--50\% oracle, varying $n$), accuracy averages 94\%. An adversarial policy fails the transport audit and is correctly flagged. CJE refuses level claims rather than reporting biased estimates.
+Key findings: naive confidence intervals on raw judge scores achieve 0\% coverage (CJE: ${\sim}$95\%); importance-weighted estimators fail despite 90\%+ effective sample size; the Coverage-Limited Efficiency (CLE) bound and its TTC diagnostic explain why.
+\end{abstract}
