@@ -20,3 +20,11 @@ __pycache__/
 # Temporary / scratch files
 *.tmp
 _scratch*
+_patch_*.py
+_tmp_*
+
+# Internal / build scripts not meant for the showcase
+CLAUDE.md
+.claude/
+refactor.py
+direct_cvar_cje_demo.py
