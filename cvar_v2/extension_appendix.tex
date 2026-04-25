@@ -223,9 +223,19 @@ To check that the audit and the bootstrap interval behave correctly under known 
 
 The first check asks whether the audit's test statistic actually follows the chi-squared distribution with two degrees of freedom we claimed in \cref{eq:wald}. We sample calibration and audit slices from the same DGP at base$\to$base, $\delta = 0$, with three hundred outer replicates and eighty inner bootstrap reps per audit. The procedure is below. The table reports moments and quantiles of the empirical $W_n$ distribution against the chi-squared target at two audit sample sizes. The KS row is the Kolmogorov--Smirnov distance between the empirical CDF of $W_n$ and the chi-squared CDF, with the corresponding $p$-value on the row below.
 
-\begin{quote}\small
-\textbf{Wald audit calibration MC.} The inner loop is \cref{alg:cvar}. For each replicate $r$ from $1$ to $R$, draw independent calibration $\{(\Sscore_j, Y_j)\}_{j=1}^{m}$ and audit $\{(\Sscore_k, Y_k)\}_{k=1}^{n_a}$ samples from the base DGP. Run \cref{alg:cvar} to obtain $\hat t_r$ and the audit Wald statistic $W_r$. Compare the empirical distribution of $W_1, \dots, W_R$ to $\chi^2_2$.
-\end{quote}
+\begin{algorithm}[H]
+\caption{Wald audit calibration MC at base$\to$base, $\delta = 0$.}
+\label{alg:wald-mc}
+\begin{algorithmic}[1]
+\Statex Inputs: base DGP. calibration size $m$. audit size $n_a$. replicates $R$.
+\For{$r = 1, \dots, R$}
+  \State Draw calibration $\{(\Sscore_j, Y_j)\}_{j=1}^{m}$ from base DGP
+  \State Draw audit $\{(\Sscore_k, Y_k)\}_{k=1}^{n_a}$ from base DGP
+  \State Run \cref{alg:cvar} to obtain $\hat t_r$ and Wald statistic $W_r$
+\EndFor
+\State Compare empirical CDF of $\{W_r\}$ to $\chi^2_2$ via KS, moments, and quantiles
+\end{algorithmic}
+\end{algorithm}
 
 The message is that the audit's null distribution is correctly calibrated, and so the $5\%$ refusal gate fires at the rate the user expects when transport actually holds. This works because the bootstrap variance captures the contribution of the threshold $\hat t$ to the variability of $\bar g$. A sample covariance on the audit slice alone, which holds $\hat t$ fixed, would miss that piece and the test would be too aggressive.
 
@@ -275,9 +285,21 @@ The mean-$g_1$ and mean-$g_2$ columns confirm that each perturbation hits only t
 
 A wider sweep confirms the picture across the four target policies. We run $2{,}500$ outer replicates over $25$ cells at $\alpha = 0.10$ and $n = 2{,}000$, with $100$ replicates per cell, varying target policy and $\delta$. The procedure is below.
 
-\begin{quote}\small
-\textbf{Semi-synthetic MC.} The inner loop is \cref{alg:cvar}. For each cell at target $\pprime$, level $\alpha$, and dial $\delta$, set $C^\star$ to the population $\CVaR_\alpha(\pprime)$ under the DGP. For each replicate $r$ from $1$ to $R$, draw $\{(\Sscore_j, Y_j)\}$ from the base DGP and $\{(\Sscore_i, Y_i)\}$ from $\pprime$'s DGP with mis-spec $\delta$. Run \cref{alg:cvar} to obtain $\widehat\CVaR_r$, the cluster-bootstrap CI from $\ell_r$ to $u_r$, and the audit decision $A_r$. Record the audit reject indicator and the coverage indicator $\1\{\ell_r \le C^\star \le u_r\}$. Aggregate to per-cell reject rate, unconditional coverage, and audit-gated coverage.
-\end{quote}
+\begin{algorithm}[H]
+\caption{Semi-synthetic MC at target $\pprime$, level $\alpha$, dial $\delta$.}
+\label{alg:semi-mc}
+\begin{algorithmic}[1]
+\Statex Inputs: per-policy DGPs. replicates $R$. sample sizes $m, n, n_a$.
+\State $C^\star \gets $ population $\CVaR_\alpha(\pprime)$ under the DGP
+\For{$r = 1, \dots, R$}
+  \State Draw calibration $\{(\Sscore_j, Y_j)\}_{j=1}^{m}$ from base DGP
+  \State Draw fresh-draw $\{\Sscore_i\}_{i=1}^{n}$ and audit $\{(\Sscore_k, Y_k)\}_{k=1}^{n_a}$ from $\pprime$'s DGP at mis-spec $\delta$
+  \State Run \cref{alg:cvar} to obtain $\widehat\CVaR_r$, cluster-bootstrap CI $[\ell_r, u_r]$, and audit decision $A_r$
+  \State Record $A_r$ and the coverage indicator $\1\{\ell_r \le C^\star \le u_r\}$
+\EndFor
+\State Aggregate to per-cell reject rate, unconditional coverage, and audit-gated coverage
+\end{algorithmic}
+\end{algorithm}
 
 The left block of the table below reports the audit reject rate at the $5\%$ level as $\delta$ rises. The right block reports the bootstrap interval's coverage of the true $\CVaR_{0.10}$ at $\delta = 0$, both unconditionally and conditional on the audit accepting. For reference, the cleanest base$\to$base null at $\delta = 0$ has unconditional CI coverage $0.93$ and audit-gated coverage $0.95$, with the audit accepting on $94$ of $100$ replicates. The bootstrap interval is honest only on the subset where the audit accepts, and on that subset the empirical coverage hits the nominal rate.
 
