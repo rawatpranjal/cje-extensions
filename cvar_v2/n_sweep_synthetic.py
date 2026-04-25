@@ -34,10 +34,50 @@ import polars as pl
 
 sys.path.insert(0, "cvar")
 from dgp import fit_arena_dgp, sample_synthetic, cvar_truth  # noqa: E402
-from workhorse import (  # noqa: E402
-    estimate_direct_cvar_isotonic,
-    cluster_bootstrap_cvar,
-)
+from workhorse import estimate_direct_cvar_isotonic  # noqa: E402
+
+
+def _row_bootstrap_cvar(
+    s_train: np.ndarray,
+    y_train: np.ndarray,
+    s_eval: np.ndarray,
+    alpha: float,
+    grid_size: int,
+    B: int,
+    seed: int,
+) -> tuple[float, float, int]:
+    """Row-level i.i.d. bootstrap for CVaR.
+
+    Equivalent to `workhorse.cluster_bootstrap_cvar` with one prompt per row,
+    but without the per-cluster index dict — that dict is O(n) memory and its
+    construction is O(n^2) for trivial clusters, which kills the run at large
+    n. Synthetic samples have no prompt structure so a plain index resample
+    is exactly right.
+    """
+    rng = np.random.default_rng(seed)
+    n_train = len(s_train)
+    n_eval = len(s_eval)
+    estimates = np.empty(B)
+    n_fail = 0
+    for b in range(B):
+        idx_t = rng.integers(0, n_train, size=n_train)
+        idx_e = rng.integers(0, n_eval, size=n_eval)
+        try:
+            est, _, _, _ = estimate_direct_cvar_isotonic(
+                s_train[idx_t], y_train[idx_t], s_eval[idx_e], alpha, grid_size,
+            )
+        except Exception:
+            est = np.nan
+        if np.isfinite(est):
+            estimates[b] = est
+        else:
+            estimates[b] = np.nan
+            n_fail += 1
+    valid = estimates[np.isfinite(estimates)]
+    if len(valid) < max(10, B // 10):
+        return float("nan"), float("nan"), n_fail
+    lo, hi = np.percentile(valid, [2.5, 97.5])
+    return float(lo), float(hi), n_fail
 
 POLICIES = ("clone", "premium")
 ALPHAS = (0.005, 0.01, 0.05)
@@ -68,11 +108,8 @@ def _run_one(task: Task) -> dict:
     est, t_hat, _, _ = estimate_direct_cvar_isotonic(
         s_o, y_o, s_e, task.alpha, grid_size=GRID_SIZE,
     )
-    train_cluster = np.arange(len(s_o))
-    eval_cluster = np.arange(len(s_e))
-    ci_lo, ci_hi, n_fail = cluster_bootstrap_cvar(
-        s_o, y_o, s_e, eval_cluster, train_cluster,
-        task.alpha, GRID_SIZE, _B, seed=task.seed * 7 + 13,
+    ci_lo, ci_hi, n_fail = _row_bootstrap_cvar(
+        s_o, y_o, s_e, task.alpha, GRID_SIZE, _B, seed=task.seed * 7 + 13,
     )
     dt = time.time() - t0
     return {

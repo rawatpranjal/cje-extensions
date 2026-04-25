@@ -214,6 +214,28 @@ Policy & $V$ truth & $\widehat\CVaR_{0.20}\,/\,\text{truth}$ & $\widehat\CVaR_{0
 \end{tabular}
 \end{table}
 
+\subsection{What scaling $n$ does and does not buy}
+\label{sec:nsweep}
+
+The previous table shows the gap unresolved at Arena's $n = 5{,}000$. To localise whether scaling fresh draws alone closes it, we sample from the per-policy synthetic DGP at $n \in \{5{,}000, 25{,}000, 100{,}000, 500{,}000\}$ at three deeper tail levels, with $20$ seeds and $B = 200$ row bootstraps per cell. The oracle slice is held fixed at $n_{\text{oracle}} = 1{,}250$ across all cells, matching the Arena $25\%$ slice on $n_{\text{logger}} = 5{,}000$. The DGP preserves each policy's empirical $Y$ marginal exactly, so the population gap matches the Arena truth gap reported in the previous table.
+
+\begin{table}[H]
+\centering
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{lccccccc}
+\toprule
+$\alpha$ & truth gap & \multicolumn{2}{c}{$\widehat\CVaR_\alpha$ at $n=5{,}000$} & \multicolumn{2}{c}{$\widehat\CVaR_\alpha$ at $n=500{,}000$} & \multicolumn{2}{c}{$95\%$ CI at $n=500{,}000$} \\
+& & \texttt{clone} & \texttt{premium} & \texttt{clone} & \texttt{premium} & \texttt{clone} & \texttt{premium} \\
+\midrule
+$\alpha=0.05$ & $+0.012$ & $0.175$ & $0.181$ & $0.176$ & $0.182$ & $[0.155,0.203]$ & $[0.158,0.207]$ \\
+$\alpha=0.01$ & $+0.018$ & $0.081$ & $0.078$ & $0.077$ & $0.078$ & $[0.065,0.100]$ & $[0.061,0.100]$ \\
+$\alpha=0.005$ & $+0.037$ & $0.065$ & $0.059$ & $0.065$ & $0.059$ & $[0.049,0.086]$ & $[0.036,0.087]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The point estimates are essentially flat from $n = 5{,}000$ to $n = 500{,}000$ at every $\alpha$ and the median per-seed CIs still overlap at $n = 500{,}000$, so increasing fresh draws by two orders of magnitude does not separate the policies. The bottleneck is not fresh-draw noise: it is the calibrator's bias at the tail when fit on the small oracle slice. Both rows are pulled toward a common shrinkage centre by the isotonic regression, so the $+0.037$ truth gap at $\alpha = 0.005$ never appears in the estimates regardless of how many fresh draws we average over. Resolving the gap requires more oracle labels, not more fresh draws.
+
 \appendix
 \section{Monte Carlo evidence}
 \label{app:mc}
