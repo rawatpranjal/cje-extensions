@@ -33,14 +33,14 @@
 \begin{document}
 \maketitle
 
-\noindent\textbf{TLDR.} This appendix extends Causal Judge Evaluation so it can estimate how a policy behaves on its worst responses, not just on average. The motivation is simple. Two policies can have nearly the same average score and very different behaviour on the bottom slice that drives risk in deployment. The estimator reuses the same cheap judge and the same small batch of expensive oracle labels, and adds one extra piece that predicts how far the outcome falls short of a threshold. It comes with a check that refuses the estimate when the extra piece does not carry over from the labelled slice to the new policy. On real Arena data the check flags the adversarial policy and accepts the other three. Among the three it accepts, two policies that look identical on the average separate clearly on the deepest tail, which is the exact situation this extension is built to surface.
+\noindent\textbf{TLDR.} This appendix extends Causal Judge Evaluation so it can estimate how a policy behaves on its worst responses, not just on average. Two policies can have nearly the same average and very different behaviour on the bottom slice that drives deployment risk. The estimator reuses the same cheap judge and the same small batch of expensive oracle labels and adds one extra piece that predicts how far the outcome falls short of a threshold. It comes with a check that refuses the estimate when the extra piece does not carry over from the labelled slice to the new policy. On real Arena data the check fires for the adversarial policy and accepts the other three. The deeper tail levels expose a small structural gap in the underlying truths between two policies that share an average, but at the available sample size our point estimates do not yet resolve it. A semi-synthetic study confirms the check's $5\%$ gate is correctly calibrated and that the bootstrap interval reaches nominal coverage on the runs the check accepts.
 
 \section{Setup}
 
 \CJE\ estimates a target policy's average outcome by training a cheap surrogate judge against a small slice of expensive oracle labels, and then averaging the judge's predictions over fresh responses from the target. The average is a fine summary for ranking, but it is the wrong summary for safety-relevant deployment, where two policies can have nearly the same average and very different lower tails. This appendix extends \CJE\ so that it can estimate that lower tail using the same data, the same calibrator, and the same audit gate.
 
 
-Throughout, $\pzero$ and $\pprime$ are the logger and the target policy. Each row of data has a prompt $X$, a response $A$, a judge score $\Sscore$, and an oracle label $Y$. The lower-tail level $\alpha \in (0,1)$ controls how deep into the tail we are looking. We use $\alpha = 0.10$ throughout, meaning the worst tenth of responses. The $\alpha$-quantile of $Y$ under $\pprime$ is $q_\alpha(\pprime) = \inf\{t : \Pr_{\pprime}(Y \le t) \ge \alpha\}$, and the shortfall of $Y$ below a threshold $t$ is $\stoploss{t}{Y} = \max(t - Y, 0)$.
+Throughout, $\pzero$ and $\pprime$ are the logger and the target policy. Each row of data has a prompt $X$, a response $A$, a judge score $\Sscore$, and an oracle label $Y$. The lower-tail level $\alpha \in (0,1)$ controls how deep into the tail we are looking. $\alpha = 0.10$ is the headline level we report, meaning the worst tenth of responses, and we sweep deeper levels in \cref{sec:results}. The $\alpha$-quantile of $Y$ under $\pprime$ is $q_\alpha(\pprime) = \inf\{t : \Pr_{\pprime}(Y \le t) \ge \alpha\}$, and the shortfall of $Y$ below a threshold $t$ is $\stoploss{t}{Y} = \max(t - Y, 0)$.
 
 \section{Estimand}
 
@@ -193,11 +193,11 @@ Reject rate \\
 }
 \end{table}
 
-The CVaR estimates separate the policies cleanly. The three benign policies all score around $0.25$ on the worst tenth of responses, roughly a third of their mean. The unhelpful policy scores essentially zero on the same tail. That is the difference the mean column does not show: not a quantitative gap, but a categorical one. The worst tenth of unhelpful responses is uniformly bad, while the worst tenth of the others is mediocre but non-zero.
+The CVaR estimates separate the policies cleanly. The three benign policies all score around $0.25$ on the worst tenth of responses, roughly a third of their mean. The unhelpful policy's tail estimate is $0.036$, an order of magnitude smaller, with the audit rejecting on nineteen of twenty seeds and the interval excluding zero, and the truth in fact equals zero. That is the difference the mean column does not show. The worst tenth of unhelpful responses is uniformly bad, while the worst tenth of the others is mediocre but non-zero.
 
 Pooling all rows of the run, the absolute error against the ground truth is larger when the audit rejects than when it accepts, and the audit's $p$-value is negatively correlated with the absolute error. The audit filters which estimates to trust.
 
-The mean and the lower-tail summary disagree on some pairs. The table below sweeps the tail level across $\alpha \in \{0.20, 0.10, 0.05, 0.01\}$. The \texttt{clone} and \texttt{premium} policies share essentially the same mean of $0.762$, yet at $\alpha = 0.01$ their CVaR truths are $0.072$ and $0.090$, a gap the mean cannot see.
+The mean and the lower-tail summary disagree on some pairs. The table below sweeps the tail level across $\alpha \in \{0.20, 0.10, 0.05, 0.01\}$. The \texttt{clone} and \texttt{premium} policies share essentially the same mean of $0.762$, yet their underlying CVaR truths separate at deeper tails, reaching $0.072$ versus $0.090$ at $\alpha = 0.01$, a gap the mean cannot see. Our point estimates at Arena's $n = 5{,}000$ fresh draws land at $0.075$ for both rows, so the gap shows up in the truth column but is below the resolution of the estimator at this sample size.
 
 \begin{table}[H]
 \centering
@@ -285,7 +285,7 @@ The mean-$g_1$ and mean-$g_2$ columns confirm that each perturbation hits only t
 \subsection{Audit reject rate and confidence-interval coverage}
 \label{app:semi-synth-mc}
 
-A wider sweep confirms the picture across the four target policies. We run $2{,}500$ outer replicates over $25$ cells at $\alpha = 0.10$ and $n = 2{,}000$, with $100$ replicates per cell, varying target policy and $\delta$. The procedure is below.
+A wider sweep confirms the picture across the four target policies. We run $2{,}500$ outer replicates over $25$ cells at $\alpha = 0.10$ with $100$ replicates per cell. The cells reported in the table below are the $21$ at $n = 2{,}000$, varying target policy and $\delta$, with the cleanest base-to-base null at $\delta = 0$ used as the reference for coverage. Four further cells at $n \in \{500, 2{,}500\}$ support a scaling check not shown.
 
 \begin{algorithm}[H]
 \caption{Semi-synthetic MC at target $\pprime$, level $\alpha$, dial $\delta$.}
