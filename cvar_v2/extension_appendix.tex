@@ -33,6 +33,8 @@
 \begin{document}
 \maketitle
 
+\noindent\textbf{TLDR.} This appendix extends Causal Judge Evaluation so it can estimate how a policy behaves on its worst responses, not just on average. The motivation is simple. Two policies can have nearly the same average score and very different behaviour on the bottom slice that drives risk in deployment. The estimator reuses the same cheap judge and the same small batch of expensive oracle labels, and adds one extra piece that predicts how far the outcome falls short of a threshold. It comes with a check that refuses the estimate when the extra piece does not carry over from the labelled slice to the new policy. On real Arena data the check flags the adversarial policy and accepts the other three. Among the three it accepts, two policies that look identical on the average separate clearly on the deepest tail, which is the exact situation this extension is built to surface.
+
 \section{Setup}
 
 \CJE\ estimates a target policy's average outcome by training a cheap surrogate judge against a small slice of expensive oracle labels, and then averaging the judge's predictions over fresh responses from the target. The average is a fine summary for ranking, but it is the wrong summary for safety-relevant deployment, where two policies can have nearly the same average and very different lower tails. This appendix extends \CJE\ so that it can estimate that lower tail using the same data, the same calibrator, and the same audit gate.
