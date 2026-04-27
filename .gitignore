@@ -29,9 +29,16 @@ CLAUDE.md
 refactor.py
 direct_cvar_cje_demo.py
 
-# CVaR v2 derived artifacts
-cvar_v2/__pycache__/
-cvar_v2/extension_appendix.aux
-cvar_v2/extension_appendix.log
-cvar_v2/extension_appendix.out
-cvar_v2/extension_appendix.tex.bak
+# LaTeX build artifacts (any directory)
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bak
+texput.log
+
+# Exception: keep results-side runtime logs that we ship as data
+!cvar*/*results*.log

@@ -1,0 +1,344 @@
+\documentclass[11pt]{article}
+\usepackage[letterpaper,margin=0.85in]{geometry}
+\setlength{\textfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\usepackage{times}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage[table]{xcolor}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage[capitalize,noabbrev]{cleveref}
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc}
+
+\input{../arxiv_source/macros}
+\input{numbers}  % Auto-generated; refresh via cvar/regenerate_macros.py
+
+\newcommand{\CJE}{\textsc{CJE}}
+\newcommand{\RefuseLevel}{\textsc{Refuse-Level}}
+\newcommand{\CVaR}{\mathrm{CVaR}}
+\newcommand{\stoploss}[2]{\bigl(#1 - #2\bigr)_{+}}
+
+\title{Lower-Tail Causal Judge Evaluation}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{TLDR.} This appendix extends Causal Judge Evaluation so it can estimate how a policy behaves on its worst responses, not just on average. Two policies can have nearly the same average and very different behaviour on the bottom slice that drives deployment risk. The estimator reuses the same cheap judge and the same small batch of expensive oracle labels and adds one extra piece that predicts how far the outcome falls short of a threshold. It comes with a check that refuses the estimate when the extra piece does not carry over from the labelled slice to the new policy. On real Arena data the check fires for the adversarial policy and accepts the other three. The deeper tail levels expose a small structural gap in the underlying truths between two policies that share an average, but at the available sample size our point estimates do not yet resolve it. A semi-synthetic study confirms the check's $5\%$ gate is correctly calibrated and that the bootstrap interval reaches nominal coverage on the runs the check accepts.
+
+\section{Setup}
+
+\CJE\ estimates a target policy's average outcome by training a cheap surrogate judge against a small slice of expensive oracle labels, and then averaging the judge's predictions over fresh responses from the target. The average is a fine summary for ranking, but it is the wrong summary for safety-relevant deployment, where two policies can have nearly the same average and very different lower tails. This appendix extends \CJE\ so that it can estimate that lower tail using the same data, the same calibrator, and the same audit gate.
+
+
+Throughout, $\pzero$ and $\pprime$ are the logger and the target policy. In the Arena evaluation $\pzero$ is fixed at the deployed \texttt{base} policy and the four candidates \texttt{clone}, \texttt{premium}, \texttt{parallel\_universe\_prompt}, and \texttt{unhelpful} appear only as targets, with \texttt{unhelpful} included as a known-bad stress test rather than as a logger. Each row of data has a prompt $X$, a response $A$, a judge score $\Sscore$, and an oracle label $Y$. The lower-tail level $\alpha \in (0,1)$ controls how deep into the tail we are looking. $\alpha = 0.10$ is the headline level we report, meaning the worst tenth of responses, and we sweep deeper levels in \cref{sec:results}. The $\alpha$-quantile of $Y$ under $\pprime$ is $q_\alpha(\pprime) = \inf\{t : \Pr_{\pprime}(Y \le t) \ge \alpha\}$, and the shortfall of $Y$ below a threshold $t$ is $\stoploss{t}{Y} = \max(t - Y, 0)$.
+
+\section{Estimand}
+
+The quantity we want is the average outcome under the target restricted to the worst $\alpha$-fraction of its responses:
+\begin{equation}\label{eq:cvar-def}
+\CVaR_\alpha(\pprime) \;=\; \E\!\big[Y(\pprime) \,\big|\, Y(\pprime) \le q_\alpha(\pprime)\big].
+\end{equation}
+At $\alpha = 1$ the formula recovers the policy mean.\footnote{We adopt the conditional-mean expression as a reader-friendly statement; the formal definition we use throughout is the variational identity $\CVaR_\alpha(\pprime) = \sup_t\{t - \alpha^{-1}\E_{\pprime}[\stoploss{t}{Y}]\}$ (\cref{eq:cvar-dual}). The two agree when $Y$ has no atom at $q_\alpha(\pprime)$, which is also what makes $g_1$ in \cref{eq:g1} mean-zero at the right $\hat t$. The assumption fails when $Y$ is genuinely discrete, e.g.\ a $1$--$5$ rating: the two forms disagree at the quantile and $g_1$ keeps a small bias that more data does not remove. We have not tested the estimator in that case and do not recommend it as-is.} As $\alpha$ shrinks toward zero, the formula focuses on a deeper part of the tail. At $\alpha = 0.10$ it is the average outcome on the worst tenth of responses, the operating point we use throughout.\footnote{We use CVaR rather than the quantile $q_\alpha(\pprime)$ itself because the quantile only marks the edge of the worst-$\alpha$ slice and says nothing about how bad outcomes get past that edge. Two policies can share a quantile and still have very different averages on the tail beyond it, and CVaR is exactly that average. It is also the standard coherent risk measure in actuarial practice; see Rockafellar and Uryasev, J.\ Risk 2(3), 2000.}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.50\linewidth}\centering
+\begin{tikzpicture}[
+  node distance=0.30cm and 0.7cm, font=\scriptsize,
+  every node/.style={align=center,inner sep=2.5pt},
+  policy/.style={draw, rounded corners=2pt, minimum height=5.5mm, fill=white, font=\scriptsize},
+  data/.style={draw, rounded corners=2pt, minimum height=5.5mm, fill=blue!8, font=\scriptsize},
+  out/.style={draw, thick, rounded corners=2pt, minimum height=5.5mm, fill=orange!12, font=\scriptsize},
+  >={Stealth[length=2.5pt]}
+]
+  \node[policy] (logger) {logger $\pzero$};
+  \node[policy, below=of logger] (target) {target $\pprime$};
+  \node[data, right=of logger] (oracle) {oracle slice $(\Sscore,Y)$};
+  \node[data, right=of target] (fresh) {fresh draws ($\Sscore$)};
+  \node[data, below=of fresh] (audit) {audit slice $(\Sscore,Y)$};
+  \node[out, right=1.0cm of oracle] (cal) {\textbf{calibrator} $\hat g_t$};
+  \node[out, right=1.0cm of cal] (est) {\textbf{CVaR} estimate};
+  \node[out, right=1.0cm of audit] (aud) {\textbf{audit} $W_n$};
+  \draw[->] (logger) -- (oracle);
+  \draw[->] (target) -- (fresh);
+  \draw[->] (target) -- (audit);
+  \draw[->] (oracle) -- (cal);
+  \draw[->] (cal) -- (est);
+  \draw[->] (fresh) -| (est);
+  \draw[->] (cal.south) -- (aud.north);
+  \draw[->] (audit) -- (aud);
+\end{tikzpicture}\par
+\vspace{2pt}
+\textit{(a) Data flow.}
+\end{minipage}\hfill
+\begin{minipage}{0.46\linewidth}\centering
+\begin{tikzpicture}[font=\scriptsize, >={Stealth[length=2.5pt]}, scale=0.65]
+  \draw[->] (-0.2,0) -- (10,0) node[right] {$Y$};
+  \draw[thick, blue!70!black, domain=0:9.5, samples=80, smooth]
+        plot (\x, {2.2*exp(-0.4*(\x-7.0)*(\x-7.0)) + 0.15*exp(-0.2*(\x-2)*(\x-2))});
+  \fill[red!18]
+    plot[domain=0:3.0, samples=40, smooth]
+        (\x, {2.2*exp(-0.4*(\x-7.0)*(\x-7.0)) + 0.15*exp(-0.2*(\x-2)*(\x-2))})
+    -- (3.0,0) -- (0,0) -- cycle;
+  \draw[red!70!black, thick, dashed] (3.0,0) -- (3.0,1.6);
+  \node[red!70!black, below] at (3.0,-0.05) {$q_\alpha$};
+  \node[red!60!black, font=\tiny] at (1.6,0.30) {tail mass $\alpha$};
+  \draw[purple!70!black, thick] (1.7,-0.5) -- (1.7,0);
+  \node[purple!70!black, below] at (1.7,-0.5) {$\CVaR_\alpha$};
+  \draw[green!40!black, thick, dashed] (6.7,-0.5) -- (6.7,2.3);
+  \node[green!40!black, below] at (6.7,-0.5) {$V$};
+\end{tikzpicture}\par
+\vspace{2pt}
+\textit{(b) $q_\alpha$ marks the edge of the tail; $\CVaR_\alpha$ is the average inside it.}
+\end{minipage}
+\end{figure}
+
+\section{Estimator}
+
+We cannot use \cref{eq:cvar-def} as a recipe for an estimate, because the threshold $q_\alpha(\pprime)$ is unknown and we observe relatively few outcomes from the target. We need to rewrite the same quantity in a form we can compute from the data we do have. There is a standard identity that does this. The same lower-tail value can be written as the maximum of a one-parameter expression over a candidate threshold $t$,
+\begin{equation}\label{eq:cvar-dual}
+\CVaR_\alpha(\pprime) \;=\; \sup_{t \in \R} \Big\{\, t \;-\; \tfrac{1}{\alpha}\, \E_{\pprime}\!\big[\stoploss{t}{Y}\big] \,\Big\},
+\end{equation}
+and the maximiser is exactly $q_\alpha(\pprime)$. This is useful because the expression inside the maximisation is a mean of a deterministic function of $Y$, which is the kind of object \CJE's existing Direct estimator was built to handle.
+
+The estimator has three pieces. For each candidate threshold $t$ on a grid, we fit a calibrator on the oracle slice that takes a judge score and predicts the conditional expected shortfall of $Y$ below $t$. We apply that calibrator to the judge scores of fresh responses under $\pprime$ and take the empirical mean, which estimates the inner expectation in \cref{eq:cvar-dual}. We then maximise over the grid. \cref{alg:cvar} states the procedure together with the audit, after both have been described.
+
+\section{Audit}
+
+A CVaR estimate from \cref{alg:cvar} can be wrong for two distinct reasons. The first is that $\hat t$, the threshold the algorithm picks, may not actually be the $\alpha$-quantile of $Y$ under $\pprime$. The second is that the calibrator $\hat g_{\hat t}$, which we fit on the oracle slice, may behave differently on the target policy than it did on the oracle slice, in the sense that its prediction of the conditional expected shortfall is wrong on average for $\pprime$. The audit checks each cause with one moment, evaluated on a held-out audit slice that has both the judge score and the oracle label observed.
+
+The first audit moment is
+\begin{equation}\label{eq:g1}
+g_1(O; \hat t, \alpha) \;=\; \1\{Y \le \hat t\} - \alpha.
+\end{equation}
+This is the gap between the share of audit observations that fall at or below the chosen threshold and the nominal level $\alpha$. If $\hat t$ is the $\alpha$-quantile of $Y$ under $\pprime$, then by definition exactly an $\alpha$-fraction of audit observations should fall at or below it, and $g_1$ averages to zero in expectation. A non-zero average of $g_1$ on the audit slice is direct evidence that $\hat t$ is not the right threshold.
+
+The second audit moment is
+\begin{equation}\label{eq:g2}
+g_2(O; \hat t) \;=\; \stoploss{\hat t}{Y} \;-\; \hat g_{\hat t}(\Sscore).
+\end{equation}
+This is the residual between the actual shortfall of $Y$ below $\hat t$ on the audit slice and the calibrator's prediction of that shortfall. If the calibrator works under the target as well as it works on the oracle slice, the prediction equals the conditional expected shortfall under $\pprime$, and the residual averages to zero in expectation.\footnote{Formally, the identifying assumption is \emph{shortfall transport}: $\E_{\pprime}[\stoploss{t}{Y}\mid \Sscore] = \E_{\pzero}[\stoploss{t}{Y}\mid \Sscore]$ for $t$ in a neighbourhood of $\hat t$. This is the threshold-indexed analogue of the main paper's mean-transport condition $\textbf{(T1)}$, and it does double duty: it identifies the inner expectation in \cref{eq:cvar-dual} (justifying the estimator) and makes $g_2$ in \cref{eq:g2} mean-zero at the truth (justifying the gate).} A non-zero average residual on the audit slice is direct evidence that the calibrator does not transfer.
+
+We combine the two moments into one test. Let $\bar g$ be the average of $(g_1, g_2)$ over the audit slice and let $\hat\Sigma$ be an estimate of its covariance matrix. We describe the variance estimator in the next section. The two moments are typically correlated because the same observations contribute to both, so we use the full covariance rather than the diagonal and the test reweights them by their joint variability. The Wald statistic is the quadratic form
+\begin{equation}\label{eq:wald}
+W_n \;=\; \bar g^{\top} \hat\Sigma^{-1} \bar g.
+\end{equation}
+When both moments are zero in expectation, $W_n$ behaves in large samples like a chi-squared with two degrees of freedom, and a value above the $5\%$ critical value says one of the two checks has failed.\footnote{The chi-squared limit needs no atom at $q_\alpha(\pprime)$, a unique interior maximiser of the variational objective, a consistent calibrator $\hat g_t$, and the clustered paired bootstrap for the covariance of $\bar g$ from the next section. Dropping $g_1$ and using only $g_2$ gives a valid one-moment Wald (with scalar $\hat\Sigma$); we keep both because at $\alpha = 0.10$ a wrong threshold and a calibrator that does not transfer are different failure modes (\cref{app:wald-mc}).} At $\alpha = 1$ the first moment is zero by construction and the second collapses to $Y - \hat g(\Sscore)$, the residual the main paper's audit tests, so this gate reduces to \CJE's mean audit in that limit. We treat a rejection on a given policy as a signal to recalibrate or to refuse a level claim for that policy.
+
+\section{Inference}
+
+The confidence interval for the CVaR estimate uses the cluster bootstrap with $B = 500$ replicates. In each replicate we resample prompt clusters in the calibration slice and the fresh-draw set, refit the calibrator $\hat g_t$ for every threshold on the grid, recompute the estimator, and report the central $95\%$ of the resulting bootstrap distribution. Refitting the calibrator inside each replicate is what makes the interval honest in this setting: when the oracle slice is small, the calibrator itself is the dominant source of uncertainty, and an interval that pretended otherwise would be too narrow. We use the bootstrap rather than an analytical formula because the estimator is the maximum of an objective that is not smooth in $t$, and writing a closed-form variance would require quantities (the density of $Y$ at the quantile, derivatives of the calibrator) that are harder to estimate than the variance itself.
+
+The variance estimator $\hat\Sigma$ for the audit's Wald statistic uses the same paired bootstrap, with one essential addition. The threshold $\hat t_b$ is also re-found inside each replicate, by re-running the maximisation, rather than being held at its original value. The reason is the same non-smoothness: if we held $\hat t$ fixed in the bootstrap, the resulting variance estimate would miss the contribution of $\hat t$ to the variability of $\bar g$, and the test would be miscalibrated.\footnote{The variance under a re-estimated nuisance is the framework of Chen, Linton, and Van Keilegom (2003), \emph{Estimation of semiparametric models when the criterion function is not smooth}, Econometrica 71(5), Theorem~B.}
+
+\begin{algorithm}[H]
+\caption{Direct CVaR-CJE estimator and transport audit.}
+\label{alg:cvar}
+\begin{algorithmic}[1]
+\Statex \textbf{Estimator.} Inputs: oracle slice $\{(\Sscore_j, Y_j)\}_{j=1}^{m}$; fresh-draw judge scores $\{\Sscore_i\}_{i=1}^{n}$ under $\pprime$; level $\alpha$; grid $\mathcal{G}$ of $61$ candidate thresholds anchored at the oracle-side $\alpha$-quantile of $Y$.
+\For{$t \in \mathcal{G}$}
+  \State $\hat g_t \gets$ non-increasing isotonic regression\footnotemark{} of $\stoploss{t}{Y_j}$ on $\Sscore_j$
+  \State $\bar Z_t \gets \tfrac{1}{n} \sum_{i=1}^{n} \hat g_t(\Sscore_i)$
+\EndFor
+\State $\hat t \gets \arg\max_{t \in \mathcal{G}} \big(\, t - \bar Z_t/\alpha \,\big)$
+\State \Return $\widehat\CVaR_\alpha^{\,\mathrm{Direct}}(\pprime) = \hat t - \bar Z_{\hat t}/\alpha$
+\Statex
+\Statex \textbf{Audit.} Additional input: audit slice $\{(\Sscore_k, Y_k)\}_{k=1}^{n_a}$ under $\pprime$.
+\State $g_{1,k} \gets \1\{Y_k \le \hat t\} - \alpha$
+\State $g_{2,k} \gets \stoploss{\hat t}{Y_k} - \hat g_{\hat t}(\Sscore_k)$
+\State $\bar g \gets$ mean of $(g_{1,k}, g_{2,k})$ across $k$
+\State $\hat\Sigma \gets$ paired bootstrap covariance of $\bar g$ over $B$ replicates, refitting $\hat g_t$ and re-running the maximisation for $\hat t_b$ inside each replicate
+\State \Return $W_n = \bar g^{\top} \hat\Sigma^{-1} \bar g$; reject if $W_n > \chi^2_{2,\,0.95}$
+\end{algorithmic}
+\end{algorithm}
+\footnotetext{We use scikit-learn's pool-adjacent-violators implementation, \texttt{IsotonicRegression(increasing=False)}. The non-increasing shape constraint reflects that a higher judge score should predict a smaller shortfall.}
+
+\section{Arena results}
+\label{sec:results}
+
+We re-run the main paper's Arena experiment with no change to the data, the oracle-masking procedure, the fold structure, the calibrator, or the fresh-draw mechanism. The only addition is the new CVaR column, which applies \cref{alg:cvar} on top of the same calibrator that produces the Mean column. The Mean column reproduces the paper's headline \emph{direct$+$cov} estimator. We aggregate \nSeeds\ oracle-slice seeds at $n = \nFreshDraws$ fresh draws per policy, with \oracleCovPct\ oracle coverage and \nFolds-fold cross-fitting. The table below reports per-target estimates at $\alpha = 0.10$ with median per-seed $95\%$ CIs in brackets. The Audit $p$ and Reject rate columns refer to the CVaR Wald audit of \cref{eq:wald}, not the main paper's mean audit.
+
+\begin{table}[H]
+\centering
+\setlength{\tabcolsep}{4pt}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+Target $\pprime$ &
+$\widehat V_{\mathrm{Direct}}(\pprime)$ &
+$V(\pprime)$ truth &
+$\widehat\CVaR_{0.10}^{\,\mathrm{Direct}}(\pprime)$ &
+$\CVaR_{0.10}(\pprime)$ truth &
+Audit $p$ &
+Reject rate \\
+\midrule
+\texttt{parallel}  & \arenaParallelMean\ [\arenaParallelMeanLo, \arenaParallelMeanHi] & \arenaParallelMeanTruth & \arenaParallelCvar\ [\arenaParallelCvarLo, \arenaParallelCvarHi] & \arenaParallelCvarTruth & \arenaParallelAuditP & \arenaParallelRejectPct \\
+\texttt{premium}   & \arenaPremiumMean\ [\arenaPremiumMeanLo, \arenaPremiumMeanHi]    & \arenaPremiumMeanTruth  & \arenaPremiumCvar\ [\arenaPremiumCvarLo, \arenaPremiumCvarHi]    & \arenaPremiumCvarTruth  & \arenaPremiumAuditP  & \arenaPremiumRejectPct  \\
+\texttt{clone}     & \arenaCloneMean\ [\arenaCloneMeanLo, \arenaCloneMeanHi]          & \arenaCloneMeanTruth    & \arenaCloneCvar\ [\arenaCloneCvarLo, \arenaCloneCvarHi]          & \arenaCloneCvarTruth    & \arenaCloneAuditP    & \arenaCloneRejectPct    \\
+\texttt{unhelpful} & \arenaUnhelpfulMean\ [\arenaUnhelpfulMeanLo, \arenaUnhelpfulMeanHi] & \arenaUnhelpfulMeanTruth & \arenaUnhelpfulCvar\ [\arenaUnhelpfulCvarLo, \arenaUnhelpfulCvarHi] & \arenaUnhelpfulCvarTruth & \arenaUnhelpfulAuditP & \arenaUnhelpfulRejectPct \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+The CVaR estimates separate the policies. The three benign policies all sit near $0.25$ on the worst tenth of responses, roughly a third of their mean. On unhelpful the audit rejects with reject rate \arenaUnhelpfulRejectPct, so its row is a flag, not a tail estimate: the \arenaUnhelpfulCvar\ against a truth of \arenaUnhelpfulCvarTruth\ is what we read when the audit fires, not a number to compare with the truth.\footnote{The supported conclusion is that the unhelpful policy is flagged, not that its CVaR equals \arenaUnhelpfulCvar.} That is the difference the mean column does not show. The worst tenth of unhelpful responses is uniformly bad, while the worst tenth of the others is mediocre but non-zero.
+
+Pooling all rows of the run, the absolute error against the ground truth is larger when the audit rejects than when it accepts, and the audit's $p$-value is negatively correlated with the absolute error. The audit filters which estimates to trust.
+
+The mean and the lower-tail summary disagree on some pairs. The table below sweeps the tail level across $\alpha \in \{0.20, 0.10, 0.05, 0.01\}$. The \texttt{clone} and \texttt{premium} policies share essentially the same mean of \sweepCloneMeanTruth, yet their underlying CVaR truths separate at deeper tails, reaching \sweepCloneOneTruth\ versus \sweepPremiumOneTruth\ at $\alpha = 0.01$, a gap the mean cannot see. Our point estimates at Arena's $n = \nFreshDraws$ fresh draws land at \sweepCloneOneEst\ for clone and \sweepPremiumOneEst\ for premium, so the gap shows up in the truth column but is below the resolution of the estimator at this sample size.
+
+\begin{table}[H]
+\centering
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lrcccc}
+\toprule
+Policy & $V$ truth & $\widehat\CVaR_{0.20}\,/\,\text{truth}$ & $\widehat\CVaR_{0.10}\,/\,\text{truth}$ & $\widehat\CVaR_{0.05}\,/\,\text{truth}$ & $\widehat\CVaR_{0.01}\,/\,\text{truth}$ \\
+\midrule
+\texttt{clone}     & \sweepCloneMeanTruth    & $\sweepCloneTwentyEst\,/\,\sweepCloneTwentyTruth$       & $\sweepCloneTenEst\,/\,\sweepCloneTenTruth$       & $\sweepCloneFiveEst\,/\,\sweepCloneFiveTruth$       & $\sweepCloneOneEst\,/\,\sweepCloneOneTruth$       \\
+\texttt{premium}   & \sweepPremiumMeanTruth  & $\sweepPremiumTwentyEst\,/\,\sweepPremiumTwentyTruth$   & $\sweepPremiumTenEst\,/\,\sweepPremiumTenTruth$   & $\sweepPremiumFiveEst\,/\,\sweepPremiumFiveTruth$   & $\sweepPremiumOneEst\,/\,\sweepPremiumOneTruth$   \\
+\texttt{parallel}  & \sweepParallelMeanTruth & $\sweepParallelTwentyEst\,/\,\sweepParallelTwentyTruth$ & $\sweepParallelTenEst\,/\,\sweepParallelTenTruth$ & $\sweepParallelFiveEst\,/\,\sweepParallelFiveTruth$ & $\sweepParallelOneEst\,/\,\sweepParallelOneTruth$ \\
+\texttt{unhelpful} & \sweepUnhelpfulMeanTruth & $\sweepUnhelpfulTwentyEst\,/\,\sweepUnhelpfulTwentyTruth$ & $\sweepUnhelpfulTenEst\,/\,\sweepUnhelpfulTenTruth$ & $\sweepUnhelpfulFiveEst\,/\,\sweepUnhelpfulFiveTruth$ & $\sweepUnhelpfulOneEst\,/\,\sweepUnhelpfulOneTruth$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\appendix
+\section{Monte Carlo evidence}
+\label{app:mc}
+
+To check that the audit and the bootstrap interval behave correctly under known truth, we build a synthetic data-generating process from the Arena data. For each policy we use the empirical $Y$ marginal, fit a monotone curve relating $\Sscore$ to the conditional mean of $Y$, and add Gaussian noise with $Y$-quartile-dependent variance. For the adversarial \texttt{unhelpful} policy we add a mixture component placing about a third of the probability mass at $Y = 0$. A scalar dial $\delta$ shifts the target's lower-tail conditional mean downward, so $\delta = 0$ is the well-specified null.
+
+\subsection{The Wald audit's null distribution}
+\label{app:wald-mc}
+
+The first check asks whether the audit's test statistic actually follows the chi-squared distribution with two degrees of freedom we claimed in \cref{eq:wald}. We sample calibration and audit slices from the same DGP at base$\to$base, $\delta = 0$, with \waldNumOuter\ outer replicates and \waldNumInner\ inner bootstrap reps per audit. The procedure is below. The table reports moments and quantiles of the empirical $W_n$ distribution against the chi-squared target at two audit sample sizes. The KS row is the Kolmogorov--Smirnov distance between the empirical CDF of $W_n$ and the chi-squared CDF, with the corresponding $p$-value on the row below.
+
+\begin{algorithm}[H]
+\caption{Wald audit calibration MC at base$\to$base, $\delta = 0$.}
+\label{alg:wald-mc}
+\begin{algorithmic}[1]
+\Statex Inputs: base DGP. calibration size $m$. audit size $n_a$. replicates $R$.
+\For{$r = 1, \dots, R$}
+  \State Draw calibration $\{(\Sscore_j, Y_j)\}_{j=1}^{m}$ from base DGP
+  \State Draw audit $\{(\Sscore_k, Y_k)\}_{k=1}^{n_a}$ from base DGP
+  \State Run \cref{alg:cvar} to obtain $\hat t_r$ and Wald statistic $W_r$
+\EndFor
+\State Compare empirical CDF of $\{W_r\}$ to $\chi^2_2$ via KS, moments, and quantiles
+\end{algorithmic}
+\end{algorithm}
+
+The message is that the audit's null distribution is correctly calibrated, and so the $5\%$ refusal gate fires at the rate the user expects when transport actually holds. This works because the bootstrap variance captures the contribution of the threshold $\hat t$ to the variability of $\bar g$. A sample covariance on the audit slice alone, which holds $\hat t$ fixed, would miss that piece and the test would be too aggressive.
+
+\begin{table}[H]
+\centering
+\setlength{\tabcolsep}{8pt}
+\begin{tabular}{lrrr}
+\toprule
+Statistic & $n_a = \waldNaSmall$ & $n_a = \waldNaLarge$ & target ($\chi^2_2$) \\
+\midrule
+Mean                                  & $\waldMeanOneK$         & $\waldMeanTwoFiveK$         & $2.000$ \\
+Median                                & $\waldMedianOneK$       & $\waldMedianTwoFiveK$       & $1.386$ \\
+Variance                              & $\waldVarOneK$          & $\waldVarTwoFiveK$          & $4.000$ \\
+$95$th percentile                     & $\waldNinetyFifthOneK$  & $\waldNinetyFifthTwoFiveK$  & $5.991$ \\
+KS statistic                          & $\waldKSOneK$           & $\waldKSTwoFiveK$           & \\
+KS $p$-value                          & $\waldKSpOneK$          & $\waldKSpTwoFiveK$          & \\
+Reject rate at $\alpha = 0.05$         & $\waldRejectOneK$       & $\waldRejectTwoFiveK$       & $0.050$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Each moment catches its own failure}
+\label{app:moment-isolation}
+
+The audit has two moments because there are two ways the estimate can be wrong, and we would like each to fail in isolation. We use two controlled perturbations on top of the well-specified DGP, with \modeNumReps\ replicates per cell at $n_a = \modeNa$. In \emph{Mode A} we evaluate the audit at $\hat t + \Delta$ instead of $\hat t$. The calibrator at the shifted threshold is still well-specified, so $g_2$ has zero mean by construction and only $g_1$ moves. In \emph{Mode B} we add a constant $c$ to every calibrator prediction inside the audit. The dual's argmax is invariant to a constant shift, so $\hat t$ is unchanged and $g_1$ stays at its baseline while only $g_2$ moves. In the table below, the mean-$g_1$ and mean-$g_2$ columns confirm that each perturbation hits only the intended moment.
+
+\begin{table}[H]
+\centering
+\setlength{\tabcolsep}{8pt}
+\begin{tabular}{lrrr}
+\toprule
+Cell & mean $g_1$ & mean $g_2$ & reject rate \\
+\midrule
+baseline (both hold)                & $\modeBaselineGOne$ & $\modeBaselineGTwo$ & $\modeBaselineReject$ \\
+Mode A: $\Delta = +0.02$             & $\modeAOneGOne$    & $\modeAOneGTwo$    & $\modeAOneReject$    \\
+Mode A: $\Delta = +0.05$             & $\modeATwoGOne$    & $\modeATwoGTwo$    & $\modeATwoReject$    \\
+Mode B: $c = +0.005$                 & $\modeBOneGOne$    & $\modeBOneGTwo$    & $\modeBOneReject$    \\
+Mode B: $c = +0.010$                 & $\modeBTwoGOne$    & $\modeBTwoGTwo$    & $\modeBTwoReject$    \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The mean-$g_1$ and mean-$g_2$ columns confirm that each perturbation hits only the intended moment, and the reject rate climbs in both directions. Either failure on its own is enough to fire the audit, which is what gives the test its power against the realistic case where a wrong calibrator drags the threshold off with it.
+
+\subsection{Audit reject rate and confidence-interval coverage}
+\label{app:semi-synth-mc}
+
+A wider sweep confirms the picture across the four target policies. We run \mcNumOuter\ outer replicates over \mcNumCells\ cells at $\alpha = 0.10$ with \mcNumPerCell\ replicates per cell. The cells reported in the table below are the $21$ at $n = \mcNa$, varying target policy and $\delta$, with the cleanest base-to-base null at $\delta = 0$ used as the reference for coverage. Four further cells at $n \in \{500, 2{,}500\}$ support a scaling check not shown.
+
+\begin{algorithm}[H]
+\caption{Semi-synthetic MC at target $\pprime$, level $\alpha$, dial $\delta$.}
+\label{alg:semi-mc}
+\begin{algorithmic}[1]
+\Statex Inputs: per-policy DGPs. replicates $R$. sample sizes $m, n, n_a$.
+\State $C^\star \gets $ population $\CVaR_\alpha(\pprime)$ under the DGP
+\For{$r = 1, \dots, R$}
+  \State Draw calibration $\{(\Sscore_j, Y_j)\}_{j=1}^{m}$ from base DGP
+  \State Draw fresh-draw $\{\Sscore_i\}_{i=1}^{n}$ and audit $\{(\Sscore_k, Y_k)\}_{k=1}^{n_a}$ from $\pprime$'s DGP at mis-spec $\delta$
+  \State Run \cref{alg:cvar} to obtain $\widehat\CVaR_r$, cluster-bootstrap CI $[\ell_r, u_r]$, and audit decision $A_r$
+  \State Record $A_r$ and the coverage indicator $\1\{\ell_r \le C^\star \le u_r\}$
+\EndFor
+\State Aggregate to per-cell reject rate, unconditional coverage, and audit-gated coverage
+\end{algorithmic}
+\end{algorithm}
+
+The left block of the table below reports the audit reject rate at the $5\%$ level as $\delta$ rises. The right block reports the bootstrap interval's coverage of the true $\CVaR_{0.10}$ at $\delta = 0$, both unconditionally and conditional on the audit accepting. For reference, the cleanest base$\to$base null at $\delta = 0$ has unconditional CI coverage \mcCovAllBase\ and audit-gated coverage \mcCovAcceptBase, with the audit accepting on \mcNAcceptBase\ of \mcNTotalBase\ replicates. The bootstrap interval is honest only on the subset where the audit accepts, and on that subset the empirical coverage hits the nominal rate.\footnote{This statement is local to the base$\to$base null at $\delta=0$ reported here. Across target policies in our Arena Monte Carlo, audit-accepting coverage varies (e.g., \mcCovAcceptClone\ for \texttt{clone} and \mcCovAcceptParallel\ for \texttt{parallel\_universe\_prompt} versus \mcCovAcceptBase\ at the cleanest null), so this is a calibration claim at the truest null, not a blanket guarantee across policies.}
+
+\begin{table}[H]
+\centering
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{lrrrrr|rrr}
+\toprule
+$\pprime$ & $\delta=0$ & $\delta=0.02$ & $\delta=0.05$ & $\delta=0.10$ & $\delta=0.20$ & all reps & $\mid$accept & accept \\
+\midrule
+\texttt{clone}     & $\mcRejectCloneDeltaZero$    & $\mcRejectCloneDeltaTwo$    & $\mcRejectCloneDeltaFive$    & $\mcRejectCloneDeltaTen$    & $\mcRejectCloneDeltaTwenty$    & $\mcCovAllClone$    & $\mcCovAcceptClone$    & $\mcNAcceptClone/\mcNTotalClone$ \\
+\texttt{premium}   & $\mcRejectPremiumDeltaZero$  & $\mcRejectPremiumDeltaTwo$  & $\mcRejectPremiumDeltaFive$  & $\mcRejectPremiumDeltaTen$  & $\mcRejectPremiumDeltaTwenty$  & $\mcCovAllPremium$  & $\mcCovAcceptPremium$  & $\mcNAcceptPremium/\mcNTotalPremium$ \\
+\texttt{parallel}  & $\mcRejectParallelDeltaZero$ & $\mcRejectParallelDeltaTwo$ & $\mcRejectParallelDeltaFive$ & $\mcRejectParallelDeltaTen$ & $\mcRejectParallelDeltaTwenty$ & $\mcCovAllParallel$ & $\mcCovAcceptParallel$ & $\mcNAcceptParallel/\mcNTotalParallel$ \\
+\texttt{unhelpful} & $\mcRejectUnhelpfulDeltaZero$ & $\mcRejectUnhelpfulDeltaTwo$ & $\mcRejectUnhelpfulDeltaFive$ & $\mcRejectUnhelpfulDeltaTen$ & $\mcRejectUnhelpfulDeltaTwenty$ & $\mcCovAllUnhelpful$ & $\mcCovAcceptUnhelpful$ & $\mcNAcceptUnhelpful/\mcNTotalUnhelpful$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{What scaling $n$ does and does not buy}
+\label{app:nsweep}
+
+The Arena alpha-sweep in \cref{sec:results} shows the \texttt{clone}--\texttt{premium} gap unresolved at $n = \nFreshDraws$ even though the underlying truths separate by up to $\nsweepTruthGapHalfpct$ at $\alpha = 0.005$. To localise whether scaling fresh draws alone closes the gap, we sample from the per-policy synthetic DGP at $n \in \{5{,}000, 25{,}000, 100{,}000, 500{,}000\}$ at three deeper tail levels, with \nSeeds\ seeds and $B = \nSweepBoot$ row bootstraps per cell. The oracle slice is held fixed at $n_{\text{oracle}} = \nSweepOracle$ across all cells, matching the Arena \oracleCovPct\ slice on $n_{\text{logger}} = \nFreshDraws$. The DGP preserves each policy's empirical $Y$ marginal exactly, so the population gap matches the Arena truth gap reported in \cref{sec:results}.
+
+\begin{table}[H]
+\centering
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{lccccccc}
+\toprule
+$\alpha$ & truth gap & \multicolumn{2}{c}{$\widehat\CVaR_\alpha$ at $n=5{,}000$} & \multicolumn{2}{c}{$\widehat\CVaR_\alpha$ at $n=500{,}000$} & \multicolumn{2}{c}{$95\%$ CI at $n=500{,}000$} \\
+& & \texttt{clone} & \texttt{premium} & \texttt{clone} & \texttt{premium} & \texttt{clone} & \texttt{premium} \\
+\midrule
+$\alpha=0.05$  & $\nsweepTruthGapFive$    & $\nsweepCloneFiveFiveKEst$    & $\nsweepPremiumFiveFiveKEst$    & $\nsweepCloneFiveFiveHundredKEst$    & $\nsweepPremiumFiveFiveHundredKEst$    & $[\nsweepCloneFiveFiveHundredKLo,\nsweepCloneFiveFiveHundredKHi]$    & $[\nsweepPremiumFiveFiveHundredKLo,\nsweepPremiumFiveFiveHundredKHi]$    \\
+$\alpha=0.01$  & $\nsweepTruthGapOne$     & $\nsweepCloneOneFiveKEst$     & $\nsweepPremiumOneFiveKEst$     & $\nsweepCloneOneFiveHundredKEst$     & $\nsweepPremiumOneFiveHundredKEst$     & $[\nsweepCloneOneFiveHundredKLo,\nsweepCloneOneFiveHundredKHi]$     & $[\nsweepPremiumOneFiveHundredKLo,\nsweepPremiumOneFiveHundredKHi]$     \\
+$\alpha=0.005$ & $\nsweepTruthGapHalfpct$ & $\nsweepCloneHalfpctFiveKEst$ & $\nsweepPremiumHalfpctFiveKEst$ & $\nsweepCloneHalfpctFiveHundredKEst$ & $\nsweepPremiumHalfpctFiveHundredKEst$ & $[\nsweepCloneHalfpctFiveHundredKLo,\nsweepCloneHalfpctFiveHundredKHi]$ & $[\nsweepPremiumHalfpctFiveHundredKLo,\nsweepPremiumHalfpctFiveHundredKHi]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The point estimates are essentially flat from $n = 5{,}000$ to $n = 500{,}000$ at every $\alpha$ and the median per-seed CIs still overlap at $n = 500{,}000$, so increasing fresh draws by two orders of magnitude does not separate the policies. The bottleneck is not fresh-draw noise: it is the calibrator's bias at the tail when fit on the small oracle slice. Both rows are pulled toward a common shrinkage centre by the isotonic regression, so the $\nsweepTruthGapHalfpct$ truth gap at $\alpha = 0.005$ never appears in the estimates regardless of how many fresh draws we average over. Resolving the gap requires more oracle labels, not more fresh draws.
+
+\end{document}

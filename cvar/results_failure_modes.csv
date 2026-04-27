@@ -1,0 +1,8 @@
+cell_id,label,t_shift,g_offset,n_reps,reject_rate,mean_g1,mean_g2
+baseline,baseline: both hold,0.0,0.0,200,0.095000,0.000812,0.000187
+modeA_t02,g1 only: shift t-hat by +0.02,0.02,0.0,200,0.210000,0.011300,0.000190
+modeA_t05,g1 only: shift t-hat by +0.05,0.05,0.0,200,0.790000,0.027725,0.000178
+modeA_t10,g1 only: shift t-hat by +0.10,0.1,0.0,200,1.000000,0.050570,0.000195
+modeB_g005,g2 only: shift g-hat by +0.005,0.0,0.005,200,0.900000,0.000812,-0.004813
+modeB_g010,g2 only: shift g-hat by +0.010,0.0,0.01,200,1.000000,0.000812,-0.009813
+modeB_g020,g2 only: shift g-hat by +0.020,0.0,0.02,200,1.000000,0.000812,-0.019813
