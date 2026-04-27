@@ -1,13 +1,13 @@
 """Outer Monte Carlo loop on the semi-synthetic Arena DGP.
 
 Paper: §A.3 audit reject rate and CI coverage (with --medium).
-Output: cvar/results_mc.csv (consumed by cvar/regenerate_macros.py).
+Output: cvar_v3/results_mc.csv (consumed by cvar_v3/regenerate_macros.py).
 
 Cells (smoke = default; --full enables the wider sweep):
 
   size_diagnostic : calib=base, eval=base, δ=0  — measures empirical audit size
                     under the truest null available (matches the test in
-                    cvar/tests_dgp.py). Sanity for nominal-vs-empirical gap.
+                    cvar_v3/tests_dgp.py). Sanity for nominal-vs-empirical gap.
 
   power_curve     : calib=base, eval=clone, δ ∈ {0, 0.02, 0.05, 0.10, 0.20},
                     perturbation="tail". Reject rate vs δ. δ=0 here also
@@ -23,7 +23,7 @@ CSV columns:
   cvar_ci_hi, ci_covers_truth, audit_p, audit_reject, t_hat, runtime_sec
 
 Run:
-  python3.11 cvar/run_monte_carlo.py [--full] [--n-workers N] [--out cvar/results_mc.csv]
+  python3.11 cvar_v3/run_monte_carlo.py [--full] [--n-workers N] [--out cvar_v3/results_mc.csv]
 """
 from __future__ import annotations
 
@@ -91,7 +91,7 @@ def build_medium_cells(cfg: dict) -> list[Cell]:
     """25 cells: power curve × 4 targets, size diagnostic, scaling on
     {clone, unhelpful}. α=0.10 only. ~25–40 min wall-clock at 6 workers
     with cross-fit audit. Scope: enough to fill the targets table in
-    `cvar/power_targets.md`."""
+    `cvar_v3/power_targets.md`."""
     n_eval = cfg["n_eval_main"]
     n_oracle = n_eval // 4
     targets = ("clone", "premium", "parallel_universe_prompt", "unhelpful")
@@ -209,7 +209,7 @@ def main():
     mode.add_argument("--medium", action="store_true", help="Run medium sweep (4 targets, 100 reps)")
     parser.add_argument("--n-workers", type=int, default=min(8, mp.cpu_count()),
                         help="multiprocessing pool size")
-    parser.add_argument("--out", type=Path, default=Path("cvar/results_mc.csv"))
+    parser.add_argument("--out", type=Path, default=Path("cvar_v3/results_mc.csv"))
     args = parser.parse_args()
 
     if args.full:

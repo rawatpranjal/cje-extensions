@@ -1,7 +1,7 @@
 """Targeted MC: validate the xf-audit's W statistic actually matches χ²_2.
 
 Paper: §A.1 Wald-null distribution.
-Output: cvar/audit_chi2_W_values.csv (consumed by cvar/regenerate_macros.py).
+Output: cvar_v3/audit_chi2_W_values.csv (consumed by cvar_v3/regenerate_macros.py).
 
 Focused null-only experiment. For each rep:
   1. Sample (s_calib, y_calib, s_eval, y_eval) from base→base, δ=0 DGP.
@@ -122,7 +122,7 @@ def main():
             print(f"  target              = 0.100/0.050/0.010")
 
     # Save raw W values for QQ plot if needed
-    out = Path("cvar/audit_chi2_W_values.csv")
+    out = Path("cvar_v3/audit_chi2_W_values.csv")
     with out.open("w") as f:
         f.write("n_eval,audit,W\n")
         for n_eval, vals in by_n.items():

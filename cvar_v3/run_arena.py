@@ -1,13 +1,13 @@
 """Run Direct Mean + Direct CVaR-CJE on the authors' Arena data.
 
 Paper: §6 Arena results — main table + alpha-sweep.
-Output: cvar/results_arena.csv (consumed by cvar/regenerate_macros.py).
+Output: cvar_v3/results_arena.csv (consumed by cvar_v3/regenerate_macros.py).
 
 For each of the 4 target policies, runs the Mean via `cje-eval`'s
 `CalibratedDirectEstimator` and the CVaR via our workhorse, for α ∈
 {0.05, 0.10, 0.20}, across `N_SEEDS` oracle-fold seeds.
 
-Writes `cvar/results_arena.csv` (long format, one row per policy × seed × alpha).
+Writes `cvar_v3/results_arena.csv` (long format, one row per policy × seed × alpha).
 
 Pass conditions (per the plan):
   - 4 × N_SEEDS × 3 = (4 * N_SEEDS * 3) rows, no NaNs in estimates or CIs.
@@ -29,7 +29,7 @@ ORACLE_COVERAGE = 0.25
 ALPHAS = (0.01, 0.05, 0.10, 0.20)
 N_SEEDS = 20
 B = 500  # profiled: bootstrap CIs stable from ~200 reps; 500 gives comfortable headroom and ~30 min total runtime
-OUT_CSV = Path("cvar/results_arena.csv")
+OUT_CSV = Path("cvar_v3/results_arena.csv")
 
 
 def main() -> int:

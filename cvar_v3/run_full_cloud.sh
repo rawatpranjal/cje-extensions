@@ -10,11 +10,11 @@
 # Usage (locally):
 #   rsync -av ~/Dropbox/cvar-cje-data/ <user>@<box>:~/Dropbox/cvar-cje-data/
 #   rsync -av $(git rev-parse --show-toplevel)/ <user>@<box>:~/cvar-cje/
-#   ssh <user>@<box> 'cd ~/cvar-cje && bash cvar/run_full_cloud.sh'
+#   ssh <user>@<box> 'cd ~/cvar-cje && bash cvar_v3/run_full_cloud.sh'
 #
 # Then sync the result back:
-#   rsync -av <user>@<box>:~/cvar-cje/cvar/results_mc_full.csv ./cvar/
-#   python3.11 cvar/make_power_report.py
+#   rsync -av <user>@<box>:~/cvar-cje/cvar_v3/results_mc_full.csv ./cvar_v3/
+#   python3.11 cvar_v3/make_power_report.py
 #
 # Compute target: ~30 min on 64 vCPU at ~$1.40 of compute (c7i pricing
 # circa 2026-04). Local Mac equivalent: ~6 hours.
@@ -23,7 +23,7 @@ set -euo pipefail
 
 DATA_ROOT="${DATA_ROOT:-$HOME/Dropbox/cvar-cje-data/cje-arena-experiments/data}"
 N_WORKERS="${N_WORKERS:-$(python3.11 -c 'import multiprocessing; print(multiprocessing.cpu_count())')}"
-OUT="${OUT:-cvar/results_mc_full.csv}"
+OUT="${OUT:-cvar_v3/results_mc_full.csv}"
 
 echo "=== run_full_cloud.sh ==="
 echo "Python:    $(python3.11 --version)"
@@ -49,16 +49,16 @@ python3.11 -c "import polars, numpy, sklearn, scipy" || {
 
 # Smoke probe before the full run (fail fast on env issues)
 echo "--- smoke probe (~2 min) ---"
-time python3.11 -u cvar/run_monte_carlo.py --n-workers "$N_WORKERS" --out /tmp/_probe.csv
+time python3.11 -u cvar_v3/run_monte_carlo.py --n-workers "$N_WORKERS" --out /tmp/_probe.csv
 rm -f /tmp/_probe.csv
 echo
 
 # The full run
 echo "--- FULL MC ---"
-time python3.11 -u cvar/run_monte_carlo.py --full --n-workers "$N_WORKERS" --out "$OUT"
+time python3.11 -u cvar_v3/run_monte_carlo.py --full --n-workers "$N_WORKERS" --out "$OUT"
 echo
 
 echo "=== done ==="
 echo "Result CSV: $OUT  ($(wc -l < "$OUT") rows)"
 echo
-echo "Sync back to your laptop, then run:  python3.11 cvar/make_power_report.py"
+echo "Sync back to your laptop, then run:  python3.11 cvar_v3/make_power_report.py"

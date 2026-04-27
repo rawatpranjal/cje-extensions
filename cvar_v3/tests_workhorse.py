@@ -1,7 +1,7 @@
-"""Smoke tests for cvar/workhorse.py.
+"""Smoke tests for cvar_v3/workhorse.py.
 
 Synthetic tests that don't require the Arena data. Run with:
-    python3.11 cvar/tests_workhorse.py
+    python3.11 cvar_v3/tests_workhorse.py
 """
 from __future__ import annotations
 

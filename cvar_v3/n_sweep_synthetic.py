@@ -1,7 +1,7 @@
 """Scale n on the synthetic DGP — does CVaR resolve clone vs premium?
 
 Paper: §A.4 what scaling n does and does not buy.
-Output: cvar/results_n_sweep.csv (consumed by cvar/regenerate_macros.py).
+Output: cvar_v3/results_n_sweep.csv (consumed by cvar_v3/regenerate_macros.py).
 
 Real Arena is fixed at n=5,000 fresh draws per policy. At that n the
 estimator gives clone and premium near-identical CVaR estimates at deep
@@ -16,11 +16,11 @@ synthetic part is how S is generated from Y.
 Cloud-friendly. Uses fork-pool multiprocessing and detects vCPU count.
 
 Usage (laptop):
-    python3.11 cvar/n_sweep_synthetic.py
+    python3.11 cvar_v3/n_sweep_synthetic.py
 Usage (cloud, fully parallel on a 64-vCPU box):
-    bash cvar/run_n_sweep_cloud.sh
+    bash cvar_v3/run_n_sweep_cloud.sh
 
-Outputs `cvar/results_n_sweep.csv` with one row per (policy, n, alpha,
+Outputs `cvar_v3/results_n_sweep.csv` with one row per (policy, n, alpha,
 seed) and prints a small "do they separate" summary.
 """
 from __future__ import annotations
@@ -142,7 +142,7 @@ def main() -> int:
                     default=Path.home() / "Dropbox" / "cvar-cje-data"
                     / "cje-arena-experiments" / "data",
                     help="Path to Arena data directory.")
-    ap.add_argument("--out", type=Path, default=Path("cvar/results_n_sweep.csv"),
+    ap.add_argument("--out", type=Path, default=Path("cvar_v3/results_n_sweep.csv"),
                     help="Output CSV path.")
     args = ap.parse_args()
     _B = args.b

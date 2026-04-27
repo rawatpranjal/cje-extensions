@@ -2,7 +2,7 @@
 
 Paper: §A.2 each moment catches its own failure.
 Output: stdout only — §A.2 numbers are currently hardcoded in
-cvar/regenerate_macros.py until this script is updated to write a CSV.
+cvar_v3/regenerate_macros.py until this script is updated to write a CSV.
 
 The audit is a 2-moment test with
   g_1 = 1{Y <= t_hat} - alpha     (does t_hat hit the alpha-quantile?)
@@ -163,7 +163,7 @@ def main():
             "n_reps": len(ps), "reject_rate": rej, "mean_g1": mg1, "mean_g2": mg2,
         })
 
-    out = Path("cvar/results_failure_modes.csv")
+    out = Path("cvar_v3/results_failure_modes.csv")
     with out.open("w") as f:
         f.write("cell_id,label,t_shift,g_offset,n_reps,reject_rate,mean_g1,mean_g2\n")
         for r in out_rows:

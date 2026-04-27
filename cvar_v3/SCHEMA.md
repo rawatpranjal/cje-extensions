@@ -3,7 +3,7 @@
 Source of truth for the CJE paper's Arena experiment pipeline. Every numeric
 constant below is cited to file:line in the authors' repo at
 `~/Dropbox/cvar-cje-data/cje-arena-experiments/` or to the pip-installed
-`cje-eval==0.2.10` package. Any deviation in `cvar/workhorse.py` must be
+`cje-eval==0.2.10` package. Any deviation in `cvar_v3/workhorse.py` must be
 justified here.
 
 ## 1. Dataset
@@ -164,7 +164,7 @@ authors' README example output):
 | unhelpful | ≈ 0.143 |
 
 Our Mean CJE must land within 0.01 of these AND its 95% CI must contain
-them. This is the blocking benchmark in `cvar/validate_mean.py`.
+them. This is the blocking benchmark in `cvar_v3/validate_mean.py`.
 
 ## 8. Full sweep config
 
@@ -203,16 +203,16 @@ match within 0.01 at 25% oracle.
   as `ablations/core/base.py:204-213` — paper match guaranteed.
 - **CVaR path**: reuse `cje.calibrate_dataset` to get the fitted calibrator,
   then apply our grid-search stop-loss isotonic calibrator
-  (`estimate_direct_cvar_isotonic`, lifted from `cvar/demo_utils.py:328-341`)
+  (`estimate_direct_cvar_isotonic`, lifted from `cvar_v3/demo_utils.py:328-341`)
   on top. Bootstrap by resampling prompts (cluster bootstrap) and refitting the
   CVaR threshold each rep.
 - **Transport audit**: implement `two_moment_wald_audit` from
-  `cvar/demo_utils.py:434-459` in the workhorse module.
+  `cvar_v3/demo_utils.py:434-459` in the workhorse module.
 
 ## 11. Semi-synthetic DGP for power analysis
 
-**Source**: `cvar/dgp.py`. Used by `cvar/run_monte_carlo.py` and
-`cvar/tests_dgp.py`.
+**Source**: `cvar_v3/dgp.py`. Used by `cvar_v3/run_monte_carlo.py` and
+`cvar_v3/tests_dgp.py`.
 
 **Per-policy DGP** (5 policies: base + 4 targets):
 
@@ -238,7 +238,7 @@ match within 0.01 at 25% oracle.
 - `perturbation="tail"` (default in `run_monte_carlo.py`): `m_target(y) ← m_base(y) − δ`
   if `y ≤ q_α(Y_base)` else `m_base(y)`. Tests both g₁ and g₂.
 
-**Cells in `cvar/run_monte_carlo.py`** (smoke vs full):
+**Cells in `cvar_v3/run_monte_carlo.py`** (smoke vs full):
 
 | cell_kind        | calib  | eval   | δ                    | n_eval         |
 |------------------|--------|--------|----------------------|----------------|
@@ -254,7 +254,7 @@ the eval DGP. δ-invariant (Y is δ-invariant; only S shifts).
 
 ## 12. Audit Σ̂ correction (appendix gap viii)
 
-**Source**: `cvar/workhorse.py:two_moment_wald_audit_xf` (the xf in the
+**Source**: `cvar_v3/workhorse.py:two_moment_wald_audit_xf` (the xf in the
 name is historical — the implementation is paired bootstrap, not K-fold).
 
 The naive `two_moment_wald_audit` uses sample-cov on `s_audit` for Σ̂.
@@ -304,8 +304,8 @@ grid_size=31: ~0.5 sec/audit on n_train=625. The medium MC runs
 
 ## 13. Audit-gated CI coverage (framework's intended interpretation)
 
-**Source**: `cvar/make_power_report.py` §3, validated empirically on
-medium MC (`cvar/power_analysis.md`).
+**Source**: `cvar_v3/make_power_report.py` §3, validated empirically on
+medium MC (`cvar_v3/power_analysis.md`).
 
 The cluster bootstrap CI is calibrated for **variance**, not **bias**.
 Under transport failure (calibrator fit on base, applied to a target with
@@ -389,4 +389,4 @@ What this table does not certify:
   conditioning on audit-accepts selects reps where data look transport-y,
   which correlates with the estimator being closer to truth. This is the
   audit's *intended* effect, not double-dipping; we report unconditional
-  and gated coverage side-by-side in `cvar/power_analysis.md`.
+  and gated coverage side-by-side in `cvar_v3/power_analysis.md`.

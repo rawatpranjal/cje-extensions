@@ -3,7 +3,7 @@
 Paper: §A (semi-synthetic DGP underlying §A.1–§A.4).
 
 Per-policy fully-parametric DGP for use as a known-truth ground in the
-power-analysis Monte Carlo (`cvar/run_monte_carlo.py`).
+power-analysis Monte Carlo (`cvar_v3/run_monte_carlo.py`).
 
 Design:
   - Y marginal: empirical CDF over the policy's observed oracle labels.

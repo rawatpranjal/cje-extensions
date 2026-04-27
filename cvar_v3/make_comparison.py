@@ -1,4 +1,4 @@
-"""Generate `cvar/comparison.md` from `cvar/results_arena.csv`.
+"""Generate `cvar_v3/comparison.md` from `cvar_v3/results_arena.csv`.
 
 Aggregates across seeds, produces one table per alpha, and adds a brief
 headline interpretation.
@@ -11,8 +11,8 @@ from pathlib import Path
 import numpy as np  # noqa: F401  (used inline)
 import polars as pl
 
-RESULTS_CSV = Path("cvar/results_arena.csv")
-OUT_MD = Path("cvar/comparison.md")
+RESULTS_CSV = Path("cvar_v3/results_arena.csv")
+OUT_MD = Path("cvar_v3/comparison.md")
 
 
 def fmt_ci(lo: float, hi: float) -> str:
@@ -27,7 +27,7 @@ def rank_by(df: pl.DataFrame, col: str, ascending: bool = False) -> dict[str, in
 
 def main() -> int:
     if not RESULTS_CSV.exists():
-        print(f"FAIL: {RESULTS_CSV} not found — run cvar/run_arena.py first.")
+        print(f"FAIL: {RESULTS_CSV} not found — run cvar_v3/run_arena.py first.")
         return 1
     df = pl.read_csv(RESULTS_CSV)
     alphas = sorted(df["alpha"].unique().to_list())
@@ -41,7 +41,7 @@ def main() -> int:
         f"25% oracle, B=500 cluster bootstrap). Direct Mean via `cje-eval==0.2.10` "
         f"`CalibratedDirectEstimator` (cluster-robust SE, OUA jackknife, augmented). "
         f"Direct CVaR-CJE via grid-search stop-loss isotonic calibrator "
-        f"(`cvar/workhorse.py`)."
+        f"(`cvar_v3/workhorse.py`)."
     )
     lines.append("")
 
@@ -231,7 +231,7 @@ def main() -> int:
         f"(`CalibratedDirectEstimator` with `covariate_names=[\"response_length\"]`, "
         f"`calibration_mode=\"auto\"`, fresh-draw oracle masked to the calibration slice "
         f"per `ablations/core/base.py:667-684`). 95% CI is cluster-robust closed-form via t_4. "
-        f"CVaR estimator is `estimate_direct_cvar_isotonic` (`cvar/workhorse.py`). "
+        f"CVaR estimator is `estimate_direct_cvar_isotonic` (`cvar_v3/workhorse.py`). "
         f"CVaR 95% CI is the cluster bootstrap (B=500) median across {n_seeds} seeds. "
         f"\"truth\" columns are full-oracle empirical means / lower-tail means on the "
         f"5000-row per-policy fresh-draw set._"

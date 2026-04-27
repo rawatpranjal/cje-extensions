@@ -16,7 +16,7 @@ Pass condition:
     range of estimates contains the oracle truth.
   - `unhelpful` is exempt (catastrophic shift).
 
-Writes `cvar/validate_mean_report.md` with the comparison table.
+Writes `cvar_v3/validate_mean_report.md` with the comparison table.
 Exits non-zero if the benchmark fails — this blocks downstream steps.
 """
 from __future__ import annotations
@@ -114,7 +114,7 @@ def main() -> int:
     all_pass = all(r["pass"] for r in summary)
 
     # Report
-    report_path = Path("cvar/validate_mean_report.md")
+    report_path = Path("cvar_v3/validate_mean_report.md")
     lines = [
         "# Validate Mean CJE — blocking benchmark report",
         "",
@@ -146,7 +146,7 @@ def main() -> int:
     if not all_pass:
         print("\n❌ BENCHMARK FAILED — do not proceed to CVaR run.")
         return 1
-    print("\n✓ Benchmark passed. Safe to proceed to cvar/run_arena.py.")
+    print("\n✓ Benchmark passed. Safe to proceed to cvar_v3/run_arena.py.")
     return 0
 
 

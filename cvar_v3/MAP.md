@@ -1,8 +1,8 @@
 # Code ↔ paper section map
 
-`cvar/extension_appendix.tex` is the paper. Every numerical value in it comes
-from `cvar/numbers.tex`, which is regenerated from CSVs by
-`cvar/regenerate_macros.py`. To refresh the paper after re-running any
+`cvar_v3/extension_appendix.tex` is the paper. Every numerical value in it comes
+from `cvar_v3/numbers.tex`, which is regenerated from CSVs by
+`cvar_v3/regenerate_macros.py`. To refresh the paper after re-running any
 experiment: re-run that script and recompile the .tex.
 
 ## Pipeline
@@ -56,9 +56,9 @@ data/logprobs/*.jsonl ─────┤
 ## Refresh recipe (after a re-run)
 
 1. Re-run whichever experiment changed:
-   - `python3 cvar/run_arena.py` (≈30 min) for §6 numbers
-   - `python3 cvar/run_monte_carlo.py --medium` (≈13 min) for §A.3
-   - `bash cvar/run_n_sweep_cloud.sh` (cloud) for §A.4
-   - `python3 cvar/audit_chi2_calibration_mc.py` (≈5 min) for §A.1
-2. `python3 cvar/regenerate_macros.py` (instant) → updates `numbers.tex`.
+   - `python3 cvar_v3/run_arena.py` (≈30 min) for §6 numbers
+   - `python3 cvar_v3/run_monte_carlo.py --medium` (≈13 min) for §A.3
+   - `bash cvar_v3/run_n_sweep_cloud.sh` (cloud) for §A.4
+   - `python3 cvar_v3/audit_chi2_calibration_mc.py` (≈5 min) for §A.1
+2. `python3 cvar_v3/regenerate_macros.py` (instant) → updates `numbers.tex`.
 3. `cd cvar && pdflatex extension_appendix.tex` (twice for refs) → updated PDF.

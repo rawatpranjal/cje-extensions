@@ -1,4 +1,4 @@
-"""Aggregate `cvar/results_mc.csv` into `cvar/power_analysis.md`.
+"""Aggregate `cvar_v3/results_mc.csv` into `cvar_v3/power_analysis.md`.
 
 Tables:
   1. Audit power curve (naive and xf): reject rate vs δ, with binomial 95% CIs.
@@ -16,8 +16,8 @@ from pathlib import Path
 import numpy as np
 import polars as pl
 
-CSV = Path("cvar/results_mc.csv")
-OUT = Path("cvar/power_analysis.md")
+CSV = Path("cvar_v3/results_mc.csv")
+OUT = Path("cvar_v3/power_analysis.md")
 
 
 def wilson_ci(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
@@ -41,7 +41,7 @@ def fmt_rate(k: int, n: int) -> str:
 
 def main() -> int:
     if not CSV.exists():
-        print(f"FAIL: {CSV} not found — run cvar/run_monte_carlo.py first.")
+        print(f"FAIL: {CSV} not found — run cvar_v3/run_monte_carlo.py first.")
         return 1
 
     df = pl.read_csv(CSV)
@@ -53,8 +53,8 @@ def main() -> int:
     lines.append("# Power analysis on the semi-synthetic Arena DGP")
     lines.append("")
     lines.append(
-        f"Source: `cvar/results_mc.csv` ({n_total} outer Monte Carlo rows). "
-        "DGP fit by `cvar/dgp.py`. Inner pipeline reuses `cvar/workhorse.py` "
+        f"Source: `cvar_v3/results_mc.csv` ({n_total} outer Monte Carlo rows). "
+        "DGP fit by `cvar_v3/dgp.py`. Inner pipeline reuses `cvar_v3/workhorse.py` "
         "primitives end-to-end. "
         "Brackets are Wilson 95% CIs on the binomial proportion."
     )
@@ -267,7 +267,7 @@ def main() -> int:
         lines.append("")
 
     # ---------------- 5. Theory vs. observed gate ----------------
-    lines.append("## 5. Theory-vs-observed gate (matches `cvar/power_targets.md`)")
+    lines.append("## 5. Theory-vs-observed gate (matches `cvar_v3/power_targets.md`)")
     lines.append("")
     lines.append(
         "Status check on each numeric target. ✓ = within target band, "
@@ -349,7 +349,7 @@ def main() -> int:
         "- DGP: per-policy empirical Y marginal + isotonic m(Y) + quartile-binned "
         "heteroscedastic Gaussian noise; mixture (P(Y=0) = `p_zero`) for `unhelpful`. "
         "Cross-policy joint structure (`r(Y_base, Y_clone) ≈ 0.81`) is **not** "
-        "preserved — each policy is sampled independently. See `cvar/dgp.py`."
+        "preserved — each policy is sampled independently. See `cvar_v3/dgp.py`."
     )
     lines.append(
         "- Mis-specification knob: `delta` shifts `m_target(y) − δ` where "
@@ -365,8 +365,8 @@ def main() -> int:
         "leaves residual over-rejection because t̂ has its own sampling variance."
     )
     lines.append(
-        "- Reproduction: `python3.11 cvar/run_monte_carlo.py [--medium|--full]` then "
-        "`python3.11 cvar/make_power_report.py`."
+        "- Reproduction: `python3.11 cvar_v3/run_monte_carlo.py [--medium|--full]` then "
+        "`python3.11 cvar_v3/make_power_report.py`."
     )
     lines.append("")
 

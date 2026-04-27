@@ -1,6 +1,6 @@
 # Power analysis on the semi-synthetic Arena DGP
 
-Source: `cvar/results_mc.csv` (2500 outer Monte Carlo rows). DGP fit by `cvar/dgp.py`. Inner pipeline reuses `cvar/workhorse.py` primitives end-to-end. Brackets are Wilson 95% CIs on the binomial proportion.
+Source: `cvar_v3/results_mc.csv` (2500 outer Monte Carlo rows). DGP fit by `cvar_v3/dgp.py`. Inner pipeline reuses `cvar_v3/workhorse.py` primitives end-to-end. Brackets are Wilson 95% CIs on the binomial proportion.
 
 ## 1. Audit power curve (perturbation = `tail`)
 
@@ -69,7 +69,7 @@ How audit power and CVaR CI width scale with `n_eval`. δ=0.05 is the smallest p
 | `unhelpful` | 0.10 | 0.05 | 500 | 0.99 [0.95, 1.00] | 0.0801 | 0.0798 |
 | `unhelpful` | 0.10 | 0.05 | 2500 | 1.00 [0.96, 1.00] | 0.0383 | 0.0427 |
 
-## 5. Theory-vs-observed gate (matches `cvar/power_targets.md`)
+## 5. Theory-vs-observed gate (matches `cvar_v3/power_targets.md`)
 
 Status check on each numeric target. ✓ = within target band, △ = directionally correct but outside band, ✗ = fails.
 
@@ -89,8 +89,8 @@ Status check on each numeric target. ✓ = within target band, △ = directional
 
 ## Notes
 
-- DGP: per-policy empirical Y marginal + isotonic m(Y) + quartile-binned heteroscedastic Gaussian noise; mixture (P(Y=0) = `p_zero`) for `unhelpful`. Cross-policy joint structure (`r(Y_base, Y_clone) ≈ 0.81`) is **not** preserved — each policy is sampled independently. See `cvar/dgp.py`.
+- DGP: per-policy empirical Y marginal + isotonic m(Y) + quartile-binned heteroscedastic Gaussian noise; mixture (P(Y=0) = `p_zero`) for `unhelpful`. Cross-policy joint structure (`r(Y_base, Y_clone) ≈ 0.81`) is **not** preserved — each policy is sampled independently. See `cvar_v3/dgp.py`.
 - Mis-specification knob: `delta` shifts `m_target(y) − δ` where `y ≤ q_α(Y_base)` (lower-tail perturbation). Calibrator (fit on base) becomes wrong on target. With `m_override=base`, δ=0 isolates the natural Y-marginal mis-spec; the truest-null `size_diagnostic` cells use base→base to remove that residual.
 - **xf audit**: paired bootstrap of (s_train, s_audit) with t̂ **re-maximized inside each rep**. The t̂ re-maximization is what brings size to nominal; calibrator-only bootstrap (or K-fold cross-fitting alone) leaves residual over-rejection because t̂ has its own sampling variance.
-- Reproduction: `python3.11 cvar/run_monte_carlo.py [--medium|--full]` then `python3.11 cvar/make_power_report.py`.
+- Reproduction: `python3.11 cvar_v3/run_monte_carlo.py [--medium|--full]` then `python3.11 cvar_v3/make_power_report.py`.
 

@@ -125,7 +125,7 @@ def two_moment_wald_audit(
     alpha: float,
     wald_alpha: float = 0.05,
 ) -> dict:
-    """Per-policy transport audit — see `cvar/demo_utils.py:434-459`.
+    """Per-policy transport audit — see `cvar_v3/demo_utils.py:434-459`.
 
     Tests two moments on the audit set: (i) `1{Y<=t0} - alpha` and
     (ii) `(t0-Y)_+ - m_hat(S)` where `m_hat` is the stop-loss calibrator fit

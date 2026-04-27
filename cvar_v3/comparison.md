@@ -1,6 +1,6 @@
 # Direct Mean vs Direct CVaR-CJE on Chatbot Arena (n≈5000)
 
-Run on the CJE paper's Arena data (20 fold-assignment seeds, 25% oracle, B=500 cluster bootstrap). Direct Mean via `cje-eval==0.2.10` `CalibratedDirectEstimator` (cluster-robust SE, OUA jackknife, augmented). Direct CVaR-CJE via grid-search stop-loss isotonic calibrator (`cvar/workhorse.py`).
+Run on the CJE paper's Arena data (20 fold-assignment seeds, 25% oracle, B=500 cluster bootstrap). Direct Mean via `cje-eval==0.2.10` `CalibratedDirectEstimator` (cluster-robust SE, OUA jackknife, augmented). Direct CVaR-CJE via grid-search stop-loss isotonic calibrator (`cvar_v3/workhorse.py`).
 
 ## Primary table — CVaR@10%
 
@@ -49,4 +49,4 @@ Definition of bite: when the audit rejects, are CVaR estimates farther from the 
 
 Pearson correlation(audit p-value, |err|) = **-0.363** (negative → audit has bite).
 
-_Notes: Mean estimator is the paper's `direct+cov` (`CalibratedDirectEstimator` with `covariate_names=["response_length"]`, `calibration_mode="auto"`, fresh-draw oracle masked to the calibration slice per `ablations/core/base.py:667-684`). 95% CI is cluster-robust closed-form via t_4. CVaR estimator is `estimate_direct_cvar_isotonic` (`cvar/workhorse.py`). CVaR 95% CI is the cluster bootstrap (B=500) median across 20 seeds. "truth" columns are full-oracle empirical means / lower-tail means on the 5000-row per-policy fresh-draw set._
+_Notes: Mean estimator is the paper's `direct+cov` (`CalibratedDirectEstimator` with `covariate_names=["response_length"]`, `calibration_mode="auto"`, fresh-draw oracle masked to the calibration slice per `ablations/core/base.py:667-684`). 95% CI is cluster-robust closed-form via t_4. CVaR estimator is `estimate_direct_cvar_isotonic` (`cvar_v3/workhorse.py`). CVaR 95% CI is the cluster bootstrap (B=500) median across 20 seeds. "truth" columns are full-oracle empirical means / lower-tail means on the 5000-row per-policy fresh-draw set._

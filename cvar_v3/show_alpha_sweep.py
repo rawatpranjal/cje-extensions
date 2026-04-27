@@ -1,4 +1,4 @@
-"""Print a comparison table across alphas from cvar/results_arena.csv.
+"""Print a comparison table across alphas from cvar_v3/results_arena.csv.
 
 For each (target policy, alpha) cell, aggregates the 20 seeds and reports:
   - median Mean estimate
@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 import polars as pl
 
-CSV = Path("cvar/results_arena.csv")
+CSV = Path("cvar_v3/results_arena.csv")
 
 
 def main() -> int:

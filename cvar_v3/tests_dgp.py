@@ -1,4 +1,4 @@
-"""Sanity tests for cvar/dgp.py.
+"""Sanity tests for cvar_v3/dgp.py.
 
 Loads the real Arena dataset, fits the per-policy DGP, and verifies:
   1. Round-trip: sampled Y mean and lower-tail mean match the real-data
@@ -10,7 +10,7 @@ Loads the real Arena dataset, fits the per-policy DGP, and verifies:
      perturbation) on policy `clone`.
 
 Run from repo root:
-    python3.11 cvar/tests_dgp.py
+    python3.11 cvar_v3/tests_dgp.py
 """
 from __future__ import annotations
 
