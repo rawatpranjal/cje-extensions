@@ -1,0 +1,8 @@
+{
+  "batch_id": "batch_69f3f025ad04819081c1ad17bb9b59e8",
+  "input_file_id": "file-GgajfPFvEo8CLt2etnVeV4",
+  "submitted_ts": "2026-05-01T00:13:26+00:00",
+  "request_count": 2000,
+  "model": "gpt-4o-mini-2024-07-18",
+  "endpoint": "/v1/chat/completions"
+}

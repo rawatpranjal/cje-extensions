@@ -1,0 +1,63 @@
+\section{Related Work}
+\label{sec:related}
+
+\CJE\ draws on four research threads: surrogate-assisted causal inference, LLM evaluation, probability calibration, and off-policy evaluation. We position our contributions by first clarifying three regimes of surrogacy that organize the literature.
+
+\paragraph{Three regimes of surrogacy.}
+Surrogate-assisted estimation admits three regimes with increasing assumptions and decreasing oracle burden:
+
+\begin{enumerate}[leftmargin=*,itemsep=2pt,topsep=2pt]
+\item Surrogates for efficiency only \citep{KallusMao2020Surrogates}: The surrogate $S$ improves estimation efficiency (e.g., as features in outcome models) but does not identify treatment effects. Oracle labels $Y$ are required in every evaluation context. This is the fallback when stronger surrogacy assumptions fail.
+
+\item Local surrogacy \citep{AtheyChettyImbensKang2019,Prentice1989Surrogate}: Surrogate sufficiency (S1) holds within a single environment $g^\star$: $\E[Y \mid X, A, S] = f(S, X)$ in $g^\star$. Calibrate once per environment; evaluate many policies within that environment using only $S$.
+
+\item Reusable calibration with audit (CJE): Attempt to reuse calibration $f$ across environments, but budget oracle labels in each target context to audit transport rather than assume it. When the mean transport test fails, flag the policy/context and either recalibrate or fall back to oracle-only evaluation.
+\end{enumerate}
+
+\noindent CJE targets Regime~3 subject to audit. Unlike Kallus \& Mao (surrogates for efficiency only) and Athey et al.\ (surrogate index in a single environment), CJE attempts cross-environment reuse, but treats transportability as auditable rather than assumed. The benefit is amortization when transport holds; the cost is budgeting a small oracle slice per target context. Our diagnostics (mean residual test, TTC, Bhattacharyya affinity) detect when transport fails, making CJE an evaluation protocol with explicit failure detection rather than a brittle identification claim.
+The key difference from Athey et al.: in their two-sample setting, $Y$ is often missing in the experimental arm, so surrogacy and comparability must be \emph{assumed}. CJE explicitly budgets oracle labels in each target environment, allowing us to \emph{audit} (and if needed, correct) the transport gap $\E_{\pi'}[\varepsilon]$ rather than assume it away (\cref{fig:dag}, \cref{eq:transport-decomp}).
+
+\paragraph{Auditable assumptions via negative controls and proxies.}
+CJE's approach to transportability draws on a broader principle in causal inference: turning untestable identification conditions into checkable diagnostics using auxiliary data.
+Negative controls provide a canonical example: variables known to have no causal relationship with treatment or outcome can detect residual confounding when associations appear \citep{Lipsitch2010}.
+Proximal causal inference extends this idea, using proxy variables to construct testable restrictions that support identification under weaker assumptions \citep{TchetgenTchetgen2024}.
+CJE applies a similar philosophy: rather than assuming global surrogacy, we budget oracle labels in each target context to test a \emph{policy-wise moment restriction} ($\E_{\pi'}[Y - f(S,X)] = 0$).
+The contribution is operational: we provide an evaluation protocol with explicit pass/fail criteria and decision rules (reuse calibration vs.\ recalibrate vs.\ refuse level claims), making the assumption \emph{auditable} rather than hoping it holds.
+CJE is not a negative-control estimator; the parallel is conceptual and design-oriented, not methodological.
+
+\paragraph{LLM-as-judge evaluation.}
+Automatic judges (LLMs scoring other LLMs) are now standard for scalable evaluation \citep{Zheng2023LLMasJudge,Kim2024PrometheusJudge,KocmiFedermann2023}.
+Benchmarks like AlpacaEval \citep{DuboisLiTaoriEtAl2024AlpacaEval} and RewardBench \citep{LambertPiechChenEtAl2024RewardBench} systematically compare judge quality, revealing biases (verbosity, position, self-preference) and drift under distribution shift \citep{DietzEtAl2025LLMJudges}.
+These works focus on \emph{ranking} judges by correlation with human labels; \CJE\ addresses the orthogonal problem of \emph{calibrating} a fixed judge to produce unbiased point estimates and calibration-aware confidence intervals for policy value.
+Recent work like CalibraEval \citep{Li2025CalibraEval} addresses position and token bias via label-free calibration; \CJE\ is complementary, providing oracle-grounded calibration with transportability guarantees and uncertainty quantification.
+
+\paragraph{Misclassification correction.}
+\citet{RoganGladen1978} introduced prevalence estimation under measurement error; \citet{Lee2025LLMJudgeReporting} adapt this for LLM judges, providing confidence intervals that account for calibration uncertainty. Their approach assumes \emph{confusion-matrix stability}---that sensitivity and specificity transfer from calibration to test---analogous to our transport condition. We compare directly in \cref{ssec:binary} and find continuous calibration $13\times$ more sample-efficient, even when binary correction is numerically well-conditioned (mean $J = 0.41$). The efficiency gap arises from ill-conditioning (the Rogan-Gladen estimator's standard error scales like $1/J$) and information loss from binary thresholding.
+
+\paragraph{EIF-based debiasing.}
+Concurrent work by \citet{Chen2026EfficientLLMJudge} formalizes LLM-as-judge debiasing through efficient influence functions (EIF), unifying Rogan--Gladen-style measurement error correction with PPI/PPI++-style calibration. They derive the EIF for mean estimation with a surrogate and labeled subset, showing that naive judge-based CIs can achieve 0\% coverage under bias while EIF-based estimators maintain nominal coverage with substantially narrower intervals than confusion-matrix methods. Their framing---learning $\mu(\hat Y) = \E[Y \mid \hat Y]$ on a small calibration set and using residual augmentation---is closely aligned with CJE's reward calibration. CJE extends this to continuous scores, policy/deployment shift (via the mean transport test), and off-policy evaluation with weight stabilization.
+
+\paragraph{Probability calibration.}
+Platt scaling \citep{Platt1999}, isotonic regression \citep{ZadroznyElkan2002,NiculescuMizilCaruana2005}, and temperature scaling \citep{GuoPleissSunWeinberger2017Calibration} are standard post-hoc calibration methods for classification.
+Our reward calibration applies isotonic regression not for classification confidence but for \emph{reward calibration}: mapping a continuous judge score $S$ to an expected oracle outcome $\E[Y \mid S]$.
+The mean-preserving property (Lemma~\ref{lem:iso-mean}) ensures the expected value of calibrated rewards matches the oracle under the logging distribution.
+
+\paragraph{Off-policy evaluation (OPE).}
+IPS \citep{HorvitzThompson1952,Hajek1964Rejective} and doubly robust estimators \citep{BangRobins2005,JiangLi2016,KallusUehara2020DRL} are foundational.
+Weight stabilization via clipping \citep{Ionides2008TruncatedIS}, balancing \citep{Kallus2018Balanced}, and overlap weighting \citep{LiMorganZaslavsky2018,Crump2009LimitedOverlap} address variance inflation.
+Most relevant is recent work on isotonic-calibrated IPW \citep{vanDerLaanLinCaroneLuedtke2025StabIPW} and DR inference via calibration \citep{vanDerLaanLuedtkeCarone2024DRCalibration}.
+Our weight stabilization extends this by projecting importance weights onto the cone of \emph{judge-score-monotone} functions, exploiting surrogate structure absent in generic OPE.
+
+\paragraph{Ensemble methods for estimation.}
+Super Learner \citep{vanderLaan2007SuperLearner} provides a powerful framework for combining candidate algorithms by minimizing cross-validated prediction risk.
+Recent work extends ensemble ideas to semiparametric estimation \citep{ShinLiuColeFine2020EnsembleSemiparametric}, combining efficient estimators derived from factored likelihoods.
+Our influence-function stacking (\cref{thm:stack}) takes a complementary approach: instead of combining predictions to minimize MSE, we combine estimators by minimizing the asymptotic variance of their combined influence function.
+This provides a general formulation that directly targets efficiency, is not tied to specific likelihood factorizations, and is explicitly framed as optimization in the Hilbert space of influence functions.
+
+\paragraph{Transportability.}
+Generalizing from source to target populations is formalized by the selection diagram framework \citep{BareinboimPearl2013Algorithm,BareinboimPearl2013Meta,PearlBareinboim2014}, which uses selection variables $\mathbf{S}$ to encode mechanisms that differ between domains.
+A quantity is transportable when selection nodes can be ``blocked'' by conditioning (graphically, when $\mathbf{S} \perp\!\!\perp Y \mid (X, Z)$ in the manipulated graph).
+Our transport assumption instantiates this: calibration transports when no selection mechanism points into $Y$ given $(X, A, S)$.
+The dashed red edges in \cref{fig:dag} represent potential transport failures: policy shift ($\pi \to Y$) or environment shift ($E \to Y$) can break the $S$-$Y$ calibration, and the transport test detects when this occurs.
+Covariate shift methods \citep{Shimodaira2000CovShift,SugiyamaKrauledatMueller2007IWCV} address the special case where selection affects only covariates ($E \to X$), not outcomes directly.
+The CLE bound (\cref{sec:background}) formalizes a complementary failure mode: even with valid transportability, logs-only estimation fails under poor coverage, motivating Direct or DR methods.

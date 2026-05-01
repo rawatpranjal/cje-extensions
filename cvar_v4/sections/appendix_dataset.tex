@@ -1,0 +1,229 @@
+\section{Dataset Survey and the Arena-Tail Construction}
+\label{app:dataset}
+
+This appendix documents the empirical dataset survey that motivates the
+Arena-Tail mixture and reports preliminary CVaR-bite findings on
+public datasets where in-data multi-policy structure permits estimation
+without fresh policy generation. The full survey log is in
+\texttt{cvar\_v4/scoping.md}; per-dataset 20-block diagnostics are in
+\texttt{cvar\_v4/scoping\_data.md}.
+
+\subsection{Ten-Dataset Survey: What Already Exists}
+\label{app:dataset:survey}
+
+We surveyed 10 public datasets along six dimensions: prompt
+distribution match to the original CJE Arena setting (P), in-data
+multi-policy structure (\(\Pi\)), shipped cheap-S/oracle-Y stack (S/Y),
+empirical CVaR-bite vs.\ mean (C), built-in audit covariate
+discriminativeness (A), and domain demand for worst-case evaluation
+(D). Each dimension is graded 1--5, with 5 indicating ``best fit for
+CVaR-CJE replication of the original pipeline.'' Total scores out of
+30:
+
+\begin{table}[h]
+\centering
+\footnotesize
+\begin{tabular}{rlcp{3.4cm}rrrrrrr}
+\toprule
+\# & Dataset & Year & Domain / topic & P & \(\Pi\) & S/Y & C & A & D & Total \\
+\midrule
+1 & UltraFeedback & 2023 & Instruction-following quality (multi-dim) & 5 & 5 & 5 & 5 & 3 & 2 & 25 \\
+2 & HH red-team-attempts & 2022 & Adversarial harmlessness (red-team transcripts) & 3 & 5 & 4 & 5 & 4 & 4 & 25 \\
+3 & HealthBench & 2025 & Medical / clinical advice & 4 & 1 & 4 & 4 & 5 & 5 & 23 \\
+4 & RealToxicityPrompts & 2020 & Toxicity / content moderation & 3 & 1 & 5 & 4 & 5 & 4 & 22 \\
+5 & WildJailbreak & 2024 & Synthetic adversarial safety (4-quadrant) & 4 & 1 & 4 & 4 & 5 & 4 & 21 \\
+6 & WildChat-4.8M (shuffled) & 2024/25 & Naturalistic ChatGPT/o1-style real chat & 5 & 3 & 4 & 3 & 2 & 3 & 21 \\
+7 & Arena-140k (anchor) & 2024 & General chat preference (Chatbot Arena) & 5 & 5 & 2 & --- & 3 & 2 & 21 \\
+8 & HarmBench + StrongREJECT & 2024 & Jailbreak / adversarial attack research & 2 & 1 & 4 & --- & 2 & 4 & 16 \\
+9 & BeaverTails & 2023 & Safety-tagged QA (14 harm classes) & 3 & 1 & 2 & 1 & 3 & 4 & 15 \\
+10 & PKU-SafeRLHF & 2024 & Safety preference pairs (19 harm classes) & 3 & 3 & 2 & 1 & 2 & 4 & 15 \\
+\bottomrule
+\end{tabular}
+\caption{Dataset survey scores. ``Year'' is the year of the canonical
+public release (arXiv-paper year). ``Domain / topic'' is the descriptive
+label of what the dataset is about; ``D'' is the 1--5 rating of how
+much that domain demands worst-case (CVaR) evaluation. Top tier
+(\(\geq\)23) are direct CVaR-CJE replication candidates. Mid tier
+(21--22) are domain-relevant complements. Bottom tier (\(\leq\)16) are
+prompt-source seeds for Arena-Tail rather than standalone targets.}
+\label{tab:dataset-survey}
+\end{table}
+
+\subsection{Preliminary In-Data Findings}
+\label{app:dataset:findings}
+
+Five datasets ship enough multi-policy structure and continuous-enough
+\(Y\) to permit cross-policy CVaR comparisons without fresh policy
+generation. We report these as preliminary evidence that the
+same-mean--different-tail pattern is a real phenomenon in public LLM
+evaluation data, not an artifact of any particular benchmark.
+
+\paragraph{HH red-team-attempts (n=38{,}961).} Anthropic's red-team
+transcripts ship 12 in-data cells (\(\{\)plain LM, context distillation,
+rejection sampling, RLHF\(\} \times \{2.7\)B\(, 13\)B\(, 52\)B\(\}\))
+with a continuous preference-model score
+(\texttt{min\_harmlessness\_score\_transcript}). The pair
+\((\texttt{rlhf}\,|\,\)13B\(, \texttt{rejection sampling}\,|\,\)2.7B\()\)
+has 95\% bootstrap mean CIs that overlap heavily
+(\([+1.40, +1.46]\) vs.\ \([+1.45, +1.54]\)) but 95\% bootstrap
+\(\CVaR_{0.05}\) CIs that are disjoint
+(\([-0.30, -0.06]\) vs.\ \([-1.40, -0.84]\)). The CVaR gap is
+\(14.6\times\) larger than the mean gap. Mean evaluation correctly
+calls the policies indistinguishable; CVaR cleanly resolves a 0.97-unit
+harmlessness ranking.
+
+\paragraph{UltraFeedback (n=255{,}612).} 17 in-data models scored on a
+\([1, 10]\) GPT-4-Turbo aggregate. Within the \texttt{ultrachat}
+prompt-source slice, \texttt{llama-2-70b-chat} and \texttt{mpt-30b-chat}
+have means 4 thousandths apart on a 1--10 scale (statistically
+indistinguishable at any reasonable \(n\)) but \(\CVaR_{0.05}\)
+1.4 points apart, a \(140.5\times\) ratio. 39 within-source same-mean
+\(\times\) different-tail pairs total. The pattern is robust to prompt
+stratification.
+
+\paragraph{WildChat-4.8M (n=99{,}081 shuffled stream).} 5 in-data
+models including \texttt{o1-mini-2024-09-12}, \texttt{gpt-4o},
+\texttt{gpt-4o-mini}, \texttt{gpt-4-0314}, \texttt{gpt-3.5-turbo-0301},
+scored by per-turn Detoxify max. \texttt{o1-mini} vs.\ \texttt{gpt-4o}
+have \(\Delta\)mean = 0.0003 (statistically tied) and
+\(\Delta\CVaR_{0.05}\) = 0.008, a \(32\times\) ratio. Reasoning-trained
+models pay a measurable CVaR dividend that mean evaluation misses.
+
+\paragraph{HealthBench (n=14{,}592 (prompt, completion) cells in
+\texttt{oss\_meta\_eval}).} Aggregating physician binary labels into
+rubric-percent \(Y\) gives \(\CVaR_{0.05}\) ranging from 0.000 (on
+emergency\_referrals, health\_data, context\_seeking, global\_health
+themes) to 0.500 (on hedging, communication, complex\_responses
+themes). Per-theme \(q_{0.05}\) spread of 0.50 is the largest
+within-dataset audit-discriminative heterogeneity in the survey.
+
+\paragraph{RealToxicityPrompts (n=98{,}892).} The dataset's
+\texttt{challenging} boolean (1.2\% of corpus) holds 7.8\% of the
+worst-1\% Y\_safe (= \(1 - \text{toxicity}\)) tail mass: a
+\(6.5\times\) concentration. Conditional \(q_{0.05}\) is 0.035 (under
+\texttt{challenging=True}) vs.\ 0.084 otherwise. A single boolean flag
+the audit must fire on for any policy that does not handle benign and
+challenging prompts differently.
+
+\subsection{The Cheap-S Admissibility Condition}
+\label{app:dataset:cheap-s}
+
+A coverage-and-cheap-S sweep on the HH red-team headline pair surfaces
+a structural admissibility condition that the original CJE paper does
+not need to make explicit but that CVaR-CJE does. With logger
+\(\pi_0 = \texttt{rlhf}\,|\,\)52B and two cheap-\(S\) choices:
+
+\begin{itemize}[leftmargin=*,nosep]
+\item \(S = -\log(\text{transcript chars} / 1000)\) (length-based,
+response-side but Y-misaligned): per-policy \(\rho(S, Y)\) varies
+from \(+0.14\) to \(+0.62\) across the 12 cells. The Direct
+\(\CVaR_{0.05}\) estimate \emph{has the sign flipped} relative to
+truth on the headline pair, with absolute errors of 0.75--1.40.
+Errors do not shrink with oracle coverage.
+\item \(S = \texttt{task\_descripton\_harmlessness\_score}\) (Y-aligned
+but prompt-side): \(|\rho(S, Y)|\) collapses to under 0.30 because
+the score is a function of the prompt only and cannot distinguish
+responses generated by different models on the same prompt. The
+Direct estimate is uniform across within-family targets, yielding
+degenerate \(\Delta \approx 0\).
+\end{itemize}
+
+A cheap \(S\) admissible for level claims must be \emph{both}
+response-side \emph{and} Y-aligned with consistent sign across
+policies. Length is the former but not the latter; task-description
+score is the latter but not the former. The audit reliably catches
+out-of-family transport failures (audit fires on context-distillation
+and plain-lm targets in our HH demo regardless of \(S\) choice) but
+does not protect against bias that is symmetric across all
+within-family targets. This is a structural property of the framework,
+not a bug.
+
+\subsection{Audit Asymmetry in Logger Choice}
+\label{app:dataset:asymmetry}
+
+End-to-end Direct CVaR-CJE plus Wald two-moment audit on HH red-team
+with two logger choices yields a striking asymmetry. With logger
+\(\pi_0 = \texttt{rlhf}\,|\,\)52B (highest mean \(Y\)), the audit fires
+on 5 of 8 out-of-family targets and correctly accepts 3 of 8
+within-family targets, with Direct \(\CVaR_{0.05}\) errors of 0.3--1.3
+within-family. With logger \(\pi_0 = \texttt{context distillation}\,|
+\,\)52B (worst mean \(Y\) of the 12 cells), the audit accepts on
+\emph{all 9} cells \emph{including those with Direct
+\(\CVaR_{0.05}\) errors of 4--5 units}.
+
+The mechanism is the structure of the quantile-coverage moment.
+When the logger has the worst tail in the panel, \(\hat t\) is
+pinned to the logger's empirical 5\%-quantile (around \(-3.6\) to
+\(-4.7\)). For target cells whose \(Y\) is mostly positive, almost
+no observations fall below \(\hat t\); the moment
+\(g_1 = \mathbf{1}\{Y \le \hat t\} - \alpha\) collapses to roughly
+\(0 - 0.05\), and the calibrator-shortfall moment
+\(g_2 = (\hat t - Y)_+ - \hat f(S)\) compares two near-zeros. The
+audit's bootstrap variance estimate inflates because \(\hat t_b\)
+varies across reps when the optimizer cannot find a good fit, making
+the test statistic small.
+
+\paragraph{Operational rule.} Pick a logger whose \(Y\) distribution
+dominates (higher \(Y\) = safer) the targets one wants to certify.
+The audit refuses to certify targets that are \emph{worse} than the
+calibrator predicts (the operationally important case) but does not
+fire on targets that are \emph{better} than predicted. The asymmetry
+is by design: the audit is an alarm for misleading level claims, not
+a symmetric goodness-of-fit test.
+
+\subsection{Arena-Tail Construction Implications}
+\label{app:dataset:construction}
+
+The dataset survey supports the Arena-Tail construction in
+\cref{sec:arena-tail} as follows.
+
+\begin{itemize}[leftmargin=*,nosep]
+\item \emph{Backbone (50\%).} Arena-140k (135K user-conversation
+prompts) is the natural prompt-distribution match for the original
+CJE Arena setting at \(27\times\) the prompts. Pairwise winner labels
+are incompatible with per-policy \(\CVaR_\alpha\) as a scalar, so the
+dataset is used as a prompt source rather than a standalone target.
+
+\item \emph{Adversarial stratum (20\%).} HarmBench + StrongREJECT
+(combined 713 prompts) and WildJailbreak's
+\texttt{adversarial\_harmful} quadrant (82,728 prompts) provide
+prompts where the worst-case response is the deployment-determining
+behavior. WildJailbreak's four-quadrant
+\texttt{data\_type} partition lets us test two orthogonal
+audit-failure axes simultaneously: a \(\pi_{\text{safety}}\) policy
+that over-refuses fails on the
+\texttt{adversarial\_benign} quadrant; a \(\pi_{\text{adversarial}}\)
+policy that under-refuses fails on the
+\texttt{adversarial\_harmful} quadrant.
+
+\item \emph{Safety-sensitive stratum (15\%).} BeaverTails (14 harm
+classes) and PKU-SafeRLHF (19 harm classes, severity-graded) provide
+fine-grained harm-class stratification. Both have discrete or binary
+in-data \(Y\), so they enter the mixture as \emph{prompt sources}
+only; \(Y\) is elicited freshly under our chosen oracle.
+
+\item \emph{Domain stratum (10\%).} HealthBench (6,000 multi-turn
+clinical conversations across 7 themes) provides the highest-domain-
+demand subset (life-safety stakes) and the strongest pre-built
+audit-discriminative covariate (per-theme \(q_{0.05}\) spread of
+0.50). The medical-emergency-referral theme is the canonical case
+where mean evaluation provably misses what worst-case evaluation
+catches (see OpenAI HealthBench paper's worst-at-\(k\) finding for
+\texttt{o3}, where worst-at-16 score is roughly one-third of mean).
+
+\item \emph{Naturalistic stratum (5\%).} WildChat-4.8M shuffled
+stream provides real-world ChatGPT-style conversations including
+1.5M flagged-toxic. The non-toxic shard reaches 5 in-data models
+(\(\{\)gpt-3.5-turbo, gpt-4, gpt-4o, gpt-4o-mini, o1-mini\(\}\));
+the toxic shard requires explicit \texttt{data\_files} access.
+\end{itemize}
+
+The total budget for Arena-Tail (100K prompts \(\times\) 5 policies
+\(\times\) \(\sim\)400 output tokens, plus a 15\% oracle slice on
+\(\sim\)75K calls) is approximately \$7,800 at 2026-Q2 inference rates,
+of which \$2,500 is closed-frontier policy generation and \$5,250 is
+oracle annotation; open-weight policies contribute under \$50 in
+generation. This is roughly \(140\times\) the cost of the original CJE
+paper's pilot but yields a stratified pool whose
+audit-discriminative covariate (the prompt stratum) is built into the
+construction rather than relying on a single deliberately-bad policy.

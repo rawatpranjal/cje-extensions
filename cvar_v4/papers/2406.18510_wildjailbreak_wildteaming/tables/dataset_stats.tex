@@ -1,0 +1,34 @@
+% \begin{table}[]
+% \caption{Lexical Diversity of \dataset training data.}
+% \label{tab:appx-training-diversity}
+% \centering
+% \renewcommand{\arraystretch}{1.4}
+% \setlength\tabcolsep{5pt}
+% \begin{tabular}{lcccccccc}
+% \hline
+%                     & \multicolumn{3}{c}{\textbf{Entropy} ($\uparrow$)} &  & \multirow{2}{*}{\textbf{MSTTR} ($\uparrow$)} &  & \multicolumn{2}{c}{\textbf{Distinct} ($\uparrow$)} \\ \cline{2-4} \cline{8-9} 
+%                     & $H_1$           & $H_2$             & $H_3$             &  &                                                  &  & 2-gram        & 3-gram       \\ \hline
+% \vanishort Benign      & 9.41            & 15.00            & 18.05            &  & 0.73                                             &  & 0.17          & 0.46         \\
+% \vanishort Harmful     & 9.91            & 14.97            & 17.40            &  & 0.81                                             &  & 0.24          & 0.53         \\ \hline
+% \advshort Benign  & 9.44            & 13.71            & 15.79            &  & 0.67                                             &  & 0.11          & 0.22         \\
+% \advshort Harmful & 9.85            & 14.76            & 17.043           &  & 0.80                                             &  & 0.12          & 0.27         \\ \hline
+% \end{tabular}
+% \end{table}
+
+
+\begin{table}[t]
+\caption{Lexical Diversity of \dataset training data.}
+\label{tab:appx-training-diversity}
+\centering
+\renewcommand{\arraystretch}{1.4}
+\setlength\tabcolsep{5pt}
+\begin{tabular}{lcccccccc}
+\hline
+                    & \multicolumn{3}{c}{\textbf{Entropy} ($\uparrow$)} &  & \multirow{2}{*}{\textbf{MSTTR} ($\uparrow$)} &  & \multicolumn{2}{c}{\textbf{Distinct} ($\uparrow$)} \\ \cline{2-4} \cline{8-9} 
+                    & $H_1$           & $H_2$             & $H_3$             &  &                                                  &  & 2-gram        & 3-gram       \\ \hline
+Vanilla Benign      & 9.41            & 13.73            & 15.91            &  & 0.75                                             &  & 0.18          & 0.41         \\
+Vanilla Harmful     & 9.91            & 14.97            & 17.40            &  & 0.81                                             &  & 0.24          & 0.53         \\ \hline
+Adversarial Benign  & 9.97            & 16.38            & 20.10            &  & 0.75                                             &  & 0.14          & 0.44         \\
+Adversarial Harmful & 9.89            & 16.24            & 20.00           &  & 0.75                                             &  & 0.12          & 0.39         \\ \hline
+\end{tabular}
+\end{table}

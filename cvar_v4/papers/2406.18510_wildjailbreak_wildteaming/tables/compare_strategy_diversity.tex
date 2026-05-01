@@ -1,0 +1,53 @@
+\begin{figure}[t]
+    \captionof{table}{(Left) shows the number of items (\textbf{Total}), number of deduplicated unique clusters (\textbf{Uniq.}), and per query count (\textbf{Per.}) for jailbreak tactics automatically mined from \itw user queries in \lmsysshort and \wildchatshort, which contain a greater diversity and quantity of jailbreak tactics compared to those from other sources. \underline{Underline} indicates a sub-sampled set of queries. (Right) shows the top common jailbreak tactics and their percentage of occurrence.}
+    \label{tab:compare_strategy_diversity}
+    
+  \begin{minipage}{.65\linewidth}
+    \centering
+    \small
+    
+    \begin{tabular}{
+    l@{\hspace{0.6\tabcolsep}}
+    l@{\hspace{0.05\tabcolsep}}
+    r@{\hspace{0.95\tabcolsep}}
+    r@{\hspace{0.95\tabcolsep}}
+    r@{\hspace{0.95\tabcolsep}}
+    r@{\hspace{0.95\tabcolsep}}
+    }
+        \toprule
+        
+        \multicolumn{2}{c}{\textbf{Data Source}} & \multicolumn{1}{c}{\textbf{Query}} &  \multicolumn{3}{c}{\textbf{Jailbreak Tactics}} \\
+        \cmidrule(r){1-2} \cmidrule(r){3-3} \cmidrule(r){4-6}
+
+        \textbf{Type} & \textbf{Name} & \textbf{Total} & \textbf{Total} & \textbf{Uniq.} &  \textbf{Per.} \\
+        \midrule
+        
+        \multirow{3}{*}{\makecell[tl]{\itwshort}} & \lmsysshort \citep{zheng2023lmsyschat1m} & 7,873 & 43,220 & 2,526 & 5.49 \\
+        & \wildchatshort \citep{zhao2024inthewildchat} & 8,981 & 62,218 & 3,903 & 6.93\\
+
+        & \cellcolor{columbiablue} Combined & \cellcolor{columbiablue} 16,854 & \cellcolor{columbiablue} 105,438 & \cellcolor{columbiablue} 5,688 & \cellcolor{columbiablue} 6.26 \\
+        \midrule
+
+        \multirow{3}{*}{\makecell[tl]{Jailbreak \\ Templates}} & \danshort \citep{doanytingnow} & 666 & 4,378 & 510 & 6.57 \\
+        & \trustllm \citep{sun2024trustllm} & 1,400 & 4,531 & 280 & 3.24 \\        
+        & \decodingtrust \citep{wang2023decodingtrust} & 5 & 8 & 5 & 1.60 \\        
+        \midrule  
+        
+        \multirow{3}{*}{\makecell[tl]{Semantic \\ Jailbreak \\ Methods}} & PAIR \citep{pair} & \underline{400} & 1,854 & 162 & 4.64 \\
+        & TAP \citep{tap} & \underline{398} & 1,861 & 149 & 4.68 \\       
+        & PAP \citep{pap} & \underline{398} & 1,564 & 118 & 3.93 \\
+        \midrule 
+
+        \multirow{3}{*}{\makecell[tl]{Safety \\ Training \\ Data}} & \hhrlhf \citep{hh-rlhf} & \underline{500} & 884 & 66 & 1.77 \\
+        & \safellamashort \citep{safetytuned_llama} & \underline{500} & 911 & 66 & 1.82 \\   
+        & Safe-RLHF \citep{dai2023saferlhf} & \underline{500} & 1,034 & 84 & 2.07 \\   
+        \bottomrule
+
+    \end{tabular}
+    % \captionof{table}{Table caption}
+    \end{minipage}\hfill
+    \begin{minipage}{0.3\linewidth}
+    \includegraphics[width=1\linewidth]{figures/top_tactics.pdf}
+  \end{minipage}
+
+\end{figure}

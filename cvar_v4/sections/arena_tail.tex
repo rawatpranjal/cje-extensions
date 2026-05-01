@@ -1,0 +1,41 @@
+\section{Arena-Tail Benchmark}
+\label{sec:arena-tail}
+
+The original Arena-style CJE data are useful for debugging but too small and too mean-focused to be the only evidence for a tail-risk paper. Arena-Tail is the planned benchmark contribution: a controlled policy-comparison dataset with enough lower-tail mass to stress CVaR-CJE.
+
+\paragraph{Design requirements.}
+\begin{itemize}[leftmargin=*,nosep]
+\item Continuous bounded oracle outcome $\Y\in[0,1]$, preferably a weighted rubric fraction.
+\item Prompt strata that create realistic lower-tail mass: general chat, adversarial harmful, adversarial benign, safety-sensitive direct requests, and domain-consequence prompts.
+\item Policies with similar means but different lower tails.
+\item At least one policy that should fail the audit, so refusal behavior is empirically visible.
+\item Metadata retained for post-audit diagnosis: source dataset, harm category, domain, prompt style, and rubric family.
+\end{itemize}
+
+\paragraph{Prompt sources.}
+The pragmatic construction is a stratified mixture. General prompts can come from Arena and WildChat-style pools \citep{Zheng2023Judging,Chiang2024ChatbotArena,Zhao2024WildChat}. Tail strata can come from HealthBench-style medical conversations \citep{OpenAI2025HealthBench}, BeaverTails and PKU-SafeRLHF \citep{Ji2023BeaverTails,Ji2024PKUSafeRLHF}, and adversarial/refusal resources such as WildJailbreak, HarmBench, and StrongREJECT \citep{Jiang2024WildTeaming,Mazeika2024HarmBench,Souly2024StrongREJECT}.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lrl}
+\toprule
+Stratum & Share & Purpose \\
+\midrule
+General chat & 45-55\% & preserve comparability with Arena-style evaluation \\
+Adversarial harmful & 15-20\% & create lower-tail safety failures \\
+Adversarial benign & 10-15\% & detect over-refusal tails \\
+Safety-sensitive direct & 10-15\% & cover explicit harm categories \\
+Medical / legal / support & 10-15\% & connect tail risk to high-consequence workflows \\
+\bottomrule
+\end{tabular}
+\caption{Arena-Tail prompt mixture. Exact shares should be pre-registered before policy generation.}
+\label{tab:arena-tail-mixture}
+\end{table}
+
+\paragraph{Policy panel.}
+The benchmark should include five policies: base, near-clone, premium/frontier, safety-tuned or over-refusal, and adversarial/jailbroken. The target empirical pattern is not that every policy differs in mean. The target pattern is that at least two policies have near-equal means and materially different lower-tail CVaR.
+
+\paragraph{Labeling.}
+Cheap judge scores are collected on all responses. Oracle labels are collected on a simple random or pre-specified tail-stratified slice, with the sampling design recorded. If tail-stratified labeling is used, estimator formulas must include the sampling correction. The audit slice must be held out from calibrator fitting.
+

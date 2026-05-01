@@ -1,0 +1,52 @@
+% ---- CJE-safe macros (no geometry/spacing tweaks) ----
+% Keep packages in main.tex; use this file only for \newcommand and theorem envs.
+
+% --- Math helpers ---
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\CV}{\operatorname{CV}}
+\newcommand{\SE}{\operatorname{SE}}
+\newcommand{\ESS}{\mathrm{ESS}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\ind}[1]{\mathbf{1}_{#1}}
+
+% argmin/argmax
+\newcommand{\argmin}{\mathop{\mathrm{arg\,min}}\limits}
+\newcommand{\argmax}{\mathop{\mathrm{arg\,max}}\limits}
+
+% Norms & inner product (handy in proofs)
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\ip}[2]{\left\langle #1,\, #2 \right\rangle}
+
+% --- Problem variables / notation ---
+\newcommand{\X}{X}
+\newcommand{\A}{A}
+\newcommand{\Y}{Y}
+\newcommand{\Sscore}{S}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rcal}{R}
+\newcommand{\W}{W}
+
+% Policies
+\newcommand{\pzero}{\pi_0}
+\newcommand{\pprime}{\pi'}
+
+% Estimator tags (for small caps labels in text or tables)
+\newcommand{\IPS}{\mathrm{IPS}}
+\newcommand{\DR}{\mathrm{DR}}
+\newcommand{\TMLE}{\mathrm{TMLE}}
+
+% Optional: independence symbol
+\newcommand{\indep}{\perp\!\!\!\perp}
+\newcommand{\CI}{\mathrm{CI}}
+
+% --- Theorem environments (requires amsthm in main.tex) ---
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{prop}{Proposition}
+\newtheorem{proposition}[prop]{Proposition} % shares counter with prop
+\newtheorem{corollary}{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}

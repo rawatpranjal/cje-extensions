@@ -1,0 +1,66 @@
+\input{tables/jailbreak_results_full}
+
+\section{\methodemoji \method: Diverse Red-Teaming by Composing Jailbreak Tactics}
+\label{sec:jailbreak_expts}
+
+By composing selections of mined \itwshort jailbreak tactics, we transform vanilla harmful requests into diverse model-agnostic adversarial attacks. We compare \method to jailbreaking methods across standard attack \textit{effectiveness} metrics and a new suite of \textit{diversity} metrics to show \method's advantages in finding many unique successful attacks.
+
+\subsection{\method Workflow Formulation}
+
+Jailbreaking methods seek to revise a given vanilla harmful prompt $\mathcal{P}$ into an adversarial counterpart $\mathcal{AP}$, aiming to elicit the harmful model response from a target model $M_{\text{target}}$. \method follows a simple but effective two-step workflow to tackle this problem.
+
+\textbf{Step 1: Generating attack candidates seeded by sampled jailbreak tactics.} First, we sample a set of \itwshort jailbreak tactics and instruct an off-the-shelf language model ($M_{\text{attack}}$; \eg \mixtral) to apply these tactics for revising a given vanilla harmful prompt ($\mathcal{P}$) into an adversarial attack ($\mathcal{AP}$). 
+
+Formally, given the entire pool of jailbreak tactics $\mathbb{T}$, we sample a subset of $n$ tactics $T^i = \{t_1, ..., t_n\} \sim \mathbb{T}$. We then revise $\mathcal{P}$ into $\mathcal{AP}^i$ by conditioning on $T^i$, \ie $\mathcal{AP}^i \sim M_{\text{attack}}(\cdot | \mathcal{P} \text{;} T^i)$
+
+\textbf{Step 2: Refining attack candidates with off-topic and low-risk pruners.} 
+To ensure the revised adversarial attacks retain the original harmful intent and risk level, we apply two light-weight binary filters to prune off attack candidates that are unlikely to result in successful attack, including a \textit{off-topic} classifier ($Pr_{\text{off-topic}}$; $T$ for off-topic vs. $F$ for on-topic) and a \textit{low-risk} classifier ($Pr_{\text{low-risk}}$; $T$ for low-risk vs. $F$ for high-risk). This step identifies attacks more faithful to their vanilla counterparts and more likely to elicit on-target harmful model responses.
+
+Formally, given the adversarial attack candidate $\mathcal{AP}^i$, we apply $Pr_{\text{off-topics}}$ and $Pr_{\text{low-risk}}$ to rate if we keep or prune  $\mathcal{AP}^i$:
+
+% \vspace{-0.5mm}
+% \begin{align}
+%     a_{\text{off-topic}}^{i} = \indic \big[ Pr_{\text{off-topic}}(\mathcal{AP}^i) = T \big] \quad \text{and} \quad a_{\text{low-risk}}^{i} = \indic \big[ Pr_{\text{low-risk}}(\mathcal{AP}^i) = T \big] 
+% \end{align}
+
+\vspace{-0.5cm}
+\begin{align}
+    \text{is\_keep}_{\mathcal{AP}^i} = \indic \big[ Pr_{\text{off-topic}}(\mathcal{AP}^i) = F \; , \; Pr_{\text{low-risk}}(\mathcal{AP}^i) = F \big] 
+\end{align}
+\vspace{-0.4cm}
+
+We add $\mathcal{AP}^i$ to the official attack candidate pool if $\text{is\_keep}_{\mathcal{AP}^i}$ is 1, or otherwise regenerate another attack by repeating from Step 1.
+
+Additional details of all components of \method, including the attack model, the target models, the off-topic and low-risk pruners, and attack selectors are described in Appendix \S \ref{assec:wildteaming_components}.
+
+\subsection{Evaluation Setups}
+
+\textbf{Evaluation Task.} 
+We use the evaluation setup of \harmbench \citep{mazeika2024harmbench}, a unified jailbreaking evaluation benchmark including test vanilla harmful prompts across standard, contextual, and copyright unsafe behaviors. In this work, we report results using 159 vanilla behaviors in the standard test set, as these cases represent high-risk unsafe scenarios that language models must account for.
+
+\textbf{Baselines.} We compare \method with the top two optimization-based methods (\gcg, \autodan) and one of the top semantic methods (\pair), as reported in \harmbench \citep{mazeika2024harmbench}. \gcg optimizes discrete prompts (often gibberish) to produce affirmative answers to harmful requests~\citep{gcg}. \autodan uses human-written jailbreak prompts as initial seeds to run generic algorithms~\citep{liu2023autodan}. \pair uses an LLM to iteratively propose and edit attacks with the target model in-the-loop~\citep{pair}.
+
+\textbf{\textit{Effectiveness} Evaluation.} We measure \textit{effectiveness} by the attack success rate (\underline{ASR}) across the entire evaluation set of vanilla harmful queries. The success of an individual attack is determined by the test classifier from \harmbench \citep{mazeika2024harmbench} fine-tuned from a \llama-13B model. Specifically, the test classifier takes in a vanilla harmful prompt $\mathcal{P}$ and the model response elicited by its corresponding adversarial attack, $\mathcal{APR}^{M_{\text{target}}}$, and decides if $\mathcal{APR}^{M_{\text{target}}}$ sufficiently addresses the harmful information requested by $\mathcal{P}$. To measure attack \textit{efficiency}, we report the number of queries needed to reach a successful attack (\underline{Query}). To assess the attack stealthiness or \textit{naturalness}, a strong indicator of the defense difficulty, we use \vicuna-7B to compute the perplexity (\underline{PPL}) of the final successful attacks. 
+
+\textbf{\textit{Diversity} Evaluation.} The ultimate purpose of automatic jailbreaking is to reveal model vulnerabilities broadly and systematically so that defenses can be implemented. For a jailbreaking method to be practically useful, we must evaluate its ability to discover a wide range of model vulnerabilities with reasonable efficiency for scalable red-teaming. Without accounting for attack \textit{diversity}, methods may overoptimize for the effectiveness of a single successful attack and fail to find a second different attack at all, substantially reducing their practicality for broad red-teaming. To show \method's advantage in red-teaming broadly, we define a new suite of diversity metrics to assess the ability of jailbreak methods to identify multiple unique successful attacks. We define  \underline{$\text{ASR}^{\times n}_{c}$}$ = \frac{1}{n}\sum_{i=1}^{n}\text{ASR}^{\text{@}i}_{c}$ to measure the average success rate for finding $i \in \{1, ..., n\}$ unique attacks given $c$ attack trials. Here, $\text{ASR}^{\text{@} i}_{c}$ is the success rate of simultaneously finding $i$ unique successful attacks given $c$ attack trials. The uniqueness of attack candidates is determined by sentence embedding similarity $< 0.75$. In addition, we report \underline{$\text{Query}^{\times n}_{c}$} $= \frac{1}{n} \sum_{i=1}^{n}\text{Query}^{\text{@}i}_{c}$, the average number of queries needed to find $i \in \{1, ..., n\}$ unique successful attacks given $c$ attack trials. Here, $\text{Query}^{\text{@}i}_{c}$ is the number of queries needed to find $i$ unique successful attacks among $c$ attack attempts. \underline{Sim$^{@n}_c$} is the average pairwise sentence embedding similarity among the first $n$ successful attacks. Finally, \underline{Sim$^{\text{all}}$} is the pairwise sentence embedding similarity among all successful attacks across the evaluation pool, and \underline{\#Tactic$^{\text{all}}$} is the total number of identified unique clusters of tactics.
+
+\input{tables/pruning_effect}
+
+\begin{figure*}[b]
+    \centering
+    % \vspace{-1mm}
+    \includegraphics[width=0.95\textwidth]{figures/asr_query_pair_wt.pdf}
+    % \vspace{-1mm}
+    \caption{The breakdown of $\text{ASR}^{@ i}_{30}$ (left) and $\text{Query}^{@ i}_{30}$ (right) for $i \in \{1,2,3,4,5\}$ comparing \method and \pair. The left plot shows the ratio of $\text{ASR}^{@ i}_{30}$ between \method and \pair, and right plot shows the $\text{Query}^{@ i}_{30}$ of \method subtracted by that of \pair. The advantage of \method emerges more apparent by requiring more unique successful attacks.}
+    \label{fig:ASR_breakdown_comparisons}
+\end{figure*}
+
+\subsection{Results}
+
+Table \ref{tab:jailbreak_results_full} shows that compared to other jailbreaking methods, \method shows similar or better standard ASR (for finding one successful attack), while taking fewer attack trials and presenting more natural text (\ie lower perplexity). 
+With diversity metrics, the advantage of \method is even clearer: \method improves over \pair by 4.6-25.6 $\text{ASR}^{\times 5}_{30}$ scores while using fewer queries (3.8-5.5 points of decrease in $\text{Query}^{\times 5}_{30}$). Figure \ref{fig:ASR_breakdown_comparisons} shows that although \method appears similar to \pair when we assess success in finding 1-2 unique attacks, a substantial gap emerges when we assess the methods' ability to identify larger numbers of unique attacks while using less number of queries. It's notable that the two optimization-based baselines are either not capable of finding even a second unique attack (\autodan) or are prohibitive to run for diversity evaluation metrics (\gcg is estimated to take $\sim$15 hours to generate 30 attack candidates for each test vanilla query on one 80GB A100 GPU). 
+Finally, Table \ref{tab:jailbreak_ablations} shows the importance of off-topic and low-risk pruners for further enhancing the performance of \method. In the main jailbreaking experiment, we opt to adopt a fixed tactic, ``seed leading sentence,'' while randomly sampling other tactics to be consistent with \pair, which explicitly mentions this tactic in the instruction prompt of their attacker model. However, we also include the ablation result of \textit{not} fixing the ``seed leading sentence'' in Table \ref{tab:jailbreak_ablations}, which still shows considerable improvement over \pair in $\text{ASR}^{\times 5}_{30}$ (80.5 vs. 56.1) and $\text{Query}^{\times 5}_{30}$ (9.94 vs. 13.95), though slightly lower than using the fixed tactic. We show example attacks from different attack methods in Table \ref{tab:example_attacks_from_dif_methods}, \ref{tab:example_attacks_from_dif_methods_2}, \ref{tab:example_attacks_from_dif_methods_3}, 
+% and further examples of \method attacks in 
+\ref{tab:example_wt_tactics}, \ref{tab:example_wt_tactics_2}, \ref{tab:example_wt_tactics_3} in Appendix \S \ref{assec:jailbreak_ablations}.
+
+

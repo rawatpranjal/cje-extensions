@@ -42,3 +42,4 @@ texput.log
 
 # Exception: keep results-side runtime logs that we ship as data
 !cvar*/*results*.log
+hf.txt

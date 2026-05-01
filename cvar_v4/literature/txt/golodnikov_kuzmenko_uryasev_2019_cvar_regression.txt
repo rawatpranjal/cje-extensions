@@ -1,0 +1,787 @@
+<!-- image -->
+
+Article
+
+## CVaR Regression Based on the Relation between CVaR and Mixed-Quantile Quadrangles
+
+<!-- image -->
+
+Alex Golodnikov 1 , Viktor Kuzmenko 1
+
+and Stan Uryasev 2, *
+
+- 1 V.M. Glushkov Institute of Cybernetics, 40, pr. Akademika Glushkova, 03187 Kyiv, Ukraine
+- 2 Applied Mathematics &amp; Statistics, Stony Brook University, B-148 Math Tower, Stony Brook, NY 11794, USA
+* Correspondence: Stanislav.Uryasev@stonybrook.edu
+
+Received: 16 May 2019; Accepted: 20 June 2019; Published: 26 June 2019
+
+<!-- image -->
+
+Abstract: Apopular risk measure, conditional value-at-risk (CVaR), is called expected shortfall (ES) in financial applications. The research presented involved developing algorithms for the implementation of linear regression for estimating CVaR as a function of some factors. Such regression is called CVaR (superquantile) regression. The main statement of this paper is: CVaR linear regression can be reduced to minimizing the Rockafellar error function with linear programming. The theoretical basis for the analysis is established with the quadrangle theory of risk functions. We derived relationships between elements of CVaR quadrangle and mixed-quantile quadrangle for discrete distributions with equally probable atoms. The deviation in the CVaR quadrangle is an integral. We present two equivalent variants of discretization of this integral, which resulted in two sets of parameters for the mixed-quantile quadrangle. For the first set of parameters, the minimization of error from the CVaR quadrangle is equivalent to the minimization of the Rockafellar error from the mixed-quantile quadrangle. Alternatively, a two-stage procedure based on the decomposition theorem can be used for CVaR linear regression with both sets of parameters. This procedure is valid because the deviation in the mixed-quantile quadrangle (called mixed CVaR deviation) coincides with the deviation in the CVaR quadrangle for both sets of parameters. We illustrated theoretical results with a case study demonstrating the numerical e GLYPH&lt;14&gt; ciency of the suggested approach. The case study codes, data, and results are posted on the website. The case study was done with the Portfolio Safeguard (PSG) optimization package, which has precoded risk, deviation, and error functions for the considered quadrangles.
+
+Keywords: quantile; VaR; quadrangle; CVaR; conditional value-at-risk; expected shortfall; ES; superquantile; deviation; risk; error; regret; minimization; CVaR estimation; regression; linear regression; linear programming; portfolio safeguard; PSG
+
+## 1. Introduction
+
+We start the introduction with a quick outline of the main result of this paper. The conditional value-at-risk (CVaR) is a popular risk measure. It is called expected shortfall (ES) in financial applications and it is included in financial regulations. This paper provides algorithms for the estimation of CVaR with linear regression as a function of factors. This task is of critical importance in practical applications involving low probability events.
+
+By definition, CVaR is an integral of the value-at-risk (VaR) in the tail of a distribution. VaR can be estimated with the quantile regression by minimizing the Koenker-Bassett error function. This paper shows that CVaR can be estimated by minimizing a mixture of the Koenker-Bassett errors with an additional constraint. This mixture is called the Rockafellar error and it has been earlier used for CVaR estimation without a rigorous mathematical justification. One more equivalent variant of CVaR regression can be done by minimizing a mixture of CVaR deviations for finding all coe GLYPH&lt;14&gt; cients, except
+
+J. Risk Financial Manag. 2019 , 12 , 107; doi:10.3390 / jrfm12030107
+
+<!-- image -->
+
+/gid00001
+
+the intercept. In this case, the intercept is calculated using an analytical expression, which is the CVaR of the optimal residual without an intercept. The new mathematical result links quantile and CVaR regressions and shows that convex and linear programming methods can be straightforwardly used for CVaR estimation. Mathematical justification of the results involves a risk quadrangle concept combining regret, error, risk, deviation, and statistic notions.
+
+Quantiles evaluating di GLYPH&lt;11&gt; erent parts of a distribution of a random value are quite popular in various applications. In particular, quantiles are used to estimate tail of a distribution (e.g., 90%, 95%, and 99% quantiles). This paper is motivated by finance applications, where a quantile is called VaR. Risk measure VaR is included in finance regulations for the estimation of market risk. VaR has several attractive properties, such as the simplicity of calculation, stability of estimation, and availability of quantile regression, for the estimation of VaR as a function of explanatory factors. The quantile regression (see Koenker and Bassett (1978), Koenker (2005)) is an important factor supporting the popularity of VaR. For instance, a quantile regression was used by Adrian and Brunnermeier (2016) to estimate institution's contribution to systemic risk.
+
+However, VaR also has some undesirable properties:
+
+- GLYPH&lt;15&gt; Lack of convexity: portfolio diversification may increase VaR.
+- GLYPH&lt;15&gt; VaR is not sensitive to outcomes exceeding VaR, which allows for stretching of the distribution without an increasing of the risk measured by VaR.
+- GLYPH&lt;15&gt; VaR has poor mathematical properties, such as discontinuity with respect to (w.r.t.) portfolio positions for discrete distributions based on historical data.
+
+Shortcomings of VaR led financial regulators to use an alternative measure of risk, which is called conditional value-at-risk (CVaR) in this paper. This risk measure was introduced in Rockafellar and Uryasev (2000) and further studied in Rockafellar and Uryasev (2002) and many other papers. CVaR for continuous distributions equals the conditional expectation of losses exceeding VaR. An important mathematical fact is that CVaR is a coherent risk measure (see Acerbi and Tasche (2002), Rockafellar and Uryasev (2002)). Ziegel (2014) shows that CVaR is elicitable in a week sense. Fissler and Ziegel (2015) proved that (VaR, CVaR) is jointly elicitable, meaning elic(CVaR) GLYPH&lt;20&gt; 2, and more generally, that spectral risk measures have a low elicitation complexity. These results clarify the regression procedure of Rockafellar et al. (2014); their algorithm implicitly tracks the quantiles suggested by elicitation complexity.
+
+Rockafellar and Uryasev (2000, 2002) have shown that CVaR of a convex function of variables is also a convex function. Due to this property, CVaR optimization problems can be reduced to convex and linear optimization problems.
+
+This paper is based on risk quadrangle theory, which defines quadrangles (i.e., groups) of stochastic functionals Rockafellar and Uryasev (2013). Every quadrangle contains risk, deviation, error, and regret (negative utility). These elements of the quadrangle are linked by the statistic function.
+
+The relation of quantile regression and CVaR optimization was explained using a quantile quadrangle (see Rockafellar and Uryasev (2013)). It was shown that the Koenker-Bassett error function and CVaR belong to the same quantile quadrangle. By minimizing the Koenker-Bassett error function with respect to one parameter, we obtain the CVaR deviation (which is the CVaR for the centered random value). The optimal value of the parameter, which is called statistic, equals VaR. Therefore, the linear regression with the Koenker-Bassett error estimates VaR as a function of factors. The fact that statistic equals VaR and is also used for building the optimization approach for CVaR (see Rockafellar and Uryasev (2000, 2002)).
+
+Another important contribution that takes advantage of quadrangle theory is the regression decomposition theorem proved in Rockafellar et al. (2008). With this decomposition theorem, the regression problem is decomposed in two steps: (1) minimization of deviation from the corresponding quadrangle, and (2) calculation of the intercept by using statistic from this quadrangle. For instance, by applying the decomposition theorem to the quantile quadrangle, we can do quantile
+
+regression by minimizing CVaR deviation for finding all regression coe GLYPH&lt;14&gt; cients, except the intercept. Then, the intercept is calculated by using VaR statistic.
+
+CVaR can be approximated using the weighted average of VaRs with di GLYPH&lt;11&gt; erent confidence levels, which is called the mixed VaR method. Rockafellar and Uryasev (2013) demonstrated that mixed VaR is a statistic in the mixed-quantile quadrangle. The error function, corresponding to this quadrangle (called the Rockafellar error) can be minimized for the estimation of the mixed VaR with linear regression. The Rockafellar error is a solution of a minimization problem with one linear constraint. Linear regression for estimating mixed VaR can be done by minimizing the Rockafellar error with convex and linear programming (Appendix A contains these formulations). Alternatively, this regression can be done in two steps with the decomposition theorem. The deviation in the mixed-quantile quadrangle is the mixed CVaR deviation, therefore all regression coe GLYPH&lt;14&gt; cients, except the intercept, can be found by minimizing this deviation. Further, the intercept can be found by using statistic, which is the mixed VaR.
+
+Rockafellar et al. (2014) developed the CVaR quadrangle with the statistic equal to CVaR. Risk envelopes and identifiers for this quadrangle were calculated in Rockafellar and Royset (2018). This CVaR quadrangle is a theoretical basis for constructing the regression for estimating CVaR. Rockafellar et al. (2014) called the linear regression for estimation of CVaR using superquantile (CVaR) regression. The superquantile is an equivalent term for CVaR. Here we use the term 'CVaR regression'. The CVaR regression plays a major role in various engineering areas, especially in financial applications. For instance, Huang and Uryasev (2018) used CVaR regression for the estimation of risk contributions of financial institutions and Beraldi et al. (2019) used CVaR for solving portfolio optimization problems with transaction costs.
+
+This paper considers only discrete random values with a finite number of equally probable atoms. This special case is considered because it is needed for the implementation of the linear regression for the CVaR estimation. We have explained with an example how parameters of the optimization problems are calculated.
+
+The equal probabilities property was used for calculating parameters of optimization problems. It is possible to calculate parameters with non-equal probabilities of atoms, but this is beyond the scope of the paper, which is focused on the linear regression.
+
+We suggested two sets (Sets 1 and 2) of parameters for the mixed-quantile quadrangle. Set 1 corresponds to the two-step implementation of the CVaR regression in Rockafellar et al. (2014), and Set 2 is a new set of parameters. We proved that with Set 1, the statistic, risk, and deviation of the mixed-quantile and CVaR quadrangles coincide. Therefore, CVaR regression can be done by minimizing the Rockafellar error with convex and linear programming. For Set 2, the mixed-quantile and CVaR quadrangle share risk and deviation parameters. Also, the statistic of this mixed-quantile quadrangle (which may not be unique) includes statistic of the CVaR quadrangle. Therefore, minimizing the Rockafellar error correctly calculates all regression coe GLYPH&lt;14&gt; cients, but may provide an incorrect intercept. This is actually not a big concern because we know that the intercept is equal to the CVaR of an optimal residual without intercept.
+
+Also, we demonstrated that the CVaR regression can be done in two steps with the decomposition theorem by using parameters from Sets 1 and 2 in the mixed-quantile deviation. A similar two-step procedure was used for CVaR regression in Rockafellar et al. (2014). Here we justify this two-step procedure through the equivalence of deviations in CVaR and mixed-quantile quadrangles with parameters from Sets 1 and 2.
+
+This paper is organized as follows. Section 2 provides general results about quadrangles. In particular, we considered quantile, mixed-quantile, and CVaR quadrangles. Sections 3 and 4 introduced and investigated the parameters from Sets 1 and 2, respectively. Section 5 provided optimization problem statements based on CVaR and mixed-quantile quadrangles and described the linear regression for CVaR estimation. Section 6 presented a case study and applied CVaR regression to the financial style classification problem. The case study is posted on the web with codes, data,
+
+and solutions. Appendix A provides convex and linear programming problems for minimization of the Rockafellar error; Appendix B provides Portfolio Safeguard (PSG) codes implementing regression optimization problems.
+
+## 2. Quantile, Mixed-Quantile, and CVaR Quadrangles
+
+Rockafellar and Uryasev (2013) developed a new paradigm called the risk quadrangle, which linked risk management, reliability, statistics, and stochastic optimization theories. The risk quadrangle methodology united risk functions for a random value X in groups (quadrangles) consisting of five elements:
+
+- GLYPH&lt;15&gt; Risk R ( X ) , which provides a numerical surrogate for the overall hazard in X .
+- GLYPH&lt;15&gt; Deviation D ( X ) , which measures the 'nonconstancy' in X as its uncertainty.
+- GLYPH&lt;15&gt; Error E ( X ) , which measures the 'nonzeroness' in X .
+- GLYPH&lt;15&gt; Regret V ( X ) , which measures the 'regret' in facing the mix of outcomes of X .
+- GLYPH&lt;15&gt; Statistic S ( X ) associated with X through E and V .
+
+These elements of a risk quadrangle are related as follows:
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+where E ( X ) denotes the mean of X and the statistic, S ( X ) , can be a set, if the minimum is achieved for multiple points.
+
+Further, we use the following notations. The cumulative distribution function is denoted by FX ( x ) = prob f X GLYPH&lt;20&gt; x g . The positive and negative part of a number are denoted using:
+
+<!-- formula-not-decoded -->
+
+The lower and upper VaR (quantile) are defined as follows: lower VaR:
+
+upper VaR:
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+VaR (quantile) is a set if the lower and upper quantiles do not coincide:
+
+<!-- formula-not-decoded -->
+
+otherwise VaR is a singleton VaR GLYPH&lt;11&gt; ( X ) = VaR GLYPH&lt;0&gt; GLYPH&lt;11&gt; ( X ) = VaR + GLYPH&lt;11&gt; ( X ) .
+
+Conditional value-at-risk (CVaR) with the confidence level GLYPH&lt;11&gt; 2 ( 0, 1 ) can be defined in many ways. We prefer the following constructive definition:
+
+<!-- formula-not-decoded -->
+
+In financial applications, however, the most popular definition of CVaR is
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+For GLYPH&lt;11&gt; = 1, CVaR 1 ( X ) is defined as CVaR 1 ( X ) = VaR GLYPH&lt;0&gt; 1 ( X ) if a finite value of VaR GLYPH&lt;0&gt; 1 ( X ) exists.
+
+Quadrangles are named after statistic functions. The most famous quadrangle is the quantile quadrangle (see Rockafellar and Uryasev (2013)), named after the VaR (quantile) statistic. This quadrangle establishes relations between the CVaR optimization technique described in Rockafellar and Uryasev (2000, 2002) and quantile regression (see Koenker and Bassett (1978), Koenker (2005)). In particular, it was shown that CVaR minimization and the quantile regression are similar procedures based on the VaR statistic in the regret and error representation of risk and deviation.
+
+Here is the definition of the quantile quadrangle for GLYPH&lt;11&gt; 2 ( 0, 1 ) :
+
+## Quantile Quadrangle (Rockafellar and Uryasev (2013))
+
+Statistic: S GLYPH&lt;11&gt; ( X ) = VaR GLYPH&lt;11&gt; ( X ) = VaR (quantile) statistic.
+
+<!-- formula-not-decoded -->
+
+Deviation: D GLYPH&lt;11&gt; ( X ) = CVaR GLYPH&lt;11&gt; ( X ) GLYPH&lt;0&gt; E [ X ] = min C GLYPH&lt;8&gt; E GLYPH&lt;11&gt; ( X GLYPH&lt;0&gt; C ) GLYPH&lt;9&gt; = CVaR deviation.
+
+Regret: V GLYPH&lt;11&gt; ( X ) = 1 1 GLYPH&lt;0&gt; GLYPH&lt;11&gt; E [ X ] + = average absolute loss, scaled.
+
+<!-- formula-not-decoded -->
+
+The quantile quadrangle sets an example for development of more advances quadrangles. The following mixed-quantile quadrangle includes statistic, which is equal to the weighted average of VaRs (quantiles) with specified positive weights. Therefore, the error in this quadrangle can be used to build a regression for the weighted average of VaRs (quantiles). Since CVaR can be approximated by a weighted average of VaRs, the error function in this quadrangle can be used to build linear regression for the estimation of CVaR.
+
+## Mixed-Quantile Quadrangle (Rockafellar and Uryasev (2013)).
+
+Confidence levels GLYPH&lt;11&gt; k 2 ( 0, 1 ) , k = 1, : : : , r , and weights GLYPH&lt;21&gt; k &gt; 0, P r k = 1 GLYPH&lt;21&gt; k = 1. The error in this quadrangle is called the Rockafellar Error.
+
+Statistic: S ( X ) = P r k = 1 GLYPH&lt;21&gt; kVaR GLYPH&lt;11&gt; k ( X ) = mixed VaR (quantile).
+
+Deviation: D ( X ) = P r k = 1 GLYPH&lt;21&gt; kCVaR GLYPH&lt;11&gt; k ( X GLYPH&lt;0&gt; E [ X ]) = mixed CVaR deviation.
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+The following CVaR quadrangle can be considered as the limiting case of the mixed-quantile quadrangle when the number of terms in this quadrangle tends to infinity. The statistic in this quadrangle is CVaR; therefore, the error in this quadrangle can be used for the estimation of CVaR with linear regression.
+
+CVaR Quadrangle (Rockafellar et al. (2014)) for GLYPH&lt;11&gt; 2 ( 0, 1 ) .
+
+Statistic: S GLYPH&lt;11&gt; ( X ) = CVaR GLYPH&lt;11&gt; ( X ) = CVaR.
+
+Risk: R GLYPH&lt;11&gt; ( X ) = 1 1 GLYPH&lt;0&gt; GLYPH&lt;11&gt; R 1 GLYPH&lt;11&gt; CVaR GLYPH&lt;12&gt; ( X ) d GLYPH&lt;12&gt; = CVaR2 risk.
+
+Deviation: D GLYPH&lt;11&gt; ( X ) = R GLYPH&lt;11&gt; ( X ) GLYPH&lt;0&gt; E [ X ] = 1 1 GLYPH&lt;0&gt; GLYPH&lt;11&gt; R 1 GLYPH&lt;11&gt; CVaR GLYPH&lt;12&gt; ( X ) d GLYPH&lt;12&gt; GLYPH&lt;0&gt; E [ X ] = CVaR2 deviation.
+
+Regret: V GLYPH&lt;11&gt; ( X ) = 1 1 GLYPH&lt;0&gt; GLYPH&lt;11&gt; R 1 0 h CVaR GLYPH&lt;12&gt; ( X ) i + d GLYPH&lt;12&gt; = CVaR2 regret.
+
+Error: E GLYPH&lt;11&gt; ( X ) = V GLYPH&lt;11&gt; ( X ) GLYPH&lt;0&gt; E [ X ] = CVaR2 error.
+
+The following section proves that for a discretely distributed random value with equally probable atoms, the CVaR quadrangle is 'equivalent' to a mixed-quantile quadrangle with some parameters in the sense that statistic, risk, and deviation in these quadrangles coincide. This fact was proved for a set of random values with equal probabilities and variable locations of atoms.
+
+The set of parameters considered in the following section is used in two-step CVaR regression in Rockafellar et al. (2014).
+
+## 3. Set 1 of Parameters for Mixed-Quantile Quadrangle
+
+Set 1 of parameters for the mixed-quantile quadrangle for a discrete uniformly distributed random value X consists of confidence levels GLYPH&lt;11&gt; k 2 ( 0, 1 ) , k = 1, : : : , r and weights GLYPH&lt;21&gt; k &gt; 0 such that P r k = 1 GLYPH&lt;21&gt; k = 1. Parameter r depends only on the number of atoms in X and the confidence level GLYPH&lt;11&gt; of the CVaR quadrangle. We proved that statistic, risk, and deviation of the mixed-quantile quadrangle with the Set 1 of parameters coincide with the statistic, risk, and deviation of the CVaR quadrangle.
+
+Let X be a discrete random value with support x i andProb GLYPH&lt;16&gt; X = x i GLYPH&lt;17&gt; = 1/ GLYPH&lt;23&gt; for i = 1, 2, : : : , GLYPH&lt;23&gt; , where GLYPH&lt;23&gt; is the number of atoms. Denote x max = max i = 1, ::: , GLYPH&lt;23&gt; x i . For this random value, CVaR 1 ( X ) = VaR GLYPH&lt;0&gt; 1 ( X ) = x max .
+
+## Set 1 of parameters:
+
+- GLYPH&lt;15&gt; partition of the interval [ GLYPH&lt;11&gt; , 1 ] : GLYPH&lt;12&gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1 = GLYPH&lt;11&gt; , and GLYPH&lt;12&gt; i = i GLYPH&lt;14&gt; , for i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; , GLYPH&lt;23&gt; GLYPH&lt;11&gt; + 1, : : : , GLYPH&lt;23&gt; , where GLYPH&lt;14&gt; = 1/ GLYPH&lt;23&gt; , GLYPH&lt;23&gt; GLYPH&lt;11&gt; = b GLYPH&lt;23&gt;GLYPH&lt;11&gt; c + 1, with b z c being the largest integer less than or equal to z ; GLYPH&lt;14&gt; GLYPH&lt;11&gt; = GLYPH&lt;12&gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; GLYPH&lt;11&gt; .
+- GLYPH&lt;15&gt; confidence levels: GLYPH&lt;13&gt; i = 1 GLYPH&lt;0&gt; GLYPH&lt;12&gt; i GLYPH&lt;0&gt; GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 ln GLYPH&lt;18&gt; 1 GLYPH&lt;0&gt; GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 1 GLYPH&lt;0&gt; GLYPH&lt;12&gt; i GLYPH&lt;19&gt; , i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; , : : : , GLYPH&lt;23&gt; GLYPH&lt;0&gt; 1; GLYPH&lt;13&gt; GLYPH&lt;23&gt; = 1.
+- GLYPH&lt;15&gt; weights: p GLYPH&lt;23&gt; GLYPH&lt;11&gt; = GLYPH&lt;14&gt; GLYPH&lt;11&gt; 1 GLYPH&lt;0&gt; GLYPH&lt;11&gt; , pi = GLYPH&lt;14&gt; 1 GLYPH&lt;0&gt; GLYPH&lt;11&gt; , i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; + 1, : : : , GLYPH&lt;23&gt; .
+
+Lemma 1. Let X be a discrete random value with GLYPH&lt;23&gt; equally probable atoms. Then, statistic, risk, and deviation of the CVaR quadrangle for X are given by the following expressions with parameters specified by Set 1:
+
+1. CVaR statistic:
+2. CVaR2 risk:
+3. CVaR2 deviation:
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+Proof. Appendix C contains proof of the lemma. GLYPH&lt;3&gt;
+
+Note. Expression (1) is valid for arbitrary GLYPH&lt;13&gt; i 2 ( GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 , GLYPH&lt;12&gt; i ) , i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; , : : : , GLYPH&lt;23&gt; . Equations (2) and (3) are valid for arbitrary GLYPH&lt;13&gt; GLYPH&lt;23&gt; 2 [ GLYPH&lt;12&gt; GLYPH&lt;23&gt; GLYPH&lt;0&gt; 1 , 1 ] .
+
+We want to emphasize that the statement of Lemma 1 is valid for any discrete random value with equally probable atoms. The statement does not depend upon atom locations.
+
+Corollary 1. For the random value X defined in Lemma 1, statistic, risk, and deviation of the CVaR quadrangle coincide with statistic, risk, and deviation of the mixed-quantile quadrangle with r = GLYPH&lt;23&gt; GLYPH&lt;0&gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; + 1 , GLYPH&lt;21&gt; k = p GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1 + k , GLYPH&lt;11&gt; k = GLYPH&lt;13&gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1 + k , k = 1, : : : , r .
+
+Proof. Right hand sides in Equations (1)-(3) define statistic, risk, and deviation of the mixed-quantile quadrangle because pi &gt; 0, i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; , : : : , GLYPH&lt;23&gt; , P GLYPH&lt;23&gt; i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; pi = 1 and VaR GLYPH&lt;13&gt; i ( X ) , i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; , : : : , GLYPH&lt;23&gt; , are singletons. GLYPH&lt;3&gt;
+
+J. Risk Financial Manag.
+
+2019
+
+,
+
+12
+
+, x FOR PEER REVIEW
+
+7  of  21
+
+Example 1. Let X be a discrete random value with five atoms ( GLYPH&lt;0&gt; 40; GLYPH&lt;0&gt; 10; 20; 60 100) and equal probabilities = 0.2.
+
+Figure  1  explains  how  to  calculate  statistic  in  the  CVaR  quadrangle  and  mixed-quantile
+
+Figure 1 explains how to calculate statistic in the CVaR quadrangle and mixed-quantile quadrangle with Set 1 of parameters for GLYPH&lt;11&gt; = 0.5. Bold lines show VaR GLYPH&lt;0&gt; GLYPH&lt;11&gt; ( X ) as a function of GLYPH&lt;11&gt; . CVaR 0.5 ( X ) equals the dark area under the VaR GLYPH&lt;11&gt; ( X ) divided by 1 GLYPH&lt;0&gt; GLYPH&lt;11&gt; . CVaR can be calculated as integral of VaR GLYPH&lt;11&gt; ( X ) or as the sum of areas of rectangles. Figure 2 explains how to calculate risk in the CVaR quadrangle and mixed-quantile quadrangle with Set 1 of parameters for GLYPH&lt;11&gt; = 0.5. The bold continuous curve shows CVaR GLYPH&lt;11&gt; ( X ) as a function of GLYPH&lt;11&gt; . Risk R 0.5 ( X ) is equal to the area under the CVaR curve divided by 1 GLYPH&lt;0&gt; GLYPH&lt;11&gt; . This area can be calculated as the integral of CVaR or as the sum of areas of rectangles. The area of every rectangle is equal to the area under CVaR in the appropriate range of GLYPH&lt;11&gt; . The equality of areas defines values of GLYPH&lt;13&gt; i . Parameters pi , GLYPH&lt;13&gt; i do not depend on the values of atoms. quadrangle  with  Set  1  of  parameters  for 𝛼 = 0.5 .  Bold  lines  show 𝑉𝑎𝑅ఈ ି (𝑋) as  a  function  of 𝛼. 𝐶𝑉𝑎𝑅଴.ହ (𝑋) equals the dark area under the 𝑉𝑎𝑅ఈ (𝑋) divided by 1 - 𝛼 .  CVaR can be calculated as integral of 𝑉𝑎𝑅ఈ (𝑋) or as the sum of areas of rectangles. Figure 2 explains how to calculate risk in the CVaR quadrangle and mixed-quantile quadrangle with Set 1 of parameters for 𝛼 = 0.5 . The bold continuous curve shows 𝐶𝑉𝑎𝑅ఈ (𝑋) as a function of 𝛼 . Risk ℛ ത ଴.ହ (𝑋) is equal to the area under the CVaR curve divided by 1 - 𝛼 . This area can be calculated as the integral of CVaR or as the sum of areas of rectangles. The area of every rectangle is equal to the area under CVaR in the appropriate range of 𝛼 . The equality of areas defines values of 𝛾௜ . Parameters 𝑝௜ , 𝛾 ௜ do not depend on the values of atoms.
+
+Figure 1. Five equally probable atoms. VaR and CVaR with Set 1 of parameters for 𝛼 = 0.5. Figure 1. Five equally probable atoms. VaR and CVaR with Set 1 of parameters for GLYPH&lt;11&gt; = 0.5.
+
+<!-- image -->
+
+Figure 1.
+
+Five equally probable atoms. VaR and CVaR with Set 1 of parameters for
+
+𝛼 = 0.5.
+
+Figure 2. Five equally probable atoms. Risk in the CVaR quadrangle and mixed-quantile quadrangle with Set 1 of parameters for 𝛼 = 0.5. Figure 2. Five equally probable atoms. Risk in the CVaR quadrangle and mixed-quantile quadrangle with Set 1 of parameters for GLYPH&lt;11&gt; = 0.5.
+
+<!-- image -->
+
+## 4. Set 2 of Parameters for the Mixed-Quantile Quadrangle
+
+This section gives an alternative expression for the risk R GLYPH&lt;11&gt; ( X ) and deviation D GLYPH&lt;11&gt; ( X ) in the CVaR quadrangle for a discrete uniformly distributed random variable. This expression is based on the following Set 2 of parameters. This set of parameters has the same number of parameters as Set 1 but di GLYPH&lt;11&gt; erent values of weights and confidence levels. Similar to Section 3, let X be a discrete random value with support, x i , i = 1, 2, : : : , GLYPH&lt;23&gt; , and Prob GLYPH&lt;16&gt; X = x i GLYPH&lt;17&gt; = 1/ GLYPH&lt;23&gt; for i = 1, 2, : : : , GLYPH&lt;23&gt; . Denote x max = max i = 1, ::: , GLYPH&lt;23&gt; x i . For this random value CVaR 1 ( X ) = VaR GLYPH&lt;0&gt; 1 ( X ) = x max .
+
+## Set 2 of parameters:
+
+- GLYPH&lt;15&gt; partition of the interval [ GLYPH&lt;12&gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1 , 1 ] : GLYPH&lt;14&gt; = 1/ GLYPH&lt;23&gt; , GLYPH&lt;12&gt; i = i GLYPH&lt;14&gt; , for i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1, GLYPH&lt;23&gt; GLYPH&lt;11&gt; , : : : , GLYPH&lt;23&gt; , where GLYPH&lt;23&gt; GLYPH&lt;11&gt; = b GLYPH&lt;23&gt;GLYPH&lt;11&gt; c + 1, with b z c being the largest integer less than or equal to z ; GLYPH&lt;14&gt; GLYPH&lt;11&gt; = GLYPH&lt;12&gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; GLYPH&lt;11&gt; .
+- GLYPH&lt;15&gt; confidence levels: GLYPH&lt;12&gt; i , i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1, GLYPH&lt;23&gt; GLYPH&lt;11&gt; , : : : , GLYPH&lt;23&gt; .
+- GLYPH&lt;15&gt; weights:
+
+<!-- formula-not-decoded -->
+
+Lemma 2. Let X be a discrete random value with GLYPH&lt;23&gt; equally probable atoms. Then, risk and deviation of the CVaR quadrangle for X are given by the following expressions with parameters from Set 2.
+
+1. CVaR2 Risk:
+
+<!-- formula-not-decoded -->
+
+## 2. CVaR2 Deviation:
+
+<!-- formula-not-decoded -->
+
+Proof. Appendix D contains proof of the lemma. GLYPH&lt;3&gt;
+
+Note. Equations (4) and (5) are valid if CVaR GLYPH&lt;12&gt; GLYPH&lt;23&gt; GLYPH&lt;0&gt; 1 is replaced by CVaR GLYPH&lt;13&gt; with an arbitrary GLYPH&lt;13&gt; 2 [ GLYPH&lt;12&gt; GLYPH&lt;23&gt; GLYPH&lt;0&gt; 1 , 1 ] .
+
+Corollary 2. For the random value X defined in Lemma 2, risk and deviation of the CVaR quadrangle coincide with risk and deviation of the mixed-quantile quadrangle with r = GLYPH&lt;23&gt; GLYPH&lt;0&gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; + 1 , GLYPH&lt;21&gt; k = q GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 2 + k , GLYPH&lt;11&gt; k = GLYPH&lt;12&gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 2 + k , k = 1, : : : , r .
+
+Proof. Right hand sides in Equations (4) and (5) define risk and deviation of the mixed-quantile quadrangle because qi &gt; 0, i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1, : : : , GLYPH&lt;23&gt; GLYPH&lt;0&gt; 1, and P GLYPH&lt;23&gt; GLYPH&lt;0&gt; 1 i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1 qi = 1. GLYPH&lt;3&gt;
+
+Lemma3. Let X be a discrete random value with equally probable atoms x i , i = 1, 2, : : : , GLYPH&lt;23&gt; , Prob GLYPH&lt;16&gt; X = x i GLYPH&lt;17&gt; = 1/ GLYPH&lt;23&gt; . Then, statistic of the mixed-quantile quadrangle defined by the Set 2 of parameters is a range containing statistic of the CVaR quadrangle.
+
+Proof. Appendix E contains proof of the lemma. GLYPH&lt;3&gt;
+
+## 5. On the Estimation of CVaR with Mixed-Quantile Linear Regression
+
+This section formulates regression problems using the CVaR quadrangle and mixed-quantile quadrangle. For discrete final distributions with equally probable atoms, we prove some equivalence statements for the CVaR and mixed-quantile quadrangles. Further, we demonstrate how to estimate CVaR by using the linear regression with error and deviation from the mixed-quantile quadrangle.
+
+Wewant to estimate variable V using a linear function f ( Y ) = C 0 + C T Y of the explanatory factors Y = ( Y 1 , : : : , Yn ) . Let e E be an error from some quadrangle (further we consider, mixed-quantile and CVaR quadrangles), and e D and e S be a deviation and a statistic, respectively, corresponding to this quadrangle. Below we consider optimization statements for solving regression problems.
+
+## General Optimization Problem 1
+
+Minimize error e E and find optimal C GLYPH&lt;3&gt; 0 , C GLYPH&lt;3&gt;
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+## General Optimization Problem 2
+
+- GLYPH&lt;15&gt; Step 1. Find an optimal vector C GLYPH&lt;3&gt; by minimizing deviation:
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+- GLYPH&lt;15&gt; Step 2. Assign C GLYPH&lt;3&gt; 0 :
+
+Error e E ( X ) is called nondegenerate if:
+
+<!-- formula-not-decoded -->
+
+Rockafellar et al. (2008), p. 722, proved the following decomposition theorem.
+
+Theorem 1. (Error-Shaping Decomposition of Regression). Let e E be a nondegenerate error and e D = min C n e E ( X GLYPH&lt;0&gt; C ) o be the corresponding deviation, and let e S be the associated statistic. Point (C GLYPH&lt;3&gt; 0 , C GLYPH&lt;3&gt; ) is a solution of the General Optimization Problem 1 if and only if C GLYPH&lt;3&gt; is a solution of the General Optimization Problem 2, Step 1 and C GLYPH&lt;3&gt; 0 2 e S ( Z 0 ( C GLYPH&lt;3&gt; )) with Step 2.
+
+According to the decomposition theorem, when e E , e D , and e S are elements of the CVaR quadrangle, the following Optimization Problems 1 and 2 are equivalent.
+
+## Optimization Problem 1
+
+Minimize error from the CVaR quadrangle:
+
+<!-- formula-not-decoded -->
+
+where Z ( C 0, C ) = V GLYPH&lt;0&gt; C 0 GLYPH&lt;0&gt; C T Y .
+
+## Optimization Problem 2
+
+- GLYPH&lt;15&gt; Step 1. Find an optimal vector C GLYPH&lt;3&gt; by minimizing deviation from the CVaR quadrangle:
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+In Optimization Problem 2 in Step 2 the statistic equals S ( Z 0 ( C GLYPH&lt;3&gt; )) = CVaR GLYPH&lt;11&gt; ( Z 0 ( C GLYPH&lt;3&gt; )) , which is the specification of the inclusion operation in the Optimization Problem General 2 in Step 2.
+
+Optimization Problem 2 is used in Rockafellar et al. (2014) for the construction of the linear regression algorithms for estimating CVaR.
+
+According to the decomposition theorem, when e E , e D , and e S are elements of a mixed-quantile quadrangle, the following Optimization Problems 3 and 4 are equivalent.
+
+## Optimization Problem 3
+
+Minimize error from the mixed-quantile quadrangle:
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+- GLYPH&lt;15&gt; Step 2. Calculate:
+
+## Optimization Problem 4
+
+- GLYPH&lt;15&gt; Step 1. Find an optimal vector C GLYPH&lt;3&gt; by minimizing deviation from the mixed-quantile quadrangle:
+
+<!-- formula-not-decoded -->
+
+- GLYPH&lt;15&gt; Step 2. Assign:
+- GLYPH&lt;15&gt; Step 2. Calculate C GLYPH&lt;3&gt; 0 = CVaR GLYPH&lt;11&gt; ( Z 0 ( C GLYPH&lt;3&gt; )) .
+
+Proof. This lemma is a direct corollary of the decomposition Theorem 1 and Corollary 2 or Lemma 2. Indeed, the Corollary 2 implies that the Optimization Problems 2 and 4 are equivalent. Further, since deviations of the CVaR and mixed-quantile quadrangles coincide, we can use Step 1 to calculate optimal coe GLYPH&lt;14&gt; cients C GLYPH&lt;3&gt; . Further, the intercept is calculated with C GLYPH&lt;3&gt; 0 = CVaR GLYPH&lt;11&gt; ( Z 0 ( C GLYPH&lt;3&gt; )) because CVaR is the statistic in the CVaR quadrangle. GLYPH&lt;3&gt;
+
+<!-- formula-not-decoded -->
+
+Corollaries 1 and 2 can be used for constructing the linear regression for estimating CVaR. Let Y be a random vector of factors for estimating the random value V . We consider that the linear regression function f ( Y ) = C 0 + C T Y approximates CVaR of V , where C 0 2 R , C 2 R m are variables in the linear regression. The residual is denoted by Z ( C 0, C ) = V GLYPH&lt;0&gt; GLYPH&lt;16&gt; C 0 + C T Y GLYPH&lt;17&gt; and Z 0 ( C ) = V GLYPH&lt;0&gt; C T Y .
+
+Further we provide a lemma about linear regression problems based on Corollary 1 with the Set 1 of parameters. The main statement here is that the Optimization Problems 3 and 4 for the mixed-quantile quadrangle can be used to solve linear regression problems for estimating CVaR. This is the case because CVaR and mixed-quantile quadrangles have the same Statistic and Deviation.
+
+Lemma 4. Let the residual random value Z ( C 0, C ) = V GLYPH&lt;0&gt; GLYPH&lt;16&gt; C 0 + C T Y GLYPH&lt;17&gt; be discretely distributed with GLYPH&lt;23&gt; equally probable atoms. Let us consider the CVaR quadrangle with error E GLYPH&lt;11&gt; ( Z ( C 0, C )) , deviation D GLYPH&lt;11&gt; ( Z 0 ( C )) , and statistic S GLYPH&lt;11&gt; ( Z 0 ( C GLYPH&lt;3&gt; )) . Let us also consider the mixed-quantile quadrangle with the error E ( Z ( C 0, C )) , deviation D ( Z 0 ( C )) , and statistic S ( Z 0 ( C GLYPH&lt;3&gt; )) with parameters defined by Set 1 and r = GLYPH&lt;23&gt; GLYPH&lt;0&gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; + 1 , GLYPH&lt;21&gt; k = p GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1 + k , GLYPH&lt;11&gt; k = GLYPH&lt;13&gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1 + k , k = 1, : : : , r. Then, the Optimization Problems 1-4 are equivalent, i.e., the sets of optimal vectors of these optimization problems coincide. Moreover, let GLYPH&lt;16&gt; C GLYPH&lt;3&gt; 0 , C GLYPH&lt;3&gt; GLYPH&lt;17&gt; be a solution vector of the equivalent Optimization Problems 1-4. Then:
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+Proof. This lemma is a direct corollary of the decomposition Theorem 1 and Corollary 1 of Lemma 1. Indeed, Corollary 1 implies that the Optimization Problems 2 and 4 are equivalent. Further, the decomposition theorem implies that Optimization Problems 1 and 2 and the Optimization Problems 3 and 4 are equivalent. GLYPH&lt;3&gt;
+
+Further we provide a lemma about linear regression problems based on Corollary 2 with the Set 2 of parameters. The main statement is that the Optimization Problem 4, Step 1 for the Mixed-Quantile Quadrangle can be used to solve linear regression problem for estimating CVaR. This is the case because CVaR and Mixed-Quantile Quadrangles have the same Deviation. After obtaining vector of coe GLYPH&lt;14&gt; cients C GLYPH&lt;3&gt; , intercept is calculated, C GLYPH&lt;3&gt; 0 = CVaR GLYPH&lt;11&gt; ( Z 0 ( C GLYPH&lt;3&gt; )) .
+
+Lemma 5. Let the residual random value Z ( C 0, C ) = V GLYPH&lt;0&gt; GLYPH&lt;16&gt; C 0 + C T Y GLYPH&lt;17&gt; be discretely distributed with GLYPH&lt;23&gt; equally probable atoms. Let the mixed-quantile quadrangle with deviation D ( Z 0 ( C )) be defined by parameters of Set 2 and r = GLYPH&lt;23&gt; GLYPH&lt;0&gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; + 1 , GLYPH&lt;21&gt; k = q GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 2 + k , GLYPH&lt;11&gt; k = GLYPH&lt;12&gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 2 + k , k = 1, : : : , r. Then, GLYPH&lt;16&gt; C GLYPH&lt;3&gt; 0 , C GLYPH&lt;3&gt; GLYPH&lt;17&gt; is a solution of Optimization Problem 1, if and only if, GLYPH&lt;16&gt; C GLYPH&lt;3&gt; 0 , C GLYPH&lt;3&gt; GLYPH&lt;17&gt; is a solution of the following two-step procedure:
+
+- GLYPH&lt;15&gt; Step 1. Find an optimal vector C GLYPH&lt;3&gt; by minimizing deviation from the mixed-quantile quadrangle:
+
+<!-- formula-not-decoded -->
+
+For the Set 2 of parameters, the deviations in the CVaR and mixed-quintile quadrangles coincide. The two-step procedure in Optimization Problem 4 can be used to solve linear regression problems with Set 2 parameters for the mixed-quantile deviation. Also, the minimization of the Rockafellar error with the Set 2 of parameters may result in a correct C GLYPH&lt;3&gt; . The statistic of CVaR belongs to the statistic of the mixed-quantile quadrangle. Therefore, the optimization of the Rockafellar error with the Set 2 of parameters may lead to a wrong value of intercept C GLYPH&lt;3&gt; 0 . This potential incorrectness can be fixed by assigning C GLYPH&lt;3&gt; 0 = CVaR GLYPH&lt;11&gt; ( Z 0 ( C GLYPH&lt;3&gt; )) .
+
+## 6. Case Study: Estimation of CVaR with Linear Regression and Style Classification of Funds
+
+The case study described in this section is posted online (see Case Study (2016)). The codes and data are available for downloading and verification. Every optimization problem is presented in three formats: Text, MATLAB, and R. Calculations were done with a PC with a 3.14 GHz processor.
+
+We have applied CVaR regression to the return-based style classification of a mutual fund. We regress a fund return by several indices as explanatory factors. The estimated coe GLYPH&lt;14&gt; cients represent the fund's style with respect to each of the indices.
+
+Asimilar problem with a standard regression based on the mean squared error was considered by Carhart (1997) and Sharpe (1992). They estimated the conditional expectation of a fund return distribution (under the condition that a realization of explanatory factors is observed). Basset and Chen (2001) extended this approach and conducted the style analyses of quantiles of the return distribution. This extension is based on the quantile regression suggested by Koenker and Bassett (1978). The Case Study (2014), 'Style Classification with Quantile Regression' implemented this approach and applied quantile regression to the return-based style classification of a mutual fund.
+
+For the numerical implementation of CVaR linear regression, we used the Portfolio Safeguard (2018) package. Portfolio Safeguard (PSG) can solve nonlinear and mixed-integer nonlinear optimization problems. A special feature of PSG is that it includes precoded nonlinear functions: CVaR2 error ( cvar2\_err ) and CVaR2 deviation ( cvar2\_dev ) from the CVaR quadrangle, Rockafellar error ( ro\_err ) from the mixed-quantile quadrangle, and CVaR deviation ( cvar\_dev ) from the quantile quadrangle.
+
+We implemented the following equivalent variants of CVaR regression:
+
+- GLYPH&lt;15&gt; Minimization of the CVaR2 error (PSG function cvar2\_err ).
+- GLYPH&lt;15&gt; Two-step procedure with CVaR2 deviation (PSG function cvar2\_dev ).
+- GLYPH&lt;15&gt; Minimization of the Rockafellar error (PSG function ro\_err ) with the Set 1 of parameters.
+- GLYPH&lt;15&gt; The two-step procedure using mixed CVaR deviation with the Set 1 and Set 2 of parameters. This is calculated as a weighted sum of CVaR deviations (PSG function cvar\_dev ) from the quantile quadrangle.
+
+PSG automatically converts the analytic problem formulations to the mathematical programming codes and solves them. We included in Appendix A convex and linear programming problems for the minimization of the Rockafellar error with the Set 1 of parameters. These formulations are provided for verification purposes. They can be implemented with standard commercial software. For instance, the linear programming formulation can be implemented with the Gurobi optimization package. If Gurobi is installed in the computer, PSG can use Gurobi code as a subsolver. With the CARGRB solver in PSG, by setting the linearize option to 1, it is possible to solve the linear programming problem with Gurobi. However, this conversion will deteriorate the performance, compared to the default PSG solver VAN. For small problems it will not be noticeable. However, for problems with a large number of scenarios (e.g., with 10 8 observations), the standard PSG solver VAN will dramatically outperform the Gurobi linear programming implementation. In this case, Gurobi may not even start on a small PC because of a shortage of memory. Nevertheless, if the number of observations is small (e.g., 10 3 ) and the number of factors is very large (e.g., 10 7 ), it is recommended that the linear programming formulation is used.
+
+We regressed the CVaR of the return distribution of the Fidelity Magellan Fund on the explanatory variables: Russell 1000 Growth Index (RLG), Russell 1000 Value Index (RLV), Russell Value Index (RUJ), and Russell 2000 Growth Index (RUO). The dataset includes 1264 historical daily returns of the Magellan Fund and the indices, which were downloaded from the Yahoo Finance website. The data (design matrix for the regression) is posted on the Case Study (2016) website.
+
+The CVaR regression was done with the confidence levels GLYPH&lt;11&gt; = 0.75 and GLYPH&lt;11&gt; = 0.9. Calculation results are in Tables 1 and 2, respectively. Here is the description of the columns of the tables:
+
+- GLYPH&lt;15&gt; Optimization Problem #: Optimization Problem number, as denoted in Section 5; also it is the problem number in the case study posted online, see, Case Study (2016).
+- GLYPH&lt;15&gt; Set #: Set of parameters for the mixed-quantile quadrangle.
+- GLYPH&lt;15&gt; Objective: Optimal value of the objective function.
+- GLYPH&lt;15&gt; RLG: coe GLYPH&lt;14&gt; cient for the Russell Value Index.
+- GLYPH&lt;15&gt; RLV: coe GLYPH&lt;14&gt; cient for the Russell 1000 Value Index.
+- GLYPH&lt;15&gt; RUJ: coe GLYPH&lt;14&gt; cient for the Russell Value Index.
+- GLYPH&lt;15&gt; RUO: coe GLYPH&lt;14&gt; cient for the Russell 2000 Growth Index.
+- GLYPH&lt;15&gt; Intercept: regression intercept.
+- GLYPH&lt;15&gt; Solving Time: solver optimization time.
+
+Table 1. Optimization outputs: estimating CVaR with the linear regression, GLYPH&lt;11&gt; = 0.75.
+
+|   Optimization Problem # | Set #   |   Objective |   RLG |   RLV | RUJ             | RUO                                  | Intercept                   |   Solving Time (s) |
+|--------------------------|---------|-------------|-------|-------|-----------------|--------------------------------------|-----------------------------|--------------------|
+|                        1 | N / A   |     0.01248 | 0.486 | 0.581 | GLYPH<0> 0.0753 | GLYPH<0> 6.22 GLYPH<2> 10 GLYPH<0> 3 | 6.98 GLYPH<2> 10 GLYPH<0> 3 |               0.02 |
+|                        2 | N / A   |     0.01248 | 0.486 | 0.582 | GLYPH<0> 0.0753 | GLYPH<0> 6.22 GLYPH<2> 10 GLYPH<0> 3 | 6.98 GLYPH<2> 10 GLYPH<0> 3 |               0.02 |
+|                        3 | Set 1   |     0.01247 | 0.486 | 0.582 | GLYPH<0> 0.0753 | GLYPH<0> 6.22 GLYPH<2> 10 GLYPH<0> 3 | 6.96 GLYPH<2> 10 GLYPH<0> 3 |               0.03 |
+|                        4 | Set 1   |     0.01251 | 0.486 | 0.582 | GLYPH<0> 0.0752 | GLYPH<0> 6.22 GLYPH<2> 10 GLYPH<0> 3 | 6.98 GLYPH<2> 10 GLYPH<0> 3 |               0.11 |
+|                        4 | Set 2   |     0.01248 | 0.486 | 0.582 | GLYPH<0> 0.0753 | GLYPH<0> 6.23 GLYPH<2> 10 GLYPH<0> 3 | 6.98 GLYPH<2> 10 GLYPH<0> 3 |               0.03 |
+
+Table 2. Optimization outputs: estimating CVaR with the linear regression, GLYPH&lt;11&gt; = 0.9.
+
+|   Optimization Problem # | Set #   |   Objective |   RLG |   RLV | RUJ            | RUO                                   | Intercept                   |   Solving Time (s) |
+|--------------------------|---------|-------------|-------|-------|----------------|---------------------------------------|-----------------------------|--------------------|
+|                        1 | N / A   |    0.016656 | 0.472 | 0.606 | GLYPH<0> 0.078 | GLYPH<0> 7.052 GLYPH<2> 10 GLYPH<0> 3 | 1.05 GLYPH<2> 10 GLYPH<0> 2 |               0.02 |
+|                        2 | N / A   |    0.016656 | 0.472 | 0.606 | GLYPH<0> 0.078 | GLYPH<0> 7.052 GLYPH<2> 10 GLYPH<0> 3 | 1.05 GLYPH<2> 10 GLYPH<0> 2 |               0.02 |
+|                        3 | Set 1   |    0.016656 | 0.472 | 0.606 | GLYPH<0> 0.078 | GLYPH<0> 7.052 GLYPH<2> 10 GLYPH<0> 3 | 1.05 GLYPH<2> 10 GLYPH<0> 2 |               0.02 |
+|                        4 | Set 1   |    0.016656 | 0.472 | 0.606 | GLYPH<0> 0.078 | GLYPH<0> 7.052 GLYPH<2> 10 GLYPH<0> 3 | 1.05 GLYPH<2> 10 GLYPH<0> 2 |               0.11 |
+|                        4 | Set 2   |    0.016656 | 0.472 | 0.606 | GLYPH<0> 0.078 | GLYPH<0> 7.052 GLYPH<2> 10 GLYPH<0> 3 | 1.05 GLYPH<2> 10 GLYPH<0> 2 |               0.04 |
+
+Tables 1 and 2 show calculation results for the considered equivalent problems. We observe that regression coe GLYPH&lt;14&gt; cients coincide for all problems in Tables 1 and 2. This confirms the correctness of theoretical results and the numerical implementation. Also, we want to point out that the regression coe GLYPH&lt;14&gt; cients are quite similar for GLYPH&lt;11&gt; = 0.75 (Table 1) and GLYPH&lt;11&gt; = 0.9 (Table 2).
+
+The calculation time in majority of cases was around 0.02-0.04 s, except for the case with the mixed CVaR deviation for Set 1, which took 0.11 s. The PSG calculation times were quite low because the solver 'knows' analytical expressions for the functions and can take advantage of this knowledge.
+
+## 7. Conclusions
+
+The quadrangle risk theory Rockafellar and Uryasev (2013) and the decomposition theorem Rockafellar et al. (2008) provided a framework for building a regression with relevant deviations. Solution of a regression problem is split in two steps: (1) minimization of deviation from the corresponding quadrangle, and (2) determining of intercept by using statistic from this quadrangle. For CVaR regression, Rockafellar et al. (2014) reduced the optimization problem at Step 1 to
+
+a high-dimension linear programming problem. We suggested two sets of parameters for the mixed-quantile quadrangle and investigated its relationship with the CVaR quadrangle. The Set 1 of parameters corresponds to CVaR regression in Rockafellar et al. (2014), where the Set 2 is a new set of parameters.
+
+For the Set 1 of parameters, the minimization of error from CVaR Quadrangle was reduced to the minimization of the Rockafellar error from the mixed-quantile quadrangle. For both sets of parameters, the minimization of deviation in CVaR quadrangle is equivalent to the minimization of deviation in mixed-quantile quadrangle.
+
+We presented optimization problem statements for CVaR regression problems using CVaR and mixed-quantile quadrangles. Linear regression problem for estimating CVaR were e GLYPH&lt;14&gt; ciently implemented in Portfolio Safeguard (2018) with convex and linear programming. We have done a case study for the return-based style classification of a mutual fund with CVaR regression. We regressed the fund return by several indices as explanatory factors. Numerical results validating the theoretical statements are placed to the web (see Case Study (2016)).
+
+Supplementary Materials: Data and codes used in the case study can be downloaded: 1. Case Study (2016): Estimation of CVaR through Explanatory Factors with CVaR (Superquantile) Regression. http: // www.ise.ufl. edu / uryasev / research / testproblems / financial\_engineering / on-implementation-of-cvar-regression / . 2. Case Study (2014): Style Classification with Quantile Regression. http: // www.ise.ufl.edu / uryasev / research / testproblems / financial\_engineering / style-classification-with-quantile-regression / .
+
+Author Contributions: Conceptualization, S.U.; Formal analysis, V.K.; Investigation, A.G.; Methodology, S.U.; Software, V.K.; Supervision, S.U.; Writing-original draft, A.G.
+
+Funding: Research of Stan Uryasev was partially funded by the AFOSR grant FA9550-18-1-0391 on Massively Parallel Approaches for Bu GLYPH&lt;11&gt; ered Probability Optimization and Applications.
+
+Conflicts of Interest: The authors declare no conflict of interest.
+
+## Appendix A CVaR Regression with Rockafellar Error: Convex and Linear Programming
+
+The value of the Rockafellar error with given set of parameters GLYPH&lt;21&gt; k , GLYPH&lt;11&gt; k ( GLYPH&lt;11&gt; k 2 ( 0, 1 ) , k = 1, : : : r , P r k = 1 GLYPH&lt;21&gt; k = 1) for a random value X is a minimum w.r.t. a set of variables B 1 , : : : , Br of a mixture of Koenker-Bassett Error functions with one linear constraint on these variables:
+
+<!-- formula-not-decoded -->
+
+where E GLYPH&lt;11&gt; k ( X GLYPH&lt;0&gt; Bk ) = E h GLYPH&lt;11&gt; k 1 GLYPH&lt;0&gt; GLYPH&lt;11&gt; k [ X GLYPH&lt;0&gt; Bk ] + + [ X GLYPH&lt;0&gt; Bk ] GLYPH&lt;0&gt; i is the normalized Koenker-Bassett error.
+
+By using regret from the mixed-quantile quadrangle, we express the Rockafellar error as follows:
+
+<!-- formula-not-decoded -->
+
+For the linear regression problem, the random variable X is defined by a set of di GLYPH&lt;11&gt; erences between observed values Vi and linear functions C 0 + C T Yi , where Yi is a vector of explanatory factors, i = 1, 2, : : : , GLYPH&lt;23&gt; . Vectors C and Y have m components, C = ( C 1 , : : : , Cm ) , Y = ( Y 1 , : : : , Ym ) , and C 0 is a scalar. Residuals Xi = Vi GLYPH&lt;0&gt; C 0 GLYPH&lt;0&gt; C T Yi are values (scenarios) of atoms of the random value X . We consider that all atoms have equal probabilities. The estimation of V with factors Y is done by minimizing the error w.r.t. variables C , C 0. Further we use the Set 1 of parameters. Let us denote:
+
+<!-- formula-not-decoded -->
+
+Appendix A.1 Convex Programming Formulation for CVaR Regression
+
+Minimize the Rockafellar error:
+
+<!-- formula-not-decoded -->
+
+subject to the constraint:
+
+<!-- formula-not-decoded -->
+
+This optimization problem has a convex objective and one linear constraint.
+
+Appendix A.2 Linear Programming Formulation for CVaR Regression
+
+Equations (A1) and (A2) are reduced to linear programming with additional variables and constraints:
+
+<!-- formula-not-decoded -->
+
+subject to constraints:
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+The linear function C GLYPH&lt;3&gt; 0 + C GLYPH&lt;3&gt; T Y estimates CVaR GLYPH&lt;11&gt; ( V ) as a function of explanatory factors Y , where C GLYPH&lt;3&gt; 0 and C GLYPH&lt;3&gt; are optimal values of variables for Equations (A1) and (A2) or (A3)-(A6).
+
+## Appendix B Codes Implementing Regression Optimization Problems
+
+This appendix contains codes implementing Optimization Problems 1-4 described in Section 5. Codes and solution results are posted at internet link: Case Study (2016). Codes are written in Portfolio Safeguard (PSG) Text, MATLAB, and R environments. Here are codes in the Text environment.
+
+## Optimization Problem 1
+
+Code in PSG Text format:
+
+minimize cvar2\_err(0.75,matrix\_s)
+
+The keyword ' minimize ' indicates that the objective function is minimized. The objective function cvar2\_err(0.75,matrix\_s) calculates error E GLYPH&lt;11&gt; ( Z ( C 0, C )) in CVaR quadrangle with confidence level GLYPH&lt;11&gt; = 0.75. The matrix\_s contains scenarios of residual of the regression Z ( C 0, C ) = V GLYPH&lt;0&gt; C 0 GLYPH&lt;0&gt; C T Y .
+
+## Optimization Problem 2
+
+Code in PSG Text format:
+
+minimize
+
+cvar2\_dev(0.75,matrix\_s)
+
+value:
+
+cvar\_risk(0.75,matrix\_s)
+
+The code includes two parts. The first part begins with the keyword ' minimize ' indicating that the objective function is minimized. It implements Step 1 of the Optimization Problem 2, which minimizes deviation from the CVaR quadrangle (for determining the optimal vector C GLYPH&lt;3&gt; of regression coe GLYPH&lt;14&gt; cients without an intercept). The PSG function cvar2\_dev(0.75,matrix\_s) calculates deviation D GLYPH&lt;11&gt; ( Z 0 ( C )) with GLYPH&lt;11&gt; = 0.75. The matrix\_s contains scenarios of the residual of the regression without an intercept Z 0 ( C ) = V GLYPH&lt;0&gt; C T Y .
+
+The second part of the code begins with the keyword ' value .' This part implements Step 2 of the Optimization Problem 2 for calculating the optimal value of intercept C GLYPH&lt;3&gt; 0 . The PSG function cvar\_risk(0.75,matrix\_s) calculates CVaR GLYPH&lt;11&gt; ( Z 0 ( C GLYPH&lt;3&gt; )) with GLYPH&lt;11&gt; = 0.75 at the optimal point C GLYPH&lt;3&gt; .
+
+## Optimization Problem 3
+
+Code in PSG Text format with parameters from Set 1.
+
+minimize ro\_err(matrix\_s, matrix\_coeff)
+
+The keyword ' minimize ' indicates that the objective function is minimized. The objective function ro\_err(matrix\_s, matrix\_coeff) calculates the Rockafellar error E ( Z ( C 0, C )) in the mixed-quantile quadrangle. The matrix\_s contains scenarios of the residual of the regression Z ( C 0, C ) = V GLYPH&lt;0&gt; C 0 GLYPH&lt;0&gt; C T Y . The matrix\_coeff includes vectors of weights and confidence levels for Set 1 with GLYPH&lt;11&gt; = 0.75.
+
+## Optimization Problem 4
+
+Code in PSG Text format with parameters from Set 1 for GLYPH&lt;11&gt; = 0.75.
+
+vector\_c*cvar\_dev(vector\_a, matrix\_s)
+
+```
+minimize value: cvar_risk(0.75,matrix_s)
+```
+
+The code includes two parts. The first part begins with the keyword ' minimize ' indicating that the objective function is minimized. It implements Step 1 of the Optimization Problem 4, which minimizes deviation from the mixed-quantile quadrangle (for determining optimal vector C GLYPH&lt;3&gt; of regression coe GLYPH&lt;14&gt; cients without intercept). The inner product vector\_c*cvar\_dev(vector\_a, matrix\_s) calculates the mixed CVaR deviation D ( Z 0 ( C )) . The function cvar\_dev corresponds to the CVaR deviation from the quantile quadrangle. Vector vector\_c contains weights for CVaR Deviation mix corresponding to Set 1. Vector vector\_a contains confidence levels defined by Set 1. The matrix\_s contains scenarios of the residual of the regression Z ( C 0, C ) = V GLYPH&lt;0&gt; C 0 GLYPH&lt;0&gt; C T Y .
+
+The second part of the code begins with the keyword ' value .' This part implements Step 2 of the Optimization Problem 4, calculating the optimal value of intercept C GLYPH&lt;3&gt; 0 . The PSG function cvar\_risk(0.75,matrix\_s) calculates CVaR GLYPH&lt;11&gt; ( Z 0 ( C GLYPH&lt;3&gt; )) with GLYPH&lt;11&gt; = 0.75 at the optimal point C GLYPH&lt;3&gt; .
+
+## Appendix C Proof of the Lemma 1
+
+Proof. According to the definition, GLYPH&lt;12&gt; v = 1. However, while proving this lemma, we consider GLYPH&lt;12&gt; v a bit smaller than 1, i.e., GLYPH&lt;12&gt; v = 1 GLYPH&lt;0&gt; " &gt; GLYPH&lt;12&gt; v GLYPH&lt;0&gt; 1 , " &gt; 0, to avoid division by 0. Then, we will consider limit " ! 0 to finish the proof. Note that for GLYPH&lt;11&gt; &lt; 1 and for the considered partition, GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 &lt; GLYPH&lt;12&gt; i for all i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; , : : : , GLYPH&lt;23&gt; . First, let us prove that GLYPH&lt;13&gt; i 2 ( GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 , GLYPH&lt;12&gt; i ) for GLYPH&lt;12&gt; i &lt; 1. Consider three functions of GLYPH&lt;27&gt; , GLYPH&lt;14&gt; for GLYPH&lt;27&gt; &gt; 0, GLYPH&lt;14&gt; GLYPH&lt;21&gt; 0:
+
+<!-- formula-not-decoded -->
+
+When GLYPH&lt;14&gt; = 0, all functions equal to 0 and have equal derivatives. When GLYPH&lt;14&gt; &gt; 0, it is true for derivatives that:
+
+<!-- formula-not-decoded -->
+
+Hence, when &gt; 0, similar inequalities are valid for functions:
+
+<!-- formula-not-decoded -->
+
+There exist some GLYPH&lt;14&gt; GLYPH&lt;13&gt; such that 0 &lt; GLYPH&lt;14&gt; GLYPH&lt;13&gt; &lt; GLYPH&lt;14&gt; and GLYPH&lt;14&gt; GLYPH&lt;27&gt; + GLYPH&lt;14&gt; GLYPH&lt;13&gt; = ln GLYPH&lt;16&gt; 1 + GLYPH&lt;14&gt; GLYPH&lt;27&gt; GLYPH&lt;17&gt; . If GLYPH&lt;14&gt; = GLYPH&lt;12&gt; i GLYPH&lt;0&gt; GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 , GLYPH&lt;27&gt; = 1 GLYPH&lt;0&gt; GLYPH&lt;12&gt; i , GLYPH&lt;13&gt; = 1 GLYPH&lt;0&gt; GLYPH&lt;27&gt; GLYPH&lt;0&gt; GLYPH&lt;14&gt; GLYPH&lt;13&gt; , then GLYPH&lt;13&gt; = GLYPH&lt;13&gt; i and GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 &lt; GLYPH&lt;13&gt; &lt; GLYPH&lt;12&gt; i . Therefore, GLYPH&lt;13&gt; i 2 ( GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 , GLYPH&lt;12&gt; i ) .
+
+Further, we show how to calculate the integral R 1 GLYPH&lt;0&gt; " GLYPH&lt;11&gt; CVaR GLYPH&lt;12&gt; ( X ) d GLYPH&lt;12&gt; as a sum of integrals over the partition:
+
+<!-- formula-not-decoded -->
+
+Let us denote C GLYPH&lt;12&gt; i = CVaR GLYPH&lt;12&gt; i ( X ) and Vi = VaR GLYPH&lt;13&gt; i ( X ) . Note that VaR GLYPH&lt;13&gt; ( X ) is a singleton for every GLYPH&lt;13&gt; 2 ( GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 , GLYPH&lt;12&gt; i ) and it equals Vi , because GLYPH&lt;13&gt; i 2 ( GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 , GLYPH&lt;12&gt; i ) .
+
+Below, we use value Vi for the closed interval [ GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 , GLYPH&lt;12&gt; i ] while calculating the integral over this interval because the value of the integral does not depend on the finite values of VaR GLYPH&lt;13&gt; ( X ) at the boundary points GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 , GLYPH&lt;12&gt; i .
+
+Using the definition of CVaR (Rockafellar and Uryasev (2002), Proposition 8 CVaR for scenario models) we write:
+
+<!-- formula-not-decoded -->
+
+Let us make the transformation of Equation (A7) using the expression for GLYPH&lt;13&gt; i in the Set 1 definition:
+
+<!-- formula-not-decoded -->
+
+The last equality is valid because GLYPH&lt;13&gt; i 2 ( GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 , GLYPH&lt;12&gt; i ) .
+
+Taking into account that lim " ! 0 GLYPH&lt;13&gt; GLYPH&lt;23&gt; = 1, CVaR 1 GLYPH&lt;0&gt; " ( X ) = CVaR 1 ( X ) , and VaR 1 GLYPH&lt;0&gt; " ( X ) = VaR 1 ( X ) , we obtain:
+
+<!-- formula-not-decoded -->
+
+Deviation is calculated as follows:
+
+<!-- formula-not-decoded -->
+
+By the definition of CVaR (Rockafellar and Uryasev (2002)):
+
+<!-- formula-not-decoded -->
+
+Lemma 1 is proved. GLYPH&lt;3&gt;
+
+## Appendix D Proof of Lemma 2
+
+Proof. Similar to proof of Lemma 1, we consider GLYPH&lt;12&gt; v as a bit smaller than 1, i.e., GLYPH&lt;12&gt; v = 1 GLYPH&lt;0&gt; " &gt; GLYPH&lt;12&gt; v GLYPH&lt;0&gt; 1 , " &gt; 0, to avoid division by 0. Then, we consider limit " ! 0 to finish the proof. We denote C GLYPH&lt;12&gt; i = CVaR GLYPH&lt;12&gt; i ( X ) and Vi = VaR GLYPH&lt;13&gt; ( X ) for any GLYPH&lt;13&gt; 2 ( GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 , GLYPH&lt;12&gt; i ) because VaR GLYPH&lt;13&gt; ( X ) does not change on this interval.
+
+Additionally we denote GLYPH&lt;14&gt; i = GLYPH&lt;12&gt; i GLYPH&lt;0&gt; GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 , i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; , : : : , GLYPH&lt;23&gt; , and GLYPH&lt;27&gt; i = 1 GLYPH&lt;0&gt; GLYPH&lt;12&gt; i , i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1, : : : , GLYPH&lt;23&gt; . Note that all GLYPH&lt;14&gt; i &gt; 0, all GLYPH&lt;27&gt; i &gt; 0, and GLYPH&lt;14&gt; i = GLYPH&lt;14&gt; j = GLYPH&lt;14&gt; for all i , j &lt; GLYPH&lt;23&gt; .
+
+<!-- formula-not-decoded -->
+
+Equation (A7) in Lemma 1 is valid for any interval [ GLYPH&lt;18&gt; , GLYPH&lt;12&gt; i ] such that GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 GLYPH&lt;20&gt; GLYPH&lt;18&gt; GLYPH&lt;20&gt; GLYPH&lt;12&gt; i , therefore:
+
+<!-- formula-not-decoded -->
+
+Let us express Vi from CVaR GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 ( X ) using the definition of CVaR from Rockafellar and Uryasev (2002) (Equation (25)), then insert this expression into Equation (A9):
+
+<!-- formula-not-decoded -->
+
+By substituting Vi into Equation (A9), we obtain:
+
+<!-- formula-not-decoded -->
+
+The last equation contains two CVaRs, C GLYPH&lt;12&gt; i and C GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 . Let us express the coe GLYPH&lt;14&gt; cients of these CVaRs. C GLYPH&lt;12&gt; i in Equation (A10) has the following coe GLYPH&lt;14&gt; cient:
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+and C GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 has the coe GLYPH&lt;14&gt; cient:
+
+Coe GLYPH&lt;14&gt; cient q 2 i GLYPH&lt;0&gt; 1 GLYPH&lt;21&gt; 0 because the value in square brackets is the same as in Equations (A7) and (A9), and is a result of the integration of a non-negative function over the interval [ GLYPH&lt;18&gt; , GLYPH&lt;12&gt; i ] . The coe GLYPH&lt;14&gt; cient q 1 i GLYPH&lt;21&gt; 0 because it is an integral of the non-negative function GLYPH&lt;27&gt; i GLYPH&lt;14&gt; i h GLYPH&lt;14&gt; i GLYPH&lt;0&gt; GLYPH&lt;12&gt; i + GLYPH&lt;12&gt; 1 GLYPH&lt;0&gt; GLYPH&lt;12&gt; i over the same interval.
+
+When summing up integrals to obtain 1 1 GLYPH&lt;0&gt; GLYPH&lt;11&gt; R 1 GLYPH&lt;0&gt; " GLYPH&lt;11&gt; CVaR GLYPH&lt;12&gt; ( X ) d GLYPH&lt;12&gt; , every C GLYPH&lt;12&gt; i , aside from C GLYPH&lt;12&gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1 and C GLYPH&lt;12&gt; GLYPH&lt;23&gt; , enters the sum two times with coe GLYPH&lt;14&gt; cients depending on GLYPH&lt;23&gt; , GLYPH&lt;11&gt; , GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 , GLYPH&lt;12&gt; i , and GLYPH&lt;12&gt; i + 1 . Once in Equation (A11) for i , and the second time in Equation (A12) for i + 1. All coe GLYPH&lt;14&gt; cients are non-negative.
+
+Let us explain this in more detail.
+
+If i is such that GLYPH&lt;23&gt; GLYPH&lt;11&gt; &lt; i &lt; GLYPH&lt;23&gt; , then GLYPH&lt;12&gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; &lt; GLYPH&lt;12&gt; i &lt; GLYPH&lt;12&gt; GLYPH&lt;23&gt; and GLYPH&lt;18&gt; = GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 for i in Equation (A11) and GLYPH&lt;18&gt; = GLYPH&lt;12&gt; i for i + 1 in Equation (A12). Then, the coe GLYPH&lt;14&gt; cient for C GLYPH&lt;12&gt; i in Equation (A8) equals:
+
+<!-- formula-not-decoded -->
+
+If i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; &lt; GLYPH&lt;23&gt; , then GLYPH&lt;18&gt; = GLYPH&lt;11&gt; in Equation (A11) and GLYPH&lt;18&gt; = GLYPH&lt;12&gt; i in Equation (A12). Then, the coe GLYPH&lt;14&gt; cient for C GLYPH&lt;12&gt; i in Equation (A8) equals:
+
+<!-- formula-not-decoded -->
+
+If i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1, then C GLYPH&lt;12&gt; i enters in the sum only in Equation (A12) with GLYPH&lt;18&gt; = GLYPH&lt;11&gt; . Then:
+
+<!-- formula-not-decoded -->
+
+If i = GLYPH&lt;23&gt; &gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; , then C GLYPH&lt;12&gt; i enters in the sum only in Equation (A11) with GLYPH&lt;18&gt; = GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 . Then:
+
+<!-- formula-not-decoded -->
+
+Also, in the case when i = GLYPH&lt;23&gt; = GLYPH&lt;23&gt; GLYPH&lt;11&gt; , C GLYPH&lt;12&gt; i enters in the sum only in Equation (A11) with GLYPH&lt;18&gt; = GLYPH&lt;11&gt; . Then:
+
+<!-- formula-not-decoded -->
+
+Then, the risk in the CVaR quadrangle equals:
+
+<!-- formula-not-decoded -->
+
+Deviation is calculated as follows: D GLYPH&lt;11&gt; ( X ) = R GLYPH&lt;11&gt; ( X ) GLYPH&lt;0&gt; E [ X ] .
+
+Taking into account that all GLYPH&lt;12&gt; i are fixed for i &lt; GLYPH&lt;23&gt; , the limit operation a GLYPH&lt;11&gt; ects only coe GLYPH&lt;14&gt; cients for i = GLYPH&lt;23&gt; . Namely, lim " ! 0 GLYPH&lt;12&gt; GLYPH&lt;23&gt; = 1, lim " ! 0 GLYPH&lt;27&gt; GLYPH&lt;23&gt; = 0, lim " ! 0 GLYPH&lt;27&gt; GLYPH&lt;23&gt; ln ( GLYPH&lt;27&gt; GLYPH&lt;23&gt; ) = 0, lim " ! 0 GLYPH&lt;14&gt; GLYPH&lt;23&gt; = GLYPH&lt;14&gt; . Then, the limit values of coe GLYPH&lt;14&gt; cients qi are equal to:
+
+q GLYPH&lt;23&gt; = 0 in both cases, when GLYPH&lt;23&gt; &gt; GLYPH&lt;23&gt; GLYPH&lt;11&gt; and GLYPH&lt;23&gt; = GLYPH&lt;23&gt; GLYPH&lt;11&gt; .
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+If the number of atoms used in calculating R GLYPH&lt;11&gt; ( X ) is 3 or 2, then the coe GLYPH&lt;14&gt; cients have values:
+
+<!-- formula-not-decoded -->
+
+It can be shown that P GLYPH&lt;23&gt; i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1 qi = 1 by sequentially summing up coe GLYPH&lt;14&gt; cients. By recalling that GLYPH&lt;27&gt; i = GLYPH&lt;14&gt; ( v GLYPH&lt;0&gt; i ) , we can rewrite the equations for coe GLYPH&lt;14&gt; cients qi using GLYPH&lt;14&gt; and j = v GLYPH&lt;0&gt; i . Lemma 2 is proved. GLYPH&lt;3&gt;
+
+## Appendix E Proof of the Lemma 3
+
+Proof. Distribution of random value X defines the partition of the interval [ 0, 1 ] : GLYPH&lt;14&gt; = 1/ GLYPH&lt;23&gt; , GLYPH&lt;12&gt; i = i GLYPH&lt;14&gt; , for i = 0, 1, : : : , GLYPH&lt;23&gt; .
+
+CDF FX ( x ) = prob f X GLYPH&lt;20&gt; x g is a non-decreasing and right-continuous function and it is constant for every right-open interval [ GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 , GLYPH&lt;12&gt; i ) , i = 1, : : : , GLYPH&lt;23&gt; . Therefore, from the definitions of VaR GLYPH&lt;0&gt; GLYPH&lt;13&gt; ( X ) and VaR + GLYPH&lt;13&gt; ( X ) , we have:
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+For i = 0 we have GLYPH&lt;12&gt; i = 0 and VaR GLYPH&lt;0&gt; 0 ( X ) = GLYPH&lt;0&gt;1 .
+
+Thus, according to the definition of statistic for the mixed-quantile quadrangle, for Set 2:
+
+<!-- formula-not-decoded -->
+
+where VaR GLYPH&lt;12&gt; i ( X ) are intervals (that may have zero lengths for some i ), and qi and GLYPH&lt;23&gt; GLYPH&lt;11&gt; are defined above for the Set 2. Therefore, S II GLYPH&lt;11&gt; ( X ) is also an interval and it has a non-zero length if not all VaR GLYPH&lt;0&gt; GLYPH&lt;12&gt; i ( X ) , i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1, : : : , GLYPH&lt;23&gt; GLYPH&lt;0&gt; 1 are equal.
+
+If GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1 = 0, then S II GLYPH&lt;11&gt; ( X ) is a left-open interval with the lower bound GLYPH&lt;0&gt;1 .
+
+Let GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1 &gt; 0. For the Set 1, we defined confidence levels as internal points in intervals GLYPH&lt;13&gt; i 2 ( GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 , GLYPH&lt;12&gt; i ) . Using these definitions of GLYPH&lt;13&gt; i , we can express S II GLYPH&lt;11&gt; ( X ) as the interval:
+
+<!-- formula-not-decoded -->
+
+To simplify notations, let us denote: Vi = VaR GLYPH&lt;13&gt; i ( X ) ; C GLYPH&lt;13&gt; = CVaR GLYPH&lt;13&gt; ( X ) ; and L , U are bounds for S II GLYPH&lt;11&gt; ( X ) such that S II GLYPH&lt;11&gt; ( X ) = [ L , U ] .
+
+Statistic S GLYPH&lt;11&gt; ( X ) of the CVaR quadrangle is defined in Lemma 1 (see Equation (1)) as S GLYPH&lt;11&gt; ( X ) = P GLYPH&lt;23&gt; i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; pi V i .
+
+Therefore, we wish to prove that:
+
+<!-- formula-not-decoded -->
+
+Let us prove the right inequality for the upper bound.
+
+According to Lemmas 1 and 2, it is valid that:
+
+<!-- formula-not-decoded -->
+
+Let di = qi GLYPH&lt;0&gt; 1 GLYPH&lt;0&gt; pi . Then, from the last equality:
+
+<!-- formula-not-decoded -->
+
+The last inequality is valid because pi &gt; 0, GLYPH&lt;13&gt; i &gt; GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 , and C GLYPH&lt;13&gt; i GLYPH&lt;21&gt; C GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 .
+
+Because C GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 may have arbitrary but ordered values ( C GLYPH&lt;12&gt; i GLYPH&lt;0&gt; 1 GLYPH&lt;20&gt; C GLYPH&lt;12&gt; i due to ordered GLYPH&lt;12&gt; i ), i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; , : : : , GLYPH&lt;23&gt; , the last inequality is valid for any ordered sequence of values zi GLYPH&lt;0&gt; 1 GLYPH&lt;20&gt; zi . Therefore, it is valid for VaRs Vi that:
+
+<!-- formula-not-decoded -->
+
+This leads to the inequality for the upper bound:
+
+<!-- formula-not-decoded -->
+
+Let us prove the inequality for the lower bound L :
+
+<!-- formula-not-decoded -->
+
+where D Vi = Vi GLYPH&lt;0&gt; Vi GLYPH&lt;0&gt; 1 .
+
+Let us calculate the upper estimate of L . Let us set V GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1 = V GLYPH&lt;23&gt; GLYPH&lt;11&gt; , therefore D V GLYPH&lt;23&gt; GLYPH&lt;11&gt; = 0. This increases the right hand side of Equation (A13). By recalling that pi = GLYPH&lt;14&gt; / ( 1 GLYPH&lt;0&gt; GLYPH&lt;11&gt; ) = 1 GLYPH&lt;23&gt; ( 1 GLYPH&lt;0&gt; GLYPH&lt;11&gt; ) , i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; + 1, : : : , GLYPH&lt;23&gt; , for the Set 1, we have:
+
+<!-- formula-not-decoded -->
+
+Because P GLYPH&lt;23&gt; i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; pi = P GLYPH&lt;23&gt; i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; qi GLYPH&lt;0&gt; 1 , then P GLYPH&lt;23&gt; i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; di = 0 and P GLYPH&lt;23&gt; i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; di V i GLYPH&lt;0&gt; 1 = P GLYPH&lt;23&gt; i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; di ( Vi GLYPH&lt;0&gt; 1 GLYPH&lt;0&gt; D ) for any D . Because P GLYPH&lt;23&gt; i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; di z i GLYPH&lt;21&gt; 0 for any increasing ordered zi , and we can set z GLYPH&lt;23&gt; GLYPH&lt;11&gt; = 0, zi = 1, i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; + 1, : : : , GLYPH&lt;23&gt; , then:
+
+<!-- formula-not-decoded -->
+
+Taking into account that p GLYPH&lt;23&gt; GLYPH&lt;11&gt; , q GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1 GLYPH&lt;21&gt; 0 and p GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;20&gt; GLYPH&lt;14&gt; 1 GLYPH&lt;0&gt; GLYPH&lt;11&gt; , we have P GLYPH&lt;23&gt; i = GLYPH&lt;23&gt; GLYPH&lt;11&gt; + 1 di GLYPH&lt;20&gt; GLYPH&lt;14&gt; 1 GLYPH&lt;0&gt; GLYPH&lt;11&gt; . Then:
+
+<!-- formula-not-decoded -->
+
+Let us return to estimation L by taking into account that V GLYPH&lt;23&gt; GLYPH&lt;11&gt; GLYPH&lt;0&gt; 1 = V GLYPH&lt;23&gt; GLYPH&lt;11&gt; :
+
+<!-- formula-not-decoded -->
+
+Therefore, we have proved that L GLYPH&lt;20&gt; S GLYPH&lt;11&gt; ( X ) GLYPH&lt;20&gt; U .
+
+Lemma 3 is proved. GLYPH&lt;3&gt;
+
+## References
+
+- Acerbi, Carlo, and Dirk Tasche. 2002. On the Coherence of Expected Shortfall. Journal of Banking and Finance 26: 1487-503. [CrossRef]
+
+Adrian, Tobias, and Markus K. Brunnermeier. 2016. CoVaR. American Economic Review 106: 1705-41. [CrossRef] Basset, Gilbert W., and Hsiu-Lang Chen. 2001. Portfolio Style: Return-based Attribution Using Quantile Regression. Empirical Economics 26: 293-305. [CrossRef]
+
+- Beraldi, Patrizia, Antonio Violi, Massimiliano Ferrara, Claudio Ciancio, and Bruno Antonio Pansera. 2019. Dealing with complex transaction costs in portfolio management. Annals of Operations Research , 1-16. [CrossRef]
+
+Carhart, Mark M. 1997. On Persistence in Mutual Fund Performance. Journal of Finance 52: 57-82. [CrossRef]
+
+- Case Study. 2014. Style Classification with Quantile Regression. Available online: http: // www.ise.ufl.edu / uryasev / research / testproblems / financial\_engineering / style-classification-with-quantile-regression / (accessed on 24 June 2019).
+
+Case Study. 2016. Estimation of CVaR through Explanatory Factors with CVaR (Superquantile) Regression. Available online: http: // www.ise.ufl.edu / uryasev / research / testproblems / financial\_engineering / on-implementation-of-cvar-regression / (accessed on 24 June 2019).
+
+Fissler, Tobias, and Johanna F. Ziegel. 2015. Higher order elicitability and Osband's principle. arXiv . [CrossRef] Huang, Wei-Qiang, and Stan Uryasev. 2018. The CoCVaR Approach: Systemic Risk Contribution Measurement.
+
+Journal of Risk
+
+20: 75-93. [CrossRef]
+
+Koenker, R. 2005. Quantile Regression . Cambridge: Cambridge University Press.
+
+Koenker, Roger, and Gilbert Bassett. 1978. Regression Quantiles. Econometrica 46: 33-50. [CrossRef]
+
+- Portfolio Safeguard. 2018. American Optimal Decisions, USA. Available online: http: // www.aorda.com (accessed on 24 June 2019).
+- Rockafellar, R. Tyrrell, and Johannes O. Royset. 2018. Superquantile / CVaR Risk Measures: Second-order Theory. Annals of Operations Research 262: 3-29. [CrossRef]
+- Rockafellar, R. Tyrrell, and Stan Uryasev. 2000. Optimization of Conditional Value-At-Risk. Journal of Risk 2: 21-41. [CrossRef]
+- Rockafellar, R. Tyrrell, and Stan Uryasev. 2002. Conditional Value-at-Risk for General Loss Distributions. Journal of Banking and Finance 26: 1443-71. [CrossRef]
+- Rockafellar, R. Tyrrell, and Stan Uryasev. 2013. The Fundamental Risk Quadrangle in Risk Management, Optimization and Statistical Estimation. Surveys in Operations Research and Management Science 18: 33-53. [CrossRef]
+- Rockafellar, R. Tyrrell, Stan Uryasev, and Michael Zabarankin. 2008. Risk Tuning with Generalized Linear Regression. Mathematics of Operations Research 33: 712-29. [CrossRef]
+- Rockafellar, R. Terry, Johannes O. Royset, and Sofia I. Miranda. 2014. Superquantile Regression with Applications to Bu GLYPH&lt;11&gt; ered Reliability, Uncertainty Quantification and Conditional Value-at-Risk. European Journal Operations Research 234: 140-54. [CrossRef]
+- Sharpe, William F. 1992. Asset Allocation: Management Style and Performance Measurement. Journal of Portfolio Management (Winter) 18: 7-19. [CrossRef]
+- Ziegel, Johanna F. 2014. Coherence and elicitability. arXiv . [CrossRef]
+
+<!-- image -->
+
+' 2019 by the authors. Licensee MDPI, Basel, Switzerland. This article is an open access article distributed under the terms and conditions of the Creative Commons Attribution (CC BY) license (http: // creativecommons.org / licenses / by / 4.0 / ).

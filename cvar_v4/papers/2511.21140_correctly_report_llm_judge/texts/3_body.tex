@@ -1,0 +1,502 @@
+\section{Problem Setup: LLM-as-a-Judge}
+We consider the problem of evaluating responses based on human judgment. For example, each instance consists of a question and a corresponding response produced by a given model\footnote{The model producing the response may be an LLM, but rule-based or statistical models are also possible.}. We assume that humans can assess whether a response is \emph{`correct'} or \emph{`incorrect'}. This assessment is formalized by a ground-truth labeling function $z : \mathcal{X} \to \{0,1\}$, where $z(x)=1$ indicates that humans judge the response in instance $x$ to be \emph{`correct'}, and $z(x)=0$ otherwise. Applying the function to a random instance $X$ induces a binary random variable $Z = z(X)$.
+
+Our goal is to estimate the true accuracy of the responses with respect to human judgment, defined as
+\begin{align}
+    \theta := \Pr(Z = 1) = \E[Z].
+    \label{eq:theta}
+\end{align}
+
+\paragraph{Test Distribution and LLM-Based Judgment.}
+Let $\sP$ denote the distribution over test instances to be evaluated. In practice, instead of relying on human annotators, an LLM is used as a surrogate judge. Let $\hat{Z} := f_{\mathrm{LLM}}(X) \in \{0,1\}$ denote the LLM’s judgment, where $\hat{Z}=1$ indicates that the LLM marks the response as \emph{`correct'}, and $\hat{Z}=0$ otherwise.
+
+Let $[n] := \{1, \cdots, n\}$, where $n$ denotes the test-set size. Given a test dataset $\{x_i\}_{i\in[n]}$ sampled i.i.d.\ from $\sP$, the LLM produces predictions $\hat{z}_i := f_{\mathrm{LLM}}(x_i)$. The quantity reported in practice is the empirical fraction of instances judged as \emph{`correct'} by the LLM:
+\begin{align}
+    \hat{p} := \frac{1}{n} \sum_{i\in[n]} \hat{z}_i .
+    \label{eq:avg-pred}
+\end{align}
+This estimator targets the probability $p := \Pr(\hat{Z} = 1)$ that the LLM judges a test instance as \emph{`correct'}.
+
+However, the LLM’s judgment $\hat{Z}$ does not necessarily coincide with the human-evaluated true label $Z$. We characterize the LLM judge using the following parameters:
+\begin{align}
+    \label{eq:sensitivity:specificity}
+    q_1 := \Pr(\hat{Z} = 1 \!\mid\! Z = 1),
+    \;
+    q_0 := \Pr(\hat{Z} = 0 \!\mid\! Z = 0).
+    \;\;
+\end{align}
+which correspond to the \emph{sensitivity} (true positive rate) and \emph{specificity} (true negative rate) of the LLM judge, respectively~\citep{forman2008quantifying, lang2014confidence}.
+Consequently, the LLM may incorrectly reject responses that are truly \emph{`correct'} with probability $1-q_1$, or accept responses that are truly \emph{`incorrect'} with probability $1-q_0$.
+Unless the LLM is perfectly accurate (i.e., $q_0 = q_1 = 1$), the naive estimator $\hat{p}$ in~\eqref{eq:avg-pred} is generally a biased estimator of $\theta$.
+
+\paragraph{Calibration Distribution and Estimation of Sensitivity and Specificity.}
+Let $\sQ$ denote the distribution over calibration instances.
+Unlike the test dataset, each calibration instance is evaluated by humans, so that both the true label $Z$ and the corresponding LLM judgment $\hat{Z}$ are observable.
+
+Let $m$ denote the calibration-set size, and let $m_1$ and $m_0$ denote the numbers of calibration instances with $z_j=1$ and $z_j=0$, respectively, so that $m = m_0 + m_1$. The index $j$ distinguishes calibration instances from test instances indexed by $i$.
+Using the calibration dataset, we estimate the sensitivity $q_1$ and specificity $q_0$ of the LLM judge in \eqref{eq:sensitivity:specificity} as
+\begin{equation}
+    % \hat{q}_1 &:= \frac{1}{m_1} \sum_{j \in [m]} \mathbf{1}\{\hat{z}_j = 1, z_j = 1\},
+    % \\
+    % \hat{q}_0 &:= \frac{1}{m_0} \sum_{j \in [m]} \mathbf{1}\{\hat{z}_j = 0, z_j = 0\},
+    \resizebox{\linewidth}{!}{$
+    \hat{q}_1 \!:= \!\!\sum_{j \in [m]}\! \frac{\mathbf{1}\{\hat{z}_j = 1, z_j = 1\}}{m_1},
+    \;
+    \hat{q}_0 \!:= \!\!\sum_{j \in [m]}\! \frac{\mathbf{1}\{\hat{z}_j = 0, z_j = 0\}}{m_0},
+    \!\!\!
+    $}
+\end{equation}
+where $\mathbf{1}\{\cdot\}$ denotes the indicator function. 
+In the main analysis, we assume $\sP=\sQ$. In Section~\ref{sec:other:estimator}, we relax this assumption and consider distribution shift, where $\sP\neq\sQ$.
+
+
+
+
+\paragraph{Problem Statement.}
+Because the LLM judge is imperfect, the naive estimator $\hat{p}$ is generally biased for the true accuracy $\theta$ defined in~\eqref{eq:theta}, i.e., $\E[\hat{p}] \neq \theta$. Moreover, existing LLM-as-a-judge evaluations typically report this point estimate without quantifying uncertainty via confidence intervals.
+
+Our objective is therefore twofold:
+(i) to construct a bias-corrected estimator of the true accuracy $\theta$, and
+(ii) to provide statistically sound confidence intervals that reflect uncertainty arising from both the test and calibration datasets.
+
+
+
+
+\section{Method to Correctly Report LLM-as-a-Judge Evaluations}\label{sec:method}
+
+In this section, we present a bias-corrected estimator $\hat{\theta}$ and a confidence interval for LLM-as-a-judge evaluations. We further propose an adaptive allocation strategy for constructing the calibration dataset that reduces the confidence interval length. Derivations and theoretical guarantees for the proposed method are provided in Section~\ref{sec:theory}.
+
+\subsection{Mitigating Bias in Point Estimator}
+
+We begin with the setting in which the sensitivity $q_1$ and specificity $q_0$ in \eqref{eq:sensitivity:specificity} are known. In this case, an unbiased estimator of the true accuracy $\theta$ in~\eqref{eq:theta} is given by
+\begin{align}
+    \label{eq:point-estimator:given}
+    \hat{\theta} \, \big| \, q_0, q_1 = \frac{\hat{p} + q_0 - 1}{q_0 + q_1 - 1}
+    .
+\end{align}
+
+In realistic settings, these parameters $q_1$ and $q_0$ are unknown and must be estimated from a calibration dataset. Substituting estimates $\hat{q}_1$ and $\hat{q}_0$ into~\eqref{eq:point-estimator:given} gives the bias-corrected estimator~\citep{rogan1978estimating, lang2014confidence}:
+\begin{align}
+    \label{eq:point-estimator}
+    \boxed{
+    \hat{\theta} = \frac{\hat{p} + \hat{q}_0 - 1}{\hat{q}_0 + \hat{q}_1 - 1}
+    }.
+\end{align}
+
+\subsection{Uncertainty Quantification via Confidence Interval}
+
+To quantify uncertainty in $\hat{\theta}$, we derive a confidence interval for $\theta$ that incorporates variance contributions from both the test and calibration dataset~\citep{lang2014confidence}:
+\begin{align}
+\label{eq:ci}
+\boxed{
+\begin{aligned}
+&\tilde{\theta} + d\tilde{\theta}
+\\
+&\pm z_{\alpha}
+\sqrt{
+        \frac{
+        \frac{\tilde{p}(1 - \tilde{p})}{\tilde{n}}
+        + \big(1 - \tilde{\theta}\big)^2 \!\cdot\! \frac{\tilde{q}_0(1 - \tilde{q}_0)}{\tilde{m}_0}
+        + \tilde{\theta}^2 \!\cdot\! \frac{\tilde{q}_1(1 - \tilde{q}_1)}{\tilde{m}_1} 
+        }{
+        (\tilde{q}_0 + \tilde{q}_1 - 1)^2
+        }
+    }
+\end{aligned}
+},\;\;
+\end{align}
+where values outside the interval $[0,1]$ are truncated to $0$ or $1$. Here, $z_{\alpha}$ denotes the $(1-\alpha/2)$ quantile of the standard normal distribution, e.g., $z_{0.05} = 1.96$, and the adjusted quantities are defined as
+\begin{align}
+    &\tilde{n} = n + z_{\alpha}^2,
+    \quad
+    \tilde{m}_0 = m_0 + 2,
+    \quad
+    \tilde{m}_1 = m_1 + 2,
+    \\
+    &
+    \tilde{p} = \frac{n \cdot \hat{p} + z_{\alpha}^2 / 2}{n + z_{\alpha}^2},
+    \quad
+    \tilde{q}_0 = \frac{m_0 \cdot \hat{q}_0 + 1}{m_0 + 2},
+    \\
+    &
+    \label{eq:adjusted:proportion}
+    \tilde{q}_1 = \frac{m_1 \cdot \hat{q}_1 + 1}{m_1 + 2},
+    \quad
+    \tilde{\theta} = \frac{\tilde{p} + \tilde{q}_0 - 1}{\tilde{q}_0 + \tilde{q}_1 - 1},
+    \\
+    &
+    \label{eq:adjusted:ci:center}
+    d\tilde{\theta} =
+    2 z_{\alpha}^2
+    \left(
+        - (1 - \tilde{\theta}) \cdot \tfrac{\tilde{q}_0(1 - \tilde{q}_0)}{\tilde{m}_0}
+        + \tilde{\theta} \cdot \tfrac{\tilde{q}_1(1 - \tilde{q}_1)}{\tilde{m}_1}
+    \right).
+\end{align}
+
+The confidence interval in~\eqref{eq:ci} reflects uncertainty from both the test and calibration datasets through $\tilde{n}$, $\tilde{m}_0$, and $\tilde{m}_1$. As these sample sizes increase, the terms inside the square root decrease, resulting in a shorter confidence interval for~$\theta$. Because LLM-as-a-judge evaluations can be run at scale with minimal cost, the test-set size $n$ can often be made extremely large. In the limit $n \to \infty$, test-set uncertainty vanishes, and the interval length is determined solely by the calibration sample sizes $m_0$ and $m_1$. This observation enables practitioners to target a desired interval length and determine the minimal calibration budget required to achieve it.
+
+Figure~\ref{fig:size-and-ci-length} illustrates how the confidence-interval length decreases as the calibration dataset grows. The dashed curves correspond to calibration datasets with $m_0=m_1$. For example, when $\hat{p}=0.3$ is estimated from the test set and $\hat{q}_0 = 0.7$, $\hat{q}_1 = 0.9$ (red dashed curve), achieving an interval shorter than $0.1$ requires $m \approx 200$ calibration examples.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figs/fig2.pdf}
+    \caption{Confidence-interval length versus calibration-set size under $\hat{q}_0 = 0.7$, $\hat{q}_1 = 0.9$, and $n \to \infty$. We consider four test-set cases in which the naive estimator $\hat{p}$ takes one of the values in $\{0.3, 0.5, 0.7, 0.9\}$. Dashed curves correspond to calibration sets with symmetric allocation across label types ($m_0=m_1$), while solid curves correspond to calibration sets using the adaptive allocation strategy in Algorithm~\ref{alg:allocation}, which results in shorter intervals.}
+    \label{fig:size-and-ci-length}
+\end{figure}
+
+
+\paragraph{Allocation Strategy to Reduce Confidence-Interval Length.}
+Furthermore, as the calibration dataset is collected independently, its label composition can sometimes be influenced through sampling strategies. As a result, asymmetric label sizes ($m_0 \neq m_1$) are feasible. This flexibility matters because the two label types typically contribute asymmetrically to the overall uncertainty, so an imbalanced allocation can reduce the interval length.
+
+Motivated by the benefits of asymmetric allocation, we introduce an adaptive allocation strategy in Algorithm~\ref{alg:allocation}. The algorithm first collects a small pilot calibration set (e.g., $m_{\mathrm{pilot}} = 10$ per label type) to obtain preliminary estimates $\tilde{q}_0$ and $\tilde{q}_1$. It then computes the empirical error ratio $(1 - \tilde{q}_0)/(1 - \tilde{q}_1)$ and combines it with the test-set estimate $\hat{p}$ to determine an allocation $(m_0, m_1)$ that approximately minimizes the confidence-interval length in~\eqref{eq:ci}. As shown by the solid curves in Figure~\ref{fig:size-and-ci-length}, this adaptive allocation gives shorter intervals under a fixed calibration budget than symmetric allocation. The optimality of this strategy in minimizing the confidence-interval length under a fixed calibration budget is established in the following section.
+
+% A Python implementation that computes the bias-corrected estimator $\hat{\theta}$ in~\eqref{eq:point-estimator} and the confidence interval in~\eqref{eq:ci} is provided in Appendix~\ref{sec:code}.
+
+
+\section{Theoretical Justification of Our Method}
+\label{sec:theory}
+
+We provide theoretical justification for the method proposed in Section~\ref{sec:method}, including derivations, bias analysis, and optimality of the allocation strategy.
+
+\subsection{Mitigating Bias in Point Estimator}
+
+We compare the bias-corrected estimator $\hat{\theta}$ in~\eqref{eq:point-estimator} with the naive estimator $\hat{p}$ in~\eqref{eq:avg-pred}.
+By the law of total probability,
+\begin{align}
+    \label{eq:main:derive:estimator}
+    \E[\hat{p}] = p
+    % &= \Pr(\hat{Z} = 1 \mid Z = 1) \cdot \Pr(Z = 1)
+    % \\
+    % &\quad
+    % + \big(1 - \Pr(\hat{Z} \!=\! 0 \!\mid\! Z \!=\! 0)\big) \big(1 - \Pr(Z \!=\! 1)\big)
+    % \\ &
+    = (q_0 + q_1 - 1) \cdot \theta + (1 - q_0)
+    .
+\end{align}
+Thus, $\E[\hat{p}] = \theta$ for all $\theta$ if and only if the LLM judge is perfect (i.e., $q_0 = q_1 = 1$); otherwise, $\hat{p}$ is biased. When $q_0 + q_1 < 2$, the expectation can be rewritten as
+\begin{align}
+    \E[\hat{p}]
+    &= \theta + (2 - q_0 - q_1)\Big( \frac{1 - q_0}{2 - q_0 - q_1} - \theta \Big),
+\end{align}
+which makes the direction of the bias explicit: when the true accuracy $\theta$ is smaller than the threshold $\tfrac{1 - q_0}{2 - q_0 - q_1}$, the estimator $\hat{p}$ exhibits a positive bias, i.e., $\E[\hat{p}] > \theta$; conversely, when $\theta$ exceeds this threshold, the bias becomes negative.
+
+\paragraph{Bias-Corrected Estimator.}
+Assuming $q_0 + q_1 > 1$, inverting the above relation in~\eqref{eq:main:derive:estimator} gives the estimator in \eqref{eq:point-estimator:given}.
+Replacing $q_0$ and $q_1$ with their empirical estimates $\hat{q}_0$ and $\hat{q}_1$ gives the bias-corrected estimator $\hat{\theta}$ in~\eqref{eq:point-estimator}.
+
+When $q_0$ and $q_1$ are known, $\hat{\theta}$ is unbiased. When they are estimated from a calibration dataset, $\hat{\theta}$ can exhibit bias. Nevertheless, the following result shows that $\hat{\theta}$ attains smaller bias than the naive estimator $\hat{p}$ in~\eqref{eq:avg-pred} as the calibration-set size grows. All proofs are provided in Appendix~\ref{appendix:proof}.
+\begin{proposition}
+    \label{thm:bias}
+    Suppose that $m := 2m_0 = 2m_1$ and that $q := q_0 = q_1$ with $0.5 < q \leq 1$. For sufficiently large $m\gtrsim 2q/(2q-1)^2$, the absolute bias of $\hat{\theta}$ in~\eqref{eq:theta} is always smaller than that of $\hat{p}$ in~\eqref{eq:avg-pred} for all $\theta \in [0,1]$.
+\end{proposition}
+Even when $\hat{q}_0$ and $\hat{q}_1$ are estimated from data, $\hat{\theta}$ has smaller bias than $\hat{p}$ for sufficiently large calibration sets, with the required size depending on the LLM judge’s sensitivity and specificity: fewer samples suffice when the LLM has high sensitivity and specificity ($q \approx 1$), while substantially more are required as these approach chance level ($q \approx 0.5$).
+
+
+\subsection{Uncertainty Quantification via Confidence Interval}
+
+We quantify uncertainty in $\hat{\theta}$ arising from two sources: the test dataset used to estimate $p$ and the calibration dataset used to estimate $q_0$ and $q_1$.
+Applying the delta method and the binomial variance formulas for $\hat{p}$, $\hat{q}_0$, and $\hat{q}_1$, we obtain the asymptotic variance
+\begin{align}
+    \label{eq:var}
+    \Var \big(\hat{\theta}\big)
+    \!=\!
+    \frac{
+    \frac{\hat{p}(1 \!\!-\! \hat{p})}{n}
+    + (1 \!-\! \hat{\theta})^2 \!\cdot\! \frac{\hat{q}_0(1 - \hat{q}_0)}{m_0}
+    + \hat{\theta}^2 \!\cdot\! \frac{\hat{q}_1(1 - \hat{q}_1)}{m_1}
+    }{
+    (\hat{q}_0 + \hat{q}_1 - 1)^2
+    } .
+    \;\;\;\;\;
+\end{align}
+A detailed derivation is provided in Appendix~\ref{appendix:proof:var}.
+
+Based on this variance, we construct a confidence interval for $\theta$ using the \emph{``add two successes and two failures''} adjusted Wald approach~\citep{de1820theorie, agresti1998approximate, brown2001interval, lang2014confidence}.
+Specifically, we replace $\hat{p}$, $\hat{q}_0$, and $\hat{q}_1$ with their adjusted versions $\tilde{p}$, $\tilde{q}_0$, and $\tilde{q}_1$, as defined in \eqref{eq:adjusted:proportion}.
+These adjustments can be interpreted as adding one (or $z_\alpha^2/2$) success and one (or $z_\alpha^2/2$) failure to each estimate, improving coverage accuracy for small sample sizes~\citep{agresti2000simple}.
+Substituting the estimates gives the confidence interval in \eqref{eq:ci}.
+
+The adjustment also induces a small shift in the interval center (i.e., $d\tilde{\theta}$ in \eqref{eq:adjusted:ci:center}) due to the dependence of $\hat{\theta}$ on $\hat{q}_0$ and $\hat{q}_1$.
+Its effect on interval length is negligible and therefore ignored, see \citet{lang2014confidence} for details.
+
+\paragraph{Optimal Allocation for Minimizing Confidence-Interval Length.}
+We characterize the optimal allocation of calibration samples across label types under a fixed budget for minimizing the confidence-interval length. To this end, we define the error ratio $\kappa := (1-\tilde{q}_0)/(1-\tilde{q}_1)$.
+\begin{proposition}
+    \label{thm:allocation}
+    Suppose that $\tilde{q}_0$ and $\tilde{q}_1$ are close to $1$.
+    Then the minimum length of the confidence interval defined in~\eqref{eq:ci} is achieved when $\tilde{m}_0 \approx (1/\tilde{p}-1) \sqrt{\kappa} \cdot \tilde{m}_1$.
+\end{proposition}
+This result provides guidance for allocating calibration samples between the two label types. In particular, when the LLM judge is less accurate at identifying \emph{`correct'} responses (i.e., when $\kappa$ is small) or when the naive estimator $\tilde{p}$, the proportion of test-set responses judged as \emph{`correct'} by the LLM, is large, more calibration samples should be allocated to estimating $\tilde{q}_1$ to minimize the interval length, resulting in an optimal allocation with $m_0 < m_1$.
+In practice, we approximate the optimal allocation using Algorithm~\ref{alg:allocation}, which estimates the error ratio $\hat{\kappa}$ from a pilot calibration sample and allocates $m_0$ and $m_1$ according to Proposition~\ref{thm:allocation}.
+
+
+\section{When Are LLM-as-a-Judge Evaluations Preferable to Human-Only Evaluation?}
+\label{sec:when-llm-judge}
+
+In Section~\ref{sec:theory}, we show that a human-labeled calibration dataset is essential for reliable LLM-as-a-judge evaluation because it enables bias correction. This raises a natural question: If human annotators are available, why not instead estimate the target accuracy $\theta$ directly from the human-only evaluation on the test set?
+
+More concretely, suppose that a fixed evaluation budget of $m$ human annotations is available. One could either (i) use these $m$ annotations to construct a calibration dataset for estimating the LLM-judge’s sensitivity and specificity, and then apply bias correction to LLM-based evaluations, or (ii) apply them directly to $m$ test instances to estimate the true accuracy from human evaluation alone. We compare these two strategies and show that, for the same budget $m$, LLM-as-a-judge evaluation with our bias-correction method can be statistically more efficient than human-only evaluation in certain parameter regimes.
+
+\paragraph{Parameter Regimes Where LLM-as-a-Judge Achieves Lower Variance.}
+Human-only evaluation relies on a limited annotation budget, which restricts how many test instances can be evaluated and therefore limits how much the variance of the estimator can be reduced. In contrast, LLM-as-a-judge evaluation can be applied to an arbitrarily large test set at negligible marginal cost, so that the dominant source of uncertainty stems from bias correction based on a finite calibration set. These differences reflect an inherent trade-off between  a costly, near-perfect oracle that can be queried only on a small number of instances, versus an inexpensive but imperfect oracle that can be deployed at scale. Importantly, as the judge becomes more reliable (i.e., as $q_0$ and $q_1$ approach one), the calibration-induced uncertainty diminishes. Consequently, by aggregating large-scale LLM judgments with appropriate bias correction, it is possible to obtain an estimator whose variance is \emph{smaller than that of human-only evaluation}.
+
+It is worth clarifying why human-only evaluation can still exhibit variance even if the true label of every test instance is evaluated and therefore known. The quantity of interest is the true accuracy of the test distribution, i.e., the expected value of the true label indicating whether an instance is \emph{‘correct’}. In practice, we observe a random sample of $m$ instances from the test distribution, and different samples of size $m$ result in different empirical accuracies. Thus, the variance of the estimator arises from subsampling the test distribution, not from uncertainty in individual labels.
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{figs/variance_region.pdf}
+    \caption{
+    Comparison of variances between the LLM-as-a-judge estimator under our correction method, $\hat{\theta}$ in~\eqref{eq:adjusted:proportion}, and the human-only estimator, $\hat{\phi}$ in Proposition~\ref{thm:variance_region}, when $m\to\infty$. Shaded regions indicate regimes where our LLM-as-a-judge evaluation is preferable to human-only evaluation in terms of estimator variance.
+    }
+    \label{fig:variance-comparison}
+\end{figure}
+
+
+
+\begin{figure*}[t!]
+\centering
+\begin{subfigure}[b]{0.29\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figs/n1000_m200_q0-70_q1-90_plot1.pdf}
+\vspace{-16pt}
+\caption{Estimates}
+\label{fig:mc-simulation-estimates}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.29\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figs/n1000_m200_q0-70_q1-90_plot2.pdf}
+\vspace{-16pt}
+\caption{Coverage probability}
+\label{fig:mc-simulation-cp}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.29\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figs/n1000_m200_q0-70_q1-90_plot3.pdf}
+\vspace{-16pt}
+\caption{Confidence interval length}
+\label{fig:mc-simulation-CILength}
+\end{subfigure}
+\caption{Monte Carlo simulation for estimating $\theta$ under an imperfect LLM judge with $(q_0, q_1) = (0.7, 0.9)$. We evaluate estimators across 21 values of $\theta \in [0,1]$, each visualized as a single point. Figure~\ref{fig:mc-simulation-estimates} reports the results from a single run, while Figure~\ref{fig:mc-simulation-cp} and Figure~\ref{fig:mc-simulation-CILength} summarize averages computed over 10,000 replications. All experiments use a test dataset of size $n = 1000$ and a calibration dataset of size $m = 200$, and we use an equal allocation $m_0 = m_1$ for Figure~\ref{fig:mc-simulation-estimates} and Figure~\ref{fig:mc-simulation-cp}.
+\captiona The naive estimator $\hat{p}$ in~\eqref{eq:avg-pred} exhibits bias, while the bias-corrected estimator $\hat{\theta}$ in~\eqref{eq:point-estimator} closely recovers the true accuracy $\theta$ across all values. Shaded regions represent the 95\% confidence intervals (CI).
+\captionb Across all $\theta$, the coverage probability of the confidence interval remains consistently close to the nominal 95\% level.
+\captionc Given a fixed calibration budget of $m = 200$, we compare two allocation strategies: an equal split ($m_0 = m_1$) and the allocation proportional to $m_0 \propto (1/\hat{p}-1)\sqrt{\kappa}\cdot m_1$ by using Algorithm~\ref{alg:allocation}. The proposed allocation gives shorter confidence intervals.}
+\label{fig:mc-simulation}
+\end{figure*}
+
+Figure~\ref{fig:variance-comparison} visualizes this comparison. The shaded regions indicate parameter regimes over $q_0$, $q_1$, and $\theta$ where the bias-corrected LLM-as-a-judge estimator has smaller variance than the human-only estimator. The variance advantage is most pronounced around $\theta=1/2$, where the intrinsic uncertainty of binary evaluation is largest, and the shaded region expands as the LLM judge becomes more accurate. The following proposition formalizes these parameter regimes.
+
+
+
+\begin{proposition}
+    \label{thm:variance_region}
+    Suppose that $n \to \infty$ and $q := q_0 = q_1$ with $\frac{1}{2} + \frac{1}{2\sqrt{2}} < q \leq 1$.
+    Let $M_1 \sim \mathrm{Binomial}(m, \theta)$ denote the number of \emph{`correct'} responses by human evaluation, and define $\hat{\phi} := M_1 / m$.
+    Let $\hat{\theta}$ be the bias-corrected estimator in \eqref{eq:adjusted:proportion}.
+    Fix $\delta\in(0,1)$ and define $\epsilon := \sqrt{\tfrac{\log(2/\delta)}{2m}}$.
+    If $\epsilon < \min\{\theta,1-\theta\}$, then with probability at least $1-\delta$, $\Var(\hat{\theta}) \leq \Var(\hat{\phi})$ whenever
+    \begin{align}
+        \!\!\!
+        \theta(1-\theta)
+        \geq
+        \frac{q(1-q)}{(2q-1)^2}
+        \!\cdot\!
+        \left(
+            1
+            +
+            \frac{(1-\theta)\epsilon}{1-\theta-\epsilon}
+            +
+            \frac{\theta\epsilon}{\theta-\epsilon}
+        \right)
+        \!.\;
+        \label{eq:sufficient_condition_hp}
+    \end{align}
+    Moreover, since $\epsilon = O(m^{-1/2})$, as $m\to\infty$ the sufficient condition in \eqref{eq:sufficient_condition_hp} reduces to the necessary and sufficient condition $\theta(1-\theta)\ge \frac{q(1-q)}{(2q-1)^2}$, which is equivalent to
+    \begin{align}
+        \theta \in
+        \left[
+            \tfrac{1}{2}-\sqrt{\tfrac{1}{2}-\tfrac{1}{4(2q-1)^2}},
+            \tfrac{1}{2}+\sqrt{\tfrac{1}{2}-\tfrac{1}{4(2q-1)^2}}
+        \right]
+        .
+    \end{align}
+\end{proposition}
+
+\section{Empirical Validation of Our Method}\label{sec:experiment}
+We validate the theoretical results in Section~\ref{sec:theory} through Monte Carlo simulations and real-world benchmarks.
+
+\subsection{Monte Carlo Simulation}
+We evaluate the proposed method under the following parameter configuration. The LLM judge is characterized by $(q_0, q_1) = (0.7, 0.9)$, and the true accuracy varies over $\theta \in \{0, 0.05, 0.10, \ldots, 1\}$, yielding 21 settings. For each $(q_0, q_1, \theta)$, we generate a test dataset of size $n=1000$ and a calibration dataset of total size $m=200$, with equal allocation $m_0=m_1$ unless stated otherwise.
+
+We report the naive estimator $\hat{p}$ in~\eqref{eq:avg-pred} and its confidence interval, as well as the bias-corrected estimator $\hat{\theta}$ in~\eqref{eq:point-estimator} with the confidence interval in~\eqref{eq:ci}. Each configuration is replicated 10{,}000 times to evaluate estimation accuracy, confidence-interval coverage, and interval length.  Additional results are provided in Appendix~\ref{sec:additional:mc}.
+
+
+
+\paragraph{Results.}
+Figure~\ref{fig:mc-simulation-estimates} compares $\hat{p}$ and $\hat{\theta}$ in a single simulation run. The naive estimator $\hat{p}$ is biased, particularly overestimating the true accuracy $\theta$ when $\theta$ is small. In contrast, the bias-corrected estimator $\hat{\theta}$ closely matches the true accuracy across all values of $\theta$, consistent with Proposition~\ref{thm:bias}.
+
+Figure~\ref{fig:mc-simulation-cp} reports the empirical coverage probability of the confidence interval based on $\hat{p}$ and the proposed confidence interval in~\eqref{eq:ci}. The interval based on $\hat{p}$ attains near-zero coverage except at a few values of $\theta$. In contrast, the proposed interval achieves coverage close to the nominal 95\% level across all values of $\theta$. These results confirm that our confidence interval provides reliable uncertainty quantification.
+
+To evaluate the benefit of optimal allocation, we compare symmetric allocation ($m_0=m_1=100$) with the allocation produced by Algorithm~\ref{alg:allocation} under a fixed calibration budget of $m=200$. Algorithm~\ref{alg:allocation} produces a calibration set that approximately follows the optimal allocation in Proposition~\ref{thm:allocation}. Figure~\ref{fig:mc-simulation-CILength} shows that Algorithm~\ref{alg:allocation} yields shorter confidence intervals than symmetric allocation.
+
+
+\subsection{Chatbot Arena Benchmark}
+
+We evaluate our method on the Chatbot Arena benchmark~\citep{chiang2024chatbot}, where users vote on which of two anonymous models provides the better response to the same prompt. These pairwise comparisons are aggregated into each model’s win rate, defined as the probability that the target model’s response is preferred over its opponent’s.
+
+We consider six target models studied in \citet{zheng2023judging}: \texttt{Alpaca-13B}~\citep{alpaca}, \texttt{Claude-v1}, \texttt{FastChat-T5-3B}, \texttt{GPT-4}, \texttt{LLaMA-13B}~\citep{touvron2023llama}, and \texttt{Vicuna-13B}~\citep{vicuna2023}. For each target model, we construct response pairs consisting of one response generated by the target model and one response generated by a randomly selected opponent model. Chatbot Arena provides human preference labels for these pairs, which we treat as ground truth for computing the target model’s true win rate $\theta$. We then apply \texttt{GPT-4.1-mini} as an LLM judge to the same pairs to obtain LLM-judged preference labels, and compute the naive estimator $\hat{p}$ in~\eqref{eq:avg-pred} and our bias-corrected estimator $\hat{\theta}$ in~\eqref{eq:point-estimator}.
+
+For each trial, we randomly split the human-labeled pairs into a test set (90\%) and a calibration set (10\%). We estimate the judge’s sensitivity and specificity on the calibration set, and evaluate the bias of $\hat{p}$ and $\hat{\theta}$ on the held-out test set. We repeat this procedure 100 times with independent random splits and report results averaged across trials.
+
+
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=\linewidth]{figs/chatbot_arena.pdf}
+    \caption{Average bias of winning rates for six models on Chatbot Arena, averaged over 100 random test (90\%) / calibration (10\%) splits. We compare the naive LLM-based estimator $\hat{p}$ in~\eqref{eq:avg-pred} with our bias-corrected estimator $\hat{\theta}$ in~\eqref{eq:point-estimator}, using \texttt{GPT-4.1-mini} as the judge. The proposed method reduces bias for all models.}
+    \label{fig:chatbot_arena_bias}
+\end{figure}
+\begin{table}[t!]
+    \centering
+    \caption{Empirical coverage of the 95\% confidence intervals in~\eqref{eq:ci} and average interval lengths for Chatbot Arena win-rate estimates.}
+    \label{tab:chatbot_arena_ci}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{lcccccc}
+    \toprule
+    Model & Alpaca & Claude & FastChat-T5 & GPT-4 & LLaMA & Vicuna \\
+    \midrule
+    Coverage & 96\% & 95\% & 97\% & 97\% & 99\% & 99\% \\
+    CI length & 0.193 & 0.262 & 0.256 & 0.210 & 0.267 & 0.178 \\
+    \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+
+
+\begin{table*}[t!]
+\centering
+\caption{
+Existing bias-correction estimators for $\E_{\sP}[\vZ]$.
+Here, $\sP$ denotes the test distribution and $\sQ$ the calibration distribution. Estimators (ii)–(iv) rely on the assumption that $\Pr_{\sP}(\vZ)=\Pr_{\sQ}(\vZ)$, whereas our estimator in (v) remains valid when $\Pr_{\sP}(\vZ)\neq \Pr_{\sQ}(\vZ)$.
+}
+\label{tab:estimator-comparison}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcc}
+\toprule
+\textbf{Name} & \textbf{Estimation formula} & \textbf{Assumption} \\
+\midrule
+(i) Naive estimator ($\hat{p}$ in~\eqref{eq:avg-pred})
+& $\E_{\sP}[\hat{\vZ}]$
+& $\Pr_{\sP}(\vZ) = \Pr_{\sP}(\hat{\vZ})$ \\
+
+(ii) Calibration-only estimator
+& $\E_{\sQ}[\vZ]$
+& $\Pr_{\sP}(\vZ) = \Pr_{\sQ}(\vZ)$ \\
+
+(iii) Difference estimator (used in Prediction-Powered Inference)
+& $\E_{\sP}[\hat{\vZ}] + \E_{\sQ}[\vZ - \hat{\vZ}]$
+& $\Pr_{\sP}(\vZ - \hat{\vZ}) = \Pr_{\sQ}(\vZ - \hat{\vZ})$ \\
+
+(iv) Conditional calibration estimator
+& $\Pr_{\sQ}(\vZ \mid \hat{\vZ}) \, \E_{\sP}[\hat{\vZ}]$
+& $\Pr_{\sP}(\vZ \mid \hat{\vZ}) = \Pr_{\sQ}(\vZ \mid \hat{\vZ})$ \\
+
+(v) Misclassification-adjusted estimator (Ours; $\hat{\theta}$ in~\eqref{eq:point-estimator})
+& $\big( \Pr_{\sQ}(\hat{\vZ} \mid \vZ) \big)^{\!-1} \E_{\sP}[\hat{\vZ}]$
+& $\Pr_{\sP}(\hat{\vZ} \mid \vZ) = \Pr_{\sQ}(\hat{\vZ} \mid \vZ)$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}
+
+\paragraph{Results.}
+Figure~\ref{fig:chatbot_arena_bias} shows the average bias in win-rate estimation for each model on the Chatbot Arena benchmark. The naive estimator $\hat{p}$ exhibits non-negligible bias across all six models, whereas our estimator $\hat{\theta}$ reduces bias toward zero. Table~\ref{tab:chatbot_arena_ci} reports the coverage of the proposed 95\% confidence intervals, which remains close to or slightly above the nominal level across models, indicating valid uncertainty quantification. Overall, our method provides a simple and practical bias-correction procedure for LLM-as-a-judge evaluation that requires only a small calibration dataset.
+
+
+\section{Robust Estimation under Distribution Shift}
+\label{sec:other:estimator}
+
+
+
+
+As mentioned in Section~\ref{sec:introduction}, a variety of bias-correction methods have been proposed for imperfect evaluators, typically under the assumption $\sP = \sQ$ between the test distribution $\sP$ and the calibration distribution $\sQ$. When this assumption is violated, bias correction can fail.
+
+In practice, however, not every marginal or conditional probability under $\sP$ need coincide with its counterpart under $\sQ$. Instead, only certain conditional distributions of the data-generating process may remain invariant across $\sP$ and $\sQ$, while others may change. We therefore clarify which probabilistic assumptions are plausibly shared between $\sP$ and $\sQ$ in practice. Under minimal assumptions that are realistic in LLM-as-a-judge evaluation, we then characterize which methods remain unbiased under distribution shift.
+
+
+
+\paragraph{Data-Generating Process for LLM-as-a-Judge Evaluation.}
+LLM-as-a-judge evaluation can be formalized through a data-generating process consisting of two probabilistic components: the marginal distribution of true labels $\Pr(Z)$, which is determined by the dataset, and the conditional behavior of the LLM judge, $\Pr(\hat Z \mid Z,\xi)$.
+Here, $\xi$ denotes auxiliary factors that may influence judgments,
+such as response length or stylistic attributes~\citep{zhou2023instruction, dubois2024lengthcontrolled}.
+
+In this section, we \emph{only} assume that the judge’s behavior depends on the true label and that it remains invariant across the test and calibration datasets:
+\begin{align}
+    \Pr_{\sP}(\hat Z \mid Z) = \Pr_{\sQ}(\hat Z \mid Z).
+\end{align}
+This assumption is motivated by common practice in LLM-as-a-judge evaluation, where the same LLM judge and prompting strategy are used for both the test and calibration datasets. In Appendix~\ref{sec:future_work}, we discuss how this assumption can be relaxed to allow the judge behavior to depend on additional covariates $\xi$, namely $\Pr_{\sP}(\hat Z \mid Z,\xi)=\Pr_{\sQ}(\hat Z \mid Z,\xi)$.
+
+In contrast, we consider the true label distributions to differ:
+\begin{align}
+    \label{eq:label:shift}
+    \Pr_{\sP}(Z)\neq\Pr_{\sQ}(Z).
+\end{align}
+Such distribution shift can arise because datasets are collected in different ways: calibration datasets are constructed to analyze how the judge makes errors, whereas test datasets reflect realistic evaluation scenarios~\citep{jung2024trust}. Since calibration datasets require costly human annotation, they are collected in advance and remain fixed over time. By contrast, test data are often collected online or arrive in multiple batches, each potentially having a different underlying true accuracy. Consequently, the true label distribution of the test data can differ from that of the calibration data.
+
+Under this setup, Bayes’ rule implies
+\begin{equation}
+\label{eq:bayes}
+    \Pr(Z \mid \hat Z) \propto \Pr(\hat Z \mid Z)\Pr(Z),
+\end{equation}
+showing that the posterior distribution depends on $\Pr(Z)$. Consequently, a shift in $\Pr(Z)$ generally induces a shift in the posterior, i.e., $\Pr_{\sP}(Z \mid \hat Z) \neq \Pr_{\sQ}(Z \mid \hat Z)$. Estimators that assume invariance of $\Pr(Z \mid \hat Z)$ are therefore sensitive to the distribution shift described in~\eqref{eq:label:shift}.
+
+
+\paragraph{Implicit Assumptions of Existing Estimators.}
+
+Following prior work~\citep{kloos2021comparing, meertens2022improving}, we compare five point estimators for estimating the true accuracy $\theta$ in~\eqref{eq:theta} under the test distribution, that is, $\E_{\sP}[Z]$.
+To facilitate comparison, we define
+\begin{align}
+    \vZ := (Z, 1-Z)^\top,
+    \qquad
+    \hat{\vZ} := (\hat Z, 1-\hat Z)^\top,
+\end{align}
+and let $\Pr(\hat{\vZ} \mid \vZ)$ and $\Pr(\vZ \mid \hat{\vZ})$ denote the confusion and calibration matrices, respectively.
+For example, the $(a,b)$-th entry of the confusion matrix is $[\Pr(\hat{\vZ} \mid \vZ)]_{a,b} := \Pr([\hat{\vZ}]_a \mid [\vZ]_b)$, where $[\hat{\vZ}]_a$ denotes the $a$-th component of $\hat{\vZ}$.
+
+
+Under this notation, the problem can be reformulated as estimating $\E_{\sP}[\vZ]$. Table~\ref{tab:estimator-comparison} summarizes estimators considered in prior work.
+The estimator in (i) is equivalent to $\hat{p}$ in~\eqref{eq:avg-pred}, since $\E_{\sP}[\hat{\vZ}] = \big(\hat{p},\, 1-\hat{p}\big)^\top$, and it does not use the calibration distribution $\sQ$.
+In contrast, the estimators in (ii)–(v) use calibration data and rely on assumptions that certain probabilities are equal between $\sP$ and $\sQ$. Moreover, the estimator in (iii) coincides with the estimator used in Prediction-Powered Inference~\citep{angelopoulos2023prediction}.
+Lastly, the estimator in (v) corresponds to our estimator $\hat{\theta}$ in \eqref{eq:point-estimator}, and its equivalence is shown in Appendix~\ref{sec:appendix:equivalence}.
+
+
+
+
+
+\paragraph{Effect of Distribution Shift on Estimator Bias.}
+
+Most existing estimators rely on invariance assumptions that fail under the distribution shift in true accuracy described in \eqref{eq:label:shift}, even when the judge’s conditional behavior remains unchanged. In particular, the estimators in (ii)–(iv) require invariance of the marginal distribution $\Pr(Z)$, which is violated when $\Pr_{\sP}(Z) \neq \Pr_{\sQ}(Z)$. In contrast, the misclassification-adjusted estimator in (v) depends only on the conditional distribution $\Pr(\hat Z \mid Z)$ and does not rely on the marginal distribution $\Pr(Z)$.
+
+Following the Monte Carlo simulation in Section~\ref{sec:experiment}, we examine estimator behavior under distribution shift. We consider a setting where the test and calibration datasets share the same conditional judge behavior, while the calibration accuracy varies as $\theta_{\sQ} \in [0.25, 0.75]$, with the test accuracy held fixed at $\theta_{\sP} = 0.5$.
+
+
+Figure~\ref{fig-dist-shift} reports the resulting biases of each estimator. As established in previous sections, the naive estimator in (i) is biased in this setting. Estimators (ii)–(iv) also exhibit bias when $\theta_{\sP} \neq \theta_{\sQ}$, whereas the misclassification-adjusted estimator in (v), used in our method, remains unbiased. Additional simulation details are provided in Appendix~\ref{sec:appendix:distshift}.
+
+
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=\linewidth]{figs/fig_distribution-shift.pdf}
+    \vspace{-16pt}
+    \caption{
+    Effects of distribution shift $\Pr_{\sP}(Z)\neq\Pr_{\sQ}(Z)$ on estimator bias. We fix the true accuracy of the test distribution at $\theta_{\sP}=0.5$ and vary the true accuracy of the calibration distribution as $\theta_{\sQ}\in[0.25,0.75]$, corresponding to a distribution-shift ratio from $0.5$ to $1.5$. The misclassification-adjusted estimator in (v), used in our method, remains unbiased under this shift.
+    }
+    \label{fig-dist-shift}
+    \vspace{-16pt}
+\end{figure}
+
+
+
+

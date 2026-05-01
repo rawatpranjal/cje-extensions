@@ -1,0 +1,26 @@
+\section{Introduction}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/splash_figure.pdf}
+    \caption{HarmBench offers a standardized, large-scale evaluation framework for automated red teaming and robust refusal. It includes four functional categories (left) with $510$ carefully curated behaviors that span diverse semantic categories (right). The initial set of evaluations includes $18$ red teaming methods and $33$ closed-source and open-source LLMs.}
+    \label{fig:num_tokens}
+\end{figure*}
+
+Large language models (LLMs) have driven rapid advances in the performance and generality of AI systems. This has enabled many beneficial applications in recent years, ranging from AI tutors to coding assistants \citep{chen2021evaluating, achiam2023gpt}. However, there has been growing concern from researchers, regulators, and industry leaders over the risk of malicious use posed by current and future AI systems \citep{brundage2018malicious, hendrycks2023overview, EO14110_2023}. Current LLMs have shown preliminary abilities in writing malware \citep{bhatt2023purple}, social engineering \citep{hazell2023large}, and even designing chemical and biological weapons \citep{gopal2023will, openai_2024_early_warning}. As LLMs become more capable and widespread, limiting the potential for their malicious use will become increasingly important. To this end, an important research problem is ensuring that LLMs never engage in specified harmful behaviors.
+
+A variety of best practices and defenses have been adopted by leading LLM developers to address malicious use, including red teaming, filters, and refusal mechanisms \citep{ganguli2022red, markov2023holistic, achiam2023gpt, touvron2023llama}. Red teaming is a key component of these, as it allows companies to discover and fix vulnerabilities in their defenses before deployment. However, companies currently rely on manual red teaming, which suffers from poor scalability. Given the vast scope of LLMs, manual red teaming simply cannot explore the full range of adversarial or long-tail scenarios an AI might encounter. Thus, there has been considerable interest in developing automated red teaming methods to evaluate and harden defenses.
+
+Recent papers on automated red teaming have reported promising results. However, these papers use disparate evaluations, rendering them hard to compare and hampering future progress. Moreover, we find that prior evaluations lack important desirable properties for accurately evaluating automated red teaming. To address these issues, we introduce HarmBench, a new benchmark for red teaming attacks and defenses. We identify three desirable properties for red teaming evaluations---breadth, comparability, and robust metrics---and we systematically design HarmBench to satisfy them. HarmBench contains far more unique behaviors than previous evaluations as well as entirely new categories of behaviors unexplored in prior work.
+
+We release HarmBench with large-scale initial evaluations, including $18$ red teaming methods and $33$ LLMs. These experiments reveal previously unknown properties that could help inform future work on attacks and defenses, including that no current attack or defense is uniformly effective, and that robustness is independent of model size. Overall, our results demonstrate the vital importance of large-scale comparisons enabled by a standardized benchmark.
+
+To demonstrate how HarmBench can enable future progress on LLM safety measures, we also propose a novel adversarial training method for robust refusal that is highly efficient. Using this new method and HarmBench, we show how incorporating strong automated red teaming into safety training can outperform prior defenses, obtaining state-of-the-art robustness against the GCG attack \citep{zou2023universal}. Ultimately, we hope HarmBench can enable collaborative development of stronger attacks and defenses, helping provide tools for ensuring LLMs are developed and deployed safely. HarmBench is available at \url{https://github.com/centerforaisafety/HarmBench}.
+
+
+
+
+
+
+
+

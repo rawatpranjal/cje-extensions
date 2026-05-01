@@ -1,0 +1,40 @@
+\begin{table}[b!]
+  \centering
+  \small
+
+  \caption{Three camps of evaluations (general capabilities, vanilla and  adversarial safety capabilities) with their corresponding tasks, measuring aspect, and evaluation metrics used in Table \ref{tab:finetune_results}, the main safety training result table. Please refer to Appendix \S \ref{assec:safety_training_evals} for the full list of evaluation tasks.}
+  \label{tab:evaluation_metrics_schema}
+
+  \begin{tabular}{l@{\hspace{0.95\tabcolsep}}
+  l@{\hspace{0.95\tabcolsep}}
+  l@{\hspace{0.95\tabcolsep}}
+  l@{\hspace{0.95\tabcolsep}}
+  r}
+    \toprule
+
+    \textbf{Type} & \textbf{Task} & \textbf{Short} & \textbf{Measuring Aspect}  & \textbf{Metrics} \\
+    
+    \midrule
+
+    \multirow{2}{*}{\makecell[tl]{\textbf{General}}} & AlpacaEval V1 & AlpE1 & General user instructions-following & Win Rate\% $\uparrow$\\
+
+    & MT-Bench & MTB & Multi-turn open-ended chats & Total Score $\uparrow$ \\
+    \midrule
+    
+    \multirow{5}{*}{\makecell[tl]{\textbf{Safety} \\ \textbf{Vanilla}}} & \harmbench & HarmB & Safeguard of harmful vanilla queries & ASR $\downarrow$ \\
+
+    & ToxiGen & ToxiG & Toxic generations towards certain groups & Toxicity\% $\downarrow$ \\
+    & XSTest & XST & Overall balance between refusal \& over-refusal & F1 $\uparrow$ \\
+    & \; $-$Harmful & XST (H) & Safeguard of harmful vanilla queries & RTA $\uparrow$ \\
+    & \; $-$Benign & XST (B) & Over-refusal of benign vanilla queries & RTA $\downarrow$ \\
+    \midrule
+
+    \multirow{5}{*}{\makecell[tl]{\textbf{Safety} \\ \textbf{Adver} \\ \textbf{-sarial}}} & JailbreakTrigger & JT & Safeguard of simple templated jailbreaks & RTA $\downarrow$ \\
+    & DoAnythingNow & DAN & Safeguard of human-written templated jailbreaks & ASR $\downarrow$ \\
+    & \dataset & \datasetshort & Overall balance between refusal \& over-refusal & Accuracy $\uparrow$ \\
+    & \; $-$Harmful & \datasetshort (H) & Safeguard of harmful adversarial queries & ASR $\downarrow$ \\
+    & \; $-$Benign & \datasetshort (B) & Over-refusal of benign adversarial queries & RTA $\downarrow$ \\
+
+    \bottomrule
+  \end{tabular}
+\end{table}

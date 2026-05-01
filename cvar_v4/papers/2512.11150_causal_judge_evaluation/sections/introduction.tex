@@ -1,0 +1,66 @@
+\section{Introduction}
+\label{sec:intro}
+
+Many teams now choose between system configurations (models, prompts, parameters, tools) by generating outputs and scoring them with an LLM judge. This is fast, and often wrong in a systematic way. Consider a common failure: you compared configuration A to B, the judge said A wins, you shipped A, and users hated it. The mechanism: verbosity and style bias. Judges frequently reward longer, more elaborate responses independent of actual quality; optimizing against the judge selected the wrong configuration. The standard workaround (reserve oracle labels for a small validation slice and hope the correlation holds) is ubiquitous in practice but statistically unsound.
+
+CJE is a simple protocol: \textbf{calibrate} the judge to a small set of oracle labels, then \textbf{audit} whether that calibration remains valid for each target policy. When the audit fails, we do not ``hope correlation holds''; we either recalibrate or refuse level claims.
+
+\noindent\textbf{Quick start for practitioners:}
+\begin{itemize}[leftmargin=*,nosep]
+\item Use Direct + two-stage calibration. For open-ended generation under nontrivial policy shifts, logs-only OPE is impractical: target-typical trajectories receive little logger mass (low TTC), yielding a coverage-limited precision floor that weight stabilization cannot overcome.
+\item Audit transport for high-stakes decisions (mean residual test per policy).
+\item Gate on TTC $\geq 0.70$ before relying on logged data; in our benchmark, only near-clone policies pass this threshold.
+\end{itemize}
+
+\paragraph{Three systematic failures.}
+Uncalibrated ``LLM-as-judge'' evaluation exhibits three failure modes that compound in production:
+
+\begin{enumerate}[leftmargin=*,itemsep=4pt,topsep=4pt]
+\item \textbf{Rankings can invert.} Judge scores $S$ are treated as if they were rewards $Y$ on the same scale. They are not. Without calibration, higher $S$ can predict \emph{lower} $Y$, inverting rankings entirely. This is the ``surrogate paradox'' in a new guise: surrogates can mislead catastrophically when the surrogate-target relationship shifts across contexts \citep{FlemingDeMets1996}. The ``You're absolutely right!'' phenomenon illustrates the cost: sycophantic responses score high on cheap proxies but low on actual user value. Teams know they should evaluate against long-term outcomes, but oracle labels are expensive, so they settle for proxies that may point the wrong direction.
+
+\item \textbf{Standard confidence intervals fail catastrophically.} Naive CIs on uncalibrated judge scores achieve near-zero coverage: their 95\% CIs capture the true value in 0/50 seeds. Bootstrap inference with bias-corrected estimation restores coverage to ${\sim}$95\% for Direct mode. (\Cref{fig:oua-decomposition}: at 5\% oracle fraction, calibration uncertainty contributes ${\sim}$90\% of total variance.)
+
+\item \textbf{Importance sampling fails despite healthy ESS.} When evaluating target policies $\pi'$ using logged data from $\pi_0$, importance-weighted estimators (inverse propensity scoring, IPS; self-normalized IPS, SNIPS) fail even after weight stabilization boosts effective sample size (ESS) from degenerate ($<1\%$) to healthy ($>80\%$) regimes. The problem is not weight concentration but \emph{coverage}: the logger rarely visits regions where the target policy concentrates. We formalize this via the \textbf{Coverage-Limited Efficiency (CLE)} diagnostic, which explains why IPS-style estimation hits a precision floor under limited overlap. (\Cref{tab:weight-diagnostics}: TTC ranges 19--49\% with CLE factors of 24--61$\times$.)
+\end{enumerate}
+
+\noindent\emph{Why logs-only OPE fails for open-ended generation.}
+Off-policy evaluation requires the logger to have visited regions where the target concentrates. In autoregressive text generation, the ``action'' is an entire response---a trajectory through a space of $|\mathcal{V}|^T$ possible token sequences. Two issues compound: (i) teacher-forcing propensities are empirically unreliable (even our clone policy achieves only 26\% raw ESS vs.\ theoretical 100\%), and (ii) for meaningfully different policies, TTC is 19--49\%, indicating the logger rarely visits target-typical regions. Even with perfect propensities, CLE implies a hard precision floor when TTC is low. In constrained settings (short outputs, near-clone shifts, tool-choice bandits), OPE may remain viable; for open-ended generation under nontrivial policy shifts, Direct sidesteps these issues entirely.
+
+\paragraph{Related work.}
+Recent work recognizes that LLM judges require calibration \citep{Lee2025LLMJudgeReporting}, and concurrent work \citep{Chen2026EfficientLLMJudge} develops semiparametrically efficient, calibration-aware inference for mean parameters in the standard ``large judge-labeled test + small human-labeled calibration'' design. \citet{Guerdan2025DoublyRobustLLM} use doubly robust methods to address external validity when LLM judges are prompted with demographic personas. Our focus is complementary: we study multi-policy ranking under policy/deployment shift, introduce auditable transport diagnostics (policy-wise mean residual tests), and provide overlap/coverage diagnostics (CLE) and weight stabilization for off-policy evaluation, components not addressed by mean-parameter-only treatments. CJE fills this gap.
+
+\paragraph{Auditable assumptions.}
+The core insight of CJE is to replace an uncheckable surrogacy assumption with a \emph{policy-wise moment restriction} that we can audit. In causal inference, negative controls and proxy variables provide a template for this move: they turn untestable identification conditions into checkable diagnostics using auxiliary data \citep{Lipsitch2010,TchetgenTchetgen2024}. CJE applies this philosophy to LLM evaluation by budgeting a small oracle slice to test whether the judge-to-oracle calibration remains valid in each target context. The protocol is: calibrate on $\pi_0$, then \emph{audit transport} on each $\pi'$ (or time window, user segment, or task population) with a small oracle sample. Pass $\to$ reuse calibration; fail $\to$ recalibrate or refuse level claims for that cell. This transforms a brittle identification assumption into a standardized audit with an explicit decision rule.
+
+\paragraph{Causal Judge Evaluation (\CJE).}
+We introduce CJE, a framework that addresses all three failures.\footnote{Library: \texttt{pip install cje-eval} (\url{https://github.com/cimo-labs/cje}); experiments: \url{https://github.com/cimo-labs/cje-arena-experiments}} CJE casts offline evaluation as calibrated surrogate estimation with three core components:
+
+\begin{itemize}[leftmargin=*,itemsep=2pt,topsep=2pt]
+\item Reward calibration: mean-preserving isotonic regression from judge score $S$ to oracle labels $Y$, with a two-stage option for covariate-dependent bias (e.g., response length).
+\item Weight stabilization: variance-optimal stacking of monotone weight candidates, stabilizing importance weights for improved effective sample size.
+\item Calibration-aware inference: bootstrap with bias correction that propagates calibration uncertainty into confidence intervals, achieving near-nominal coverage.
+\end{itemize}
+
+\noindent Conceptually, CJE adopts the \emph{surrogate index} move \citep{AtheyChettyImbensKang2019}, learning $f(S,X) \approx \E[Y \mid S,X]$ from cheap proxies to expensive outcomes, and applies it to LLM evaluation with auditable transport diagnostics. These components instantiate a single design rule: encode justified knowledge as model restrictions (closed convex sets) and project onto them. Building on established semiparametric theory, we show that such restrictions can only reduce variance (\cref{thm:model-restriction}); with cross-fitting, our estimators attain the surrogate information bound. (Component names and technical details in \cref{sec:method}.)
+
+Beyond variance control, CJE includes a mean transport test that operationalizes the auditable assumption protocol: for each target policy $\pi'$ or time period, we test whether the mean residual $\E[Y - f(S,X)]$ is zero. In our Arena benchmark, the base-trained calibration transports cleanly to clone, premium, and prompt-engineered policies, but fails for an adversarial ``unhelpful'' policy, where mean residuals reveal a $-0.31$ level shift. When the test fails, the failure is \emph{visible and actionable}: either recalibrate with policy-specific data or refuse absolute value claims for that cell.
+
+\paragraph{The Arena benchmark.}
+We validate CJE on a large-scale benchmark: 4,961 Chatbot Arena prompts, five LLM policies (including an adversarial ``unhelpful'' policy), 13 estimators, and \texttt{gpt-5-2025-08-07} as oracle. Key findings:
+
+\begin{itemize}[leftmargin=*,itemsep=2pt,topsep=2pt]
+\item Calibration works. The Direct Method with two-stage calibration achieves 94\% pairwise ranking accuracy on average (vs.\ 38\% for SNIPS). Naive CIs on uncalibrated scores achieve 0\% coverage; bootstrap inference with $\hat\theta_{\mathrm{aug}}$ improves coverage to ${\sim}$95\% (Direct and stacked doubly-robust).
+\item OPE fails unexpectedly. We expected weight stabilization to enable OPE; it did not. Despite weight stabilization boosting ESS from $<1\%$ to $>80\%$, calibrated IPS remains near-random (47\% pairwise). CLE explains why: high ESS is necessary but not sufficient when the logger rarely visits target-typical regions.
+\item Doubly-robust (DR) does not dominate. We expected DR to outperform Direct by combining logged data with fresh draws. Instead, Direct slightly outperforms DR (94.4\% vs.\ 94.1\%): under low overlap, DR's IPS component adds noise rather than information.
+\end{itemize}
+
+\paragraph{Contributions.}
+\begin{enumerate}[leftmargin=*,nosep]
+\item Framework: CJE unifies calibration, weight stabilization, and uncertainty quantification for surrogate-based LLM evaluation.
+\item Methods: Mean-preserving reward calibration, weight stabilization for improved ESS, and calibration-aware bootstrap inference.
+\item Theory: CJE adapts the surrogate index framework to LLM evaluation with a key innovation: transportability becomes auditable rather than assumed via the mean transport test. Inference is grounded in the efficient influence function for missing-outcome estimation, explaining why bootstrap with $\hat\theta_{\mathrm{aug}}$ achieves ${\sim}$95\% coverage where naive methods achieve 0\%. The CLE bound provides a novel explanation for OPE failure despite high ESS, formalizing a precision floor under limited overlap.
+\item Validation: A 13-estimator benchmark on ${\sim}5$k Arena prompts: at 5\% oracle fraction, 99\% pairwise ranking accuracy; across all configurations, 94\% average. Cost reduction of 14$\times$ (for 5 policies) with near-nominal CI coverage (${\sim}$95\% for both Direct and stacked DR).
+\item Operations: A closed-form Square Root Law for optimal budget allocation (\cref{app:budget}), enabling practitioners to minimize variance subject to cost constraints by balancing evaluation and calibration uncertainty.
+\end{enumerate}
+
+\noindent\textit{Readers primarily interested in deployment can focus on \cref{sec:method} (pipeline overview), \cref{ssec:takeaways} (seven practical rules), and \cref{tab:estimator-guide} (estimator selection guide).}

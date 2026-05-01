@@ -1,0 +1,83 @@
+
+\begin{table}[t!]
+    \centering
+    \small
+    \caption{The chat format and system messages (if any) of the target models for the jailbreaking experiments.}
+    \label{tab:chat_model_format}
+    
+    \begin{tabular}{l p{11cm}}
+        \toprule
+        \textbf{Model} &  \textbf{Chat Format with System Messages (If Any)} \\
+        \midrule
+        
+\tulu &
+\begin{lstlisting}
+"<|user|>\n{instruction}\n<|assistant|>\n"
+\end{lstlisting} \\
+\midrule
+
+OLMo & 
+\begin{lstlisting}
+"<|endoftext|><|user|>\n{instruction}\n<|assistant|>\n"
+\end{lstlisting} \\
+\midrule
+
+% \llama &
+% \begin{lstlisting}
+% "[INST] <<SYS>>\nYou are a helpful, respectful and honest 
+% assistant. Always answer as helpfully as possible, while
+% being safe. Your answers should not include any harmful, 
+% unethical, racist, sexist, toxic, dangerous, or illegal 
+% content. Please ensure that your responses are socially 
+% unbiased and positive in nature. If a question does not 
+% make any sense, or is not factually coherent, explain 
+% why instead of answering something not correct. If you 
+% don't know the answer to a question, please don't share 
+% false information.\n<</SYS>>\n\n{instruction} [/INST] "
+% \end{lstlisting} \\
+% \midrule
+
+Llama3 & 
+\begin{lstlisting}
+"<|begin_of_text|><|start_header_id|>user
+<|end_header_id|>\n\n{instruction}<|eot_id|>
+<|start_header_id|>assistant<|end_header_id|>\n\n"
+\end{lstlisting} \\
+\midrule
+
+\vicuna &
+\begin{lstlisting}
+"A chat between a curious human and an artificial 
+intelligence assistant. The assistant gives helpful, 
+detailed, and polite answers to the human's questions. 
+USER: {instruction} ASSISTANT:"
+\end{lstlisting} \\
+\midrule
+
+Mistral/Mixtral &
+\begin{lstlisting}
+"[INST] {instruction} [/INST]"
+\end{lstlisting} \\
+\midrule
+
+\gemma & 
+\begin{lstlisting}
+"<bos><start_of_turn>user\n{instruction}<end_of_turn>\n
+<start_of_turn>model\n"
+\end{lstlisting} \\
+\midrule
+
+GPT-3.5/4 & 
+
+% (For jailbreak experiments.)
+\begin{lstlisting}
+"You are a helpful assistant."
+\end{lstlisting} \\
+\bottomrule
+
+    \end{tabular}
+\end{table}
+
+
+%  
+

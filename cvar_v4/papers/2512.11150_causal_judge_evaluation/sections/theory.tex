@@ -1,0 +1,143 @@
+\section{Theory: EIF, Model Restriction, and Efficiency}
+\label{sec:theory}
+
+This section explains why the projections in CJE are not heuristics but information-optimal. We show: (i) using a judge as a surrogate can only reduce variance, (ii) encoding justified restrictions like monotonicity and mean-one weights tightens efficiency bounds, and (iii) our estimators attain these bounds under standard conditions. Proofs and technical lemmas are deferred to the appendix.
+
+\paragraph{Surrogate model and EIF.}
+Let $R^\star=\E[Y\mid S]$ and $m^\star(S)=\E[W_{\pi'}\mid S]$. Under \emph{mean sufficiency}
+$\E[Y\mid X,A,S]=R^\star(S)$,
+\[
+V(\pi')=\E\!\big[m^\star(S)\,R^\star(S)\big],
+\qquad
+\phi_{\mathrm{sur}}(O;\pi') \;=\; g^\star_{\pi',R}(X) \;+\; m^\star(S)\!\big(R^\star-q^\star_R(X,A)\big) \;-\; V(\pi'),
+\]
+with $q^\star_R(x,a)=\E[R^\star\mid X{=}x,A{=}a]$ and $g^\star_{\pi',R}(x)=\sum_a \pi'(a\mid x)\,q^\star_R(x,a)$.
+
+\begin{theorem}[Surrogate EIF and variance reduction]
+\label{thm:sur-eif}
+Let $\phi_{\mathrm{uncon}}$ be the canonical gradient in the nonparametric model that does not use $S$.
+Then $\phi_{\mathrm{sur}}$ is the canonical gradient in the surrogate model, and
+$\Var(\phi_{\mathrm{sur}})\le \Var(\phi_{\mathrm{uncon}})$,
+with strict inequality unless $W_{\pi'}$ is $\sigma(S)$-measurable and $R^\star$ is degenerate.
+\end{theorem}
+
+\noindent\emph{In plain terms:} If the judge carries any information about the oracle, using it can only help variance and never hurt it. Coarser judges (garblings) are strictly worse. (This variance reduction from conditioning is a standard result; we state it to establish the foundation for subsequent results.)
+
+\paragraph{Efficiency via Model Restriction.}
+We now formalize a standard principle from semiparametric efficiency theory and show how it unifies the CJE projections.
+Let $L^2_0$ be the mean-zero Hilbert space with inner product $\langle f,g\rangle=\E[fg]$.
+Let $\mathcal{M}$ be a baseline semiparametric model with tangent space $T(P)$ and canonical gradient
+(EIF) $\phi^\star$. When justified knowledge defines a restricted model $\mathcal{M}_\mathcal{C} \subset \mathcal{M}$
+(e.g., mean sufficiency in $S$, monotonicity of conditional expectations), the restricted tangent space
+$T_\mathcal{C}(P) \subseteq T(P)$ yields a new canonical gradient $\phi^\star_\mathcal{C}$.
+
+\begin{theorem}[Efficiency via Model Restriction]
+\label{thm:knowledge-riesz}%
+\label{thm:ckp}% aliases kept for backward references
+\label{thm:model-restriction}%
+\emph{(i) Efficiency improvement.}
+The canonical gradient in the restricted model satisfies
+$\|\phi^\star_\mathcal{C}\|_2^2 \le \|\phi^\star\|_2^2$, with equality iff $T_\mathcal{C}(P) = T(P)$.
+If $T_{\mathcal{C}_1}(P) \supseteq T_{\mathcal{C}_2}(P)$ (i.e., $\mathcal{C}_2$ imposes stronger restrictions), then $\|\phi^\star_{\mathcal{C}_2}\|_2^2\le \|\phi^\star_{\mathcal{C}_1}\|_2^2$.
+\emph{(ii) Attainability.} One-step/TMLE estimators with cross-fitting attain the efficiency bound
+$\Var(\phi^\star_\mathcal{C})$ in the restricted model $\mathcal{M}_\mathcal{C}$.
+\end{theorem}
+
+\noindent\emph{In plain terms:} Every justified assumption we encode as a model restriction is ``free variance reduction'': we shrink the tangent space without changing the estimand.
+If a restriction is violated, projection introduces bias; our diagnostics and gates (\cref{sec:background,sec:limitations}) detect the regimes where this matters.
+
+\noindent\emph{Remark (prior art and novelty).} The efficiency improvement from model restriction is well-known in semiparametric theory \citep{Newey1990Semiparametric,Bickel1993}. Our contribution is not the principle itself but its systematic application: we show that reward calibration, weight stabilization, and influence-function stacking are all instances of model restriction, and we provide the operational machinery (transport audit, CLE bound and TTC/AB diagnostics, calibration-aware inference) that makes the theory usable for LLM evaluation.
+
+\paragraph{Consequences for \CJE}
+(i) \emph{Conditioning:} taking $\mathcal{C}=\{f:\,f=\E[f\mid S]\}$ recovers \cref{thm:sur-eif}.
+(ii) \emph{Mean-one monotone weights:} restricting the weight component to
+$\{w:\E[w]=1,\; w\uparrow S\}$ motivates weight stabilization; the exact $\mathrm{IsoMeanOne}_S$ projection weakly reduces dispersion in finite samples by majorization.
+(iii) \emph{Stacking:} restricting to the convex hull of candidate IF columns gives the
+variance-optimal convex ensemble.
+
+\paragraph{Direct mode: missing-data estimation.}
+When fresh responses can be generated under $\pi'$, evaluation becomes a missing-data problem: we observe cheap surrogate predictions $\hat\mu(Z)$ for all samples but expensive oracle labels $Y$ only for a labeled subset $L$.
+
+\begin{prop}[Direct: EIF and one-step estimator]
+\label{prop:direct-eif}
+Let $\theta := \E_{\pi'}[Y]$ be the policy value. Under MAR ($L \perp Y \mid Z$) with $e(z) := \Pr(L{=}1 \mid Z{=}z)$, the efficient influence function is
+\[
+\phi_{\mathrm{Direct}}(O) = \mu(Z) - \theta + \frac{L}{e(Z)}\big(Y - \mu(Z)\big),
+\]
+where $\mu(z) = \E[Y \mid Z{=}z]$. Under approximately uniform labeling ($e \approx |L|/n$), the one-step estimator is $\hat\theta_{\mathrm{aug}}$ (\cref{eq:theta-aug}), which attains the semiparametric efficiency bound.
+\end{prop}
+
+\noindent\emph{In plain terms:} Direct is the recommended default when fresh generation is feasible. It requires no overlap assumption and achieves optimal efficiency for missing-data estimation. (Proof in \cref{app:eif-direct}.)
+
+\paragraph{OPE mode: reweighting logged data.}
+When fresh generation is unavailable, importance-weighted estimators reweight logged data from $\pi_0$ to estimate $V(\pi')$. The following results apply to this regime.
+
+\begin{prop}[Cal-IPS: mean correctness and dispersion control]
+\label{prop:calips}
+Let $R=\hat f(Z(S))$ be the reward calibrator (monotone in $S$ or two-stage index; cross-fitted), and let
+$W^{\mathrm{m1}}_{\pi'}\!\triangleq W_{\pi'}/\bar W_n$ denote the self-normalized (SNIPS) ratios, where $\bar W_n = n^{-1}\sum_i W_{\pi',i}$.
+Let $\hat W_{\pi'}$ be stabilized weights (OOF stack $+$ variance guard $\rho\ge1$).
+Then $\widehat V_{\mathrm{IPS}}=\tfrac{1}{n}\sum_i \hat W_{\pi',i}R_i \to_p V(\pi')$.
+Under the exact $\mathrm{IsoMeanOne}_S$ projection (see App.~\ref{app:projections}),
+$\operatorname{Var}_n(\hat W_{\pi'})\le \rho\,\operatorname{Var}_n(W^{\mathrm{m1}}_{\pi'})$ and
+$\ESS(\hat W_{\pi'})\ge \ESS(W^{\mathrm{m1}}_{\pi'})$; the reference implementation uses a simpler normalization that empirically yields similar ESS gains.
+\end{prop}
+
+\begin{theorem}[Calibrated DR: $\sqrt{n}$ limits and efficiency]
+\label{thm:dr-eff}
+Assume mean sufficiency, suitable tails/moments, and cross-fitted nuisances satisfying the one-of-two
+rate condition
+$\|\hat q-q^\star_R\|_2\cdot \|\hat W_{\pi'}-m^\star\|_2 = o_p(n^{-1/2})$
+(e.g., either factor $=o_p(n^{-1/4})$). Then
+\[
+\sqrt{n}\big(\widehat V_{\mathrm{DR}}-V(\pi')\big)\ \leadsto\ \mathcal{N}\!\big(0,\Var(\phi_{\mathrm{sur}})\big),
+\]
+i.e., calibrated DR attains the surrogate efficiency bound. (Efficiency attainment under the product-rate condition is a standard property of DR estimators \citep{BangRobins2005,Chernozhukov2018}; our contribution is verifying that the CJE construction satisfies these conditions.)
+\end{theorem}
+
+\paragraph{Additional results (in appendix).}
+The budgeted information bound (\cref{thm:budgeted}) formalizes variance caps on importance weights: limiting weight variance ($\rho$) trades a bit of asymptotic efficiency for much better finite-sample behavior. Influence-function stacking (\cref{thm:stack}) shows that variance-optimal convex combinations of estimators achieve variance no worse than the best component. Both results apply to OPE regimes (IPS/DR); Direct mode does not use weights and is unaffected. Full statements and proofs are in \cref{app:budgeted-stacking}.
+
+\begin{prop}[Calibration-aware jackknife variance estimation]
+\label{prop:oua}
+Let $\widehat V(\hat f)$ be any \CJE\ estimator that uses $R=\hat f(S)$ (cross-fitted along the IF path).
+Under $L^2(P_S)$-consistency of $\hat f$ and non-overlapping folds, the delete-one-oracle-fold jackknife provides a variance estimate for the calibration-induced component, so that
+$\widehat{\Var}_{\mathrm{total}}=\widehat{\Var}_{\mathrm{main}}+\widehat{\Var}_{\mathrm{cal}}$
+estimates total variance.
+Theoretical consistency requires regularity conditions on the functional $f\mapsto \widehat V(f)$; isotonic regression's non-smoothness complicates formal guarantees. Empirically, we verify valid coverage across 50 seeds (\cref{sec:experiments}).
+\end{prop}
+
+\paragraph{Policy-wise mean transport test.}
+Let $f(S,X)$ be a calibration function learned on the oracle slice under the logging policy $\pi_0$. For a target policy $\pi'$, define the oracle and surrogate values
+$V_{\pi'}^{\mathrm{oracle}} := \E_{\pi'}[Y]$ and $V_{\pi'}^{\mathrm{sur}} := \E_{\pi'}[f(S,X)]$,
+and the residual $\varepsilon_{\pi'} := Y - f(S,X)$.
+
+\begin{prop}[Mean transport equivalence]
+\label{prop:mean-transport}
+$V_{\pi'}^{\mathrm{oracle}} - V_{\pi'}^{\mathrm{sur}} = \E_{\pi'}[\varepsilon_{\pi'}]$.
+Therefore, the null hypothesis $H_{0,\pi'}: \E_{\pi'}[\varepsilon_{\pi'}] = 0$ is equivalent to mean-unbiasedness of the surrogate for policy $\pi'$: $H_{0,\pi'} \iff V_{\pi'}^{\mathrm{oracle}} = V_{\pi'}^{\mathrm{sur}}$.
+\end{prop}
+
+\noindent
+\emph{Remark.} The mean residual decomposes into a \emph{transportability gap} (failure of S2: $\E_{\pi'}[\mu_{\pi'}(S,X) - \mu_{\pi_0}(S,X)]$) and \emph{calibration estimation error} ($\E_{\pi'}[\mu_{\pi_0}(S,X) - f(S,X)]$). The latter vanishes as the oracle slice grows, so the test asymptotically isolates transportability failures. This test is strictly weaker than full transportability (S2): it guarantees mean-unbiasedness for policy-wise values but does not rule out conditional miscalibration within subgroups or at tails.
+
+\noindent
+\emph{Data requirement.} Applying this test requires a small oracle slice \emph{under each target policy $\pi'$} (or per evaluation environment, e.g., time window or subgroup). We recommend collecting a modest audit sample (${\sim}50$--$200$ labels per policy) to validate that the base-trained calibrator can be safely reused; if a policy fails the test, either recalibrate with policy-specific data or fall back to oracle-only evaluation for that cell.
+
+\paragraph{Discussion.}
+CJE addresses two distinct statistical problems: (i) \emph{missing-data estimation} (Direct mode, \cref{prop:direct-eif}), where fresh responses are generated under $\pi'$ and the only missing data are oracle labels; and (ii) \emph{off-policy evaluation} (IPS/DR modes), where logged data from $\pi_0$ must be reweighted to estimate $V(\pi')$.
+Direct is the recommended default when fresh generation is feasible: it requires no overlap assumption, achieves the semiparametric efficiency bound for missing-data estimation, and attains the best ranking accuracy in our experiments.
+For OPE regimes, \cref{thm:model-restriction} formalizes the model restriction principle: encoding justified knowledge (conditioning on $S$, monotone weights, convex IF combinations) tightens efficiency bounds. The budgeted bound and IF stacking theorems (\cref{app:budgeted-stacking}) provide additional variance control for IPS/DR.
+In finite samples, the exact $\mathrm{IsoMeanOne}_S$ projection additionally \emph{majorizes} dispersion (\cref{lem:maj}), explaining the ESS gains delivered by weight stabilization.
+
+\paragraph{Scope and limitations.}
+\emph{(i) Mean sufficiency and transport.} The EIF derivations (\cref{thm:sur-eif,thm:dr-eff}) assume mean sufficiency ($\E[Y\mid X,A,S]=R^\star(S)$), a structural assumption enabling the efficiency theory. For valid estimation, the fundamental requirement is transport ($\E_{\pi'}[Y-f(S,X)]=0$), which is strictly weaker: mean sufficiency implies transport, but transport can hold (and be verified via audit) without it. The two-stage calibration mode uses a learned index $Z(S,X)$; the theory generalizes by replacing $S$ with $Z(S,X)$ throughout, provided $Z$ is consistently estimated.
+\emph{(ii) Double robustness and weight misspecification.} \cref{thm:dr-eff} assumes at least one nuisance
+converges at rate $n^{-1/4}$. When teacher-forced weights are unreliable (as in high-overlap-failure regimes),
+DR remains consistent via the outcome model alone; however, the efficiency bound $\Var(\phi_{\mathrm{sur}})$ is
+attained only when both nuisances are well-specified. In practice, when IPS fails due to poor coverage, DR
+effectively reduces to the Direct Method, which achieves the same consistency without the variance penalty
+from unstable weights (see \cref{sec:experiments}, Q3).
+\emph{(iii) Weight stabilization convergence.} \cref{thm:budgeted} assumes weight stabilization converges to $m^\star_\rho$; this holds
+under standard regularity conditions for isotonic regression and cross-validated stacking (see, e.g.,
+\citet{vanderLaan2007SuperLearner}).

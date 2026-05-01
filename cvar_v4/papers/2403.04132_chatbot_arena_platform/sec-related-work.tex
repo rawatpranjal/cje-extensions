@@ -1,0 +1,63 @@
+\section{Related Work}
+
+\textbf{LLM Benchmarks.}
+We briefly review the common LLM benchmarks, following the classification presented in \autoref{fig:eval_classification}. The most prevalent benchmarks are static, ground-truth-based ones, typically in the form of multiple-choice questions or question-answering tasks with predefined answers and test cases.
+These benchmarks encompass a range of topics including language understanding, mathematics, coding, and logical reasoning. Prominent examples in this category are MMLU~\cite{hendrycks2020measuring}, HellaSwag~\cite{zellers2019hellaswag}, GSM-8K~\cite{cobbe2021gsm}, BigBench~\cite{srivastava2023beyond}, AGIEval~\cite{zhong2023agieval}, and HumanEval~\cite{chen2021evaluating}. Benchmarks focusing on safety, such as ToxicChat~\cite{toxicchat}, and comprehensive suites like HELM~\cite{liang2022holistic}, also exist.
+In addition to closed-ended questions, benchmarks can include open-ended questions that are evaluated by human judgment, which can be rated by experts or crowd workers such as Amazon Mechanical Turk~\cite{karpinska-etal-2021-perils,koala_blogpost_2023,wang-etal-2023-self-instruct}.
+The recent trend includes utilizing GPT-4 for approximating human judgment~\cite{chiang-lee-2023-large}, with notable instances being MT-Bench~\cite{zheng2023judging} and AlpacaEval~\cite{alpaca_eval}.
+In addition to static benchmarks, live benchmarks that include fresh questions are also available. These questions can be obtained from annual exams or weekly online contests such as Codeforces~\cite{li2022competition, huang2023competition}. They can also be sourced from human interaction. Some studies have explored using live human interaction for reinforcement learning from human preference~\cite{bai2022training,ouyang2022training,touvron2023llama2}. However, these studies are typically limited to specific organizations.
+In this paper, we introduce \system, the first open, large-scale, and crowdsourced benchmark platform that utilizes live human interaction.
+
+\textbf{Risks of Static Benchmarks.}
+Static benchmarks have certain issues, including contamination, saturation, overfitting, and a lack of human alignment~\cite{yang2023rethinking,oren2023proving}. DynaBench~\cite{kiela2021dynabench} identifies these challenges and recommends the use of a live benchmark that incorporates a human-in-the-loop approach for classical NLP benchmarks. Our system adopts a similar spirit. However, our focus is on chatting with LLMs, and we implement this on a significantly larger user scale.
+
+\textbf{Ranking System.}
+Ranking systems have been a well-studied topic in statistics. Related topics include probability models~\cite{mm_bradley_terry,tie_in_bradley_terry}, rank elicitation~\cite{online_rank,pmlr-v32-busa-fekete14,preference_rank_elicitation}, and online experiment design~\cite{sequential_design, karimi2021online}.
+The Elo rating system has also been used for LLMs~\cite{bai2022training,boubdir2023elo}.
+Contributing to this literature, we introduce techniques for accelerating ranking convergence and detecting abnormalities, specifically applied to large-scale, real-world settings of LLMs.
+
+\textbf{Human Preference Dataset.}
+Owing to the significance of human preferences, several datasets and analyses exist that incorporate human preferences. These include OpenAssistant~\cite{kopf2023openassistant}, HH-RLHF~\cite{bai2022training}, LMSYS-Chat-1M~\cite{zheng2023lmsyschat1m}, and synthetic approximations of human preferences like UltraFeedback~\cite{cui2023ultrafeedback} and Nectar~\cite{starling2023}.
+Our prior data release, LMSYS-Chat-1M~\cite{zheng2023lmsyschat1m}, is similarly collected via crowdsourcing. However, LMSYS-Chat-1M comprises solely conversations and lacks human preference data, rendering it unsuitable for direct use in ranking studies. This paper focuses on the analysis of preference data for ranking purposes.
+
+
+\iffalse
+
+\section{Related Work}
+
+\textbf{LLM Benchmarks}
+We briefly introduce the common LLM benchmarks, according to the classification in \autoref{fig:eval_classification}.
+
+- static ground-truth-based benchmark
+MMLU~\cite{hendrycks2020measuring}, HellaSwag~\cite{zellers2019hellaswag}, GSM-8K~\cite{cobbe2021gsm},
+BigBench~\cite{srivastava2023beyond}, AGIEval~\cite{zhong2023agieval}, Drop~\cite{dua2019drop}, and HumanEval~\cite{chen2021evaluating}. There are also safety-related benchmarks like ToxicChat~\cite{toxicchat} and comprehensive suites like HELM~\cite{liang2022holistic}.
+
+- static benchmark for human preference
+Super-NaturalInstructions~\cite{wang2022super}, MT-Bench~\cite{zheng2023judging}, AlpacaEval~\cite{alpaca_eval}, ~\cite{chiang-lee-2023-large},
+Amazon Mechanical Turk~\cite{karpinska-etal-2021-perils,koala_blogpost_2023}.
+
+- live benchmark  with ground truth
+Codeforce~\cite{huang2023competition,li2022competition}.
+
+- live benchmark with human preference
+private ones at Anthropic~\cite{bai2022training}, Meta~\cite{touvron2023llama2}.
+but we need an open one.
+
+- other interactive benchmarks
+AgentBench~\cite{liu2023agentbench}, WebArena~\cite{zhou2023webarena}, SWE-Bench~\cite{jimenez2024swebench}.
+
+\textbf{Risks and solutions of static benchmark}
+DynaBench~\cite{kiela2021dynabench}
+Contamination~\cite{yang2023rethinking,oren2023proving,deng2023investigating}
+ImageNet~\cite{recht2019imagenet}
+
+\textbf{Data collection and analysis}
+OpenAssistant~\cite{kopf2023openassistant}, Anthropic~\cite{bai2022training}, UltraFeedback~\cite{cui2023ultrafeedback},
+LMSYS-Chat-1M~\cite{zheng2023lmsyschat1m},
+Self-Instruct~\cite{wang-etal-2023-self-instruct}
+
+Rank Elicitation~\cite{online_rank,pmlr-v32-busa-fekete14,preference_rank_elicitation},
+ranking models~\cite{mm_bradley_terry,tie_in_bradley_terry},
+online experiment design~\cite{sequential_design, karimi2021online}
+
+\fi

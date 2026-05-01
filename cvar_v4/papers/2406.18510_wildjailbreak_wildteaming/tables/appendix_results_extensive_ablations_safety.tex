@@ -1,0 +1,133 @@
+\begin{table}[t!]
+    \caption{Full evaluation results of the vanilla and adversarial safety of \tulu-7B finetuned with half of \texttt{Tulu2Mix-no-refusal} and different mixture of \dataset with the different numbers of dataset. For \texttt{WJ-all}, we uniformly sample from adversarial harmful/benign and vanilla harmful/benign. For \texttt{WJ-adv/vani-only}, we uniformly sample from adversarial/vanilla data.}
+    
+    \label{tab:appendix_finetune_results_extensive_ablation_safety}
+    
+    \centering
+    \small    
+    
+    \caption*{(a) Vanilla safety evaluation results.}
+    \begin{subtable}
+        \centering
+    {\begin{tabular}{l@{\hspace{0.9\tabcolsep}}
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r
+    }
+        
+        
+        \toprule
+        & \multicolumn{4}{c}{\textbf{HarmBench (asr$\downarrow$)}} &
+        \textbf{ToxiG} & 
+        \textbf{XST} & 
+        \textbf{XST$_\text{H}$} & 
+        \textbf{XST$_\text{B}$} \\
+        \textbf{Train Data} & 
+        \makecell{all.} & 
+        \makecell{standard} & 
+        \makecell{contextual} & 
+        \makecell{copyright} & 
+        tox\%$\downarrow$ &
+        f1$\uparrow$ &
+        rta$\uparrow$ &
+        rta$\downarrow$
+        \\
+        \midrule
+\texttt{Tulu2Mix-no-refusal} 1/2 &55.3 & 69.2 & 61.7 & 21.3 & 67.8 & 84.7 & 7.2 & 80.0 \\
+$+$ \texttt{WJ-all 2K}&14.4 & 6.9 & 16.0 & 27.5 & 0.1 & 87.4 & 7.6 & 85.0 \\
+$+$ \texttt{WJ-all 4K}&17.8 & 7.5 & 18.5 & 37.5 & 0.2 & 88.7 & 6.8 & 86.5 \\
+$+$ \texttt{WJ-all 10K}&14.4 & 5.0 & 14.8 & 32.5 & 0.1 & 87.6 & 8.8 & 86.5 \\
+$+$ \texttt{WJ-all 20K}&13.1 & 4.4 & 13.6 & 30.0 & 0.1 & 88.0 & 8.0 & 86.5 \\
+$+$ \texttt{WJ-all 30K}&11.6 & 2.5 & 11.1 & 30.0 & 0.0 & 88.4 & 8.4 & 87.5 \\
+$+$ \texttt{WJ-all 40K}&12.2 & 4.4 & 7.4 & 32.5 & 0.0 & 87.9 & 7.2 & 85.5 \\
+$+$ \texttt{WJ-all 50K}&11.6 & 3.1 & 8.6 & 31.3 & 0.1 & 87.7 & 7.6 & 85.5 \\
+$+$ \texttt{WJ-all 60K}&10.3 & 2.5 & 6.2 & 30.0 & 0.0 & 88.1 & 8.4 & 87.0 \\
+$+$ \texttt{WJ-adv-only 2K}&35.3 & 32.1 & 49.4 & 27.5 & 0.5 & 85.7 & 6.4 & 81.0 \\
+$+$ \texttt{WJ-adv-only 4K}&30.0 & 28.3 & 37.0 & 26.3 & 0.2 & 86.0 & 6.4 & 81.5 \\
+$+$ \texttt{WJ-adv-only 10K}&28.8 & 27.0 & 35.8 & 25.0 & 0.1 & 84.9 & 6.8 & 80.0 \\
+$+$ \texttt{WJ-adv-only 20K}&27.5 & 24.5 & 21.0 & 40.0 & 0.0 & 85.1 & 6.4 & 80.0 \\
+$+$ \texttt{WJ-adv-only 30K}&22.2 & 23.9 & 23.5 & 17.5 & 0.0 & 85.6 & 5.6 & 80.0 \\
+$+$ \texttt{WJ-adv-only 40K}&21.3 & 18.9 & 16.0 & 31.3 & 0.0 & 83.8 & 7.6 & 79.0 \\
+$+$ \texttt{WJ-adv-only 50K}&20.6 & 15.1 & 22.2 & 30.0 & 0.0 & 88.1 & 4.4 & 83.0 \\
+$+$ \texttt{WJ-adv-only 60K}&18.1 & 15.7 & 14.8 & 26.3 & 0.0 & 86.9 & 6.4 & 83.0 \\
+$+$ \texttt{WJ-vani-only 2K}&15.0 & 7.5 & 18.5 & 26.3 & 4.7 & 87.7 & 7.6 & 85.5 \\
+$+$ \texttt{WJ-vani-only 4K}&14.1 & 6.3 & 16.0 & 27.5 & 4.1 & 88.5 & 7.6 & 87.0 \\
+$+$ \texttt{WJ-vani-only 10K}&14.1 & 3.8 & 14.8 & 33.8 & 5.8 & 87.4 & 7.6 & 85.0 \\
+$+$ \texttt{WJ-vani-only 20K}&12.6 & 3.1 & 12.3 & 30.0 & 3.4 & 85.7 & 8.0 & 82.5 \\
+$+$ \texttt{WJ-vani-only 30K}&11.6 & 2.5 & 12.3 & 28.8 & 2.6 & 87.0 & 8.4 & 85.0 \\
+$+$ \texttt{WJ-vani-only 40K}&11.3 & 2.5 & 8.6 & 31.3 & 0.7 & 85.6 & 8.8 & 83.0 \\
+$+$ \texttt{WJ-vani-only 50K}&11.6 & 1.3 & 8.6 & 35.0 & 2.4 & 86.7 & 8.4 & 84.5 \\
+$+$ \texttt{WJ-vani-only 60K}&9.1 & 0.6 & 6.2 & 28.8 & 0.6 & 87.0 & 8.8 & 85.5 \\
+         
+         \bottomrule
+    \end{tabular}}
+    \end{subtable}
+
+    \vspace{0.2cm}
+    
+    \caption*{(b) Adversarial safety evaluation results.}
+   \begin{subtable}
+        \centering
+    {\begin{tabular}{l@{\hspace{0.6\tabcolsep}}
+    r@{\hspace{0.95\tabcolsep}} 
+    r@{\hspace{0.95\tabcolsep}}
+    r@{\hspace{0.95\tabcolsep}}
+    r@{\hspace{0.95\tabcolsep}}
+    r
+    }
+        
+        \toprule &
+        \textbf{JT} & 
+        \textbf{DAN} & 
+          \textbf{\datasetshort} & 
+        \textbf{\datasetshort$_\text{(H)}$} & 
+        \textbf{\datasetshort$_\text{(B)}$}  \\
+        
+        \textbf{Train Data} & 
+        rta$\uparrow$&
+        asr$\downarrow$ & 
+        acc$\uparrow$&
+        asr$\downarrow$ & 
+        rta$\downarrow$
+        \\
+        \midrule
+        
+\texttt{Tulu2Mix-no-refusal} 1/2 &56.5 & 74.7 & 63.6 & 72.5 & 0.4 \\
+$+$ \texttt{WJ-all 2K}&80.3 & 33.7 & 90.9 & 9.5 & 8.8 \\
+$+$ \texttt{WJ-all 4K}&83.3 & 33.0 & 92.3 & 11.1 & 4.4 \\
+$+$ \texttt{WJ-all 10K}&83.0 & 24.7 & 95.2 & 6.0 & 3.6 \\
+$+$ \texttt{WJ-all 20K}&86.3 & 23.0 & 95.9 & 4.6 & 3.6 \\
+$+$ \texttt{WJ-all 30K}&84.0 & 19.3 & 95.9 & 4.2 & 4.0 \\
+$+$ \texttt{WJ-all 40K}& 90.0 & 12.3 & 96.6 & 4.5 & 2.4 \\
+$+$ \texttt{WJ-all 50K}& 88.3 & 13.7 & 96.8 & 3.2 & 3.2 \\
+$+$ \texttt{WJ-all 60K}& 86.8 & 14.3 & 97.3 & 2.3 & 3.2 \\
+$+$ \texttt{WJ-adv-only 2K}& 74.3 & 42.0 & 90.8 & 10.8 & 7.6 \\
+$+$ \texttt{WJ-adv-only 4K}& 76.8 & 37.3 & 92.9 & 8.7 & 5.6 \\
+$+$ \texttt{WJ-adv-only 10K}&75.5 & 26.3 & 95.0 & 5.6 & 4.4 \\
+$+$ \texttt{WJ-adv-only 20K}&82.3 & 25.0 & 95.7 & 5.1 & 3.6 \\
+$+$ \texttt{WJ-adv-only 30K}&80.3 & 18.0 & 96.3 & 4.3 & 3.2 \\
+$+$ \texttt{WJ-adv-only 40K}&83.5 & 10.3 & 97.4 & 2.9 & 2.4 \\
+$+$ \texttt{WJ-adv-only 50K}&86.0 & 9.0 & 97.7 & 1.9 & 2.8 \\
+$+$ \texttt{WJ-adv-only 60K}&85.0 & 10.7 & 97.4 & 2.8 & 2.4 \\
+$+$ \texttt{WJ-vani-only 2K}&72.5 & 57.7 & 67.6 & 64.0 & 0.8 \\
+$+$ \texttt{WJ-vani-only 4K}&77.8 & 60.7 & 68.8 & 61.3 & 1.2 \\
+$+$ \texttt{WJ-vani-only 10K}&75.8 & 53.0 & 69.3 & 59.4 & 2.0 \\
+$+$ \texttt{WJ-vani-only 20K}&78.5 & 56.0 & 69.6 & 59.3 & 1.6 \\
+$+$ \texttt{WJ-vani-only 30K}&78.3 & 50.3 & 70.4 & 58.4 & 0.8 \\
+$+$ \texttt{WJ-vani-only 40K}&80.8 & 41.7 & 70.8 & 57.6 & 0.8 \\
+$+$ \texttt{WJ-vani-only 50K}&80.3 & 46.0 & 70.8 & 56.9 & 1.6 \\
+$+$ \texttt{WJ-vani-only 60K}&75.5 & 46.3 & 71.1 & 57.0 & 0.8 \\
+         \bottomrule
+    \end{tabular}}
+    \end{subtable}
+\end{table}

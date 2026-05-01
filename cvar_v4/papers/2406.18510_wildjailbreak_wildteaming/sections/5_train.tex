@@ -1,0 +1,50 @@
+
+\section{Enhancing Models' Adversarial Safety Alignment with \dataset}
+\label{sec:safety_training}
+
+Having created \dataset and showed the unique challenge presented by its adversarial attacks, we now show its utility in safety training when combined with general capabilities data.
+\input{tables/evaluation_metrics_schema}
+
+
+\subsection{Experiment Setups}
+
+\textbf{Training Data.} We augment \texttt{\tulumix-no-refusal}\footnote{
+We create \texttt{\tulumix-no-refusal} by removing all data points containing refusal responses in \texttt{\tulumix} based on refusal-keyword filtering. This decision is based on our observation that \texttt{\tulumix} contains harmful queries with \textit{contradictory} refusal responses, initially refusing but ultimately complying, so that the model cannot learn coherent refusal responses. Please refer to Appendix~\S\ref{assec:tulu2mix} for the details.}~\citep{ivison2023tulu}, a general capability instruction-tuning dataset consisting of 300K examples, with 200K examples sampled from \dataset, resulting in 500K examples. From \dataset we sample 50K each of vanilla harmful, adversarial harmful, vanilla benign, and adversarial benign items. 
+Combining \texttt{\tulumix-no-refusal} with \dataset creates a unique data blend that enables us to examine effects of scale and data types for achieving the Pareto frontier between general capabilities and safety. To our best knowledge, this training setup is significantly larger than previously reported safety-training studies in \citet{bianchi2023safety}, which have combined a maximum of 2K safety data with 20K general instruction data. 
+
+\textbf{Training Details and Baselines} For all training experiments, we follow the setup introduced in \tulu \citep{ivison2023tulu} and fine-tune a \llama 7B base model on our 500K data mixture for 2 epochs. We compare against three baseline models trained on different data mixtures: 1) the original \texttt{\tulumix (\tulumixshort)}, 2) \texttt{\tulumixshort-no-refusal}, and 3) \texttt{\tulumixshort-public-safety}: a mixture of \texttt{\tulumixshort-no-refusal} with representative existing safety training data (\ie \hhrlhf\cite{hh-rlhf}, \saferlhf\cite{safe-rlhf}, \danshort\cite{doanytingnow}). Full details of model training are in Appendix~\S\ref{asec:training-expts}.
+
+\textbf{Evaluation Tasks and Metrics.}
+We evaluate both general capabilities and safety capabilities. For \textit{general} capabilities, we evaluate on AlpacaEval~\citep{alpaca_eval} (V1, V2), MTBench~\citep{zheng2023judging}, MMLU~\citep{hendrycks2020measuring}, GSM~\citep{cobbe2021training},  BBH~\citep{suzgun2023challenging}, TydiQA \citep{clark2020tydi}, Codex-Eval~\citep{chen2021evaluating}, TruthfulQA~\citep{lin2022truthfulqa}.
+
+For \textit{safety} evaluation, we assess models' robustness against both vanilla and adversarial harmful and benign queries. Vanilla benchmarks include HarmBench~\citep{mazeika2024harmbench}, ToxiGen~\citep{hartvigsen2022toxigen}, and XSTest~\citep{xstest}, and adversarial benchmarks include JailbreakTrigger~\citep{sun2024trustllm}, \danshort \citep{doanytingnow}, and the \dataset test data. We report attack success rate (\textbf{ASR\footnote{In general, we report ASR for data derived from \harmbench to be consistent with \harmbench evaluation standard and use the \harmbench classifier.}}) as the safety evaluation metric. We obtain ASR scores by computing rate of models' refusal to answer (\textbf{RTA}) as judged by the test classifier provided by \harmbench, and we also compute a separate RTA score based on a GPT-4 judge of model refusal. Please refer to Table~\ref{tab:evaluation_metrics_schema} for relevant tasks, measuring aspects, and evaluation metrics reported in the main result table (\Cref{tab:finetune_results}), and Appendix \S \ref{assec:safety_training_evals} for extended details of all evaluations benchmarks and metrics for the full results in Appendix \S \ref{assec:full_safety_train_results}. 
+
+\input{tables/finetuning_results}
+
+\subsection{Results and Findings}
+
+Main results are presented in Table \ref{tab:finetune_results} and Figure \ref{fig:vani_vs_adv_scale}.  Due to space constraints, we show results from AlpacaEval (V1) and MTBench in Table~\ref{tab:finetune_results}, and we refer readers to Table~\ref{tab:appendix_finetune_results_scaling_wildjailbreak}, \ref{tab:appendix_finetune_results_ablations_jailbreak}, \ref{tab:appendix_finetune_results_baselines}, \ref{tab:appendix_finetune_results_extensive_ablation},~\ref{tab:appendix_finetune_results_extensive_ablation_safety} in \S\ref{assec:safety_training_full_results} for the full report of general capabilities results. We see several clear patterns.
+
+\textbf{\dataset leads to substantial safety improvements, with minimal impact on general capabilities.} Results show that the model trained on \texttt{\tulumixshort-no-refusal} [\texttt{+\dataset}] exhibits a substantial boost in safety across all vanilla and adversarial tasks compared to baselines, without showing exaggerated safety behaviors (as indicated by XST$_\text{B}$ and WJ$_\text{B}$ scores). When compared to the \texttt{\tulumixshort-no-refusal} baseline without any safety interventions, the model shows only a slight degradation (-1.7\%) on AlpacaEval v1, and a notable increase on MTBench (+7.7\%). Additionally, the [\texttt{+\dataset}] model achieves 
+a relative improvement of 85.1\%
+% an absolute improvement of 17.7 point
+on \harmbench over the model trained on original \texttt{\tulumix}, indicating that the safety training data from \dataset leads to significantly higher-quality safety training than that in the original \texttt{\tulumix}. Finally, \dataset enhances models' robustness against adversarial attacks from other sources, improving defense by 71.9\% regarding jailbreaking prompts from \dan \citep{doanytingnow} compared to the original \texttt{\tulumix} model.  
+
+\begin{wrapfigure}[16]{t}{0.6\textwidth}
+    \includegraphics[width=0.6\textwidth]{figures/vani_vs_adv_scale.pdf}
+    \caption{The increasing scale of vanilla and adversarial data vs. model's general and safety capabilities regarding both vanilla and adversarial queries.
+    }
+     \label{fig:vani_vs_adv_scale}
+\end{wrapfigure}
+
+Moreover, the model trained on existing openly available safety data (\texttt{\tulumixshort-public-safety}) results in mediocre performance compared to that trained on \dataset. We hypothesize that this is because in an RLHF setup for which these datasets were designed, the pairwise response pairs aim to show only relative preference rather than absolute high-quality content. Consequently, converting the ``preferred'' model response into a target for sequential fine-tuning can lead to sub-optimal responses. Overall, the ability of \dataset to improve safety behaviors suggests that the diversity and comprehensive coverage of this dataset enable more systematic model safety defenses than prior safety training data.
+
+\textbf{\dataset composition improves safeguard without exaggerated safety: roles of vanilla and adversarial (harmful/benign) data in achieving Pareto optimality.}
+We conduct comprehensive ablations of each component of \dataset (vanilla/adversarial $\times$ harmful/benign). Table \ref{tab:finetune_results} and Figure \ref{fig:vani_vs_adv_scale} indicates that all four components are indispensable for achieving a balanced trade-off between safety, helpfulness, and general capabilities of the [\texttt{+\dataset}] model. 
+The [\texttt{+WJ-harm-only}] model, trained solely on the harmful subset, excels at refusing harmful queries in both vanilla and adversarial benchmarks. However, it performs poorly in exaggerated safety (XST${_\text{B}}$, WJ${_\text{B}}$). The [\texttt{+WJ-vani-only}] model, trained only on vanilla queries, performs best against vanilla harmful prompts but only slightly improves against adversarial attacks (see Figure \ref{fig:vani_vs_adv_scale}), showing that vanilla data alone is insufficient for safety training. 
+Conversely, training exclusively on adversarial data [\texttt{+WJ-adv-only}] greatly improves resilience against adversarial attacks but not vanilla cases. We see therefore that both vanilla and adversarial training are essential for resilience against the full range of inputs. Finally, training exclusively on harmful data without benign examples, \ie [\texttt{+WJ-harm-only}, \texttt{+WJ-vani-harm-only}, \texttt{+WJ-adv-harm-only}], leads to exaggerated safety behaviors. 
+
+\textbf{The scale of safety data matters for robust model safety.}
+Figure \ref{fig:vani_vs_adv_scale} presents ablations of the impact of scaling up safety data on the overall safety performance of models when combined with \texttt{\tulumixshort-no-refusal}.\footnote{Since retraining models with different sizes of data mixtures is computationally costly, we sample 150K out of 300K from \texttt{\tulumixshort-no-refusal}.} We report the satisfactory response rate (satisfactory \%), which takes the macro average of the inverted attack success rate (1 - ASR) of harmful queries and the inverted refusal rate (1 - RTA) of benign queries.
+Results in Figure \ref{fig:vani_vs_adv_scale} show that even the addition of just 2K safety training items from \dataset results in a significant increase in model safeguarding compared to training with just \texttt{T2M-no-refusal}. However, for a more robust safeguard, we need to introduce substantially more of both vanilla and adversarial data (up to 60K in our experiments when mixed with 150K \texttt{\tulumix} data) to attain sufficiently high safety performance ($>$95\%).
+

@@ -1,0 +1,49 @@
+\section{Evaluating Safety and Reward Distributions in Large Language Models}
+
+\subsection{Comparative Analysis of Cost and Reward Distributions}
+Figures~\ref{fig:supp-cost} and \ref{fig:supp-reward} provide a comparative analysis of the distribution pertaining to the Alpaca-7B model both before and after the application of the Reinforcement Learning with Human Feedback (RLHF) supplemented with a safety constraint. A leftward shift observed in the cost distribution (Figure\ref{fig:supp-cost}) indicates a decrease in safety cost, consequently leading to an enhanced harmlessness in model responses to red-team prompts. Conversely, the rightward shift observed in the reward distribution (Figure~\ref{fig:supp-reward}) points to the increased helpfulness in the model responses to user prompts. Data for both figures were generated using two static preference models obtained from prior training sessions.
+
+% \begin{figure}[htb]
+%     % \centering
+%     \begin{subfigure}[b]{0.475\textwidth}
+%         % \centering
+%         \includegraphics[width=\textwidth]{supplementary/figures/cost.pdf}
+%         \caption{
+%             Cost distributions before and after the implementation of RLHF with safety constraints on the Alpaca-7B model, as assessed using the static cost model.
+%             \textbf{Before:} Cost distribution of the Alpaca-7B model, denoted by the red curve.
+%             \textbf{After:} Cost distribution of the safety-enhanced RLHF model, denoted by the blue curve.
+%         }
+%         \label{fig:supp-cost}
+%         % \vspace{-1em}
+%     \end{subfigure}
+%     \hfill
+%     \begin{subfigure}[b]{0.475\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{supplementary/figures/reward.pdf}
+%         \caption
+%         {
+%             Reward distributions before and after the implementation of RLHF with safety constraints on the Alpaca-7B model, as assessed using the static reward model.
+%             \textbf{Before:} Reward distribution of the Alpaca-7B model, denoted by the red curve.
+%             \textbf{After:} Reward distribution of the safety-enhanced RLHF model, denoted by the blue curve.
+%         }
+%         \label{fig:supp-reward}
+%         % \vspace{-1em}
+%     \end{subfigure}
+%     \caption{Comparative Analysis of Cost and Reward Distributions for the \texttt{Alpaca-7B} and \texttt{Alpaca-7B + Safe RLHF} Models}
+% \end{figure}
+
+\clearpage
+\subsection{Safety Evaluation of Different Models}
+The safety evaluation delineated in Figure~\ref{fig:supp-safe-evaluation} employs a dataset of 140 red-team prompts, evenly distributed across 14 harm categories. These prompts were then utilized to prompt four distinct Large Language Models (LLMs), yielding 140 Question-Answering (QA) pairs for each model. The generated outputs were subsequently assessed for harmlessness by three evaluation entities: \textit{QA-moderation, GPT-4 (Prompted), and Human Feedback}, the latter of which was sourced from our previously introduced data annotation team.
+
+Our evaluation reveals that the \texttt{Alpaca-7B} and \texttt{Alpaca-13B} models display suboptimal safety alignment, as inferred from the proportion of safe QA pairs. Conversely, the \texttt{Vicuna-7b} model exhibits safety alignment comparable to that of the \texttt{gpt-3.5-turbo} model. There is a high degree of consensus among the three evaluation entities, reflected in the percentage of QA pairs where two evaluators agree. GPT-4 being the considerably deeper model showcases higher alignment with human perspectives compared to our QA-Moderation model, which is built on the LLaMa-7B model. The evaluation results further suggest greater discordance regarding the safety meta-label between evaluators when models lack adequate safety alignment (\textit{i.e.}, \texttt{Alpaca-7B} and \texttt{Alpaca-13B}). In contrast, models with robust safety alignment (\textit{i.e.}, \texttt{Vicuna-7b} and \texttt{gpt-3.5-turbo}) witness significantly fewer disagreements. This observation implies that while the evaluators share similar views on safe QA pairs, they differ slightly on classifying unsafe pairs.
+
+% \begin{figure}[tb]
+%     \centering
+%     \includegraphics[width=\textwidth]{supplementary/figures/flagged_proportion.pdf}
+%     \caption
+%     {
+%         Proportion of safe Question-Answering (QA) pairs and mutual agreement ratio, as flagged by three distinct evaluators across four different models. \textbf{Bar Chart:} Proportion of safe QA pairs. \textbf{Line Chart:} Agreement ratio.
+%     }
+%     \label{fig:supp-safe-evaluation}  
+% \end{figure}

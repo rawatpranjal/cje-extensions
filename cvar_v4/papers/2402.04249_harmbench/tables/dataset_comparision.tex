@@ -1,0 +1,19 @@
+\begin{table*}[]
+\caption{Behavior datasets in prior work compared to HarmBench. HarmBench is considerably larger and more diverse than prior datasets, and was carefully curated to possess the desirable properties specified in \Cref{sec:automated_red_teaming} and \Cref{sec:harmbench}. We compute number of unique behaviors using a combination of manual and automated semantic deduplication of behavior strings specifying the behaviors. Different phrasings of requests for the same behavior can be highly informative to investigate, but we focus on unique underlying behaviors for evaluation purposes and consider rephrasing of requests to be a potential component of red teaming methods rather than a feature of the evaluation.}
+\centering
+\begin{tabular}{lcccc}
+\toprule
+ & \makecell{\# Unique\\Behaviors} & \makecell{Specific\\Behaviors} & \makecell{Multimodal\\Behaviors} & \makecell{Contextual\\Behaviors} \\ \midrule
+HarmBench (Ours) & 510 & $\checkmark$ & $\checkmark$ & $\checkmark$ \\
+AdvBench \citep{zou2023universal} & 58 & $\checkmark$ & $\times$ & $\times$ \\
+TDC 2023 \citep{tdc2023} & 99 & $\checkmark$ & $\times$ & $\times$ \\
+\citet{shen2023anything} & 390 & $\checkmark$ & $\times$ & $\times$ \\
+\citet{liu2023jailbreaking} & 40 & $\checkmark$ & $\times$ & $\times$ \\
+MaliciousInstruct \citep{huang2023catastrophic} & 100 & $\checkmark$ & $\times$ & $\times$ \\
+\citet{zeng2024johnny} & 42 & $\checkmark$ & $\times$ & $\times$ \\
+\citet{dengmasterkey} & 50 & $\checkmark$ & $\times$ & $\times$ \\
+\citet{shah2023scalable} & 43 & $\times$ & $\times$ & $\times$ \\
+\citet{perez2022red} & 3 & $\times$ & $\times$ & $\times$ \\ \bottomrule
+\end{tabular}
+\label{table:dataset_comparision}
+\end{table*}

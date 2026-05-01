@@ -1,0 +1,49 @@
+\newcommand{\CJE}{\textsc{CJE}}
+\newcommand{\CVaR}{\mathrm{CVaR}}
+\newcommand{\VaR}{\mathrm{VaR}}
+\newcommand{\ES}{\mathrm{ES}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Pp}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\pzero}{\pi_{0}}
+\newcommand{\ptarget}{\pi}
+\newcommand{\Sscore}{S}
+\newcommand{\Y}{Y}
+\newcommand{\X}{X}
+\newcommand{\A}{A}
+\newcommand{\shortfall}[2]{\left(#1-#2\right)_{+}}
+\newcommand{\RefuseLevel}{\textsc{Refuse-Level}}
+
+\newtheorem{assumption}{Assumption}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+
+\crefname{assumption}{Assumption}{Assumptions}
+\crefname{definition}{Definition}{Definitions}
+\crefname{proposition}{Proposition}{Propositions}
+\crefname{theorem}{Theorem}{Theorems}
+\crefname{remark}{Remark}{Remarks}
+
+\newenvironment{twocolproof}{%
+  \begin{proof}
+  \small
+  \renewcommand{\arraystretch}{1.18}
+  \noindent\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.48\linewidth}>{\raggedright\arraybackslash}p{0.48\linewidth}@{}}
+  \toprule
+  \textbf{Derivation} & \textbf{Reason} \\
+  \midrule
+}{%
+  \bottomrule
+  \end{tabular}
+  \end{proof}
+}
+
+\newcommand{\twocolrow}[2]{%
+  #1
+  &
+  #2
+  \\[0.7em]
+}

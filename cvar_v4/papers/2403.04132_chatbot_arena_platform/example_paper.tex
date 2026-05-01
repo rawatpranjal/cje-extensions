@@ -1,0 +1,1469 @@
+%%%%%%%% ICML 2023 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+% Recommended, but optional, packages for figures and better typesetting:
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+
+\usepackage{tcolorbox, soul} % for sample conversations
+\usepackage{listings} % for code in sample converesations
+
+
+\usepackage{caption}
+% \usepackage{subcaption}
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2023} with \usepackage[nohyperref]{icml2023} above.
+\usepackage{hyperref}
+\usepackage{enumitem}
+\setlist{leftmargin=5mm}
+\usepackage{xspace}
+
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Use the following line for the initial blind version submitted for review:
+\usepackage[accepted]{icml2023}
+
+% If accepted, instead use the following line for the camera-ready submission:
+% \usepackage[accepted]{icml2023}
+
+% For theorems and such
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+
+% if you use cleveref..
+\usepackage[capitalize,noabbrev]{cleveref}
+\input{macros}
+
+% Todonotes is useful during development; simply uncomment the next line
+%    and comment out the line below the next line to turn off comments
+%\usepackage[disable,textsize=tiny]{todonotes}
+% \usepackage[textsize=tiny]{todonotes}
+
+
+\newcommand{\showcomments}{yes}
+\newcommand{\system}{Chatbot Arena\xspace}
+
+% Add your name here if you want to comment
+\newcommand\todo[1]{\ifthenelse{\equal{\showcomments}{yes}}{{\color{red} TODO: #1}}{\ignorespaces}}
+\newcommand\joey[1]{\ifthenelse{\equal{\showcomments}{yes}}{{\color{blue} (Joey: #1)}}{\ignorespaces}}
+\newcommand\lianmin[1]{\ifthenelse{\equal{\showcomments}{yes}}{{\color{blue} Lianmin: #1}}{\ignorespaces}}
+% \newcommand\ion[1]{\ifthenelse{\equal{\showcomments}{yes}}{{\color{blue} Ion: #1}}{\ignorespaces}}
+\newcommand\ana[1]{\ifthenelse{\equal{\showcomments}{yes}}{{\color{red} Anastasios: #1}}{\ignorespaces}}
+\newcommand\ion[1]{\ifthenelse{\equal{\showcomments}{yes}}{{\color{blue} Ion: #1}}{\ignorespaces}}
+\newcommand\weilin[1]{\ifthenelse{\equal{\showcomments}{yes}}{{\color{cyan} Wei-Lin: #1}}{\ignorespaces}}
+\newcommand\ying[1]{\ifthenelse{\equal{\showcomments}{yes}}{{\color{purple} Ying: #1}}{\ignorespaces}}
+\newcommand\tianle[1]{\ifthenelse{\equal{\showcomments}{yes}}{{\color{orange} Tianle: #1}}{\ignorespaces}}
+\newcommand\dl[1]{\ifthenelse{\equal{\showcomments}{yes}}{{\color{orange} DL: #1}}{\ignorespaces}}
+
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{\system: An Open Platform for Evaluating LLMs by Human Preference}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{\system: An Open Platform for Evaluating LLMs by Human Preference}
+
+% It is OKAY to include author information, even for blind
+% submissions: the style file will automatically remove it for you
+% unless you've provided the [accepted] option to the icml2023
+% package.
+
+% List of affiliations: The first argument should be a (short)
+% identifier you will use later to specify author affiliations
+% Academic affiliations should list Department, University, City, Region, Country
+% Industry affiliations should list Company, City, Region, Country
+
+% You can specify symbols, otherwise they are numbered in order.
+% Ideally, you should not use this facility. Affiliations will be numbered
+% in order of appearance and this is the preferred way.
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Wei-Lin Chiang}{equal,ucb}
+\icmlauthor{Lianmin Zheng}{equal,ucb}
+\icmlauthor{Ying Sheng}{stanford}
+\icmlauthor{Anastasios N. Angelopoulos}{ucb}
+\icmlauthor{Tianle Li}{ucb}
+\icmlauthor{Dacheng Li}{ucb}
+\icmlauthor{Banghua Zhu}{ucb}
+\icmlauthor{Hao Zhang}{ucsd}
+\icmlauthor{Michael I. Jordan}{ucb}
+\icmlauthor{Joseph E. Gonzalez}{ucb}
+\icmlauthor{Ion Stoica}{ucb}
+\end{icmlauthorlist}
+
+\icmlaffiliation{ucb}{UC Berkeley}
+\icmlaffiliation{stanford}{Stanford}
+\icmlaffiliation{ucsd}{UCSD}
+
+
+% \icmlaffiliation{comp}{Company Name, Location, Country}
+% \icmlaffiliation{sch}{School of ZZZ, Institute of WWW, Location, Country}
+
+\icmlcorrespondingauthor{Wei-Lin Chiang}{weichiang@berkeley.edu}
+
+% You may provide any keywords that you
+% find helpful for describing your paper; these are used to populate
+% the "keywords" metadata in the PDF but will not be shown in the document
+\icmlkeywords{Machine Learning, ICML}
+
+\vskip 0.3in
+]
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column
+% listing the affiliations and the copyright notice.
+% The command takes one argument, which is text to display at the start of the footnote.
+% The \icmlEqualContribution command is standard text for equal contribution.
+% Remove it (just {}) if you do not need this facility.
+
+%\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
+\printAffiliationsAndNotice{\icmlEqualContribution}
+% otherwise use the standard text.
+
+
+\begin{abstract}
+Large Language Models (LLMs) have unlocked new capabilities and applications; however, evaluating the alignment with human preferences still poses significant challenges.
+To address this issue, we introduce \system, an open platform for evaluating LLMs based on human preferences. Our methodology employs a pairwise comparison approach and leverages input from a diverse user base through crowdsourcing. The platform has been operational for several months, amassing over 240K votes. This paper describes the platform, analyzes the data we have collected so far, and explains the tried-and-true statistical methods we are using for efficient and accurate evaluation and ranking of models. We confirm that the crowdsourced questions are sufficiently diverse and discriminating and that the crowdsourced human votes are in good agreement with those of expert raters. These analyses collectively establish a robust foundation for the credibility of \system.
+Because of its unique value and openness, \system has emerged as one of the most referenced LLM leaderboards, widely cited by leading LLM developers and companies. Our demo is publicly available at \url{https://chat.lmsys.org}.
+\end{abstract}
+
+
+\input{sec-intro}
+\input{sec-related-work}
+
+\section{Human Preference Data Collection}
+
+In this section, we discuss our interface design to collect human preferences and present summary statistics.
+% To convert from pairwise comparisons to model rankings, we present a generalization of the Bradley-Terry model~\cite{bradley1952rank}.
+\subsection{Interface}
+
+\system crowd-sources feedback from users for model evaluation. Our goal is to design an ease-of-use interface to reduce friction for users to contribute data.
+Since we collect feedback from many users, it is difficult to set a consistent grading rubric across different people. Hence, we adopt a pairwise comparison mechanism where users only need to compare two model responses and vote for the better one, instead of requiring users to provide an absolute score.
+
+In each battle, two anonymous models are sampled. To encourage data diversity, we do not preset any input prompt on the website. Users are free to input any prompt to the two models. We believe this creates incentives for user engagement, particularly given that we offer a free service. It also helps us collect a diverse set of inputs representing real-world usage. After models provide their answers, user compare them side-by-side and vote for the preferred answer. If a user cannot choose in the first turn, the user can continue chatting until identifying a winner. For those who are unsure, we also present two buttons, ``tie'' or ``both are bad.'' Figure~\ref{fig:screenshot-arena} shows a screenshot of our interface.
+Before using our service, users are required to accept terms of use, which gives us their consent to release the data publicly.
+
+\subsection{Data Statistics}
+
+We began collecting data in April 2023. As of Jan 2024, we have received around 240K votes from over 90K users. Our data involves more than 50 models, including both proprietary models like GPT-4, Claude, and Gemini, as well as open models such as LLaMA and Mistral.
+These conversations cover more than 100 languages, with 77\% being in English, 5\% in Chinese, and the remaining languages, such as Russian, German, Spanish, French, and Japanese, each representing less than 2\% of the total.
+Each data point includes multi-turn conversations between the user and two LLMs, and a vote to indicate which model the user prefers.
+We summarize statistics in Table~\ref{table:data_stats} along with other existing human preference datasets.
+
+%\todo{what's special about us?}\joey{I don't know that saying we are special here is necessary.  You would also need a point of comparison...}
+
+% \todo{How we engage community. leaderboard, million of tweet views, blog announcement?}
+% \joey{I think this would be inappropriate here.  Sounds like marketing.  Instead, you could discuss the biases introduced by our engagement mechanisms though I don't think we understand those as well.}
+
+Figure~\ref{fig:vote-cnt} in the Appendix shows the vote count per model. On average, 8K votes are collected for each model.
+In Figure~\ref{fig:winrate-match-count}, we select a set of representative models and present their win rate and the number of battles. Note that we employ non-uniform sampling to concentrate votes on model pairs that have similar performance due to higher uncertainty. 
+This helps us reduce the number of votes required to reach stable results. 
+We later develop an adaptive sampling method and demonstrate its effectiveness against random sampling. See Section~\ref{sec:efficient-estimation} for further analysis.
+
+% \todo{moderation tags, how many unsafe prompts?}
+
+To ensure anonymity, we use keywords to filter out conversations containing model identity such as model name (e.g., GPT, Claude) or companies (e.g., OpenAI, Anthropic).
+To avoid misuse, we adopt OpenAI moderation API to flag conversations that contain unsafe content.
+%Figure~\ref{table:whole-dataset-flag-stats} shows the detailed breakdown.
+The flagged user requests account for 3\% of the total requests.
+Figure~\ref{fig:daily-vote} in the Appendix shows the number of valid user votes over time, where we get 1-2K votes per day in recent months and spikes as we introduce new models or leaderboard updates.
+
+% \begin{table}[]
+% \centering
+% \caption{Models with the highest number of votes}
+% \begin{tabular}{l l}
+% \toprule
+% Model              & \#Votes \\
+% \midrule
+% gpt-3.5-turbo-0613 & 30,326  \\ 
+% gpt-4-1106-preview & 30,268  \\
+% gpt-4-0613         & 27,441  \\
+% claude-2.1         & 23,323  \\
+% gpt-4-0314         & 18,062  \\
+% claude-1           & 17,630  \\
+% claude-instant-1   & 17,623  \\
+% \bottomrule
+% \end{tabular}
+% \end{table}
+
+% \begin{table*}[t]
+% \centering
+% \caption{The distribution of violation categories across all flagged conversations in \system. Please refer to the detailed category definitions in OpenAI Moderation API~\citep{openaimoderation}.}
+% %\footnotesize
+% \begin{tabular}{lrrrrrr}
+% \toprule
+% & Total & Sexual & Harassment & Violence & Hate & Self-harm  \\ \midrule
+% \#Flagged conversations: & 8176 (3.3\%) & 4648 & 1746 & 1837  & 357 & 178   \\
+% \bottomrule
+% \label{table:whole-dataset-flag-stats}
+% \end{tabular}
+% \end{table*}
+
+
+
+% Two tables:
+% \begin{enumerate}
+% \item \#vote, \#user, \#models, \#vote over time, language
+% \item comparison with public datasets (Anthropic HH,  OpenAssistant, WebGPT, StakeExchance, Stanford SHP?)
+% \end{enumerate}
+
+\begin{table*}[t]
+\centering
+\vspace{-5px}
+\caption{Statistics of human preference datasets, including Anthropic HH~\citep{bai2022training}, OpenAssistant Conversations~\citep{kopf2023openassistant}, and \system (as of 2024/1/21). The tokens are counted by Llama2's tokenizer. ``Conv'' = Conversation. ``Lang'' = Language.}
+\label{table:data_stats}
+\footnotesize
+%\resizebox{0.\textwidth}{!}{% <------ Don't forget this %
+\begin{tabular}{lrrrrrrrr}
+\toprule
+\multirow{2}{*}{Dataset} & \multirow{2}{*}{\# Convs} & \multirow{2}{*}{\# Models} &  \multirow{2}{*}{\# Users} & \multirow{2}{*}{\# Langs} & Avg. \# Turns & Avg. \# Tokens & Avg. \# Tokens\\
+&  &  & &  & per Sample & per Prompt & per Response\\
+\midrule
+Anthropic HH   & 338,704   & -  & 143     & 1   & 2.3 & 18.9 & 78.9  \\
+OpenAssistant  & 66,497    & -  & 13,500  & 35  & -   & 36.9 & 214.2 \\
+% Chatbot Arena  & 33,000    & 20 & 13,383  & 96  & 1.2 & 52.3 & 189.5 & Yes \\
+\midrule
+\system (20240121)  & 243,329 & 50 & 90,051 & 149 & 1.3 & 94.9  & 269.0 \\
+\bottomrule
+\end{tabular}
+%}
+\end{table*}
+
+\begin{figure*}
+\centering
+\vspace{-5px}
+\includegraphics[width=0.48\textwidth]{figures/win_fraction.pdf}
+\hfill
+\includegraphics[width=0.48\textwidth]{figures/battle_count.pdf}
+\vspace{-40px}
+\caption{Win-rate (left) and battle count (right) between a subset of models in \system.}
+\label{fig:winrate-match-count}
+\end{figure*}
+
+
+
+
+
+
+
+% \begin{enumerate}
+%     \item describe the data collection process
+%     \item visualize the distributions and stats
+%     \item describe how we engage users and maintain traffic
+%     \item highlight the new vision component
+% \end{enumerate}
+
+% community engagement
+% \begin{enumerate}
+%     \item Experiences and Strategies
+% social media (Twitter/blog)
+%     \item collaboration \& community
+%     \item other possible tricks (prompt of the week, new battle format, mini-character)
+% \end{enumerate}
+
+\section{From Pairwise Comparisons to Rankings}
+\label{sec:rankings}
+
+Our data consists of pairwise comparisons---but how can we use these comparisons to recover a ranking over all $M$ models?
+This is a well-studied topic in the literature on learning to rank~\cite{liu2009learning}, and we present our perspective here.
+We let $\cA = \{ (m, m') : m < m' \text{ and } m,m' \in [M] \}$ denote our comparative data set.
+
+We consider a sequential setting, where at time $t \in \N$, we serve the human a pair of models $A_t \in \cA$ (which we pick), and in turn we observe the human's response $H_t \in [0,1]$.
+As an example, we might have that $A_t = (1,2)$ and $H_t = 1$, indicating that the human prefers model 2 over model 1.
+In the ensuing text, we will primarily focus on the binary case---where $H_t \in \{0, 1\}$---but our approach will generalize to any form of feedback, including the possibility of allowing the human to express different degrees of preference or to say the models are tied. 
+
+One critical goal is to estimate the \emph{win matrix}: $\theta^*(a) = \E[H_t \mid A_t = a]$, for all $a \in \cA$; see the left panel of Figure~\ref{fig:winrate-match-count} for an illustration of the (empirical) win matrix.
+In the binary case, the $a$ entry in the win matrix corresponds to the probability the human prefers model $a_2$ to $a_1$ when shown the pair $a$.
+Finding the win matrix is a relatively straightforward mean-estimation problem; we will provide details in Section~\ref{sec:efficient-estimation}.
+
+Formally, consider a \emph{score} $s(\P) \in \R^M$, where $\P$ is a joint distribution over $A$ and $H$ (by default, we will target a uniform distribution over $\cA$).
+Each model has a true score $s(\P)_m$, and better models will have higher scores.
+In particular, we have the rank of model $m$: 
+\begin{equation}
+    \rank(\P)_m = 1+\sum\limits_{m' \in [M]} \ind{s(\P)_{m'} > s(\P)_m}.
+\end{equation}
+The best model has rank $1$. 
+If there is another model tied for best, they will both get assigned rank $1$.
+
+\textbf{Picking a score.}
+A standard score function in this setting is the vector of Bradley-Terry (BT) coefficients~\cite{bradley1952rank}.
+In the Bradley-Terry model, $H_t \in \{0,1\}$, and the probability model $m$ beats model $m'$ is modeled via a logistic relationship:
+\begin{equation}
+    \P(H_t = 1) = \frac{1}{1+e^{\xi_{m'}-\xi_m}},
+\end{equation}
+where $\xi$ is an $M$-length vector of so-called BT coefficients.
+Without loss of generality, we take $\xi_1 = 0$ (since the model is invariant to addition in $\xi$).
+Our goal is to estimate the population Bradley-Terry coefficients, i.e., those that minimize the binary cross-entropy:
+\begin{equation}
+    \label{eq:population-BT}
+    s(\P) = \argmin_{\xi} \E_{(A,H) \sim \P}\left[\ell\left(H, \frac{1}{1+e^{\xi_{A_2}-\xi_{A_1}}}\right)\right],
+\end{equation}
+where $\ell$ is the binary cross-entropy loss, $\ell(h,p) = -(h\log(p) + (1-h)\log(1-p))$.
+
+Although the BT model technically assumes a parametric form for the model win rates, the seminal results of~\citet{huber1967behavior, white1982maximum} show that maximum likelihood estimators are still asymptotically normal even when these assumptions \emph{do not} hold, so long as the so-called ``sandwich'' covariance matrix is used; see Section~\ref{sec:efficient-estimation} for details, and see Appendix~\ref{app:np-bt} for a nonparametric extension of the Bradley-Terry model.
+Finally, we remark that previous evolutions of our online interface have reported different ranking scores, such as the Elo score~\cite{elo1967proposed} instead of the BT coefficients.
+We made this change because the BT coefficients are better for the purpose of statistical estimation.
+
+\section{Efficient Approximate Ranking}
+\label{sec:efficient-estimation}
+
+In Section~\ref{sec:rankings} we described how to calculate the win matrix, score, and rank.
+Now we describe our estimation procedures.
+
+\textbf{Win matrix estimation.} Estimation of the win matrix is relatively straightforward. Define $X_t(a) = \frac{1}{P_t(a)} H_t \ind{A_t = a}$, where $P_t(a)$ is the probability of sampling pair $a$ at time $t$, and $X_t$ as the according vector.
+Then the estimator is
+\begin{equation}
+    \label{eq:reweighted-standard-estimator}
+    \hat{\theta}_T = \frac{1}{T}\sum\limits_{t=1}^TX_t.
+\end{equation}
+Note that $\E[X_t(a)] = \theta^*(a)$ for all $t$, and thus $\hat{\theta}_T$ is an unbiased estimator of $\theta^*$.
+We will furthermore estimate the covariance matrix as
+\begin{equation}
+    \label{eq:reweighted-covariance_matrix}
+    \widehat{\Sigma}_T = \frac{1}{T}\sum\limits_{t=1}^T (X_t - \hat{\theta}_T)(X_t - \hat{\theta}_T)^\top.
+\end{equation}
+Under the appropriate regularity conditions, we have that
+\begin{equation}
+    \sqrt{T}\widehat{\Sigma}^{-1/2}(\hat{\theta} - \theta^*) \to \cN(0, I_d),
+\end{equation}
+and we construct confidence intervals accordingly.
+For an understanding of the appropriate regularity conditions, see~\citet{durrett2019probability}, Theorem 8.2.8, where condition (ii) is trivially satisfied so long as $P_t(a) > \epsilon > 0$, and condition (i) is implied by the almost-sure convergence of $P_t(a)$ to a limiting distribution $P(a)$.
+
+\textbf{Estimating the BT scores.}
+To estimate the BT coefficients, mirroring~\eqref{eq:population-BT}, we perform (reweighted) maximum likelihood estimation on our data points:
+\begin{equation}
+    \label{eq:empirical-BT}
+    s(\hat{\P}) = \argmin_{\xi} \sum\limits_{t=1}^T \frac{1}{P(A_t)}\ell\left(H_t, \frac{1}{1+e^{\xi_{A_{t,2}}-\xi_{A_{t,1}}}}\right),
+\end{equation}
+where $A_t \sim P$.
+We perform the inverse weighting by $P(A_t)$ because this allows us to target a score with a uniform distribution over $A$.
+
+To compute confidence intervals on the BT coefficients, we employ two strategies: (1) the pivot bootstrap~\cite{diciccio1996bootstrap}, and (2) the ``sandwich'' robust standard errors outlined in~\citet{huber1967behavior} (see also~\citet{freedman2006so} for an outline of the necessary technical assumptions).
+Ultimately, based on the results of a simulation study described in Appendix~\ref{app:simulation-study}, we choose to deploy the sandwich intervals due to their smaller size in large samples.
+
+\textbf{Approximate rankings.}
+Finally, we report an approximate ranking for each model that accounts for the uncertainty in the estimation of the score.
+Given an $M$-dimensional confidence set $\cC$ satisfying
+\begin{equation}
+    \P( s(\P) \in \cC ) \geq 1-\alpha,
+\end{equation}
+we extract an approximate ranking $R_m = 1 + \sum_{m' \in [M]} \ind{\inf \cC_{m'} > \sup \cC_{m}}$.
+The uniform validity of $\cC$ directly implies that $\P( \exists m : R_m > \rank(\P)_m ) \leq \alpha$---i.e., with high probability, no model's performance is understated.
+A guarantee on the other side---that no model's performance is overstated---is possible by interchanging the $\inf$ and $\sup$.
+To get the uniform confidence set, we construct the chi-squared interval implied by the central limit theorem using the sandwich estimate of the variance.
+In other words, we construct the interval $\{ \xi : T\left\|\hat{V}^{-1/2}(\hat\xi - \xi)\right\| \leq \chi^2_{1-\alpha, M-1}$,
+where $\hat\xi$ is our MLE of the BT coefficients and $\hat{V}_{\xi}$ is the sandwich variance of the logistic regression. 
+
+\textbf{Active sampling rule.} Our sampling rule was to choose the model pair $a\in\cA$ proportionally to the reduction in confidence interval size by sampling that pair:
+\begin{equation}
+    P_t(a) \propto \sqrt{\frac{\hat{\Sigma}_{t, a,a}}{|\{ t : A_t = a\}|}} - \sqrt{\frac{\hat{\Sigma}_{t, a,a}}{|\{ t : A_t = a\}| + 1}}.
+\label{eq:adaptive}
+\end{equation}
+
+\subsection{Detecting Anomalous Users}
+\label{sec:outlier}
+On a different note, we take a first step towards identifying anomalous IP addresses in our dataset.
+In a dataset of $U$ unique IPs, we let $\mathsf{IP} = \{1, \ldots, U\}$ be the set of all IP addresses.
+Consider a ``test'' user, outside this database, who gives ratings $H'_1, \ldots, H'_n$ when presented actions $A'_1, \ldots, A'_n$.
+The idea of our procedure is to compare the distribution of ratings for the new user to the historical distribution of ratings for a given action.
+We let $\cH_a = \{ H_t : A_t = a \}$ and every time a user submits a vote, we calculate the following number:
+\begin{equation}
+    p_i = \frac{1}{|\cH_{A'_i}|+1} \left(1 + \sum\limits_{h \in \cH_{A'_i}} \ind{h \geq H'_i}\right).
+\end{equation}
+Under the null hypothesis that $\cH_{A'_i}$ is exchangeable with $H'_i$, $p_i$ is a valid p-value (see Appendix~\ref{app:p-val} for a proof).
+Furthermore, the dependence of these p-values asymptotically is negligible.
+
+With this p-value in hand, we can test against this null hypothesis sequentially by using Fisher's combination test~\cite{fisher1928statistical} along with a variant of the Bonferroni correction.
+In particular, for each user, after their $j$th vote, we compute $M_j = -2\sum\limits_{i=1}^j\log(p_i)$.
+At 5 randomly chosen values of $j$ between 1 and 100, we identify a user as anomalous if $M_j \geq \chi^2_{2j, 1-\alpha/5}$. 
+(The times are randomly chosen, as to avoid anomalous users strategizing to hack this p-value.)
+Despite the heuristic application of this procedure, it seems to work well in our small-scale tests reported in Table~\ref{tab:confusion}.
+
+\section{Data Analysis}
+
+% \subsection{Validating Vote Quality}
+
+% \subsection{Analyzing Model Weakness}
+
+% \todo{building trust in Arena}
+To examine whether Arena's crowdsourced data reflects real-world use cases, we conduct topic modeling on the user prompts.
+We show how effective are these prompts in distinguishing models. Lastly, we validate the vote quality by relabeling data with experts.
+
+\subsection{Topic Modeling on User Prompts}
+
+To study the prompt diversity, we build a topic modeling pipeline with BERTopic\footnote{\url{https://github.com/MaartenGr/BERTopic}}~\cite{grootendorst2022bertopic}.
+We start with transforming user prompts into representation vectors using OpenAI's text embedding model (text-embedding-3-small).
+To mitigate the curse of dimensionality for data clustering, we employ UMAP (Uniform Manifold Approximation and Projection)~\citep{mcinnes2020umap} to reduce the embedding dimension from 1,536 to 5.
+We then use the hierarchical density-based clustering algorithm, HDBSCAN, to identify topic clusters with minimum cluster size 32.
+Finally, to obtain topic labels, we sample 10 prompts from each topic cluster and feed into GPT-4-Turbo for topic summarization.
+
+The pipeline identifies 600 clusters covering a wide range of topics including poetry writing, coding, math, and medical queries.
+We present the top-16 topic clusters in Figure~\ref{fig:topic}.
+We observe that the largest cluster only accounts for 1\% of the entire set and the rest quickly drop to <0.5\%, and the similarity between clusters is small, showing a long-tail and diverse distribution.
+Due to space limit, we present the similarity matrix and cluster hierarchy of top-64 clusters in Figure~\ref{fig:topic-64} and \ref{fig:hierarchy} in Appendix.
+
+
+\begin{figure}
+\centering
+% \includegraphics[width=0.48\textwidth]{figures/new_similarity_16.pdf}
+% \vspace{-5px}
+%\includegraphics[width=0.42\textwidth]{figures/top_topic.pdf}
+%\hfill
+% \includegraphics[width=0.48\textwidth]{figures/battle_count.pdf}
+\vspace{-5px}
+\includegraphics[width=\linewidth]{figures/small_similarity_16_8.pdf}
+\vspace{-40px}
+\caption{Similarity matrix of top-16 topic clusters. The number followed by the topic label represents the cluster size in percentage. Note that similarity is computed by cluster's centroid embeddings, hence diagonals are always one.}
+\vspace{-10px}
+\label{fig:topic}
+\end{figure}
+
+% \begin{enumerate}
+%     \item OpenAI embedding, dimension reduction, hierarchical clustering, prompt diversity
+%     \item unsafe content ratio
+% \end{enumerate}
+
+\subsection{Can Arena Prompts Distinguish Models?}
+
+%ion{We should say we factor out votes from anomalous users; at this point the reader doesn't know who significant these are.} \weilin{great point, fixed!}
+Next, we study how effective are these topic clusters in distinguishing models strengths.
+Constructing challenging prompts has become increasingly difficult due to LLMs' fast growing capabilities. For example, open models such as Llama-2-70b-chat can likely answer inquiries about movie or travel recommendation as good as GPT-4, but not in other domains such as reasoning or coding. To demonstrate, we sample 30 prompts from seven topic clusters and compare the performance of Llama-2-70b-chat and GPT-4.
+To control variables, we factor out user votes and consider LLM-as-judge~\cite{zheng2023judging} to evaluate model response.
+Results are shown in Table~\ref{table:challenging-clusters}, where we see GPT-4 has significantly higher win-rate (up to 97\%) in clusters that require coding and reasoning skills. On the other hand, for clusters with less problem-solving tasks, GPT-4 win-rate drops to below 60\%. We show examples in Appendix~\ref{subsec:clusters-example}.
+This result shows models may exhibit varying strengths in different areas, but also highlights some of the topic clusters in \system are effective in differentiate models.
+%models may exhibit varying strengths in different areas.
+
+% While prompt diversity is crucial, having a diverse set of topics alone does not guarantee to differentiate state-of-the-art LLMs from each other. To examine whether LLM arena can effectively evaluate a model based on its strength and weakness, we study the ability of various clusters at separating the stronger models from the weaker ones. We randomly sampled 30 prompts from 7 various clusters and evaluated GPT-4-0613's performance against Llama-2-70b-chat with GPT-4-Turbo as judge, with results shown in Table~\ref{table:challenging-clusters}. Clusters related to higher level of problem-solving and reasoning, such as coding, is shown to create higher level of distinction between GPT-4-0613 and Llama-2-70b-chat. On the other hand, clusters involving less complex problem-solving is less likely to be suitable for distinguishing models from each other, such as Movie Recommendations \& Rating with GPT-4-0613 having only around 50\% win-rate. However, not all coding tasks can effectively differentiate LLMs due some coding clusters are too easy for most LLMs. In Table~\ref{table:challenging-clusters}, "Python Coding Basics`` has a 65\% GPT-4-0613 win-rate, while "Python Game Programming Challenge``, which is the harder variant of the former cluster, has an over 96\% GPT-4-0613 win-rate. Further, we can conclude Llama-2-70B, while competent in areas related to general information retrieval, it remains inept at advanced programming tasks. 
+% From this study, LLM arena present not only a diverse set of prompts, but the quality of its prompt can sufficiently differentiate LLMs from each other.
+
+\begin{table}[t!]
+\centering
+\vspace{-1em}
+\caption{GPT-4-0613's win-rate against Llama-2-70b-chat on 30 sample prompts from various topic clusters. We use GPT-4-turbo as judge to evaluate model responses in pairwise comparison.}
+\label{table:challenging-clusters}
+\footnotesize
+{\small
+\begin{tabular}{lrr}
+\toprule
+Topic Cluster & Win-rate & Size\\
+\midrule
+Python Game Programming Challenge   & 96.7\% & 0.2\%\\
+C/C++ Process Multi-Threading       & 86.7\% & 0.3\% \\
+SQL Query Database Assistance       & 73.3\% & 0.2\%\\
+Poetry Writing Prompts              & 66.7\% & 1.1\%\\
+Python Coding Basics                & 65.0\% & 0.2\%\\
+Linguistic Analysis \& Wordplay     & 58.3\% & 0.7\%\\
+Travel Itinerary Planning           & 58.3\% & 0.4\% \\
+Movie Recommendations \& Ratings    & 53.3\% & 0.2\% \\
+\bottomrule
+\end{tabular}}
+\vspace{-5px}
+\end{table}
+
+
+\textbf{Building Challenging Benchmark.} To further demonstrate the prompt quality, we show it is possible to construct a challenging benchmark with crowd-sourced user prompts.
+%We define criteria for an effective benchmark to be  problem-solving oriented.
+To ensure both topic coverage and quality, we first run the topic modeling pipeline and follow a similar procedure in \citet{zheng2023lmsyschat1m} to select challenging questions sampled from each topic cluster.
+Examples prompts and evaluation procedures can be found in the Appendix~\ref{subsec:arena-bench-examples} and Appendix~\ref{subsec:arena-bench-sys-prompt}, respectively.
+% 350 prompts from \system.
+%With careful prompt engineering (more details in Appendix~\ref{subsec:arena-bench-sys-prompt}).
+We observe the selected prompts are highly effective in differentiating models. In Figure~\ref{fig:arena_bench-vs-mt_bench}, we compare Arena bench against a widely used LLM benchmark, MT-Bench~\cite{zheng2023judging}.
+We can see that Arena Bench effectively reveals a significant gap in performance between proprietary and the strongest open models.
+
+
+% and problem-solving oriented. From results in Table~\ref{table:challenging-clusters}, the difficulty level of the prompts plays an crucial role in evaluation. The definition of difficulty, however, can range from philosophical and creative reasoning to complex problem-solving and information-retrieval. We find prompts requiring an integrated set of complex reasoning, general knowledge, and various kinds of skills present the highest level of difficulty to LLMs. Examples of prompts we consider as challenging can be found in the Appendix~\ref{subsec:arena-bench-examples}.
+
+
+% \begin{table}[t!]
+% \centering
+% \vspace{-1em}
+% \caption{}
+% \label{table:challenging-clusters}
+% \footnotesize
+% {\small
+% \begin{tabular}{lr}
+% \toprule
+% Model     & Score (Median)\\
+% \midrule
+% GPT-4-Turbo             & 9.34 \\
+% GPT-4-0314              & 8.72 \\
+% GPT-4-0613              & 7.88 \\
+% GPT-3.5-Turbo-0613      & 6.20 \\
+% Claude-2.1              & 5.88 \\
+% Mixtral-8x7B-Instruct   & 5.42 \\
+% Yi-34B-Chat             & 5.27 \\
+% Vicuna-33b-v1.3         & 3.15 \\
+% Llama-2-70b-chat        & 3.14 \\
+% Llama-2-7B-Chat         & 2.39 \\
+% \bottomrule
+% \end{tabular}}
+% \vspace{-0.5em}
+% \end{table}
+
+% As LLMs improve over diverse sets of skills, the differences in performance on specific tasks becomes harder to detect, and the separation between state-of-the-art LLMs becomes blurry in many LLM evaluations \todo{cite?}. Arena, with its diverse and differentiating prompts, targets this issue. To further expand on LLM Arena's ability to reliably differentiate LLM performances, we use crowd-source prompts to build a static, more challenging benchmark, Arena Bench. 
+
+
+% How to select challenging prompts for LLM benchmark is currently an open question. We followed a similar procedure to the construction of Arena-Hard-200 in \cite{zheng2023lmsyschat1m}. We propose the following simple technique: within LLM Arena's 200K user prompts, we start by selecting the most challenging subset by giving GPT-3.5-Turbo and Claude-2 the three main criteria we defined above and using them as judges. Then we sampled 350 most challenging prompts from the subset and constructed Arena Bench after manually verified their quality. The details of the evaluation is presented in Appendix~\ref{subsec:arena-bench-sys-prompt}. We evaluated various state-of-the-art LLMs using Arena Bench and present our results alongside MT-Bench in Figure~\ref{fig:arena_bench-vs-mt_bench}. In the figure, Arena Bench effectively reveal significant gap in performances between proprietary and even the strongest open models.
+
+% How to select challenging prompts for an LLM benchmark is currently an open question. We followed a similar procedure to the construction of Arena-Hard-200 in \citet{zheng2023lmsyschat1m}. Arena Bench consists of 350 most challenging prompts from LLM arena. We devised a novel evaluation process to evaluate various state-of-the-art LLMs using Arena Bench, more details can be found in Appendix~\ref{subsec:arena-bench-sys-prompt}. We present our evaluation results alongside MT-Bench in Figure~\ref{fig:arena_bench-vs-mt_bench}. In the figure, Arena Bench effectively reveals a significant gap in performance between proprietary and even the strongest open models.
+
+\begin{figure}
+    %\vspace{-5px}
+    \centering
+    \includegraphics[width=\linewidth]{figures/arena_bench-vs-mt_bench.pdf}
+    \vspace{-25px}
+    \caption{Model's performance between Arena Bench and MT-Bench, showing an increased gap between open and proprietary models. Both uses GPT-4 as judge.}
+    \vspace{-15px}
+    \label{fig:arena_bench-vs-mt_bench}
+\end{figure}
+
+\subsection{Validating Vote Quality}
+
+To assess the quality of crowdsourced votes, we randomly selected 160 battles between GPT-4-Turbo and Llama-2-13B, as well as GPT-4-Turbo and GPT-3.5-Turbo-0613.
+We then asked experts\footnote{The laborers are graduate students at UC Berkeley.} to label their preference per comparison. The experts were given the prompts and answers blindly, and asked to carefully fact-check model's answer with external resources like search engine. Manually labeling each data point took on average 3-5 minutes. For reference, we also use GPT-4 as a judge for pairwise comparisons. The agreement rate between crowd-users, experts, and GPT-4-judge are presented in Table~\ref{table:agreement-rate}. The corresponsing win-rate are shown in Table~\ref{table:gpt-4-turbo-win-rate}.
+
+To summarize, we observe high agreement rates (72\% to 83\%) between Arena crowd-user and experts in both setup. Note that agreement rates between two experts are around similar levels (79.4\% and 89.8\%). As for the 10\%-20\% disagreement between experts, it is mostly due to some user prompts don't have a ground truth answer. Depending on the preference of the evaluator, sometimes both answers can be argued as being better than the other one, such as the examples in Appendix ~\ref{subsec:no-ground-truth-example}.
+The gap between crowd-vs-expert agreement rate and expert-vs-expert agreement rate (5\%-10\%) is mostly attributed to crowd user making mistakes or overlooking factual errors in model's response.
+Overall, the agreement rates presented in Table~\ref{table:agreement-rate} validate the decent quality of crowd-sourced votes in \system.
+
+%high-quality, trustworthy, and useful in capturing the diversity of human preferences.
+
+% We observe an agreement rate of approximately 80\% between the experts on battles between GPT-4-Turbo and GPT-3.5-Turbo-0613. On the other hand, agreement rate is much higher on battles between GPT-4-Turbo and Llama-2-13b-chat. This is likely due to a greater gap between GPT-4-Turbo and Llama-2-13b-chat than GPT-4-Turbo and GPT-3.5-Turbo-0613. As for the 10\%-20\% disagreement between experts, it is mostly due to some user prompts don't have a ground truth answer. Depending on the preference of the evaluator, sometimes both answers can be argued as being better than the other one, such as the examples in Appendix ~\ref{subsec:no-ground-truth-example}. Despite agreement rate between experts and crowd-users only ranges from 72\% to 83\%, it is likely that 10\%-15\% of the arena battles in the sample do not have ground truth answers. As a result, the agreement rates presented in Table~\ref{table:agreement-rate} demonstrate that LLM Arena's data is high-quality, trustworthy, and useful in capturing the diversity of human preferences.
+
+% \begin{table}[t!]
+% \centering
+% \vspace{-1em}
+% \caption{Pairwise agreement rate between crowd-user, gpt-4 judge, and experts on pairwise battles. The percentages in black font is between GPT-4-Turbo and Llama-2-13b. The percentage in red font is between GPT-4-Turbo and GPT-3.5-Turbo-0613.}
+% \label{table:agreement-rate}
+% \footnotesize
+% \begin{tabular}{lrrrr}
+% \toprule
+% Model           & Arena User & Expert 1 & Expert 2  & GPT-4 \\
+% \midrule
+% Arena User      & -         & 72.8\%    & 77.8\%    & 75.6\% \\
+% Expert 1        & {\color{red}73.8\%}   & -         & 89.8\%    & 81.0\%\\
+% Expert 2        & {\color{red}83.1\%}   & {\color{red}79.4\%}    & -         & 78.5\% \\
+% GPT-4           & {\color{red}75.6\%}   & {\color{red}76.3\%}    & {\color{red}79.3\%}    & - \\
+% \bottomrule
+% \end{tabular}
+% \vspace{-0.5em}
+% \end{table}
+
+
+% \begin{table}[t!]
+% \centering
+% \vspace{-1em}
+% \caption{Pairwise agreement rate between crowd-user, gpt-4 judge, and experts on pairwise battles. The percentages in black font is between GPT-4-Turbo and Llama-2-13b. The percentage in blue font is between GPT-4-Turbo and GPT-3.5-Turbo-0613.}
+% \label{table:agreement-rate}
+% \footnotesize
+% \begin{tabular}{lrrr}
+% \toprule
+% Model           & Expert 1 & Expert 2  & GPT-4 \\
+% \midrule
+% Arena User      & 72.8\% {\color{blue}73.8\%} & 77.8\% {\color{blue}83.1\%} & 75.6\% {\color{blue}75.6\%} \\
+% Expert 1        &      & 89.8\% {\color{blue}79.4\%} & 81.0\% {\color{blue}76.3\%}\\
+% Expert 2        &      &          & 78.5\% {\color{blue}79.3\%}\\
+% \bottomrule
+% \end{tabular}
+% \vspace{-0.5em}
+% \end{table}
+
+
+\begin{table}[t!]
+\centering
+%\vspace{-1em}
+%\vspace{-5px}
+\caption{Pairwise agreement rate between crowd-user, gpt-4 judge, and experts on pairwise battles. The top part of the table is between GPT-4-Turbo and Llama-2-13b-chat. The bottom is between GPT-4-Turbo and GPT-3.5-Turbo-0613.}
+\label{table:agreement-rate}
+\footnotesize
+\begin{tabular}{lrrr}
+\toprule
+Llama-2-13b & Expert 1 & Expert 2  & GPT-4 \\
+\midrule
+Crowd      & 72.8\% & 77.8\% & 75.6\% \\
+Expert 1        &   -   & 89.8\% & 81.0\% \\
+Expert 2        &   -   &   -       & 78.5\% \\
+\midrule
+GPT-3.5-Turbo & Expert 1 & Expert 2  & GPT-4 \\
+\midrule
+Crowd      & 73.8\%& 83.1\% & 75.6\%\\
+Expert 1        &   -   & 79.4\% & 76.3\%\\
+Expert 2        &   -   &   -    & 79.3\%\\
+\bottomrule
+\end{tabular}
+\vspace{-15px}
+\end{table}
+
+
+\begin{table}[t!]
+\centering
+%\vspace{-1em}
+\caption{GPT-4-Turbo's win-rate across crowd-user, gpt-4 judge, and experts on pairwise battles against Llama-2-13b and GPT-3.5-Turbo-0613.}
+\label{table:gpt-4-turbo-win-rate}
+% \footnotesize
+\resizebox{1\columnwidth}{!}{
+\begin{tabular}{lrrrr}
+\toprule
+Baseline          & Arena User & Expert 1 & Expert 2 & GPT-4 \\
+\midrule
+Llama-2-13b     & 81.2\% & 89.4\% & 86.9\% & 78.8\% \\
+GPT-3.5-Turbo   & 76.3\% & 82.5\% & 89.4\% & 79.4\% \\
+\bottomrule
+\end{tabular}}
+\vspace{-0.5em}
+\end{table}
+
+
+% \begin{enumerate}
+%     \item Identify challenging clusters
+%     \item GPT-3.5/Claude to select hard prompts (add prompt in Appendix)
+%     \item Show Arena Hard result
+% \end{enumerate}
+
+% \begin{enumerate}
+%     \item Categorization on user prompts (e.g., coding, math etc)
+%     \item Detect low-quality prompts/votes
+%     \item Outlier detection?
+%     \item Insights
+% \end{enumerate}
+
+
+% \subsection{Human Feedback Analysis Pipeline}
+
+% \begin{enumerate}
+%     \item Human Feedback Analysis Pipeline
+%     \item survey the needs of model developers
+% how we automatically generate a model performance report
+% \end{enumerate}
+
+
+
+\section{Experiments}
+
+\subsection{Ranking system}
+
+\textbf{Computing the rank on real data.} In this section, we report results from our experiments on approximate ranking.
+For this experiment, we ran a replay of $T=213,576$ historical votes from our online platform and calculate the BT coefficients using our earlier-described estimation algorithm with confidence intervals; see Figure~\ref{fig:sandwich-intervals} for these intervals (with and without multiplicity correction; the formal notion of approximate ranking technically requires multiplicity correction, but it makes the intervals looser).
+\begin{figure}
+\centering
+\vspace{-5px}
+\includegraphics[width=0.48\textwidth]{figures/sandwich_intervals.pdf}
+\vspace{-30px}
+ \caption{Intervals for the BT coefficients with and without multiplicity correction. The multiplicity correction, in this case a chi-square CLT interval, is technically required for the purpose of calculating the ranking, because it ensures \emph{all} scores are simultaneously contained in their intervals (and the ranking is a function of all the scores). However, it induces extra conservatism, so we report both intervals.}
+\vspace{-5px}
+\label{fig:sandwich-intervals}
+\end{figure}
+
+\textbf{Evaluating the coverage of the intervals.}
+A natural follow-up question is whether or not the intervals are doing their job correctly: whether they cover the true BT coefficients with probability at least (and almost exactly) $1-\alpha$.
+Of course, this cannot be evaluated on real data, so we run a simulation.
+A vector of BT coefficients is drawn, with each coordinate sampled i.i.d.\ from a distribution $\mathsf{beta}(1/\gamma, 1/\gamma)$; we take $\gamma=2$ in Figure~\ref{fig:cvg-sim} (and we vary $\gamma$ in Appendix~\ref{app:simulation-study}).
+Given these coefficients, a dataset is synthesized, and the coverage and average width are computed for each of 20 trials.
+The results can be seen in Figure~\ref{fig:cvg-sim} for the uncorrected intervals
+The coverage of the intervals behaves as expected, centering around $1-\alpha$, regardless of the number of models. 
+Meanwhile, the more models are included, the larger the intervals become.
+\begin{figure}
+\centering
+%\vspace{-5px}
+\includegraphics[width=0.48\textwidth]{figures/sandwich_coverage_width.pdf}
+ \vspace{-30px}
+ \caption{Intervals for the BT coefficients as a function of the number of samples and the number of models $M$.}
+\label{fig:cvg-sim}
+\end{figure}
+
+\textbf{Evaluating the active sampling rule.}
+Next, we discuss the evaluation of our active sampling rule as Equation~\eqref{eq:adaptive} for win matrix estimation.
+%
+We evaluate this sampling rule by taking the best fit BT coefficients to our 213,576 point sized holdout set, and then sampling from that distribution using our active sampling algorithm.
+The results are displayed in Figure~\ref{fig:width_vs_samples_real}.
+It is hard to tell by looking at plots, but the improvement is substantial:
+To estimate $\theta^*$ to a precision of 0.2, random needs 6,800 samples and adaptive needs 4,400 samples; meanwhile to estimate the score to a precision of 0.3, random needs 17,200 samples and adaptive needs 16,400 samples.
+Thus, the random baseline requires 54\% and 5\% more data to achieve the same level of precision, respectively.
+One can see from the plots in Figure~\ref{fig:width_vs_samples_real} that these results are not cherry-picked: the sample-efficiency of our method is better at all values on the horizontal axis.
+\begin{figure}
+\centering
+\includegraphics[width=0.9\linewidth]{figures/real_width_vs_samples.pdf}
+ \vspace{-15px}
+ \caption{Interval widths on the win matrix (upper figure) and on the BT coefficients (lower figure) as a function of the number of samples, for random sampling and also adaptive sampling. Improvements from adaptive sampling can be seen in both cases, although they are more subtle on the scale of the score. }
+\label{fig:width_vs_samples_real}
+\vspace{-15px}
+\end{figure}
+% \begin{figure*}
+% \centering
+% \includegraphics[width=0.48\textwidth]{figures/elo_over_time.pdf}
+% % \caption{Bradley-Terry scores per 3000 vote.}
+% % \label{fig:elo_overtime}
+% \hfill
+% % \centering
+% \includegraphics[width=0.48\textwidth]{figures/elo_over_time_accumulated.pdf}
+% \caption{Left: Bradley-Terry scores per 3000 votes. Right: accumulated votes.}
+% \label{fig:elo_overtime}
+% \end{figure*}
+
+
+% \textbf{Model rating robustness over time.}
+
+% \todo{correct BT + CI plot, coverage vs \#vote plot}
+
+% In real-world scnerios, model ranking can change due to various reasons. For instance, human preference changes over-time due to society changes; close-sourced model can be changing due to internal version upgrades. To establish a trust in our ranking system within community, we empirically show that these effects do not change the ranking results over nearly a year of Arena deployment. We study several representative models, both open-sourced and closed sourced - gpt-4 turbo, an older gpt-4-0613, gpt-3.5-turbo-0613, and Llama-2-70b-chat. For each model, we select every 3000 votes and compute a Bradley-Terry score against other models over all time. We further resample from these 3000 votes 20 times and compute a 95\% confidence interval of the score. The results are presented in Figure~\ref{fig:elo_overtime}. We have observed that the ranking scores and relative ranking orders among models are relatively stable overtime. 
+
+% \textbf{Model rating robustness against player changes.}
+% Often time, some models may appear less or not present in certain time interval. For instance, close-sourced models may have down time due to internal cluster capacity; our system may also reduce the frequency of certain models when its scores become stable. Thus, we study whether our ranking scores are stable when some models are absent. We study this effect on several of our most voted models, gpt-3.5-turbo-0613, claude-2.1, vicuna-33b, Llama-2-70b-chat. We manually evict voting that involves one this model, and compute Bradley-Terry score of the remaining models. Results are shown in Table~\ref{table:exp_player_change}. We found that the absense of a model almost does not influence the absolute score of other models, showing the robustness of the ranking calculation.
+
+% \begin{table}[t!]
+% \centering
+% \vspace{-1em}
+% \caption{Ablation model rating of gpt-3.5-turbo-0613, claude-2.1, vicuna-33b, Llama-2-70b-chat, when one of them are absent (denoted as "x" in the column name). The last column denots the Bradley-terry score when all of these models are present. Full name abbreviated for space constraint in the table.}
+% \label{table:exp_player_change}
+% \footnotesize
+% {\small
+% \begin{tabular}{lrrrrr}
+% \toprule
+% Model    & x gpt & x claude & x vicuna & x llama & All \\
+% \midrule
+% gpt    & -      & 1116.0 & 1117.0 & 1116.6 & 1116.2 \\
+% claude & 1118.9 & -      & 1118.2 & 1119.4 & 1118.8 \\
+% vicuna & 1091.8 & 1094.3 & -      & 1094.4 & 1093.8 \\
+% llama  & 1078.9 & 1079.2 & 1078.5 & -      & 1079.0 \\
+% \bottomrule
+% \end{tabular}}
+% \vspace{-0.5em}
+% \end{table}
+
+% \textbf{Votes needed to reach stable results}
+% We further conduct a ablation study on how many votes are needed to result in a stable scoring. We select the same set of models above, and compute a score with accumulated votes. The results with a 95\% confidence interval are presented in Figure~\ref{fig:elo_overtime}. Empirically we find that ranking scores become stable within 9000 votes.
+
+% \subsection{Efficient Sampling}
+
+% \todo{efficient sampling vs random plot}
+
+% how much vote can we save against random sampling?
+
+
+\subsection{Anomalous Users Detection}
+
+% In Section~\ref{sec:outlier}, we study how to identify anomalous users in the dataset based on their voting behaviors. We design experiment to validate this approach with real data.
+We evaluate the outlier detection method in Section~\ref{sec:outlier}.
+We construct the evaluation set by manually identifying 25 anomalous users whose inputs are highly repetitive or meaningless (e.g., asking ``hi'' for 100 times or inputting garbled texts).
+We randomly sample 25 normal users with at least 50 votes, and inspect their input prompts to ensure no abnormal behaviors.
+% For each user, we construct the supermartingale $M_i = \prod_{i' \leq i} E_i$ per vote, and use Ville's inequality to reject the test when $M_i 
+% > 1/\alpha$.
+As mentioned in Section~\ref{sec:outlier}, per user we compute five $M_j$ and identify the user as anomalous if $M_j \geq \chi^2_{2j, 1-\alpha/5}$.
+We present results of two different $\alpha$ (i.e., the significance leval) in Table~\ref{tab:confusion}. We find the detection method effective (e.g., reaching 90\% true positive and 60-70\% true negative rate). We inspect the false negative errors and find those are from users do not always behave abnormally, making them harder to detect.
+
+\begin{table}[]
+\centering
+%\vspace{-5px}
+\caption{Confusion matrix of different $\alpha$. ``Pred.'' means predicted. Positive means anomalous and negative means normal.} %\dl{(Directly jumping from Section 5.1) Would help readers interpret these numbers by adding the definition of $\alpha$ and positive/negative.}}
+\label{tab:confusion}
+\begin{tabular}{lrr}
+\toprule
+$\alpha=0.1$  & Pred. Positive & Pred. Negative \\
+\midrule
+Actual Positive  &  13/14  &   12/36      \\ 
+Actual Negative  &  1/14  &   24/36    \\ 
+\bottomrule
+$\alpha=0.3$  & Pred. Positive & Pred. Negative \\
+\midrule
+Actual Positive  &  21/29  &   4/21      \\ 
+Actual Negative  &  8/29  &    17/21     \\ 
+\bottomrule
+\end{tabular}
+\vspace{-10px}
+\end{table}
+
+
+% \subsection{Topic leaderboard}
+
+% user input any prompt => show relevant model ranking
+
+% \subsection{Building a challenging benchmark}
+
+% Hard benchmark
+
+% \subsection{Training a preference model}
+
+% train a reward model?
+
+
+% \begin{table*}[ht]
+%     \centering
+%     \caption{BT elo score over-time of 5 popular models, calculated on every 3000 votes (if available).}
+%     {\tiny \begin{tabular}{cccccccccc}
+%         \toprule
+%         & 0-3k & 3-6k & 6-9k & 9-12k & 12-15k & 15-18k & 18-21k & 21-24k & overall\\
+%         \midrule
+%          gpt-3.5-turbo-0613 & 1135.4& 1113.5 &1103.9 & 1118.3& 1112.0 &1126.7 & 1111.8 & 1113.6 & 1115.3 \\
+%         95\% CI & (-18.3, +20.5) & (-8.0, +14.1) & (-19.8, +15.2) &(-13.3, +10.1) & (-15.3, 10.7) & (-18.6, +13.5) & (-7.2, +9.9) & (-11.8, +15.4) & (-11.5, +15.0)\\
+%         \midrule
+%         gpt-4-turbo & 1215.6 & 1224.3 & 1259.8 & 1266.0 & 1281.6 & 1260.1 & 1257.1 & N/A &1250.5\\
+%         95 \% CI & (-15.2, +8.3) & (-16.2, +15.7) & (-10.6, +7.5) & (-9.8, +11.1) & (-12.4, +11.4) & (-12.5, +14.6) & (-15.9, +12.6) & N/A & (-9.3, +16.1) \\
+%         \midrule
+%         gpt-4-0613 & 1164.0 & 1144.3 & 1147.3 & 1167.0 & 1160.9 & 1167.8 & N/A & N/A & 1160.7\\
+%         95 \% CI & (-10.7, +18.4) & (-13.2, +18.3) & (-16.1, +11.0) & (-12.9, +18.0) & (-10.6, +10.3) & (-14.5, +9.4) & N/A & N/A & (-16.0, +12.5)\\ 
+%         \midrule
+%         Llama-2-70b-chat & 1067.4 & 1082.2 & 1067.0 & 1087.8 & N/A & N/A & N/A & N/A & 1081.1 \\
+%         95 \% CI & (-9.4, +10.0) & (-16.8, +16.7) & (-8.9, +16.5) & (-15.3, +14.4) & N/A & N/A & N/A & N/A & (-10.3, +13.1) \\
+%         \midrule
+%         claude-2.1 & 1120.8 & 1128.9 & 1118.2 & 1111.6 & 1105.4 & 1120.1 & N/A & N/A & 1121.6\\
+%         95 \% CI & (-13.8, +17.1) & (-12.3, +17.1) & (-9.7, +8.5) & (-12.8, +11.9) & (-8.5, +15.4) & (-12.7, +21.4) & N/A & N/A &(-11.0, +7.6)\\
+%         \bottomrule
+%     \end{tabular}}
+%     \label{tab:exp_elo_overtime}
+% \end{table*}
+
+
+\section{Discussion}
+
+\textbf{Limitations.} 
+Although our user base is extensive, we anticipate that it will primarily consist of LLM hobbyists and researchers who are eager to experiment with and evaluate the latest LLMs. This inclination may result in a biased distribution of users. Additionally, despite the wide array of topics encompassed by the prompts discussed in previous sections, the data predominantly comes from our online chat interface. This source might not accurately reflect the real-world usage of LLMs in production environments or specialized domains, potentially leading to a skewed prompt distribution. Moreover, our study concentrates on assessing the helpfulness of LLMs but overlooks their safety aspects. We recognize the possibility and necessity of a parallel mechanism to evaluate the safety of these models.
+
+\textbf{Future Directions.}
+In our future work, we plan to develop comprehensive topic leaderboards and establish a dedicated section for multimodal and agent-based LLMs in more dynamic, gamified settings, catering to more complex tasks.
+We also believe our approach to detecting harmful users could be improved and made more formally rigorous by using the theory of nonnegative supermartingales and E-values~\cite{howard2020time, waudby2020estimating, vovk2021values, ramdas2023game}; this would deal with the dependence, but the variants we tried did not perform well in terms of power.
+
+
+\section{Conclusion}
+
+In this paper, we present \system, an open platform for evaluating LLMs through crowdsourced, pairwise human preferences.
+%Our platform has attracted over one million user visits.
+We conduct an in-depth analysis of the crowdsourced user prompts and preference votes to validate the diversity and quality.
+We develop an efficient model sampling and ranking algorithm.
+Our dataset including 100K pairwise preference votes will be released for future research.
+
+% \section*{Impact Statements}
+% % Acknowledgements should only appear in the accepted version.
+
+% This paper presents work whose goal is to advance the field of Machine Learning. There are many potential societal consequences of our work, none which we feel must be specifically highlighted here.
+
+\section*{Acknowledgments}
+This project is supported by sponsorship from Kaggle, MBZUAI, a16z, Together AI, Anyscale, and HuggingFace.
+This project is also partly supported by Accenture, AMD, Google, IBM, Intel, Microsoft, Samsung SDS, SAP, Uber, and VMware.
+The authors would like to thank Siyuan Zhuang for insightful discussion and Tijana Zrni\'c for helpful feedback on the manuscript.
+
+% In the unusual situation where you want a paper to appear in the
+% references without citing it in the main text, use \nocite
+\nocite{langley00}
+
+\bibliography{example_paper}
+\bibliographystyle{icml2023}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% APPENDIX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\appendix
+\onecolumn
+
+% \section{misc}
+
+
+\begin{figure}
+\centering
+%\vspace{-5px}
+\includegraphics[width=\linewidth]{figures/arena_screenshot_full.png}
+\caption{Screenshot of \system.}
+%\vspace{-70px}
+\label{fig:screenshot-arena}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\vspace{-100px}
+\includegraphics[width=0.95\textwidth]{figures/daily_vote.pdf}
+\vspace{-20px}
+\caption{The number of votes over time}
+%\vspace{-120px}
+\label{fig:daily-vote}
+\end{figure}
+
+\begin{figure}
+    \centering
+    %vspace{-180px}
+    \includegraphics[width=0.95\linewidth]{figures/vote_cnt.pdf}
+    %\vspace{-20px}
+    \vspace{-20px}
+    \caption{The number of votes per model.}
+    %\vspace{-30px}
+    %\vspace{-20px}
+    \label{fig:vote-cnt}
+\end{figure}
+
+\newpage
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/new_similarity_64_12.pdf}
+\vspace{-50px}
+\caption{Similarity matrix of top-64 topic clusters.}
+\label{fig:topic-64}
+\end{figure}
+
+\newpage
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/clustering_filtered_small_64.pdf}
+%\vspace{-20px}
+\caption{Top-64 clusters visualized in hierarchy. x-axis represents the cosine similarity distance. y-axis shows the topic title per cluster summarized by gpt-4-turbo.}
+\label{fig:hierarchy}
+\end{figure}
+
+
+\section{Confidence Interval Simulation Study}
+\label{app:simulation-study}
+We conduct a simulation study to evaluate the bootstrap confidence intervals versus the sandwich estimator.
+To a large extent, both intervals are the same---indeed, their intervals are often identical to the naked eye.
+Nonetheless, in our experiments, there are some differences.
+First, in Figure~\ref{fig:bstrp-sndwch-rply}, we conduct a replay study using the same 213576 data points mentioned in the main text.
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/bootstrap_sandwich_replay.pdf}
+\vspace{-20px}
+\caption{Replay experiment showing the intervals, coverage, and average interval sizes of the bootstrap and of the sandwich intervals. The sandwich intervals, though larger in small samples, are more stable, and in large samples, they actually become smaller. We use the multiplicity corrected version of both intervals, so they both have a coverage of 1. (Coverage here is calculated with respect to the BT coefficient solution on the full dataset, so it is not as meaningful as in the simulation plot below.)}
+\label{fig:bstrp-sndwch-rply}
+\end{figure*}
+
+We also do a suite of experiments in simulation using the same $\mathsf{beta}$ generating process as in the main text, with $\gamma=2$.
+The result is shown in Figure~\ref{fig:btstrp-sndwich-synth}; results are similar across many choices of the parameter $\gamma$ and the model strength, which indicates that both intervals will have good coverage and width in the practical conditions we would expose them to.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/bootstrap_standard.pdf}
+\vspace{-20px}
+\caption{Synthetic experiment. Coefficients are drawn from the BT-coefficient distribution $x$ on the left. Coverage of the uncorrected intervals is shown in the middle. Line plots of set width are shown on the right, and they almost perfectly match.}
+\label{fig:btstrp-sndwich-synth}
+\end{figure*}
+
+\section{The Nonparametric Bradley-Terry Model}
+\label{app:np-bt}
+
+\textbf{Nonparametric Bradley-Terry.} We next consider a nonparametric extension of the Bradley-Terry (BT) model~\citep{bradley1952rank} to the case where the ranking is not necessarily transitive.
+Let $\cG(m)$ denote the set of all \emph{paths} to the model $m$, i.e., 
+\begin{equation}
+    \cG(m) = \left\{g \in \cB^{M-1} : g_{i,1} \neq g_{j,1},\ \forall i\neq j,\ \text{ and } g_{M-1,2}=m \right\},
+\end{equation}
+where $\cB = \cA \cup \{ (a_2, a_1) : a \in \cA \}$.
+Each element of $\cG(m)$ is a chain of model pairings that leads to $m$; for example, if $m=5$ and $M=6$, one element of $\cG(m)$ is $( (1, 2), (2, 4), (4, 3), (3, 6), (6, 5) )$.
+Our score function is given by the average path-sum of the log odds of the second model winning, over the entirety of $\cG(m)$:
+\begin{equation}
+    \label{eq:bt-score}
+    s(\theta)_m = \frac{1}{|\cG(m)|}\sum_{g \in \cG(m)} \left( \log \frac{\theta'((1,g_{1,1}))}{1-\theta'((1,g_{1,1}))} + \sum_{a \in g} \log \frac{\theta'(a)}{1-\theta'(a)}\right),
+\end{equation}
+where $\theta'(a) = \theta(a)\ind{a \in \cA} + (1-\theta((a_2, a_1)))\ind{a \notin \cA}$, with the convention that $\theta((m,m))=1/2$ for all $m$.
+Note that for any $g \in \cG(m)$ where $a \in g$ and $m \notin a$, we also have some $g' \in \cG(m)$ such that $(a_2, a_1) \in g$.
+Meanwhile, if $a \in g$ and $m \in a$, then $a = (m', m)$ for some $m'$.
+Thus, we can compute
+\begin{align}
+    s(\theta)_m &= \sum\limits_{\substack{a \in \cA \\ m \notin a}} \frac{1}{2}\left(\log\frac{\theta'(a)}{1-\theta'(a)} + \log\frac{\theta'((a_2,a_1))}{1-\theta'((a_2,a_1))}\right) + \sum\limits_{m' \in [M]\setminus \{m\}} \left( \log\frac{\theta'((m',m))}{1-\theta'((m',m))} + \frac{\theta'((1,m'))}{1-\theta'((1,m'))} \right) \\
+    & = \sum\limits_{\substack{a \in \cA \\ m \notin a}} \frac{1}{2}\left(\log\frac{\theta(a)}{1-\theta(a)} + \log\frac{1-\theta(a)}{\theta(a)}\right) + \sum\limits_{m' \in [M]\setminus \{m\}} \left( \log\frac{\theta'((m',m))}{1-\theta'((m',m))} + \frac{\theta'((1,m'))}{1-\theta'((1,m'))} \right) \\
+    & = \sum\limits_{m' \in [M]\setminus \{m\}} \left( \log\frac{\theta'((m',m))}{1-\theta'((m',m))} + \frac{\theta'((1,m'))}{1-\theta'((1,m'))} \right) \\
+    & = \sum\limits_{m' \in [M]\setminus \{m\}} \left( (1-2\ind{m' > m})\log\frac{\theta((m',m))}{1-\theta((m',m))} + \frac{\theta((1,m'))}{1-\theta((1,m'))} \right).
+    \label{eq:np-bt-computable}
+\end{align}
+
+This score is always well-defined, and is a simple, smooth function of $\theta$.
+Its derivative is, for all $a \in \cA$,
+\begin{equation}
+    \label{eq:bt-score-grad}
+    \frac{\partial}{\partial \theta(a)} s(\theta)_m = \ind{a_2 = m}(1-2\ind{a_1 > m})\frac{1}{\theta(a)(1-\theta(a))} + \ind{a_1 = 1,\ a_2 \neq m}\frac{1}{\theta(a)(1-\theta(a))}.
+\end{equation}
+
+How is the BT score related to the original Bradley-Terry model?
+In the original Bradley-Terry model, $H_t \in \{0, 1\}$, and the probability of model $m$ beating model $m'$ is assumed to be given by
+\begin{equation}
+    \label{eq:bt-prob}
+    \theta((m',m)) = \frac{e^{\xi_m}}{e^{\xi_m} + e^{\xi_{m'}}}, 
+\end{equation}
+for some unknown parameters $\xi_1, \ldots, \xi_M$---the \emph{Bradley-Terry coefficients}.
+The basic goal of the Bradley-Terry model is to estimate these parameters from the observed outcomes.
+In our setting, however, we use the outcomes to get a CLT on $\theta$, and then can immediately recover the coefficients.
+Taking without loss of generality $\xi_{1} = 0$, we have that
+\begin{align}
+    \log\frac{\theta((1,m'))}{1-\theta((1,m'))}+\log \frac{\theta((m', m))}{1-\theta((m', m))} &= \log\frac{\theta((1,m'))}{\theta((m',1))} + \log\frac{\theta((m',m))}{\theta((m,m'))}\\
+    &= \log \frac{e^{\xi_{m'}}(e^{\xi_{m'}}+ 1)}{e^{\xi_{m'}}+1} + \log \frac{e^{\xi_m}(e^{\xi_{m'}}+ e^{\xi_m})}{e^{\xi_{m'}}(e^{\xi_{m'}}+ e^{\xi_m})} \\
+    &= \xi_{m'} + \xi_m - \xi_{m'} = \xi_m
+\end{align}
+Thus, all the sums over paths in~\eqref{eq:bt-score} are equal to $\xi_m - \xi_{g_{1,1}}$.
+\begin{align}
+    &\log \frac{\theta'((1,g_{1,1}))}{1-\theta'((1,g_{1,1}))} + \sum\limits_{a \in g}\log \frac{\theta'(a)}{1-\theta'(a)} \\
+    = & \xi_{g_{1,1}} + \xi_{g_{1,2}} - \xi_{g_{1,1}} + \xi_{g_{2,2}} - \xi_{g_{2,1}} + \cdots + \xi_{g_{M-1,2}} - \xi_{g_{M-1,1}} \\
+    = & \xi_{g_{M-1,2}} = \xi_m.
+\end{align}
+Thus, if the parametric BT model is well-specified, the nonparametric version will exactly recover the Bradley-Terry coefficients.
+However, our nonparametric analogue of the BT model has major advantages over the original: it will retain statistical validity even if $H_t$ is not binary, if the win rate is non-transitive, and if the logistic model assumed by the BT model is misspecified.
+In practice, the nonparametric BT coefficient can be easily computed by~\eqref{eq:np-bt-computable}.
+
+\section{Valid P-Value}
+\label{app:p-val}
+Consider the p-value
+\begin{equation}
+    p_i = \frac{1}{|\cH_{A'_i}|+1} \left(1 + \sum\limits_{h \in \cH_{A'_i}} \ind{h \geq H'_i}\right).
+\end{equation}
+We will prove that this p-value is valid, i.e., that $\P(p_i \leq t) \leq t$, under the null hypothesis that the vector $\cH' = (H_t : A_t = A'_i)\|(H'_i)$ is exchangeable, where $\|$ denotes the concatenation operator.
+First, notice that we can equivalently write
+\begin{equation}
+    p_i = \frac{1}{|\cH'|} \sum\limits_{h \in \cH'} \ind{h \geq H'_i}.
+\end{equation}
+We also have that $\P(p_i \leq t) \leq \P(p_i \leq \frac{k}{|\cH'|})$, where $k = \lfloor t|\cH'| \rfloor /|\cH'|$.
+Then, since the data points are exchangeable, we have that $H'_i$ is uniformly distributed among the ranks of $\cH'$, so $ \P(p_i \leq \frac{k}{|\cH'|}) \leq \frac{k}{|\cH'|} \leq t$, completing the proof.
+
+\newpage
+\lstset{
+    basicstyle=\ttfamily,
+    breaklines=true
+}
+\section{Sample Prompts}
+\label{app:sample-prompts}
+
+\color{black}\subsection{Prompt Examples From Different Clusters}
+\label{subsec:clusters-example}
+\textbf{Example 1:} An example user prompt from the cluster "Python Game Programming Challenge". This prompt distinctively separates GPT-4-0613 performance from Llama-2-70b-chat. The user request "higher quality code`` from each assistant. While GPT-4-Turbo provides a correct implementation along with helpful explanation, Llama-2-70b-chat fail to provide any program and provided a less helpful response overall. 
+\begin{tcolorbox}
+\texttt{\textbf{<|User Prompt|>}} \\
+\texttt{Develop a snowman game similar to the Hangman game but draws a snowman figure standing on the snow instead of a hangman. It also downloads (or uses library) the complete English dictionary to select words for three levels of difficulty. Think step-by-step, take a deep breath and choose a higher quality code for each step.} \\
+
+\texttt{\textbf{<|GPT-4-0613's Answer|>}} 
+\begin{lstlisting}
+Sure, here's a step-by-step guide on how to create a Snowman game similar to Hangman. We'll use Python for this example.
+Step 1: Import necessary libraries
+```python
+import random
+import urllib.request
+```
+Step 2: Download the English dictionary
+```python
+url = "https://raw.githubusercontent.com/dwyl/english-words/master/words.txt"
+urllib.request.urlretrieve(url, 'words.txt')
+```
+Step 3: Load the words from the dictionary and categorize them into three levels of difficulty
+```python
+with open('words.txt') as word_file:
+    english_words = word_file.read().split()
+easy_words = [word for word in english_words if 4 <= len(word) <= 6]
+medium_words = [word for word in english_words if 7 <= len(word) <= 9]
+hard_words = [word for word in english_words if len(word) >= 10]
+```
+Step 4: Create a function to randomly select a word based on the difficulty level
+```python
+def get_random_word(difficulty):
+    if difficulty == 'easy':
+        word = random.choice(easy_words)
+    elif difficulty == 'medium':
+        word = random.choice(medium_words)
+    else:
+        word = random.choice(hard_words)
+    return word.upper()
+```
+Step 5: Create a function to print the snowman
+\end{lstlisting}
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\begin{lstlisting}
+```python
+def print_snowman(guesses):
+    snowman = ['   _____   ', '  (     )  ', ' ( (   ) ) ', '(___(___)_)', '    ( )    ', '   (   )   ', '  (     )  ', ' (       ) ', '(         )', '  _______  ']
+    for i in range(guesses):
+        print(snowman[i])
+```
+Step 6: Create the main function for the game
+```python
+def play_snowman():
+    difficulty = input("Choose difficulty (easy, medium, hard): ")
+    word = get_random_word(difficulty)
+    guessed_letters = []
+    guesses = 0
+    print('The word contains', len(word), 'letters.')
+
+    while guesses < 10:
+        guess = input("Guess a letter: ").upper()
+        if guess in guessed_letters:
+            print("You already guessed that letter.")
+        elif guess in word:
+            guessed_letters.append(guess)
+            print("Good job! The word contains that letter.")
+        else:
+            guesses += 1
+            print_snowman(guesses)
+            print("Sorry, the word does not contain that letter.")
+        print(' '.join(letter if letter in guessed_letters else '_' for letter in word))
+
+        if set(guessed_letters) == set(word):
+            print("Congratulations! You've successfully guessed the word.")
+            break
+    else:
+        print("Sorry, you didn't guess the word. The word was", word)
+```
+Step 7: Run the game
+```python
+play_snowman()
+```
+This is a simple version of the game. You can enhance it by adding more features like scoring, time limit, etc.
+```
+\end{lstlisting}
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\texttt{\textbf{<|Llama-2-70b-chat's Answer|>}} 
+    \begin{lstlisting}
+Sure! Here's a step-by-step guide to developing a snowman game similar to Hangman, using the complete English dictionary for three levels of difficulty.
+
+Step 1: Setting up the project
+
+* Create a new Python project directory and initialize it with Git.
+* Install the necessary libraries:
+	+ `numpy` for generating random numbers
+	+ `nltk` for accessing the English dictionary
+	+ `pygame` for creating the game graphics
+	+ `pydub` for playing sound effects (optional)
+* Download the English dictionary dataset (e.g., from Kaggle) and store it in a file named `dictionary.txt`.
+
+Step 2: Loading the dictionary and generating words
+
+* Use the `nltk` library to read the dictionary file and store the words in a list.
+* Split the list into three parts: easy, medium, and hard words, based on their length and frequency of use.
+* Shuffle the lists to randomize the order of the words.
+
+Step 3: Creating the game graphics
+
+* Use `pygame` to create a window for the game, with a white background to represent the snow.
+* Draw a snowman figure on the background, using black rectangles for the body, hat, and scarf.
+* Add buttons for the player to submit their guesses.
+
+Step 4: Implementing the game logic
+
+* Create a function to generate a random word from the appropriate difficulty level and display it on the screen with missing letters (e.g., _ _ _ _ _ _).
+* Create a function to check if a guessed letter appears in the word, and update the display accordingly (e.g., _ _ _ X _ _).
+* Create a function to handle incorrect guesses, such as displaying a warning message or playing a sound effect.
+* Create a function to win the game, such as displaying a congratulations message or playing a victory sound effect.
+
+Step 5: Adding sound effects (optional)
+
+* Use `pydub` to play sound effects for various actions in the game, such as guessing a letter correctly or incorrectly.
+* Consider using a library like `pygame_mixer` to simplify the process of playing sound effects in pygame.
+    \end{lstlisting}
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\begin{lstlisting}
+Step 6: Testing and refining the game
+
+* Test the game thoroughly to ensure that it works as expected, with no bugs or errors.
+* Refine the game mechanics and graphics as needed, based on player feedback or personal preference.
+* Consider adding additional features, such as keeping track of the player's score or implementing a time limit for each guess.
+
+Step 7: Packaging and distributing the game
+
+* Package the game as a standalone executable file using a tool like PyInstaller.
+* Distribute the game to friends, family, or online communities, and gather feedback for future improvements.
+
+This is a high-level overview of the steps involved in creating a snowman game similar to Hangman. Of course, the details will depend on your specific implementation and the tools you choose to use. Good luck with your project!
+\end{lstlisting}
+
+\texttt{\textbf{<|GPT-4-Turbo's Judgment Verdict|>}} \\
+\texttt{GPT-4-0613 Wins}
+\end{tcolorbox}
+
+\textbf{Program Output:} Below is the terminal output of the snowman game programmed by GPT-4-0613, demonstrating its correctness. It is clear that GPT-4-0613's response is more helpful and relevant to the user's request.
+\begin{tcolorbox}
+\begin{lstlisting}
+>>> python snowman.py
+Choose difficulty (easy, medium, hard): easy
+The word contains 6 letters.
+Good job! The word contains that letter.
+_ A _ _ _ _
+Guess a letter: e
+Good job! The word contains that letter.
+_ A _ _ _ E
+Guess a letter: d
+   _____   
+  (     )  
+Sorry, the word does not contain that letter.
+_ A _ _ _ E
+Guess a letter: g
+   _____   
+  (     )  
+ ( (   ) ) 
+\end{lstlisting}
+\end{tcolorbox}
+
+\newpage
+\textbf{Example 2:} An example user prompt from the cluster "Python Game Programming Challenge". This prompt distinctively separates GPT-4-0613 performance from Llama-2-70b-chat. Due to limited space, the code from each assistant's response is omitted.
+\begin{tcolorbox}
+\texttt{\textbf{<|User Prompt|>}} \\ 
+\texttt{Write a python function that prints a christmas tree in the form of a triangle of asterisks, where the only input is size. }\\
+
+\texttt{\textbf{<|GPT-4-0613's Code Output|>}} \\
+\texttt{>{}>{}> print\_christmas\_tree(5)
+    \begin{gather*}
+    *    \\
+    ***   \\
+    *****  \\
+    ******* \\
+    *********
+    \end{gather*}}
+
+\texttt{\textbf{<|Llama-2-70b-chat's Code Output|>}} \\
+\texttt{>{}>{}> print\_christmas\_tree(5) \\
+* * * * * \\
+* * * * \\
+* * * \\
+* * \\
+* } \\
+
+\texttt{\textbf{<|GPT-4-Turbo Verdict|>}} \\
+\texttt{GPT-4-0613 Wins}
+\end{tcolorbox}
+
+\textbf{Example 3:} An example user prompt from the cluster "Movie Recommendations \& Rating". Both assistant retrieve the correct movie information and gave an almost identical explanation. Therefore, this prompt cannot distinguish GPT-4-0613's performance from Llama-2-70b-chat.
+\begin{tcolorbox}
+\texttt{\textbf{<|User Prompt|>} \\
+Which film came out first, Blind Shaft or The Mask Of Fu Manchu?}\\
+
+\texttt{\textbf{<|GPT-4-0613's Answer|>} \\
+  The Mask of Fu Manchu was released in 1932, and Blind Shaft was released in 2003. Therefore, The Mask of Fu Manchu came out first.}\\
+
+\texttt{\textbf{<|Llama-2-70b-chat's Answer|>}\\
+The Mask Of Fu Manchu came out first. It was released in 1932, while Blind Shaft was released in 2003.} \\
+
+\texttt{\textbf{<|GPT-4-Turbo Verdict|>} \\
+Tie
+}
+\end{tcolorbox}
+
+\newpage
+\textbf{Example 4:} An example user prompt from the cluster "Travel Itinerary Planning". Both assistant provided an equally helpful itinerary. Therefore, this prompt cannot distinguish GPT-4-0613's performance from Llama-2-70b-chat. 
+\begin{tcolorbox}
+\texttt{\textbf{<|User Prompt|>} \\
+Can you make a list of things I could do with my girlfriend in Lille, France?} \\
+
+\texttt{\textbf{<|GPT-4-0613's Answer|>}}
+\begin{lstlisting}
+Absolutely, here are some suggestions for activities you and your girlfriend 
+can enjoy in Lille, France:
+1. Visit the Palais des Beaux-Arts: This is one of France's largest museums and it's right in the heart of Lille. It houses collections of European paintings, a medieval and Renaissance collection, ceramics, French sculptures and more.
+2. Explore the Vieux Lille: Stroll through the charming old town with its Flemish influenced architecture, chic boutiques, and delightful eateries.
+3. Visit the Lille Cathedral (Basilique-cathedrale Notre-Dame-de-la-Treille): This beautiful cathedral is a mix of modern and traditional architecture.
+4. Enjoy a picnic at the Citadel Park: This is a great place to relax, have a picnic, and enjoy the outdoors.
+5. Visit the LaM (Lille Metropole Musee d'art moderne, d'art contemporain et d'art brut): This museum is home to a unique collection of modern and contemporary art.
+6. Take a boat tour on the Deule River: This is a romantic way to see the city and its surroundings.
+7. Visit the Maison Natale de Charles de Gaulle: This is the birthplace of Charles de Gaulle and it's now a museum dedicated to his life and work.
+8. Explore the Marche de Wazemmes: This is one of the largest markets in France and it's a great place to buy local products.
+9. Enjoy a meal at a local restaurant: Lille is known for its delicious cuisine, so make sure to try some local dishes.
+10. Visit the Lille Zoo: This is a small but well-kept zoo that houses about 70 different species.
+11. Take a romantic walk through the Jardin des Plantes de Lille: This botanical garden is a peaceful place to enjoy nature.
+12. Visit the Musee de l'Hospice Comtesse: This museum is located in a former hospital and it's home to a collection of art and artifacts from the Middle Ages.
+13. Enjoy a performance at the Lille Opera: Check the schedule and book tickets for a romantic night out.
+14. Take a day trip to the nearby city of Bruges: This charming Belgian city is just a short train ride away.
+15. Visit the Le Palais Rihour: This palace houses the Lille Tourist Office and it's also home to the Salle du Conclave, which has a beautiful Gothic fireplace.
+Remember to check the opening times and any COVID-19 restrictions before you 
+visit. Enjoy your trip!
+\end{lstlisting}
+\texttt{\textbf{<|Llama-2-70b-chat's Answer|>}} \\
+\texttt{Sure! Lille is a beautiful city in northern France that offers a variety of activities for couples to enjoy. Here are some ideas for things you could}
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\begin{lstlisting}
+do with your girlfriend in Lille:
+1. Explore the city's charming streets and historic landmarks, such as the Grand Place, the Vieille Bourse, and the Cathedral of Lille.
+2. Visit one of the many museums, such as the Palais des Beaux-Arts de Lille, the Musee d'Art Moderne, d'Art Contemporain et d'Art Brut, or the Musee de l'Hospice Comtesse.
+3. Take a stroll along the canal and enjoy the views of the city from the waterfront.
+4. Visit the famous Lille Christmas market, which takes place every year in December and features festive stalls, food, and drinks.
+5. Go shopping at the city's many boutiques and galleries, or at the large shopping centers such as the Euralille or the Lille Europe.
+6. Enjoy a romantic dinner at one of Lille's many excellent restaurants, such as the Michelin-starred Le Comptoir du Relais or the cozy Le Bistrot d'Alsace.
+7. Take a day trip to the nearby city of Bruges, Belgium, which is known for its picturesque canals and medieval architecture.
+8. Go to a show or concert at the Lille Opera or the Le Zenith concert hall.
+9. Visit the nearby town of Roubaix, which is famous for its textile industry and its beautiful Art Deco architecture.
+10. Take a walk in the beautiful Parc de la Citadelle, which offers a peaceful escape from the city and features a pond, a botanical garden, and a zoo.
+11. Go on a bike ride or a hike in the surrounding countryside, such as the Parc Naturel Regional Nord-Pas de Calais.
+12. Visit the famous Lille flea market, which takes place every Sunday and offers a wide range of antiques, vintage items, and second-hand goods.
+13. Take a cooking class together and learn how to make some of the region's delicious specialties, such as carbonnade flamande (beef stew) or tarte au maroilles (cheese tart).
+14. Go on a wine tasting tour and discover the region's excellent wines, such as the Chablis or the Champagne.
+15. Take a hot air balloon ride over the city and enjoy a bird's-eye view of Lille's beautiful architecture and surroundings.
+
+These are just a few ideas to get you started. Lille is a vibrant and 
+romantic city that offers many opportunities for couples to have a great 
+time together. Bon voyage !
+\end{lstlisting}
+
+\texttt{\textbf{<|GPT-4-Turbo Verdict|>} \\
+Tie}
+\end{tcolorbox}
+
+\newpage
+\color{black}\subsection{Arena Bench Prompt}
+\label{subsec:arena-bench-examples}
+
+
+\textbf{Example 1}: An prompt from Arena Bench requiring a very high level of complex problem-solving skill and reasoning while adhering to real-world application.
+\begin{tcolorbox}
+    \texttt{Create a flutter app for habit tracking that tracks daily habits for a user. The user should be able create multiple daily tasks that he wants to track. And he should be able to group the habits into a set of groups. One the user completes a task, he is rewarded a number of points per task. The app should have a page that summarize the total score per group. And the aggregate score of all the groups of habits. This flutter app needs to be compilable for both andriod and iOS.}
+\end{tcolorbox}
+
+\textbf{Example 2}: An prompt from Arena Bench requiring a very high level of complex problem-solving skill and reasoning while adhering to real-world application.
+\begin{tcolorbox}
+    \texttt{I want to set up a remote raspberry pi zero, powered by a solar panel with simple wiring. I want to power a small 2W pump, a simple electet microphone, a custom python script running on the raspberry pi that is used to classify audio detected by the microphone. What components will I need to optimise for cost and minimise any electrical work (e.g. soldering)? What size solar panel will I need to power this whole system?}
+\end{tcolorbox}
+
+\newpage
+\color{black}\subsection{Arena Bench System Prompt}
+\label{subsec:arena-bench-sys-prompt}
+The novel evaluation procedure is as follow: we prompt GPT-4-Turbo with the system prompt displayed below alongside a user prompt, a reference answer, and 2 assistant's answers. For reference answer, we present the user prompt with 3 assistants' answers, GPT-4-Turbo, GPT-4-0314, and Claude-1, to GPT-4-Turbo and ask GPT-4-Turbo to generate an answer to the prompt. To ensure consistent pairwise judgment, we set up GPT-3.5-Turbo-0301 as the baseline answer for all models to be compared against. To avoid positional bias, we conduct two judgments per prompt: the first judgment presents the baseline answer as Assistant A while the second judgment presents the baseline answer as Assistant B. In total, we conduct 700 pairwise comparisons between each model against GPT-3.5-Turbo-0301 across 350 user prompts to calculate a win-rate against the baseline. Then we project the win-rate on a scale from 0 to 10 by assigning wins with a score of 10, ties with a score of 5, and losses with a score of 0. Further, we assign a significant win or loss as 3 wins or 3 losses, respectively, and keeping the other verdicts as a single win, loss, or tie. Finally, we calculate the final score by averaging across the wins, losses, and ties.
+
+\begin{tcolorbox}
+\texttt{\textbf{<|System Prompt|>}} \\
+\texttt{Please act as an impartial judge and evaluate the quality of the responses provided by two AI assistants to the user prompt displayed below. Your job is to evaluate which assistant's answer is better.}\\
+
+\texttt{When evaluating the assistants' answers, compare both assistants' answers. You must identify and correct any mistakes or inaccurate information.}\\
+
+\texttt{Then consider if the assistant's answers are helpful, relevant, and concise. Helpful means the answer correctly responds to the prompt or follows the instructions. Note when user prompt has any ambiguity or more than one interpretation, it is more helpful and appropriate to ask for clarifications or more information from the user than providing an answer based on assumptions. Relevant means all parts of the response closely connect or are appropriate to what is being asked. Concise means the response is clear and not verbose or excessive.}\\
+
+\texttt{Then consider the creativity and novelty of the assistant's answers when needed. Finally, identify any missing important information in the assistants' answers that would be beneficial to include when responding to the user prompt.}\\
+
+\texttt{After providing your explanation, you must output only one of the following choices as your final verdict with a label:}\\
+
+\texttt{1. Assistant A is significantly better: [[A>{}>B]]\\
+2. Assistant A is slightly better: [[A>B]]\\
+3. Tie, relatively the same: [[A=B]]\\
+4. Assistant B is slightly better: [[B>A]]\\
+5. Assistant B is significantly better: [[B>{}>A]]} \\
+
+\texttt{Example output: "My final verdict is tie: [[A=B]]".} \\
+
+% \texttt{\textbf{<|User Prompt|>}} \\
+% ...\\
+
+% \texttt{\textbf{<|The Start of Reference Answer|>}} \\
+% ...\\
+% \texttt{\textbf{<|The End of Reference Answer|>}} \\
+
+% \texttt{\textbf{<|The Start of Assistant A's Answer|>}} \\
+% ...\\
+% \texttt{\textbf{<|The End of Assistant A's Answer|>}} \\
+
+% \texttt{\textbf{<|The Start of Assistant B's Answer|>}} \\
+% ...\\
+% \texttt{\textbf{<|The End of Assistant B's Answer|>}}
+\end{tcolorbox}
+
+
+\newpage
+\color{black}\subsection{Arena Battles with No Ground Truth}
+\label{subsec:no-ground-truth-example}
+
+\textbf{Example 1}: An example of an Arena Battle between GPT-4-Turbo and Llama-2-13B-chat, where depending on different preferences, either answer can be argued as better than the other. While both answers are correct, GPT-4-Turbo's answer is concise and appropriate to the format of multiple choice question. On the other hand, Llama-2-13B-chat provides helpful explanation for the multiple choice answer.
+\begin{tcolorbox}
+\texttt{\textbf{<|User Prompt|>}} \\
+\texttt{Multiple Choice Question \\
+All plants have both a haploid and a diploid form. As the plant changes from one form to another, this is called:} \\
+
+\texttt{Multiple choice question.\\
+alternative life cycle\\
+succession\\
+an alternation of generations} \\
+
+\texttt{\textbf{<|GPT-4-Turbo's Answer|>} \\
+an alternation of generations}\\
+
+\texttt{\textbf{<|Llama-2-13B-chat's Answer|>} \\
+The correct answer is: an alternation of generations. }\\
+
+\texttt{Plants, like other organisms, have different life cycle stages, and they can exist in two different forms: haploid and diploid. The haploid form is a single set of chromosomes, while the diploid form is two sets of chromosomes. As the plant changes from one form to another, this is called an alternation of generations. This process involves the alternation of haploid and diploid phases, and it is a fundamental aspect of the life cycle of plants.}\\
+
+\texttt{Alternative life cycle and succession are not correct descriptions of this process, as they refer to different concepts. Alternative life cycle refers to the different stages of life an organism may go through, such as larva, pupa, and adult in insects, while succession refers to the process of one species replacing another in a particular environment or niche.}
+\end{tcolorbox}
+
+\textbf{Example 2}: An example of an Arena Battle between GPT-4-Turbo and Llama-2-13B-chat, where depending on different preferences, either answer can be argued as better than the other.
+\begin{tcolorbox}
+\texttt{\textbf{<|User Prompt|>} \\
+What are critical elements of a Product Mindset for startup founders?} \\
+
+\texttt{\textbf{<|GPT-4-Turbo's Answer|>} \\
+Adopting a Product Mindset is crucial for startup founders as it helps them focus on creating products that deliver value to customers while achieving business objectives. Here are some critical elements of a Product Mindset for startup founders:} \\
+
+\texttt{1. Customer Centricity: \\
+   - Understand and empathize with your customers’ needs, problems, and motivations.}
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\texttt{- Continuously gather and incorporate customer feedback into the product development process. \\
+   - Prioritize features and improvements that directly address customer pain points and enhance their experience.} \\
+
+\texttt{2. Value Proposition: \\
+   - Clearly define the unique value your product offers to the market. \\
+   - Align your product's features and capabilities with its value proposition to ensure it meets the expectations of your target audience.} \\
+
+\texttt{3. Problem-Solving Focus: \\
+   - Identify and focus on solving real problems for users rather than just creating features for the sake of innovation. \\
+   - Validate assumptions and hypotheses through experimentation and user testing.} \\
+
+\texttt{4. Iterative Development: \\
+   - Embrace an agile development approach, where you build, measure, and learn in iterative cycles. \\
+   - Be open to pivoting or making significant changes based on feedback and market response.} \\
+
+\texttt{5. Data-Driven Decision Making: \\
+   - Use data to inform decisions about product development, marketing, and growth strategies. \\
+   - Establish key performance indicators (KPIs) to measure the success of the product and track progress over time.} \\
+
+... \\
+
+\texttt{By internalizing these elements, startup founders can develop a strong Product Mindset that guides their decisions and strategies, ultimately leading to a product that customers love and that contributes to the startup's success.} \\
+
+\texttt{\textbf{<|Llama-2-13B-chat's Answer|>} \\
+A product mindset is a way of thinking and approaching product development that is critical for startup founders. Here are some essential elements of a product mindset for startup founders:} \\
+
+\texttt{1. Customer-centricity: A product mindset starts with understanding the customer's needs, desires, and pain points. Founders must be obsessed with their customers and be willing to put in the effort to understand their needs. \\
+2. Iteration and experimentation: A product mindset is all about experimentation and iteration. Founders must be willing to try new things, test hypotheses, and iterate on their product based on customer feedback.} \\
+\texttt{3. Focus on value: A product mindset is focused on delivering value to the customer. Founders must be able to identify and prioritize the most important features and functionality that deliver the most value to their customers.} \\
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\texttt{4. Collaboration: A product mindset requires collaboration between cross-functional teams, including engineering, design, and product management. Founders must be able to work effectively with these teams to develop a product that meets customer needs.}\\
+\texttt{5. Data-driven decision making: A product mindset is data-driven, and founders must be comfortable using data to make informed decisions about their product. This includes analyzing customer feedback, usage data, and other metrics to inform product development.}\\
+
+...\\
+
+\texttt{By embracing these elements of a product mindset, startup founders can develop a product that meets customer needs, delivers value, and sets their company up for long-term success.}
+\end{tcolorbox}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
+
+
+% This document was modified from the file originally made available by
+% Pat Langley and Andrea Danyluk for ICML-2K. This version was created
+% by Iain Murray in 2018, and modified by Alexandre Bouchard in
+% 2019 and 2021 and by Csaba Szepesvari, Gang Niu and Sivan Sabato in 2022.
+% Modified again in 2023 by Sivan Sabato and Jonathan Scarlett.
+% Previous contributors include Dan Roy, Lise Getoor and Tobias
+% Scheffer, which was slightly modified from the 2010 version by
+% Thorsten Joachims & Johannes Fuernkranz, slightly modified from the
+% 2009 version by Kiri Wagstaff and Sam Roweis's 2008 version, which is
+% slightly modified from Prasad Tadepalli's 2007 version which is a
+% lightly changed version of the previous year's version by Andrew
+% Moore, which was in turn edited from those of Kristian Kersting and
+% Codrina Lauth. Alex Smola contributed to the algorithmic style files.

@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\small
+\caption{\textbf{Misclassification correction vs.\ continuous calibration on Arena preferences} (mean Youden's $J \approx 0.41$). Both methods achieve near-nominal 95\% CI coverage, but CJE produces $9\times$ narrower confidence intervals while achieving 93\% lower RMSE even when Rogan-Gladen uses the optimal threshold.}
+\label{tab:binary-comparison}
+\begin{tabular}{lccc}
+\toprule
+Method & RMSE & 95\% CI Coverage & CI Half-Width \\
+\midrule
+CJE (direct) & $\mathbf{0.004}$ & 96.4\% & $\mathbf{0.015}$ \\
+Rogan-Gladen ($\tau{=}0.5$) & $0.063$ & 95.6\% & 0.135 \\
+Rogan-Gladen ($\tau{=}0.6$, best) & $0.061$ & 98.9\% & 0.136 \\
+\bottomrule
+\end{tabular}
+\vspace{1mm}
+\par\noindent{\footnotesize \emph{Setup:} 9,999 Arena preference pairs (50.5\% A-wins); 3 target policies (verbose, terse, contrarian); identical oracle budgets per cell. CIs follow~\citet{Lee2025LLMJudgeReporting} Eq.~6. Threshold $\tau$ binarizes the continuous judge score; $\tau{=}0.5$ is the natural argmax, $\tau{=}0.6$ is optimal from a sweep over $\{0.3, 0.4, 0.5, 0.6, 0.7\}$.}
+\end{table}

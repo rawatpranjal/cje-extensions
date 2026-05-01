@@ -1,0 +1,101 @@
+\section{Monte Carlo and Estimation Plan}
+\label{app:mc}
+
+The simulation appendix is secondary to the theory appendix. Its role is to
+stress-test the audit-gated estimator under controlled laws where the target
+estimand, the transport null, and the expected rejection behavior are known in
+advance.
+
+\subsection{Simulation Design Grid}
+
+Each design reports the mean value $V(\ptarget)$, the lower-tail value
+$\CVaR_\alpha(\ptarget)$, whether mean transport holds, whether shortfall
+transport holds near the lower-tail optimizer, and which audit moment should
+move under the alternative.
+
+\begin{table}[htbp]
+\centering
+\small
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llll}
+\toprule
+Design & Estimand contrast & Audit-null status & Expected behavior \\
+\midrule
+Null shortfall transport
+& mean and lower-tail level
+& both moments valid
+& rejection near nominal \\
+Mean transport only
+& equal mean, shifted lower tail
+& $g_2$ invalid
+& mean audit passes; CVaR audit rejects \\
+Threshold perturbation
+& correct shortfall map, wrong tail mass
+& $g_1$ invalid
+& threshold moment drives rejection \\
+Shortfall bias
+& correct tail mass, biased shortfall map
+& $g_2$ invalid
+& shortfall moment drives rejection \\
+Discrete rating outcome
+& atom at the optimizer
+& tie rule required
+& naive indicator moment can over-reject \\
+Similar means, different tails
+& same $V(\ptarget)$, different $\CVaR_\alpha(\ptarget)$
+& design-specific
+& tail ranking separates policies before mean ranking does \\
+Oracle-budget sweep
+& finite-label precision
+& design-specific
+& uncertainty and refusal rate improve with oracle budget \\
+\bottomrule
+\end{tabular}
+}
+\caption{Simulation scenarios for the online appendix.}
+\label{tab:mc-plan}
+\end{table}
+
+\subsection{Estimands and Null Status}
+
+For each design, the appendix should state:
+\begin{itemize}[leftmargin=*,nosep]
+\item the policy law and oracle-outcome law;
+\item the oracle mean $V(\ptarget)$ and lower-tail value
+$\CVaR_\alpha(\ptarget)$;
+\item the reference surrogate $f(\Sscore,\X)$ and shortfall surrogate
+$h_t(\Sscore,\X)$;
+\item whether $\E_\ptarget[\Y-f(\Sscore,\X)]=0$;
+\item whether $\E_\ptarget[\shortfall{t}{\Y}-h_t(\Sscore,\X)]=0$ near the
+population optimizer;
+\item which audit moments should be zero and which should move.
+\end{itemize}
+
+\subsection{Reported Metrics}
+
+Report metrics separately for audit-accepted and audit-rejected runs:
+\begin{itemize}[leftmargin=*,nosep]
+\item audit size under the null and audit power under each alternative;
+\item estimator bias and RMSE conditional on audit acceptance;
+\item confidence-interval coverage conditional on audit acceptance;
+\item probability of \RefuseLevel{};
+\item pairwise lower-tail ranking accuracy among audit-accepted policies;
+\item sensitivity to $\alpha$, oracle fraction, calibration size, grid
+resolution, and tail density.
+\end{itemize}
+
+\subsection{Result Tables to Fill}
+
+The online appendix should reserve one table per design family:
+\begin{enumerate}[leftmargin=*,nosep]
+\item a size table for the null shortfall-transport design;
+\item a power table separating $g_1$ alternatives from $g_2$ alternatives;
+\item a discrete-outcome table comparing the interval and randomized tie rules;
+\item a lower-tail ranking table for policies with similar means;
+\item an oracle-budget table showing bias, RMSE, coverage, interval length, and
+\RefuseLevel{} rate.
+\end{enumerate}
+
+The main text should only import the minimal subset needed to support the
+empirical claim. The online appendix should keep the full design grid so that
+readers can distinguish estimator error from deliberate audit refusal.

@@ -1,0 +1,33 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Ablation: marginal contribution of CJE components.} Metrics averaged over 5 sample sizes $\times$ 5 oracle fractions $\times$ 50 seeds. CI coverage = \% of 95\% CIs containing truth (using bootstrap + $\hat\theta_{\mathrm{aug}}$ for Direct).}
+\label{tab:ablation}
+\small
+\begin{tabular}{@{}lccr@{}}
+\toprule
+\textbf{Configuration} & \textbf{RMSE$^{\mathrm{d}}$} & \textbf{Coverage} & \textbf{$\Delta$RMSE$^{\mathrm{d}}$} \\
+\midrule
+\multicolumn{4}{l}{\textit{Effect of Reward Calibration}} \\
+~~Direct, no calibration & 0.083 & 0\% & --- \\
+~~Direct + reward calibration & 0.023 & 95\% & \textbf{--72\%} \\
+\midrule
+\multicolumn{4}{l}{\textit{Effect of Weight Stabilization}} \\
+~~SNIPS (raw weights) & 0.160 & 98\% & --- \\
+~~Calibrated-IPS (+ stabilization) & 0.025 & 99\% & \textbf{--84\%} \\
+\midrule
+\multicolumn{4}{l}{\textit{Combined Effect on DR}} \\
+~~Calibrated DR, raw weights & 0.046 & 99\% & --- \\
+~~Calibrated DR + stabilization & 0.023 & 100\% & --50\% \\
+~~Calibrated DR + stabilization + cov & 0.026 & 99\% & --43\% \\
+\midrule
+\multicolumn{4}{l}{\textit{Recommended Configuration}} \\
+~~\textbf{Direct + reward calibration + cov} & \textbf{0.026} & 95\% & \textbf{--69\%} \\
+\bottomrule
+\end{tabular}
+\vspace{1mm}
+
+\footnotesize{
+\textbf{Key findings:} Reward calibration reduces RMSE by 72\% and restores coverage (0\%→95\% with bootstrap).
+Weight stabilization reduces IPS RMSE by 84\%. Both contribute additively.
+}
+\end{table}

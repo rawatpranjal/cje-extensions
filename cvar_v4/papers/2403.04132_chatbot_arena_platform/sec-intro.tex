@@ -1,0 +1,111 @@
+\section{Introduction}
+
+% LLMs are very powerful now, which makes their evaluation hard.
+Recent advancements in large language models (LLMs) have significantly expanded their capabilities beyond traditional natural language processing boundaries, addressing a broad array of general tasks~\cite{openai2023gpt4,team2023gemini,touvron2023llama2}. These developments underscore the potential of LLMs but also have raised concerns with respect to performance evaluation. Current benchmarks often fail to capture the nuanced and diverse aspects of these models, particularly in assessing their alignment with human preferences in real-world, open-ended tasks.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1.01\columnwidth]{figures/eval_classification_arena.pdf}
+    \vspace{-2em}
+    \caption{Classification of LLM benchmarks: We categorize along two dimensions: whether the questions are from a static dataset or a live, fresh source, and whether the evaluation metric relies on ground truth or (approximated) human preferences. MMLU~\cite{hendrycks2020measuring}, HellaSwag~\cite{zellers2019hellaswag}, GSM-8K~\cite{cobbe2021gsm}, MT-Bench~\cite{zheng2023judging}, and AlpacaEval~\cite{alpaca_eval} are common examples of static benchmarks. \system is the platform introduced in this paper.}
+    \vspace{-1em}
+    \label{fig:eval_classification}
+\end{figure}
+
+% Various methods for evaluation.
+To assess the performance of LLMs, the research community has introduced a variety of benchmarks. These benchmarks can be categorized based on two factors: the source of questions (either static or live) and the evaluation metric (either ground truth or human preference). According to these factors, benchmarks can be classified into four categories, as shown in \autoref{fig:eval_classification}. While a range of benchmarks is beneficial, the most prevalent current method for evaluating LLMs remains a static, ground-truth-based evaluation, partly because such evaluations are inexpensive and reproducible.
+
+% Limitations of the current benchmark
+However, these static, ground-truth-based benchmarks exhibit several limitations. Firstly, the questions within these benchmarks are not open-ended, hindering the ability to capture the flexible and interactive use found in real-world settings~\cite{zheng2023judging}. Secondly, the test sets in these benchmarks are static, meaning they can become contaminated over time, which undermines the reliability of the evaluation results~\cite{yang2023rethinking}. Furthermore, for many complex tasks, establishing a definitive ground truth is not only challenging but sometimes unattainable. Consequently, current benchmarks fail to adequately address the needs of state-of-the-art LLMs, particularly in evaluating user preferences. Thus, there is an urgent necessity for an open, live evaluation platform based on human preference that can more accurately mirror real-world usage.
+
+% Challenges
+Creating such a benchmark platform entails significant challenges. It requires the collection of live, fresh, and diverse user questions to accurately represent real-world scenarios. Additionally, developing scalable, incremental, and efficient ranking systems is essential for evaluating a large number of models. Moreover, ensuring the quality of human evaluations is crucial given the noisy nature of human preferences.
+
+% Our solution
+To this end, we introduce \system, a benchmarking platform for LLMs that features anonymous, randomized battles in a crowdsourced setting. \system is a free website open to all users.\footnote{\url{https://chat.lmsys.org}} On this website, a user can ask a question and get answers from two anonymous LLMs.
+Afterward, the user casts a vote for the model that delivers the preferred response, with the models' identities revealed only after voting. This crowdsourced method effectively gathers a diverse array of fresh user prompts, accurately reflecting real-world LLM applications. 
+Armed with this data, we employ a suite of powerful statistical techniques, ranging from the statistical model of~\citet{bradley1952rank} to the E-values of~\citet{vovk2021values}, to estimate the ranking over models as reliably and sample-efficiently as possible.
+With these tools in hand, we have designed efficient sampling algorithms specifically to select model pairs in a way that accelerates the convergence of rankings while retaining statistical validity.
+
+% Trust
+We conduct a thorough analysis of the collected data to ensure the credibility of our platform. We demonstrate that the user-generated questions are sufficiently diverse to encompass a wide range of LLM use cases and are sufficiently challenging to differentiate between models. Furthermore, we confirm that the crowd-sourced votes are highly consistent with expert evaluations.
+
+% Our experiences and impact
+We have been running our system since Apr 2023 and have received over 240K votes from about 90K users in over 100 different languages as of Jan 2024.
+To encourage user engagement, we have made over 50 state-of-the-art models available for free.
+We also collaborate with leading model developers such as OpenAI, Google, Anthropic, Mistral, Hugging Face, and various universities, incorporating their latest models into our platform. We keep the community engaged by routinely updating the leaderboard, publishing analytical blogs, releasing datasets, and sharing information via tweets. 
+Because of its unique and significant value, our leaderboard has emerged as one of the most referenced in the LLM field and has become a benchmark for the industry.
+We commit to making our data and code available, ensuring that this platform is open-source and open-accessible.
+
+%\todo{reduce space between items}
+
+% Our contributions
+We make the following contributions:
+\begin{itemize}[itemsep=0.1em]
+    \item We build the first large-scale crowd-sourced live LLM evaluation platform with over 1M users visit.\footnote{The number was estimated by Google Analytics as of March 2024. Note that user visit may not convert to votes as our website also offers ``direct chat'' mode.}
+    \item We conduct an in-depth analysis of the collected data, including prompt diversity, quality, vote quality, and insights on human feedback.
+    %\item We will publicly release a large-scale real-world conversation and preference dataset with over 3 million conversations and over 100K pairwise votes.
+    \item We will publicly release a human preference dataset with over 100K pairwise votes collected from \system.
+    \item We design an efficient sampling algorithm that actively chooses which model pairs to show, such that our sample efficiency improves, sometimes to a large degree.
+  %  \item We share valuable experiences in engaging with the community and maintaining the live platform.
+\end{itemize}
+
+
+
+
+
+
+
+\iffalse
+\begin{enumerate}
+    \item Motivations
+    \begin{enumerate}
+        \item many new models
+        \item limitation of existing benchmarks (not open-ended, ground-truth based, risk of contamination)
+    \end{enumerate}
+    \item why Arena?
+    \begin{enumerate}
+        \item real-world, live, scalable, diverse
+    \end{enumerate}
+    \item Contributions
+    \begin{enumerate}
+        \item a live LLM eval platform with 100K monthly users
+        \item Analysis on prompt diversity, quality, vote quality, insights on human feedback
+        \item Model performance analysis
+        \item Real-world user/LLM conversation and preference dataset (3M conversations, 200K pairwise votes, May-Dec 2023)
+        % \item an automatic human feedback data analysis pipeline to identify the model weakness
+        \item an efficient sampling algorithm with statistical guarantees
+        \item experiences in engaging the community and maintaining the website and leaderboard
+    \end{enumerate}
+\end{enumerate}
+\fi
+
+% \begin{enumerate}
+%     \item LLM evals is broken
+%     \begin{enumerate}
+%         \item contamination, not real-world usage, limited to ground-truth based eval
+%     \end{enumerate}
+%     \item Why pairwise comparison? (no ground truth, human has different rubric)
+%     \item Why crowd-sourcing? we need fresh input, representative distribution and close to real-world usage
+%     \item Human is expensive. how to develop an efficient sampling algorithm?
+%     \item Insights learned from the data (what are users asking, how to validate vote quality, pipeline to identify a model weakness)
+%     \item Contributions
+%     \begin{enumerate}
+%         \item 200K human feedback dataset on 50+ LLMs
+%         \item 2M+ user/LLM conversation
+%         \item data analysis tool
+%         \item efficient sampling algorithm
+%     \end{enumerate}
+% \end{enumerate}
+
+
+
+% 1. LLLM evals are broken. We need a new way of evaluation.
+% 2. We introduce \system, an open platform.
+% 3. Technique highlights: verify the diversity and difficulty of prompts, abnormal detection, faster convergence
+% 4. The first large scale widely adopted 
+%Recent advancements in large language models (LLMs) have unlocked new possibilities across various domains. Yet, its diverse applications bring challenges in evaluation. While specific capabilities, like knowledge retrieval and mathematical proficiency, can be assessed through ground-truth-based benchmarks (e.g., multiple-choice question answering), many applications (e.g., writing), require human preferences for assessment.
+%To bridge this gap, we present \system, an open platform designed for the evaluation of LLMs grounded in human judgment. \system employs a pairwise comparison approach and integrates crowd-sourced input, drawing on a broad base of users to reflect the diverse real-world applications of LLMs.
+% The platform generates a rich dataset containing over 200,000 human feedback interactions across a wide range of LLMs, offering invaluable insights into user preferences and model performance.
+% TODO: We investigate ranking systems such as Elo and Bradley-Terry model. We conduct experiments to validate the diversity and quality of user inputs.
+% We develop an efficient sampling algorithm that has faster convergence against random sampling. We open-source the user prompt and preference data.

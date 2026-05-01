@@ -1,0 +1,21 @@
+\begin{table}[t!]
+  \centering
+  \small
+
+    \caption{Hyperparameters used for instruction-tuning/supervised fine-tuning, consistent with the setup as \cite{ivison2023camels} except that we choose a shorter max sequence length and smaller batch size due to compute constraint.}
+    \label{tab:training_hyper_parameters}
+  
+  \begin{tabular}{l | l}
+    \toprule
+
+Precision & BFloat16 \\
+Epochs & 2 \\
+Weight decay & 0 \\
+Warmup ratio & 0.03 \\
+Learning rate & 2e-5 \\
+Max. seq. length & 2048 \\
+Batch size & 32 \\
+\bottomrule
+  \end{tabular}
+
+\end{table}

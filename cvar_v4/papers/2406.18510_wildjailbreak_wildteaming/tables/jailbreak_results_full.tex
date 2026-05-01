@@ -1,0 +1,74 @@
+\begin{table*}[t!]
+    \caption{\method compared to other jailbreaking methods on representative open-source and closed-source models with the test set of the \harmbench  \citep{mazeika2024harmbench}.}
+    \label{tab:jailbreak_results_full}
+    
+    \centering
+    \small   
+    
+    \begin{tabular}{l@{\hspace{0.8\tabcolsep}}
+    l@{\hspace{0.8\tabcolsep}}
+    r@{\hspace{0.8\tabcolsep}}
+    r@{\hspace{0.8\tabcolsep}}
+    r@{\hspace{0.8\tabcolsep}}
+    r@{\hspace{0.8\tabcolsep}}
+    r@{\hspace{0.8\tabcolsep}}
+    r@{\hspace{0.8\tabcolsep}}
+    r@{\hspace{0.8\tabcolsep}}
+    r}
+    
+    \toprule 
+    && \multicolumn{3}{c}{\textbf{Standard}} & \multicolumn{4}{c}{\textbf{Diversity}}\\
+    
+    \cmidrule(r){3-5}  \cmidrule(r){6-10}
+     
+    \textbf{Model} & \textbf{Method} & 
+            \rotatebox{0}{ASR} $\uparrow$ & 
+            \rotatebox{0}{Query} $\downarrow$ & 
+            \rotatebox{0}{PPL} $\downarrow$ & 
+            \rotatebox{0}{ASR$^{\times5}_{30}$} $\uparrow$ & 
+            \rotatebox{0}{Query$^{\times5}_{30}$} $\downarrow$ & 
+            \rotatebox{0}{Sim$^{\text{@}5}_{30}$} $\downarrow$ & 
+            \rotatebox{0}{Sim$^{\text{all}}$} $\downarrow$ & 
+            \rotatebox{0}{\#Tactic$^{\text{all}}$} $\uparrow$\\
+    \midrule
+
+    \multirow{4}{*}{\shortstack{\vicuna \\ (7B)}} & \methodshort & 93.1 & \textbf{2.82} & \textbf{8.65} & \textbf{88.1} & \textbf{9.31} &  \textbf{.722} &  \textbf{.527} & \textbf{55} \\
+    & \pair  & \textbf{94.3} & 3.55 & 9.42 & 59.5 & 14.78 & .790 & .530 & 27 \\
+    % & \tap  &  xx &   xx &  xx &   xx &  xx &  xx & xx \\
+    & \autodan  & 89.3 & - & 13.74 & 19.4 & $\infty$ & .972 & .969 & 36 \\
+    & \gcg  & 89.9 & - & 4062.57 & - & - & - & - & - \\
+    \midrule 
+
+    \multirow{4}{*}{\shortstack{\tulu \\ DPO \\ (7B)}} & \methodshort & \textbf{96.9} & \textbf{2.61} & \textbf{8.77} & \textbf{87.8} & \textbf{8.98} & \textbf{.722} & \textbf{.529} & \textbf{61} \\
+    & \pair & 95.0 & 3.57 & 9.78 &  62.1 & 14.24 & .792 & .534 & 29 \\
+    % & \tap  &  xx &   xx &  xx &  xx & xx & xx & xx \\
+    & \autodan & 94.3 & - & 12.97 &  20.0 & 1.41 & .972 & .962 & 36 \\
+    & \gcg  & 51.6 & - & 4265.86 & - & - & - & - & - \\
+    \midrule 
+    
+    \multirow{4}{*}{\shortstack{\mistral \\ (7B)}} & \methodshort & 95.0 & \textbf{2.37} & \textbf{8.56} &  \textbf{89.2} & \textbf{8.72} &  \textbf{.722} & \textbf{.527} & \textbf{52} \\
+    & \pair  &  \textbf{95.6} & 3.28 & 9.62 & 65.0 & 14.21 & .792 & .537 & 30 \\
+    % & \tap  & xx & xx & xx & xx & xx & xx & xx \\
+    & \autodan & 92.5 & - & 13.24 & 19.9 &  $\infty$ & .961 & .952 & 40 \\
+    & \gcg  & 85.5 & - & 2266.69 & - & - & - & - & - \\
+    \midrule
+    
+    \multirow{3}{*}{\shortstack{Mixtral \\ (8$\times$7B)}} & \methodshort & \textbf{98.1} & \textbf{2.72} & \textbf{8.75} & \textbf{87.2} & \textbf{8.99} & \textbf{.722} & \textbf{.531} & \textbf{55} \\
+    & \pair  & 97.5 & 3.05 & 9.54 & 61.8 & 13.96 & .795 & .533 & 28 \\
+    % & \tap  &  xx &   xx &  xx &   xx &  xx &  xx & xx \\
+    & \autodan  & 88.7 &  - & 13.31 &  20.0 & 1.53 & .967 & .957 & 38 \\
+    \midrule 
+    
+    \multirow{2}{*}{\shortstack{\chatgpt \\ (0613)}} & \methodshort & \textbf{92.5} & 7.08 & \textbf{7.96} & \textbf{65.8} & \textbf{13.19} & \textbf{.733} & \textbf{.526} & \textbf{50} \\
+    & \pair & 88.7 & \textbf{6.65} & 9.78 & 61.2 & 17.01 & .798 & .530 & 26 \\
+    % & \tap  &  xx &   xx &  xx &   xx &  xx &  xx & xx \\
+    \midrule 
+
+    \multirow{2}{*}{\shortstack{\gptfour \\ (0613)}} & \methodshort & \textbf{79.9} & \textbf{8.61} & \textbf{8.13} & \textbf{60.1} & \textbf{13.43} & \textbf{.731} & \textbf{.530} & \textbf{39} \\
+    & \pair  & 78.6 & 9.64 & 9.33 & 44.9 & 17.75 & .802  & .538 & 29 \\
+    % & \tap  &  xx &   xx &  xx &   xx &  xx &  xx & xx \\
+
+    \bottomrule
+    \end{tabular}
+\end{table*}
+

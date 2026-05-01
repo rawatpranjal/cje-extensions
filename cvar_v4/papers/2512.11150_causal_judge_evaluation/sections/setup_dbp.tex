@@ -1,0 +1,168 @@
+\section{Background and Setup}
+\label{sec:background}
+
+\paragraph{Setup \& notation.}
+We observe i.i.d.\ logs $(X_i,A_i,S_i)$ under a fixed logger $\pi_{0}(\cdot\mid X)$; $S=s(X,A)$ is a
+scalar judge score on every row, and a small i.i.d.\ oracle slice provides labels $Y$. For a candidate
+policy $\pi'$, the sequence-level importance ratio is
+\[
+W_{\pi',i} \;=\; \frac{\pi'(A_i\mid X_i)}{\pi_{0}(A_i\mid X_i)}
+\;=\; \exp\!\big\{\log p_{\pi'}(A_i\mid X_i)-\log p_{\pi_{0}}(A_i\mid X_i)\big\},
+\]
+computed via teacher forcing (TF). The target is the counterfactual value $V(\pi')=\E[Y(\pi')]$.
+We use self-normalized importance sampling (SNIPS), which produces sample-mean-one weights, when helpful.
+
+\paragraph{The LLM evaluation regime.}
+Standard off-policy evaluation (OPE) assumes the target policy \emph{cannot} be executed. LLM evaluation operates in a different regime: generating text is cheap, but grading it with oracle labels (human experts, downstream KPIs) is expensive. This creates three evaluation modes: (i) logs-only (IPS/SNIPS), when we cannot re-run the model; (ii) fresh draws (Direct), when we generate new responses but score them with a calibrated surrogate; and (iii) hybrid (DR), combining both. All three share the core challenge: learning $S \to Y$ calibration from a small oracle slice collected under $\pi_0$, then applying it to evaluate $\pi'$. The calibration is always \emph{off-policy}; the actions may or may not be.
+
+\paragraph{Two operating modes: ranking vs.\ levels.}
+CJE supports two use cases with different requirements:
+\begin{itemize}[leftmargin=*,nosep]
+\item Ranking: Determine which policy is better ($V(\pi_1) > V(\pi_2)$?). Requires calibration to preserve order across policies. If calibration bias differs by policy (e.g., overestimates sycophantic responses), rankings can invert even without level claims.
+\item Absolute levels: Report actual policy values ($V(\pi') = 0.72$) or make deployment decisions based on thresholds. Requires mean-unbiasedness: $\E_{\pi'}[Y - f(S,X)] = 0$.
+\end{itemize}
+\noindent The transport audit catches both failure modes: policy-specific bias that inverts rankings and level shifts that bias absolute values. For low-stakes exploratory analysis, the audit may be deferred; for high-stakes decisions (deployment, cross-time comparisons, or when policy differences are small), run the audit.
+
+\paragraph{CJE as surrogate index for LLM evaluation.}
+Conceptually, CJE adopts the \emph{surrogate index} move \citep{AtheyChettyImbensKang2019}: learn a mapping $f(S,X) \approx \E[Y \mid S, X]$ from cheap proxies to expensive outcomes, then use it for downstream estimation. For policy value estimation, we require only mean transport: $\E_{\pi'}[Y - f(S,X)] = 0$, which we treat as auditable via a small oracle slice in each target context (\cref{prop:mean-transport}). We additionally impose monotonicity and mean-preservation as model restrictions. These are not identification assumptions, but deliberate regularization choices that stabilize calibration and prevent preference inversions.
+
+Athey et al.'s framework addresses cross-sample comparability when surrogates are learned in one environment and applied in another. CJE faces two analogous cross-environment challenges: (i) calibration transport (does $f$ learned under $\pi_0$ remain mean-unbiased under $\pi'$?), addressed by the mean residual test; and (ii) action-space coverage (does the logger visit regions where $\pi'$ concentrates?), addressed by CLE/TTC diagnostics. The key difference: we \emph{budget oracle labels in each target context} to audit transport rather than assume it, making CJE an evaluation protocol with explicit failure detection rather than a brittle identification claim.
+
+\paragraph{OPE basics.}
+IPS/SNIPS estimate $V(\pi')$ by reweighting logged outcomes
+\citep{HorvitzThompson1952,Hajek1964Rejective,LiChuLangfordSchapire2011,SwaminathanJoachims2015CRM}.
+The direct method (DM) plugs in $g(x)=\sum_{a}\pi'(a\mid x)\,\hat m(x,a)$. Doubly robust (DR)
+estimators combine IPS and DM \citep{BangRobins2005} and, with sample–splitting and cross–fitting, admit $\sqrt{n}$
+inference under the standard one–of–two $n^{-1/4}$ product–rate condition
+\citep{Bickel1993,VaartWellner2000,Kosorok2008,JiangLi2016,Chernozhukov2018,vanDerLaanRose2011TL, KallusUehara2020DRL}.
+Teacher forcing (TF) provides sequence–level propensities/ratios, so these forms apply to sequence policies in principle; however, TF reliability depends on API implementation details (see Limitations).
+
+\paragraph{Variance, overlap, and stabilization.}
+IPS variance scales with $\E[W_{\pi'}^{2}]$ and deteriorates under limited overlap
+\citep{Crump2009LimitedOverlap}. We monitor stability with the effective sample size (ESS),
+\[
+\mathrm{ESS}(W)=\frac{\big(\sum_i W_i\big)^2}{\sum_i W_i^2},
+\qquad
+\frac{\mathrm{ESS}(W)}{n}=\frac{1}{1+\mathrm{CV}^2(W)}\ \ \text{when } \bar W=1\ \text{(global mean–one/SNIPS)}.
+\]
+We also track tail behavior via diagnostics \citep{Hill1975TailIndex,Liu2001MC,Owen2013MCTME}.
+Common stabilizers include truncation/clipping \citep{Ionides2008TruncatedIS}, overlap weighting
+\citep{LiMorganZaslavsky2018}, balancing objectives
+\citep{Kallus2018Balanced}, and covariate–shift reweighting
+\citep{Shimodaira2000CovShift,SugiyamaKrauledatMueller2007IWCV}.
+
+\paragraph{The Coverage-Limited Efficiency (CLE) problem.}
+High ESS indicates that weights are not dominated by a few extreme observations, but it does not guarantee that the logger has meaningful \emph{coverage} in regions where the target policy concentrates.
+Let $\mathcal{T} \subset \mathcal{X} \times \mathcal{A}$ be a target-relevant region with $\alpha = P_{\pi'}(\mathcal{T})$ (target mass) and $\beta = P_{\pi_0}(\mathcal{T})$ (logger mass). For any IPS-style estimator based on importance-weighted outcomes,
+\begin{equation}
+\label{eq:cle-bound}
+\mathrm{SE}(\hat\Psi_{\mathrm{IPS}}) \;\ge\; \frac{\sigma_{\mathcal{T}} \,\alpha}{\sqrt{\beta\, n}} \sqrt{1 + \chi^2\!\big(\pi'_{\mathcal{T}} \,\|\, \pi_{0,\mathcal{T}}\big)},
+\end{equation}
+where $\sigma_{\mathcal{T}}^2 := \mathrm{ess\,inf}_{(x,a)\in \mathcal{T}} \mathrm{Var}(Y \mid X{=}x, A{=}a)$ is the minimal outcome noise in $\mathcal{T}$, and $\chi^2(\pi'_{\mathcal{T}} \| \pi_{0,\mathcal{T}})$ measures shape mismatch inside $\mathcal{T}$ (proof in Appendix~\ref{app:proof-cle}).
+The bound has three multiplicative factors: (i) the coverage penalty $\alpha/\sqrt{\beta}$, which explodes when the logger rarely visits target-typical regions; (ii) the shape mismatch $\sqrt{1+\chi^2}$, inflating the floor even with good coverage; and (iii) the standard noise term $\sigma_{\mathcal{T}}/\sqrt{n}$.
+
+\emph{Implication.} When $\beta$ is small (poor logger coverage), the CLE floor is prohibitive regardless of weight stabilization. This explains our empirical finding that calibrated IPS fails despite ESS${}>90\%$ (\cref{sec:experiments}): high ESS indicates no weight concentration, but low $\beta$ (poor coverage in target-typical regions) sets a hard precision floor that logs-only methods cannot beat. This is a \emph{structural} limitation: even with perfect propensities, $\beta$ collapses exponentially with sequence length (\cref{prop:ttc-collapse}).
+
+\paragraph{Diagnostics for CLE.}
+The CLE bound decomposes into two factors, each with a corresponding diagnostic:
+\begin{itemize}[nosep,leftmargin=*]
+\item Coverage penalty ($\alpha/\sqrt{\beta}$): Measured by TTC (Target-Typicality Coverage) $= \hat\beta$, the estimated logger mass on $\mathcal{T}$.
+We define the target-typical region $\mathcal{T}$ via a surprisal threshold: let $\ell_{\pi'}(x,a) = -\log p_{\pi'}(a \mid x)$ be the total negative log-likelihood under the target policy (from teacher forcing), and let $\bar\ell_{\pi'}(x,a) = \ell_{\pi'}(x,a)/|a|$ be the mean per-token surprisal. Set $\mathcal{T} = \{(x,a) : \bar\ell_{\pi'}(x,a) \le q_{0.9}\}$, where $q_{0.9}$ is the 90th percentile of $\bar\ell_{\pi'}$ under $\pi'$.
+Then $\alpha = P_{\pi'}(\mathcal{T}) = 0.9$ by construction, and TTC $= \hat\beta = \hat P_{\pi_0}(\mathcal{T})$ is the empirical fraction of logged samples falling in $\mathcal{T}$.
+If TTC${}<0.7$, logs-only IPS will \emph{fail}, meaning the CLE lower bound implies standard errors too large to distinguish realistic policy differences, even under ideal calibration and weight stabilization; prefer Direct or DR methods. (Threshold calibrated for MDE ${\approx}0.02$ at $n{\approx}5\text{k}$; see App.~\ref{app:diag-gates}.)
+\emph{Applicability:} TTC requires sampling from or computing surprisal under $\pi'$ (as we do via teacher forcing). When $\pi'$-access is unavailable, fall back to conservative rules (e.g., always prefer Direct over IPS) or use proxy distributions to approximate TTC.
+\item Shape mismatch ($\sqrt{1+\chi^2}$): Measured by Bhattacharyya affinity $A_B = \int \sqrt{p_{S|\pi'}(s)\,p_{S|\pi_0}(s)}\,ds$ in the surrogate space. Low affinity ($A_B < 0.5$) indicates severe shape mismatch; the gate threshold ($A_B \geq 0.85$; Table~\ref{tab:gates}) ensures adequate overlap for reliable IPS.
+\end{itemize}
+Both diagnostics are complementary: TTC checks if the logger visits target-typical regions (action space); Bhattacharyya affinity checks overall alignment of judge score distributions across policies (surrogate space).
+
+\paragraph{Calibration for OPE.}
+Calibration enforces identities under $\pi_{0}$: outcome calibration de-biases $g(X)$; ratio calibration
+enforces $\E_{\pi_{0}}[W_{\pi'}]=1$ and $\E_{\pi_{0}}[W_{\pi'}h]=\E_{\pi'}[h]$ for a test class $h$;
+orthogonal moments enable honest inference \citep{Chernozhukov2018}. Recent work gives
+projection-based IPS/DR with stability guarantees
+\citep{vanDerLaanLinCaroneLuedtke2025StabIPW,vanDerLaanLuedtkeCarone2024DRCalibration}. For DR, IF
+orthogonality renders small calibration error second order
+\citep{Bickel1993,Chernozhukov2018,vanDerLaanRose2011TL}.
+
+\paragraph{Shape constraints (isotonic).}
+Isotonic regression is the Euclidean projection onto the cone of monotone functions (PAVA)
+\citep{Ayer1955PAVA,Barlow1972}; it avoids extrapolation and \emph{weakly reduces dispersion} by
+majorization \citep{HardyLittlewoodPolya1952,MarshallOlkinArnold2011}. CJE exploits this via mean-preserving isotonic projections for both reward calibration and weight stabilization (\cref{sec:method}).
+
+\paragraph{Judges as surrogates.}
+Automatic judges (LLM-as-judge or preference models) provide scalable scoring
+\citep{Ouyang2022Instruct,BaiEtAl2022,Zheng2023LLMasJudge,Kim2024PrometheusJudge,KocmiFedermann2023}
+but are correlational and may drift \citep{DietzEtAl2025LLMJudges}. Viewing $S$
+as a \emph{surrogate} connects to surrogate endpoints and mediation
+\citep{Prentice1989Surrogate,RobinsGreenland1992,FrangakisRubin2002PS,Pearl2012Mediation,VanderWeele2015Book}.
+The \emph{surrogate paradox}, wherein a policy improves $S$ and $S$ correlates with $Y$ yet the policy harms $Y$, can arise even with high correlation \citep{VanderWeele2013Surrogates}; our transport test (\cref{prop:mean-transport}) provides a necessary check.
+Calibrating $R=f(S)$ enables unbiased estimation of $V(\pi')$ when the \emph{transport condition} holds: $\E_{\pi'}[Y - f(S,X)] = 0$ (\cref{prop:mean-transport}). \emph{Mean sufficiency} ($\E[Y\mid X,A,S]=\mu(S)$) is one sufficient condition guaranteeing transport; in CJE, level claims are gated by a per-policy transport audit. Without that audit, transport must be assumed. The surrogate also supplies a one-dimensional index that stabilizes weights.
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[
+    node distance=1.4cm and 1.8cm,
+    every node/.style={font=\small},
+    obs/.style={circle, draw, minimum size=0.9cm, inner sep=2pt},
+    arr/.style={->, >=stealth, thick},
+    fail/.style={->, >=stealth, thick, dashed, red!70!black}
+  ]
+    % Main observed nodes
+    \node[obs] (X) {$X$};
+    \node[obs, right=1.8cm of X] (A) {$A$};
+
+    % S and Y as parallel outputs, stacked vertically
+    \node[obs, right=1.8cm of A, yshift=0.6cm] (S) {$S$};
+    \node[obs, right=1.8cm of A, yshift=-0.6cm] (Y) {$Y$};
+
+    % Policy node (solid) below A - it's a causal variable
+    \node[obs, below=0.8cm of A] (pi) {$\pi$};
+
+    % Environment node (solid) right of Y - causal variable
+    \node[obs, right=1cm of Y] (E) {$E$};
+
+    % Causal edges
+    \draw[arr] (pi) -- (A);
+    \draw[arr] (X) -- (A);
+    \draw[arr] (X) to[bend left=15] (S);
+    \draw[arr] (X) to[bend right=15] (Y);
+    \draw[arr] (A) -- (S);
+    \draw[arr] (A) -- (Y);
+
+    % Transport failure edges (dashed red)
+    \draw[fail] (E) -- (Y);
+    \draw[fail] (pi) to[bend right=25] (Y);
+
+  \end{tikzpicture}
+  \caption{\textbf{Judge-as-surrogate under policy and environment shift.}
+  $X$: prompt; $A$: response; $S$: judge score; $Y$: oracle label; $\pi$: policy; $E$: environment.
+  $S$ and $Y$ are parallel measurements of the response.
+  Solid arrows: causal structure ($\pi \to A$: policy determines response).
+  Dashed red arrows: \emph{mechanism-shift edges} indicating the $S$-$Y$ calibration may differ across policies or environments; these are not causal effects of $\pi$ or $E$ on $Y$ holding $(X,A)$ fixed.
+  \textbf{Plain English:} Different policies generate different response styles, and the judge may be biased toward certain styles (e.g., verbosity). CJE's transport test catches this via $\E[Y - f(S,X)] = 0$.}
+  \label{fig:dag}
+\end{figure}
+
+\paragraph{Surrogate interpretation.}
+We use the judge score $S$ as a \emph{surrogate measurement} for the expensive outcome $Y$, not as a causal mediator.
+Given a calibration function $f$ learned on an oracle slice, define the residual $\varepsilon := Y - f(S,X)$.
+For any target policy $\pi'$, the value estimation error decomposes exactly as
+\begin{equation}
+\label{eq:transport-decomp}
+\E_{\pi'}[Y] - \E_{\pi'}[f(S,X)] \;=\; \E_{\pi'}[\varepsilon].
+\end{equation}
+Thus, surrogate-only evaluation is mean-unbiased for policy $\pi'$ if and only if the mean residual transports: $\E_{\pi'}[\varepsilon] = 0$.
+We treat this as an \emph{auditable} assumption rather than an identification axiom: we estimate and test $\E_{\pi'}[\varepsilon]$ on a small oracle audit slice per policy (or time window), and re-anchor calibration (or refuse level estimates) when the test fails (\cref{prop:mean-transport}).
+
+This mean-transport condition is strictly weaker than Prentice-style surrogacy, which requires $Y \perp \pi' \mid (S, X)$; it suffices for unbiased \emph{mean value} estimation but does not guarantee conditional calibration within subgroups or at distribution tails.
+When finer guarantees are needed, the audit can be strengthened from a single mean to decile-binned residual checks, detecting compensating errors that cancel in the overall mean.
+
+\fbox{\parbox{0.95\columnwidth}{
+\textbf{Transport Failure $\neq$ Distribution Shift}\\[4pt]
+\textbf{Distribution shift:} The prompts change between training and deployment.\\[2pt]
+\textbf{Transport failure:} Prompts can be \emph{identical}, but your policy changes the kinds of responses it generates, and the judge's bias interacts with that (style, verbosity, self-preference). The mapping $S \to Y$ changes even though $X$ doesn't.\\[2pt]
+CJE tests this directly: for each target policy $\pi'$, we check whether $\E_{\pi'}[Y - f(S,X)] = 0$. If not, the calibration doesn't transport---either recalibrate or refuse level claims.
+}}
+
+\paragraph{Calibration-aware uncertainty \& influence-function stacking.}
+Treating learned $R=\hat f(S)$ as fixed understates uncertainty when the oracle slice is small. CJE addresses this via calibration-aware inference, which propagates calibration uncertainty into confidence intervals using a delete-one-fold jackknife \citep{EfronStein1981,Bickel1993}. For ensemble estimation, CJE stacks multiple estimators by minimizing IF covariance over the simplex \citep{Wolpert1992StackedGeneralization,vanderLaan2007SuperLearner}. Details in \cref{sec:method}.

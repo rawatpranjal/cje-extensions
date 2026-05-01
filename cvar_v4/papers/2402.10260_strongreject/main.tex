@@ -1,0 +1,264 @@
+\PassOptionsToPackage{numbers}{natbib}
+\documentclass{article}
+
+
+% if you need to pass options to natbib, use, e.g.:
+% 	\PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2024
+
+
+% ready for submission
+% \usepackage{neurips_2024}
+
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+	% \usepackage[preprint]{neurips_2024}
+
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+	\usepackage[final]{neurips_2024}
+
+
+% to avoid loading the natbib package, add option nonatbib:
+%	\usepackage[nonatbib]{neurips_2024}
+
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}	% use 8-bit T1 fonts
+\usepackage{hyperref}   	% hyperlinks
+\usepackage{url}        	% simple URL typesetting
+\usepackage{booktabs}   	% professional-quality tables
+\usepackage{amsfonts}   	% blackboard math symbols
+\usepackage{nicefrac}   	% compact symbols for 1/2, etc.
+\usepackage{microtype}  	% microtypography
+%\usepackage{xcolor}     	% colors
+
+% BEGIN PREAMBLE ADDITIONS
+\usepackage{graphicx}
+\usepackage{subcaption} % Required for creating subfigures
+\usepackage{lscape}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+
+\usepackage{makecell}
+% For theorems and such
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{verbatim}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{pdfpages}
+\usepackage{longtable}
+\usepackage[normalem]{ulem}
+\useunder{\uline}{\ul}{}
+\usepackage{caption}
+\captionsetup[table]{skip=7pt}
+% if you use cleveref..
+\usepackage[capitalize,noabbrev]{cleveref}
+\usepackage{tabu}
+\usepackage{wrapfig}
+
+\bibliographystyle{abbrvnat}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+% commenting this out makes definitions omit the section number
+% \theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% REMOVE BEFORE SUBMISSION FOR COMMENTING
+\usepackage[draft]{commenting}
+\declareauthor{dillon}{dillon}{cyan}
+\authorcommand{dillon}{comment}
+\declareauthor{sam}{sam}{purple}
+\authorcommand{sam}{comment}
+\declareauthor{scott}{scott}{olive}
+\authorcommand{scott}{comment}
+\declareauthor{yun}{yun}{orange}
+\authorcommand{yun}{comment}
+\declareauthor{olivia}{olivia}{green}
+\authorcommand{olivia}{comment}
+\declareauthor{elvis}{elvis}{teal}
+\authorcommand{elvis}{comment}
+\declareauthor{alex}{alex}{blue}
+\authorcommand{alex}{comment}
+\declareauthor{alina}{alina}{magenta}
+\authorcommand{alina}{comment}
+% REMOVE BEFORE SUBMISSION FOR COMMENTING
+
+% Evil space hacks
+% \titlespacing*{\paragraph}{0pt}{0\baselineskip}{0.6\baselineskip}
+% \titlespacing*{\section}{0pt}{0.2\baselineskip}{0.3\baselineskip}
+% \titlespacing*{\subsection}{0pt}{0.\baselineskip}{0.3\baselineskip}
+% \setlist{nosep, topsep=0pt,leftmargin=0.3in}
+% \setlist{nosep}
+\newcommand{\pseudopara}[1]{{\textbf{#1}\ \ }}
+
+\newcommand{\ours}{StrongREJECT }
+\newcommand{\codeurl}{https://strong-reject.readthedocs.io/}
+
+\lstset{
+	basicstyle=\ttfamily,
+	breaklines=true,
+	frame=single,
+	literate={\\}{{\textbackslash}}1
+	{\_}{{\_}}1
+	{\{}{{\{}}1
+	{\}}{{\}}}1
+	{\$}{{\$}}1
+	{\%}{{\%}}1
+	{\&}{{\&}}1,
+	escapeinside={(*@}{@*)}
+}
+
+\definecolor{lightgray}{gray}{0.6}
+
+\makeatletter
+\newcommand{\thickunderline}[2][red]{%
+	\textcolor{#1}{\underline{\textcolor{red}{$\overline{\hbox{#2}}\m@th$}}} % Underline and overline, only ChatGPT understands
+}
+\makeatother
+
+% Scott added this command for footnotes without markers, see https://tex.stackexchange.com/questions/30720/footnote-without-a-marker
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+% END PREAMBLE ADDITIONS
+
+\title{
+A \texorpdfstring{{\rotatebox{1}{
+\thickunderline[red]{\textsc{StrongREJECT}}}}}
+{StrongREJECT} for Empty Jailbreaks
+}
+
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+
+\author{%
+ %  David S.~Hippocampus\thanks{Use footnote for providing further information
+	% about author (webpage, alternative address)---\emph{not} for acknowledging
+	% funding agencies.} \\
+ %  Department of Computer Science\\
+ %  Cranberry-Lemon University\\
+ %  Pittsburgh, PA 15213 \\
+ %  \texttt{hippo@cs.cranberry-lemon.edu} \\
+  % examples of more authors
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \AND
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  Alexandra Souly$^\ast$\\
+  \And
+  Qingyuan Lu$^\ast$\\
+  \And
+  Dillon Bowen$^\ast$\\
+  \AND
+  Tu Trinh$^\dagger$\\
+  \And
+  Elvis Hsieh$^\dagger$\\
+  \And
+  Sana Pandey\\
+  \And
+  Pieter Abbeel\\
+  \And
+  Justin Svegliato\\
+  \AND
+  Scott Emmons$^\ddagger$\\
+  \And
+  Olivia Watkins$^\ddagger$\\
+  \And
+  Sam Toyer$^\ddagger$\\
+  \AND
+  \\Center for Human-Compatible AI, UC Berkeley
+}
+
+
+\begin{document}
+
+
+\maketitle
+
+\input{sections/abstract}
+\input{sections/intro}
+\input{sections/our_benchmark}
+\input{sections/human_evals}
+\input{sections/capabilities}
+\input{sections/discussion}
+
+% Acknowledgements should only appear in the accepted version.
+% \section*{Acknowledgements}
+%
+% \textbf{Do not} include acknowledgements in the initial version of
+% the paper submitted for blind review.
+%
+% If a paper is accepted, the final camera-ready version can (and
+% probably should) include acknowledgements. In this case, please
+% place such acknowledgements in an unnumbered section at the
+% end of the paper. Typically, this will include thanks to reviewers
+% who gave useful comments, to colleagues who contributed to the ideas,
+% and to funding agencies and corporate sponsors that provided financial
+% support.
+
+\clearpage
+\bibliography{main}
+
+\newpage
+\appendix
+
+% \input{appendix/neurips_checklist}
+% \clearpage
+\input{appendix/ethics}
+\input{appendix/low_resource_jailbreak}
+\clearpage
+\input{appendix/benchmark_details}
+% \input{appendix/automated_evaluator_robustness}
+\input{appendix/correlations}
+% \input{appendix/jailbreak_scores_by_category}
+\input{appendix/experiment_details}
+% \input{appendix/mmlu_details}
+% \input{appendix/dolphin}
+
+\end{document}

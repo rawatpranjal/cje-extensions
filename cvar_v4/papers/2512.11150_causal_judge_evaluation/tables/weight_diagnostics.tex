@@ -1,0 +1,22 @@
+\begin{table}[t]
+\centering
+\caption{Weight Diagnostics: Weight Stabilization. Raw SNIPS weights have catastrophic ESS ($<1\%$) and heavy tails ($\alpha < 2$); weight stabilization recovers ESS $>80\%$ with light tails.}
+\label{tab:weight-diagnostics}
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{2}{c}{ESS (\%)}  & \multicolumn{2}{c}{Tail $\alpha$} & & \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+Policy & SNIPS & Stab. & SNIPS & Stab. & TTC & CLE \\
+\midrule
+Clone & 26.2 & 99.0 & 1.08 & $>$10 & 79.6\% & 1.9$\times$ \\
+Parallel Univ. & 0.6 & 95.4 & 0.56 & $>$10 & 49.4\% & 60.5$\times$ \\
+Premium & 0.7 & 82.1 & 0.32 & $>$10 & 19.0\% & 23.8$\times$ \\
+Unhelpful & 0.4 & 84.6 & 0.13 & $>$10 & 25.6\% & 37.6$\times$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{1mm}
+\footnotesize{TTC = Target-Typicality Coverage; CLE = coverage-limited efficiency factor. Tail $\alpha < 2$ indicates infinite variance.}
+\end{table}

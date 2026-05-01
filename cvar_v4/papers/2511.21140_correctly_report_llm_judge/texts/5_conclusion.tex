@@ -1,0 +1,5 @@
+\section{Conclusion}\label{sec:conclusion}
+
+In LLM-as-a-judge evaluation, noisy judgments can induce bias in naive estimates. We thus introduce a bias-corrected estimator and provide statistically sound confidence intervals. To further reduce interval length, we show that calibration design using the proposed algorithm, which allocates samples across response types, can be an effective strategy.
+
+Beyond bias correction, we show that when the LLM judge is sufficiently accurate, our framework can achieve lower variance than human-only evaluation. Moreover, under a mild and realistic assumption on the LLM judge, our estimator remains unbiased and robust to distribution shift between the test and calibration datasets. Several directions for future work are discussed in Appendix~\ref{sec:future_work}. We hope this work contributes to more reliable, interpretable, and transparent practices for LLM-based evaluation.

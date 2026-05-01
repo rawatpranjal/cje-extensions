@@ -1,0 +1,432 @@
+\begin{thebibliography}{91}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Anwar et~al.(2024)Anwar, Saparov, Rando, Paleka, Turpin, Hase, Lubana, Jenner, Casper, Sourbut, Edelman, Zhang, Günther, Korinek, Hernandez-Orallo, Hammond, Bigelow, Pan, Langosco, Korbak, Zhang, Zhong, hÉigeartaigh, Recchia, Corsi, Chan, Anderljung, Edwards, Bengio, Chen, Albanie, Maharaj, Foerster, Tramer, He, Kasirzadeh, Choi, and Krueger]{anwar2024safetychallenges}
+Usman Anwar, Abulhair Saparov, Javier Rando, Daniel Paleka, Miles Turpin, Peter Hase, Ekdeep~Singh Lubana, Erik Jenner, Stephen Casper, Oliver Sourbut, Benjamin~L. Edelman, Zhaowei Zhang, Mario Günther, Anton Korinek, Jose Hernandez-Orallo, Lewis Hammond, Eric Bigelow, Alexander Pan, Lauro Langosco, Tomasz Korbak, Heidi Zhang, Ruiqi Zhong, Seán~Ó hÉigeartaigh, Gabriel Recchia, Giulio Corsi, Alan Chan, Markus Anderljung, Lilian Edwards, Yoshua Bengio, Danqi Chen, Samuel Albanie, Tegan Maharaj, Jakob Foerster, Florian Tramer, He~He, Atoosa Kasirzadeh, Yejin Choi, and David Krueger.
+\newblock Foundational challenges in assuring alignment and safety of large language models, 2024.
+
+\bibitem[Bai et~al.(2022)Bai, Jones, Ndousse, Askell, Chen, DasSarma, Drain, Fort, Ganguli, Henighan, Joseph, Kadavath, Kernion, Conerly, El-Showk, Elhage, Hatfield-Dodds, Hernandez, Hume, Johnston, Kravec, Lovitt, Nanda, Olsson, Amodei, Brown, Clark, McCandlish, Olah, Mann, and Kaplan]{hh-rlhf-preference}
+Yuntao Bai, Andy Jones, Kamal Ndousse, Amanda Askell, Anna Chen, Nova DasSarma, Dawn Drain, Stanislav Fort, Deep Ganguli, Tom Henighan, Nicholas Joseph, Saurav Kadavath, Jackson Kernion, Tom Conerly, Sheer El-Showk, Nelson Elhage, Zac Hatfield-Dodds, Danny Hernandez, Tristan Hume, Scott Johnston, Shauna Kravec, Liane Lovitt, Neel Nanda, Catherine Olsson, Dario Amodei, Tom Brown, Jack Clark, Sam McCandlish, Chris Olah, Ben Mann, and Jared Kaplan.
+\newblock Training a helpful and harmless assistant with reinforcement learning from human feedback, 2022.
+
+\bibitem[Bianchi et~al.(2023)Bianchi, Suzgun, Attanasio, Rottger, Jurafsky, Hashimoto, and Zou]{bianchi2023safety}
+Federico Bianchi, Mirac Suzgun, Giuseppe Attanasio, Paul Rottger, Dan Jurafsky, Tatsunori Hashimoto, and James Zou.
+\newblock Safety-tuned llamas: Lessons from improving the safety of large language models that follow instructions.
+\newblock In \emph{The Twelfth International Conference on Learning Representations}, 2023.
+
+\bibitem[Bianchi et~al.(2024)Bianchi, Suzgun, Attanasio, Rottger, Jurafsky, Hashimoto, and Zou]{safetytuned_llama}
+Federico Bianchi, Mirac Suzgun, Giuseppe Attanasio, Paul Rottger, Dan Jurafsky, Tatsunori Hashimoto, and James Zou.
+\newblock Safety-tuned {LL}a{MA}s: Lessons from improving the safety of large language models that follow instructions.
+\newblock In \emph{The Twelfth International Conference on Learning Representations}, 2024.
+\newblock URL \url{https://openreview.net/forum?id=gT5hALch9z}.
+
+\bibitem[Biden(2023)]{biden2023executive}
+Joseph~R Biden.
+\newblock Executive order on the safe, secure, and trustworthy development and use of artificial intelligence.
+\newblock 2023.
+
+\bibitem[Carlini et~al.(2023)Carlini, Nasr, Choquette-Choo, Jagielski, Gao, Awadalla, Koh, Ippolito, Lee, Tramer, and Schmidt]{adversariallyaligned}
+Nicholas Carlini, Milad Nasr, Christopher~A. Choquette-Choo, Matthew Jagielski, Irena Gao, Anas Awadalla, Pang~Wei Koh, Daphne Ippolito, Katherine Lee, Florian Tramer, and Ludwig Schmidt.
+\newblock Are aligned neural networks adversarially aligned?, 2023.
+
+\bibitem[Casper et~al.(2023)Casper, Lin, Kwon, Culp, and Hadfield-Menell]{casper2023explore}
+Stephen Casper, Jason Lin, Joe Kwon, Gatlen Culp, and Dylan Hadfield-Menell.
+\newblock Explore, establish, exploit: Red teaming language models from scratch, 2023.
+
+\bibitem[Chao et~al.(2023)Chao, Robey, Dobriban, Hassani, Pappas, and Wong]{pair}
+Patrick Chao, Alexander Robey, Edgar Dobriban, Hamed Hassani, George~J. Pappas, and Eric Wong.
+\newblock Jailbreaking black box large language models in twenty queries, 2023.
+
+\bibitem[Chao et~al.(2024)Chao, Debenedetti, Robey, Andriushchenko, Croce, Sehwag, Dobriban, Flammarion, Pappas, Tramer, Hassani, and Wong]{chao2024jailbreakbench}
+Patrick Chao, Edoardo Debenedetti, Alexander Robey, Maksym Andriushchenko, Francesco Croce, Vikash Sehwag, Edgar Dobriban, Nicolas Flammarion, George~J. Pappas, Florian Tramer, Hamed Hassani, and Eric Wong.
+\newblock Jailbreakbench: An open robustness benchmark for jailbreaking large language models, 2024.
+
+\bibitem[Chaudhary(2023)]{codealpaca}
+Sahil Chaudhary.
+\newblock Code alpaca: An instruction-following llama model for code generation.
+\newblock \url{https://github.com/sahil280114/codealpaca}, 2023.
+
+\bibitem[Chen et~al.(2021)Chen, Tworek, Jun, Yuan, Ponde~de Oliveira~Pinto, Kaplan, Edwards, Burda, Joseph, Brockman, et~al.]{chen2021evaluating}
+Mark Chen, Jerry Tworek, Heewoo Jun, Qiming Yuan, Henrique Ponde~de Oliveira~Pinto, Jared Kaplan, Harri Edwards, Yuri Burda, Nicholas Joseph, Greg Brockman, et~al.
+\newblock Evaluating large language models trained on code.
+\newblock \emph{arXiv e-prints}, pp.\  arXiv--2107, 2021.
+
+\bibitem[Chiang et~al.(2023)Chiang, Li, Lin, Sheng, Wu, Zhang, Zheng, Zhuang, Zhuang, Gonzalez, Stoica, and Xing]{vicuna2023}
+Wei-Lin Chiang, Zhuohan Li, Zi~Lin, Ying Sheng, Zhanghao Wu, Hao Zhang, Lianmin Zheng, Siyuan Zhuang, Yonghao Zhuang, Joseph~E. Gonzalez, Ion Stoica, and Eric~P. Xing.
+\newblock Vicuna: An open-source chatbot impressing gpt-4 with 90\%* chatgpt quality, March 2023.
+\newblock URL \url{https://lmsys.org/blog/2023-03-30-vicuna/}.
+
+\bibitem[Clark et~al.(2020)Clark, Choi, Collins, Garrette, Kwiatkowski, Nikolaev, and Palomaki]{clark2020tydi}
+Jonathan~H Clark, Eunsol Choi, Michael Collins, Dan Garrette, Tom Kwiatkowski, Vitaly Nikolaev, and Jennimaria Palomaki.
+\newblock Tydi qa: A benchmark for information-seeking question answering in ty pologically di verse languages.
+\newblock \emph{Transactions of the Association for Computational Linguistics}, 8:\penalty0 454--470, 2020.
+
+\bibitem[Cobbe et~al.(2021)Cobbe, Kosaraju, Bavarian, Chen, Jun, Kaiser, Plappert, Tworek, Hilton, Nakano, et~al.]{cobbe2021training}
+Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Mark Chen, Heewoo Jun, Lukasz Kaiser, Matthias Plappert, Jerry Tworek, Jacob Hilton, Reiichiro Nakano, et~al.
+\newblock Training verifiers to solve math word problems.
+\newblock \emph{arXiv preprint arXiv:2110.14168}, 2021.
+
+\bibitem[Cui et~al.(2024)Cui, Chiang, Stoica, and Hsieh]{cui2024orbench}
+Justin Cui, Wei-Lin Chiang, Ion Stoica, and Cho-Jui Hsieh.
+\newblock Or-bench: An over-refusal benchmark for large language models, 2024.
+
+\bibitem[Dai et~al.(2023{\natexlab{a}})Dai, Pan, Sun, Ji, Xu, Liu, Wang, and Yang]{dai2023safe}
+Josef Dai, Xuehai Pan, Ruiyang Sun, Jiaming Ji, Xinbo Xu, Mickel Liu, Yizhou Wang, and Yaodong Yang.
+\newblock Safe rlhf: Safe reinforcement learning from human feedback.
+\newblock \emph{arXiv preprint arXiv:2310.12773}, 2023{\natexlab{a}}.
+
+\bibitem[Dai et~al.(2023{\natexlab{b}})Dai, Pan, Sun, Ji, Xu, Liu, Wang, and Yang]{dai2023saferlhf}
+Josef Dai, Xuehai Pan, Ruiyang Sun, Jiaming Ji, Xinbo Xu, Mickel Liu, Yizhou Wang, and Yaodong Yang.
+\newblock Safe rlhf: Safe reinforcement learning from human feedback, 2023{\natexlab{b}}.
+
+\bibitem[Dai et~al.(2024)Dai, Pan, Sun, Ji, Xu, Liu, Wang, and Yang]{safe-rlhf}
+Josef Dai, Xuehai Pan, Ruiyang Sun, Jiaming Ji, Xinbo Xu, Mickel Liu, Yizhou Wang, and Yaodong Yang.
+\newblock Safe rlhf: Safe reinforcement learning from human feedback.
+\newblock In \emph{The Twelfth International Conference on Learning Representations}, 2024.
+\newblock URL \url{https://openreview.net/forum?id=TyFrPOKYXw}.
+
+\bibitem[Deng et~al.(2024{\natexlab{a}})Deng, Liu, Li, Wang, Zhang, Li, Wang, Zhang, and Liu]{Deng_2024}
+Gelei Deng, Yi~Liu, Yuekang Li, Kailong Wang, Ying Zhang, Zefeng Li, Haoyu Wang, Tianwei Zhang, and Yang Liu.
+\newblock Masterkey: Automated jailbreaking of large language model chatbots.
+\newblock In \emph{Proceedings 2024 Network and Distributed System Security Symposium}, NDSS 2024. Internet Society, 2024{\natexlab{a}}.
+\newblock \doi{10.14722/ndss.2024.24188}.
+\newblock URL \url{http://dx.doi.org/10.14722/ndss.2024.24188}.
+
+\bibitem[Deng et~al.(2024{\natexlab{b}})Deng, Zhang, Pan, and Bing]{deng2024multilingual}
+Yue Deng, Wenxuan Zhang, Sinno~Jialin Pan, and Lidong Bing.
+\newblock Multilingual jailbreak challenges in large language models, 2024{\natexlab{b}}.
+
+\bibitem[Dubois et~al.(2024)Dubois, Galambosi, Liang, and Hashimoto]{dubois2024lengthcontrolled}
+Yann Dubois, Balázs Galambosi, Percy Liang, and Tatsunori~B. Hashimoto.
+\newblock Length-controlled alpacaeval: A simple way to debias automatic evaluators, 2024.
+
+\bibitem[Ganguli et~al.(2022)Ganguli, Lovitt, Kernion, Askell, Bai, Kadavath, Mann, Perez, Schiefer, Ndousse, Jones, Bowman, Chen, Conerly, DasSarma, Drain, Elhage, El-Showk, Fort, Hatfield-Dodds, Henighan, Hernandez, Hume, Jacobson, Johnston, Kravec, Olsson, Ringer, Tran-Johnson, Amodei, Brown, Joseph, McCandlish, Olah, Kaplan, and Clark]{hh-rlhf}
+Deep Ganguli, Liane Lovitt, Jackson Kernion, Amanda Askell, Yuntao Bai, Saurav Kadavath, Ben Mann, Ethan Perez, Nicholas Schiefer, Kamal Ndousse, Andy Jones, Sam Bowman, Anna Chen, Tom Conerly, Nova DasSarma, Dawn Drain, Nelson Elhage, Sheer El-Showk, Stanislav Fort, Zac Hatfield-Dodds, Tom Henighan, Danny Hernandez, Tristan Hume, Josh Jacobson, Scott Johnston, Shauna Kravec, Catherine Olsson, Sam Ringer, Eli Tran-Johnson, Dario Amodei, Tom Brown, Nicholas Joseph, Sam McCandlish, Chris Olah, Jared Kaplan, and Jack Clark.
+\newblock Red teaming language models to reduce harms: Methods, scaling behaviors, and lessons learned, 2022.
+
+\bibitem[Geiping et~al.(2024)Geiping, Stein, Shu, Saifullah, Wen, and Goldstein]{geiping2024coercing}
+Jonas Geiping, Alex Stein, Manli Shu, Khalid Saifullah, Yuxin Wen, and Tom Goldstein.
+\newblock Coercing llms to do and reveal (almost) anything, 2024.
+
+\bibitem[Geng(2023)]{geng2023easylm}
+Xinyang Geng.
+\newblock Easylm: A simple and scalable training framework for large language models, 2023.
+\newblock URL \url{https://github.com/young-geng/EasyLM}.
+
+\bibitem[Goel et~al.(2024)Goel, Prabhu, Torr, Kumaraguru, and Sanyal]{goel2024corrective}
+Shashwat Goel, Ameya Prabhu, Philip Torr, Ponnurangam Kumaraguru, and Amartya Sanyal.
+\newblock Corrective machine unlearning.
+\newblock \emph{arXiv preprint arXiv:2402.14015}, 2024.
+
+\bibitem[Golchin \& Surdeanu(2023)Golchin and Surdeanu]{golchin2023time}
+Shahriar Golchin and Mihai Surdeanu.
+\newblock Time travel in llms: Tracing data contamination in large language models.
+\newblock In \emph{The Twelfth International Conference on Learning Representations}, 2023.
+
+\bibitem[Guo et~al.(2021)Guo, Sablayrolles, Jégou, and Kiela]{gbda}
+Chuan Guo, Alexandre Sablayrolles, Hervé Jégou, and Douwe Kiela.
+\newblock Gradient-based adversarial attacks against text transformers, 2021.
+
+\bibitem[Guo et~al.(2024)Guo, Yu, Zhang, Qin, and Hu]{coldattack}
+Xingang Guo, Fangxu Yu, Huan Zhang, Lianhui Qin, and Bin Hu.
+\newblock Cold-attack: Jailbreaking llms with stealthiness and controllability, 2024.
+
+\bibitem[Hartvigsen et~al.(2022)Hartvigsen, Gabriel, Palangi, Sap, Ray, and Kamar]{hartvigsen2022toxigen}
+Thomas Hartvigsen, Saadia Gabriel, Hamid Palangi, Maarten Sap, Dipankar Ray, and Ece Kamar.
+\newblock Toxigen: Controlling language models to generate implied and adversarial toxicity.
+\newblock In \emph{Annual Meeting of the Association for Computational Linguistics}, volume~1, 2022.
+
+\bibitem[Hendrycks et~al.(2020)Hendrycks, Burns, Basart, Zou, Mazeika, Song, and Steinhardt]{hendrycks2020measuring}
+Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou, Mantas Mazeika, Dawn Song, and Jacob Steinhardt.
+\newblock Measuring massive multitask language understanding.
+\newblock In \emph{International Conference on Learning Representations}, 2020.
+
+\bibitem[Hendrycks et~al.(2023)Hendrycks, Mazeika, and Woodside]{hendrycks2023overview}
+Dan Hendrycks, Mantas Mazeika, and Thomas Woodside.
+\newblock An overview of catastrophic ai risks.
+\newblock \emph{arXiv preprint arXiv:2306.12001}, 2023.
+
+\bibitem[Huang et~al.(2023)Huang, Gupta, Xia, Li, and Chen]{huang2023catastrophic}
+Yangsibo Huang, Samyak Gupta, Mengzhou Xia, Kai Li, and Danqi Chen.
+\newblock Catastrophic jailbreak of open-source llms via exploiting generation, 2023.
+
+\bibitem[Hubinger et~al.(2024)Hubinger, Denison, Mu, Lambert, Tong, MacDiarmid, Lanham, Ziegler, Maxwell, Cheng, et~al.]{hubinger2024sleeper}
+Evan Hubinger, Carson Denison, Jesse Mu, Mike Lambert, Meg Tong, Monte MacDiarmid, Tamera Lanham, Daniel~M Ziegler, Tim Maxwell, Newton Cheng, et~al.
+\newblock Sleeper agents: Training deceptive llms that persist through safety training.
+\newblock \emph{arXiv preprint arXiv:2401.05566}, 2024.
+
+\bibitem[Inan et~al.(2023)Inan, Upasani, Chi, Rungta, Iyer, Mao, Tontchev, Hu, Fuller, Testuggine, and Khabsa]{llamaguard}
+Hakan Inan, Kartikeya Upasani, Jianfeng Chi, Rashi Rungta, Krithika Iyer, Yuning Mao, Michael Tontchev, Qing Hu, Brian Fuller, Davide Testuggine, and Madian Khabsa.
+\newblock Llama guard: Llm-based input-output safeguard for human-ai conversations, 2023.
+
+\bibitem[Ivison et~al.(2023{\natexlab{a}})Ivison, Wang, Pyatkin, Lambert, Peters, Dasigi, Jang, Wadden, Smith, Beltagy, and Hajishirzi]{ivison2023camels}
+Hamish Ivison, Yizhong Wang, Valentina Pyatkin, Nathan Lambert, Matthew Peters, Pradeep Dasigi, Joel Jang, David Wadden, Noah~A. Smith, Iz~Beltagy, and Hannaneh Hajishirzi.
+\newblock Camels in a changing climate: Enhancing lm adaptation with tulu 2, 2023{\natexlab{a}}.
+
+\bibitem[Ivison et~al.(2023{\natexlab{b}})Ivison, Wang, Pyatkin, Lambert, Peters, Dasigi, Jang, Wadden, Smith, Beltagy, and Hajishirzi]{ivison2023tulu}
+Hamish Ivison, Yizhong Wang, Valentina Pyatkin, Nathan Lambert, Matthew Peters, Pradeep Dasigi, Joel Jang, David Wadden, Noah~A. Smith, Iz~Beltagy, and Hannaneh Hajishirzi.
+\newblock Camels in a changing climate: Enhancing lm adaptation with tulu 2, 2023{\natexlab{b}}.
+
+\bibitem[Ji et~al.(2023)Ji, Liu, Dai, Pan, Zhang, Bian, Chen, Sun, Wang, and Yang]{beavertails}
+Jiaming Ji, Mickel Liu, Juntao Dai, Xuehai Pan, Chi Zhang, Ce~Bian, Boyuan Chen, Ruiyang Sun, Yizhou Wang, and Yaodong Yang.
+\newblock Beavertails: Towards improved safety alignment of {LLM} via a human-preference dataset.
+\newblock In \emph{Thirty-seventh Conference on Neural Information Processing Systems Datasets and Benchmarks Track}, 2023.
+\newblock URL \url{https://openreview.net/forum?id=g0QovXbFw3}.
+
+\bibitem[Jiang et~al.(2023{\natexlab{a}})Jiang, Sablayrolles, Mensch, Bamford, Chaplot, de~las Casas, Bressand, Lengyel, Lample, Saulnier, Lavaud, Lachaux, Stock, Scao, Lavril, Wang, Lacroix, and Sayed]{jiang2023mistral}
+Albert~Q. Jiang, Alexandre Sablayrolles, Arthur Mensch, Chris Bamford, Devendra~Singh Chaplot, Diego de~las Casas, Florian Bressand, Gianna Lengyel, Guillaume Lample, Lucile Saulnier, Lélio~Renard Lavaud, Marie-Anne Lachaux, Pierre Stock, Teven~Le Scao, Thibaut Lavril, Thomas Wang, Timothée Lacroix, and William~El Sayed.
+\newblock Mistral 7b, 2023{\natexlab{a}}.
+
+\bibitem[Jiang et~al.(2024)Jiang, Sablayrolles, Roux, Mensch, Savary, Bamford, Chaplot, de~las Casas, Hanna, Bressand, Lengyel, Bour, Lample, Lavaud, Saulnier, Lachaux, Stock, Subramanian, Yang, Antoniak, Scao, Gervet, Lavril, Wang, Lacroix, and Sayed]{jiang2024mixtral}
+Albert~Q. Jiang, Alexandre Sablayrolles, Antoine Roux, Arthur Mensch, Blanche Savary, Chris Bamford, Devendra~Singh Chaplot, Diego de~las Casas, Emma~Bou Hanna, Florian Bressand, Gianna Lengyel, Guillaume Bour, Guillaume Lample, Lélio~Renard Lavaud, Lucile Saulnier, Marie-Anne Lachaux, Pierre Stock, Sandeep Subramanian, Sophia Yang, Szymon Antoniak, Teven~Le Scao, Théophile Gervet, Thibaut Lavril, Thomas Wang, Timothée Lacroix, and William~El Sayed.
+\newblock Mixtral of experts, 2024.
+
+\bibitem[Jiang et~al.(2023{\natexlab{b}})Jiang, Chen, and Tang]{promptpacker}
+Shuyu Jiang, Xingshu Chen, and Rui Tang.
+\newblock Prompt packer: Deceiving llms through compositional instruction with hidden attacks.
+\newblock \emph{arXiv preprint arXiv:2310.10077}, 2023{\natexlab{b}}.
+
+\bibitem[Kang et~al.(2023)Kang, Li, Stoica, Guestrin, Zaharia, and Hashimoto]{kang2023exploiting}
+Daniel Kang, Xuechen Li, Ion Stoica, Carlos Guestrin, Matei Zaharia, and Tatsunori Hashimoto.
+\newblock Exploiting programmatic behavior of llms: Dual-use through standard security attacks, 2023.
+
+\bibitem[Kapoor et~al.(2024)Kapoor, Bommasani, Klyman, Longpre, Ramaswami, Cihon, Hopkins, Bankston, Biderman, Bogen, Chowdhury, Engler, Henderson, Jernite, Lazar, Maffulli, Nelson, Pineau, Skowron, Song, Storchan, Zhang, Ho, Liang, and Narayanan]{kapoor2024societal-impact-foundation-models}
+Sayash Kapoor, Rishi Bommasani, Kevin Klyman, Shayne Longpre, Ashwin Ramaswami, Peter Cihon, Aspen Hopkins, Kevin Bankston, Stella Biderman, Miranda Bogen, Rumman Chowdhury, Alex Engler, Peter Henderson, Yacine Jernite, Seth Lazar, Stefano Maffulli, Alondra Nelson, Joelle Pineau, Aviya Skowron, Dawn Song, Victor Storchan, Daniel Zhang, Daniel~E. Ho, Percy Liang, and Arvind Narayanan.
+\newblock On the societal impact of open foundation models, 2024.
+
+\bibitem[Lapid et~al.(2023)Lapid, Langberg, and Sipper]{lapid2023open}
+Raz Lapid, Ron Langberg, and Moshe Sipper.
+\newblock Open sesame! universal black box jailbreaking of large language models, 2023.
+
+\bibitem[Li et~al.(2024)Li, Zhou, Zhu, Yao, Liu, and Han]{li2024deepinception}
+Xuan Li, Zhanke Zhou, Jianing Zhu, Jiangchao Yao, Tongliang Liu, and Bo~Han.
+\newblock Deepinception: Hypnotize large language model to be jailbreaker, 2024.
+
+\bibitem[Li et~al.(2023)Li, Zhang, Dubois, Taori, Gulrajani, Guestrin, Liang, and Hashimoto]{alpaca_eval}
+Xuechen Li, Tianyi Zhang, Yann Dubois, Rohan Taori, Ishaan Gulrajani, Carlos Guestrin, Percy Liang, and Tatsunori~B. Hashimoto.
+\newblock Alpacaeval: An automatic evaluator of instruction-following models.
+\newblock \url{https://github.com/tatsu-lab/alpaca_eval}, 2023.
+
+\bibitem[Lian et~al.(2023)Lian, Goodson, Pentland, Cook, Vong, and "Teknium"]{OpenOrca}
+Wing Lian, Bleys Goodson, Eugene Pentland, Austin Cook, Chanvichet Vong, and "Teknium".
+\newblock Openorca: An open dataset of gpt augmented flan reasoning traces.
+\newblock \url{https://https://huggingface.co/Open-Orca/OpenOrca}, 2023.
+
+\bibitem[Lin et~al.(2022)Lin, Hilton, and Evans]{lin2022truthfulqa}
+Stephanie Lin, Jacob Hilton, and Owain Evans.
+\newblock Truthfulqa: Measuring how models mimic human falsehoods.
+\newblock In \emph{Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)}, pp.\  3214--3252, 2022.
+
+\bibitem[Liu et~al.(2022)Liu, Swayamdipta, Smith, and Choi]{liu2022wanli}
+Alisa Liu, Swabha Swayamdipta, Noah~A. Smith, and Yejin Choi.
+\newblock {W}{A}{N}{L}{I}: Worker and ai collaboration for natural language inference dataset creation.
+\newblock In \emph{Conference on Empirical Methods in Natural Language Processing}, 2022.
+\newblock URL \url{https://api.semanticscholar.org/CorpusID:246016339}.
+
+\bibitem[Liu et~al.(2023)Liu, Xu, Chen, and Xiao]{liu2023autodan}
+Xiaogeng Liu, Nan Xu, Muhao Chen, and Chaowei Xiao.
+\newblock Autodan: Generating stealthy jailbreak prompts on aligned large language models, 2023.
+
+\bibitem[Lubana et~al.(2023)Lubana, Bigelow, Dick, Krueger, and Tanaka]{lubana2023mechanistic}
+Ekdeep~Singh Lubana, Eric~J Bigelow, Robert~P Dick, David Krueger, and Hidenori Tanaka.
+\newblock Mechanistic mode connectivity.
+\newblock In \emph{International Conference on Machine Learning}, pp.\  22965--23004. PMLR, 2023.
+
+\bibitem[Mazeika et~al.(2024)Mazeika, Phan, Yin, Zou, Wang, Mu, Sakhaee, Li, Basart, Li, Forsyth, and Hendrycks]{mazeika2024harmbench}
+Mantas Mazeika, Long Phan, Xuwang Yin, Andy Zou, Zifan Wang, Norman Mu, Elham Sakhaee, Nathaniel Li, Steven Basart, Bo~Li, David Forsyth, and Dan Hendrycks.
+\newblock Harmbench: A standardized evaluation framework for automated red teaming and robust refusal, 2024.
+
+\bibitem[Mehrotra et~al.(2024)Mehrotra, Zampetakis, Kassianik, Nelson, Anderson, Singer, and Karbasi]{tap}
+Anay Mehrotra, Manolis Zampetakis, Paul Kassianik, Blaine Nelson, Hyrum Anderson, Yaron Singer, and Amin Karbasi.
+\newblock Tree of attacks: Jailbreaking black-box llms automatically, 2024.
+
+\bibitem[Narayanan \& Kapoor()Narayanan and Kapoor]{ai-safety-not-a-model-property}
+Arvind Narayanan and Sayash Kapoor.
+\newblock Ai safety is not a model property.
+\newblock \url{https://www.aisnakeoil.com/p/ai-safety-is-not-a-model-property}.
+\newblock Accessed 2024-05-21.
+
+\bibitem[OpenAI et~al.(2024)OpenAI, Achiam, Adler, Agarwal, Ahmad, Akkaya, Aleman, Almeida, Altenschmidt, Altman, Anadkat, Avila, Babuschkin, Balaji, Balcom, Baltescu, Bao, Bavarian, Belgum, Bello, Berdine, Bernadett-Shapiro, Berner, Bogdonoff, Boiko, Boyd, Brakman, Brockman, Brooks, Brundage, Button, Cai, Campbell, Cann, Carey, Carlson, Carmichael, Chan, Chang, Chantzis, Chen, Chen, Chen, Chen, Chen, Chess, Cho, Chu, Chung, Cummings, Currier, Dai, Decareaux, Degry, Deutsch, Deville, Dhar, Dohan, Dowling, Dunning, Ecoffet, Eleti, Eloundou, Farhi, Fedus, Felix, Fishman, Forte, Fulford, Gao, Georges, Gibson, Goel, Gogineni, Goh, Gontijo-Lopes, Gordon, Grafstein, Gray, Greene, Gross, Gu, Guo, Hallacy, Han, Harris, He, Heaton, Heidecke, Hesse, Hickey, Hickey, Hoeschele, Houghton, Hsu, Hu, Hu, Huizinga, Jain, Jain, Jang, Jiang, Jiang, Jin, Jin, Jomoto, Jonn, Jun, Kaftan, Łukasz Kaiser, Kamali, Kanitscheider, Keskar, Khan, Kilpatrick, Kim, Kim, Kim, Kirchner, Kiros, Knight, Kokotajlo, Łukasz Kondraciuk, Kondrich,
+  Konstantinidis, Kosic, Krueger, Kuo, Lampe, Lan, Lee, Leike, Leung, Levy, Li, Lim, Lin, Lin, Litwin, Lopez, Lowe, Lue, Makanju, Malfacini, Manning, Markov, Markovski, Martin, Mayer, Mayne, McGrew, McKinney, McLeavey, McMillan, McNeil, Medina, Mehta, Menick, Metz, Mishchenko, Mishkin, Monaco, Morikawa, Mossing, Mu, Murati, Murk, Mély, Nair, Nakano, Nayak, Neelakantan, Ngo, Noh, Ouyang, O'Keefe, Pachocki, Paino, Palermo, Pantuliano, Parascandolo, Parish, Parparita, Passos, Pavlov, Peng, Perelman, de~Avila Belbute~Peres, Petrov, de~Oliveira~Pinto, Michael, Pokorny, Pokrass, Pong, Powell, Power, Power, Proehl, Puri, Radford, Rae, Ramesh, Raymond, Real, Rimbach, Ross, Rotsted, Roussez, Ryder, Saltarelli, Sanders, Santurkar, Sastry, Schmidt, Schnurr, Schulman, Selsam, Sheppard, Sherbakov, Shieh, Shoker, Shyam, Sidor, Sigler, Simens, Sitkin, Slama, Sohl, Sokolowsky, Song, Staudacher, Such, Summers, Sutskever, Tang, Tezak, Thompson, Tillet, Tootoonchian, Tseng, Tuggle, Turley, Tworek, Uribe, Vallone, Vijayvergiya,
+  Voss, Wainwright, Wang, Wang, Wang, Ward, Wei, Weinmann, Welihinda, Welinder, Weng, Weng, Wiethoff, Willner, Winter, Wolrich, Wong, Workman, Wu, Wu, Wu, Xiao, Xu, Yoo, Yu, Yuan, Zaremba, Zellers, Zhang, Zhang, Zhao, Zheng, Zhuang, Zhuk, and Zoph]{openai2024gpt4}
+OpenAI, Josh Achiam, Steven Adler, Sandhini Agarwal, Lama Ahmad, Ilge Akkaya, Florencia~Leoni Aleman, Diogo Almeida, Janko Altenschmidt, Sam Altman, Shyamal Anadkat, Red Avila, Igor Babuschkin, Suchir Balaji, Valerie Balcom, Paul Baltescu, Haiming Bao, Mohammad Bavarian, Jeff Belgum, Irwan Bello, Jake Berdine, Gabriel Bernadett-Shapiro, Christopher Berner, Lenny Bogdonoff, Oleg Boiko, Madelaine Boyd, Anna-Luisa Brakman, Greg Brockman, Tim Brooks, Miles Brundage, Kevin Button, Trevor Cai, Rosie Campbell, Andrew Cann, Brittany Carey, Chelsea Carlson, Rory Carmichael, Brooke Chan, Che Chang, Fotis Chantzis, Derek Chen, Sully Chen, Ruby Chen, Jason Chen, Mark Chen, Ben Chess, Chester Cho, Casey Chu, Hyung~Won Chung, Dave Cummings, Jeremiah Currier, Yunxing Dai, Cory Decareaux, Thomas Degry, Noah Deutsch, Damien Deville, Arka Dhar, David Dohan, Steve Dowling, Sheila Dunning, Adrien Ecoffet, Atty Eleti, Tyna Eloundou, David Farhi, Liam Fedus, Niko Felix, Simón~Posada Fishman, Juston Forte, Isabella Fulford, Leo
+  Gao, Elie Georges, Christian Gibson, Vik Goel, Tarun Gogineni, Gabriel Goh, Rapha Gontijo-Lopes, Jonathan Gordon, Morgan Grafstein, Scott Gray, Ryan Greene, Joshua Gross, Shixiang~Shane Gu, Yufei Guo, Chris Hallacy, Jesse Han, Jeff Harris, Yuchen He, Mike Heaton, Johannes Heidecke, Chris Hesse, Alan Hickey, Wade Hickey, Peter Hoeschele, Brandon Houghton, Kenny Hsu, Shengli Hu, Xin Hu, Joost Huizinga, Shantanu Jain, Shawn Jain, Joanne Jang, Angela Jiang, Roger Jiang, Haozhun Jin, Denny Jin, Shino Jomoto, Billie Jonn, Heewoo Jun, Tomer Kaftan, Łukasz Kaiser, Ali Kamali, Ingmar Kanitscheider, Nitish~Shirish Keskar, Tabarak Khan, Logan Kilpatrick, Jong~Wook Kim, Christina Kim, Yongjik Kim, Jan~Hendrik Kirchner, Jamie Kiros, Matt Knight, Daniel Kokotajlo, Łukasz Kondraciuk, Andrew Kondrich, Aris Konstantinidis, Kyle Kosic, Gretchen Krueger, Vishal Kuo, Michael Lampe, Ikai Lan, Teddy Lee, Jan Leike, Jade Leung, Daniel Levy, Chak~Ming Li, Rachel Lim, Molly Lin, Stephanie Lin, Mateusz Litwin, Theresa Lopez, Ryan
+  Lowe, Patricia Lue, Anna Makanju, Kim Malfacini, Sam Manning, Todor Markov, Yaniv Markovski, Bianca Martin, Katie Mayer, Andrew Mayne, Bob McGrew, Scott~Mayer McKinney, Christine McLeavey, Paul McMillan, Jake McNeil, David Medina, Aalok Mehta, Jacob Menick, Luke Metz, Andrey Mishchenko, Pamela Mishkin, Vinnie Monaco, Evan Morikawa, Daniel Mossing, Tong Mu, Mira Murati, Oleg Murk, David Mély, Ashvin Nair, Reiichiro Nakano, Rajeev Nayak, Arvind Neelakantan, Richard Ngo, Hyeonwoo Noh, Long Ouyang, Cullen O'Keefe, Jakub Pachocki, Alex Paino, Joe Palermo, Ashley Pantuliano, Giambattista Parascandolo, Joel Parish, Emy Parparita, Alex Passos, Mikhail Pavlov, Andrew Peng, Adam Perelman, Filipe de~Avila Belbute~Peres, Michael Petrov, Henrique~Ponde de~Oliveira~Pinto, Michael, Pokorny, Michelle Pokrass, Vitchyr~H. Pong, Tolly Powell, Alethea Power, Boris Power, Elizabeth Proehl, Raul Puri, Alec Radford, Jack Rae, Aditya Ramesh, Cameron Raymond, Francis Real, Kendra Rimbach, Carl Ross, Bob Rotsted, Henri Roussez,
+  Nick Ryder, Mario Saltarelli, Ted Sanders, Shibani Santurkar, Girish Sastry, Heather Schmidt, David Schnurr, John Schulman, Daniel Selsam, Kyla Sheppard, Toki Sherbakov, Jessica Shieh, Sarah Shoker, Pranav Shyam, Szymon Sidor, Eric Sigler, Maddie Simens, Jordan Sitkin, Katarina Slama, Ian Sohl, Benjamin Sokolowsky, Yang Song, Natalie Staudacher, Felipe~Petroski Such, Natalie Summers, Ilya Sutskever, Jie Tang, Nikolas Tezak, Madeleine~B. Thompson, Phil Tillet, Amin Tootoonchian, Elizabeth Tseng, Preston Tuggle, Nick Turley, Jerry Tworek, Juan Felipe~Cerón Uribe, Andrea Vallone, Arun Vijayvergiya, Chelsea Voss, Carroll Wainwright, Justin~Jay Wang, Alvin Wang, Ben Wang, Jonathan Ward, Jason Wei, CJ~Weinmann, Akila Welihinda, Peter Welinder, Jiayi Weng, Lilian Weng, Matt Wiethoff, Dave Willner, Clemens Winter, Samuel Wolrich, Hannah Wong, Lauren Workman, Sherwin Wu, Jeff Wu, Michael Wu, Kai Xiao, Tao Xu, Sarah Yoo, Kevin Yu, Qiming Yuan, Wojciech Zaremba, Rowan Zellers, Chong Zhang, Marvin Zhang, Shengjia
+  Zhao, Tianhao Zheng, Juntang Zhuang, William Zhuk, and Barret Zoph.
+\newblock Gpt-4 technical report, 2024.
+
+\bibitem[Peng et~al.(2023)Peng, Li, He, Galley, and Gao]{peng2023instruction}
+Baolin Peng, Chunyuan Li, Pengcheng He, Michel Galley, and Jianfeng Gao.
+\newblock Instruction tuning with gpt-4.
+\newblock \emph{arXiv preprint arXiv:2304.03277}, 2023.
+
+\bibitem[Perez et~al.(2022{\natexlab{a}})Perez, Huang, Song, Cai, Ring, Aslanides, Glaese, McAleese, and Irving]{red-teaming-lm-w-lm}
+Ethan Perez, Saffron Huang, Francis Song, Trevor Cai, Roman Ring, John Aslanides, Amelia Glaese, Nat McAleese, and Geoffrey Irving.
+\newblock Red teaming language models with language models.
+\newblock In Yoav Goldberg, Zornitsa Kozareva, and Yue Zhang (eds.), \emph{Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing}, pp.\  3419--3448, Abu Dhabi, United Arab Emirates, December 2022{\natexlab{a}}. Association for Computational Linguistics.
+\newblock \doi{10.18653/v1/2022.emnlp-main.225}.
+\newblock URL \url{https://aclanthology.org/2022.emnlp-main.225}.
+
+\bibitem[Perez et~al.(2022{\natexlab{b}})Perez, Ringer, Luko{\v{s}}i{\=u}t{\.e}, Nguyen, Chen, Heiner, Pettit, Olsson, Kundu, Kadavath, et~al.]{perez2022discovering}
+Ethan Perez, Sam Ringer, Kamil{\.e} Luko{\v{s}}i{\=u}t{\.e}, Karina Nguyen, Edwin Chen, Scott Heiner, Craig Pettit, Catherine Olsson, Sandipan Kundu, Saurav Kadavath, et~al.
+\newblock Discovering language model behaviors with model-written evaluations.
+\newblock \emph{arXiv preprint arXiv:2212.09251}, 2022{\natexlab{b}}.
+
+\bibitem[Qi et~al.(2023)Qi, Zeng, Xie, Chen, Jia, Mittal, and Henderson]{qi2023fine}
+Xiangyu Qi, Yi~Zeng, Tinghao Xie, Pin-Yu Chen, Ruoxi Jia, Prateek Mittal, and Peter Henderson.
+\newblock Fine-tuning aligned language models compromises safety, even when users do not intend to!
+\newblock In \emph{The Twelfth International Conference on Learning Representations}, 2023.
+
+\bibitem[Qiu et~al.(2023)Qiu, Zhang, Li, He, and Lan]{qiu2023latent}
+Huachuan Qiu, Shuai Zhang, Anqi Li, Hongliang He, and Zhenzhong Lan.
+\newblock Latent jailbreak: A benchmark for evaluating text safety and output robustness of large language models, 2023.
+
+\bibitem[Röttger et~al.(2023)Röttger, Kirk, Vidgen, Attanasio, Bianchi, and Hovy]{xstest}
+Paul Röttger, Hannah~Rose Kirk, Bertie Vidgen, Giuseppe Attanasio, Federico Bianchi, and Dirk Hovy.
+\newblock Xstest: A test suite for identifying exaggerated safety behaviours in large language models, 2023.
+
+\bibitem[Samvelyan et~al.(2024)Samvelyan, Raparthy, Lupu, Hambro, Markosyan, Bhatt, Mao, Jiang, Parker-Holder, Foerster, Rocktäschel, and Raileanu]{rainbowteaming}
+Mikayel Samvelyan, Sharath~Chandra Raparthy, Andrei Lupu, Eric Hambro, Aram~H. Markosyan, Manish Bhatt, Yuning Mao, Minqi Jiang, Jack Parker-Holder, Jakob Foerster, Tim Rocktäschel, and Roberta Raileanu.
+\newblock Rainbow teaming: Open-ended generation of diverse adversarial prompts, 2024.
+
+\bibitem[Schwinn et~al.(2024)Schwinn, Dobre, Xhonneux, Gidel, and Gunnemann]{schwinn2024soft}
+Leo Schwinn, David Dobre, Sophie Xhonneux, Gauthier Gidel, and Stephan Gunnemann.
+\newblock Soft prompt threats: Attacking safety alignment and unlearning in open-source llms through the embedding space, 2024.
+
+\bibitem[Shayegani et~al.(2024)Shayegani, Dong, and Abu-Ghazaleh]{shayegani2024jailbreak}
+Erfan Shayegani, Yue Dong, and Nael Abu-Ghazaleh.
+\newblock Jailbreak in pieces: Compositional adversarial attacks on multi-modal language models.
+\newblock In \emph{The Twelfth International Conference on Learning Representations}, 2024.
+\newblock URL \url{https://openreview.net/forum?id=plmBsXHxgR}.
+
+\bibitem[Shen et~al.(2023)Shen, Chen, Backes, Shen, and Zhang]{doanytingnow}
+Xinyue Shen, Zeyuan Chen, Michael Backes, Yun Shen, and Yang Zhang.
+\newblock {"Do Anything Now": Characterizing and Evaluating In-The-Wild Jailbreak Prompts on Large Language Models}.
+\newblock \emph{{CoRR abs/2308.03825}}, 2023.
+
+\bibitem[Srivastava et~al.(2023)Srivastava, Rastogi, Rao, Shoeb, Abid, Fisch, Brown, Santoro, Gupta, Garriga-Alonso, et~al.]{srivastava2023beyond}
+Aarohi Srivastava, Abhinav Rastogi, Abhishek Rao, Abu Awal~Md Shoeb, Abubakar Abid, Adam Fisch, Adam~R Brown, Adam Santoro, Aditya Gupta, Adri{\`a} Garriga-Alonso, et~al.
+\newblock Beyond the imitation game: Quantifying and extrapolating the capabilities of language models.
+\newblock \emph{Transactions on Machine Learning Research}, 2023.
+
+\bibitem[Sun et~al.(2024)Sun, Huang, Wang, Wu, Zhang, Gao, Huang, Lyu, Zhang, Li, Liu, Liu, Wang, Zhang, Kailkhura, Xiong, Xiao, Li, Xing, Huang, Liu, Ji, Wang, Zhang, Yao, Kellis, Zitnik, Jiang, Bansal, Zou, Pei, Liu, Gao, Han, Zhao, Tang, Wang, Mitchell, Shu, Xu, Chang, He, Huang, Backes, Gong, Yu, Chen, Gu, Xu, Ying, Ji, Jana, Chen, Liu, Zhou, Wang, Li, Zhang, Wang, Xie, Chen, Wang, Liu, Ye, Cao, Chen, and Zhao]{sun2024trustllm}
+Lichao Sun, Yue Huang, Haoran Wang, Siyuan Wu, Qihui Zhang, Chujie Gao, Yixin Huang, Wenhan Lyu, Yixuan Zhang, Xiner Li, Zhengliang Liu, Yixin Liu, Yijue Wang, Zhikun Zhang, Bhavya Kailkhura, Caiming Xiong, Chaowei Xiao, Chunyuan Li, Eric Xing, Furong Huang, Hao Liu, Heng Ji, Hongyi Wang, Huan Zhang, Huaxiu Yao, Manolis Kellis, Marinka Zitnik, Meng Jiang, Mohit Bansal, James Zou, Jian Pei, Jian Liu, Jianfeng Gao, Jiawei Han, Jieyu Zhao, Jiliang Tang, Jindong Wang, John Mitchell, Kai Shu, Kaidi Xu, Kai-Wei Chang, Lifang He, Lifu Huang, Michael Backes, Neil~Zhenqiang Gong, Philip~S. Yu, Pin-Yu Chen, Quanquan Gu, Ran Xu, Rex Ying, Shuiwang Ji, Suman Jana, Tianlong Chen, Tianming Liu, Tianyi Zhou, William Wang, Xiang Li, Xiangliang Zhang, Xiao Wang, Xing Xie, Xun Chen, Xuyu Wang, Yan Liu, Yanfang Ye, Yinzhi Cao, Yong Chen, and Yue Zhao.
+\newblock Trustllm: Trustworthiness in large language models, 2024.
+
+\bibitem[Suzgun et~al.(2023)Suzgun, Scales, Sch{\"a}rli, Gehrmann, Tay, Chung, Chowdhery, Le, Chi, Zhou, et~al.]{suzgun2023challenging}
+Mirac Suzgun, Nathan Scales, Nathanael Sch{\"a}rli, Sebastian Gehrmann, Yi~Tay, Hyung~Won Chung, Aakanksha Chowdhery, Quoc Le, Ed~Chi, Denny Zhou, et~al.
+\newblock Challenging big-bench tasks and whether chain-of-thought can solve them.
+\newblock In \emph{Findings of the Association for Computational Linguistics: ACL 2023}, pp.\  13003--13051, 2023.
+
+\bibitem[Touvron et~al.(2023)Touvron, Martin, Stone, Albert, Almahairi, Babaei, Bashlykov, Batra, Bhargava, Bhosale, Bikel, Blecher, Ferrer, Chen, Cucurull, Esiobu, Fernandes, Fu, Fu, Fuller, Gao, Goswami, Goyal, Hartshorn, Hosseini, Hou, Inan, Kardas, Kerkez, Khabsa, Kloumann, Korenev, Koura, Lachaux, Lavril, Lee, Liskovich, Lu, Mao, Martinet, Mihaylov, Mishra, Molybog, Nie, Poulton, Reizenstein, Rungta, Saladi, Schelten, Silva, Smith, Subramanian, Tan, Tang, Taylor, Williams, Kuan, Xu, Yan, Zarov, Zhang, Fan, Kambadur, Narang, Rodriguez, Stojnic, Edunov, and Scialom]{llama2}
+Hugo Touvron, Louis Martin, Kevin Stone, Peter Albert, Amjad Almahairi, Yasmine Babaei, Nikolay Bashlykov, Soumya Batra, Prajjwal Bhargava, Shruti Bhosale, Dan Bikel, Lukas Blecher, Cristian~Canton Ferrer, Moya Chen, Guillem Cucurull, David Esiobu, Jude Fernandes, Jeremy Fu, Wenyin Fu, Brian Fuller, Cynthia Gao, Vedanuj Goswami, Naman Goyal, Anthony Hartshorn, Saghar Hosseini, Rui Hou, Hakan Inan, Marcin Kardas, Viktor Kerkez, Madian Khabsa, Isabel Kloumann, Artem Korenev, Punit~Singh Koura, Marie-Anne Lachaux, Thibaut Lavril, Jenya Lee, Diana Liskovich, Yinghai Lu, Yuning Mao, Xavier Martinet, Todor Mihaylov, Pushkar Mishra, Igor Molybog, Yixin Nie, Andrew Poulton, Jeremy Reizenstein, Rashi Rungta, Kalyan Saladi, Alan Schelten, Ruan Silva, Eric~Michael Smith, Ranjan Subramanian, Xiaoqing~Ellen Tan, Binh Tang, Ross Taylor, Adina Williams, Jian~Xiang Kuan, Puxin Xu, Zheng Yan, Iliyan Zarov, Yuchen Zhang, Angela Fan, Melanie Kambadur, Sharan Narang, Aurelien Rodriguez, Robert Stojnic, Sergey Edunov, and Thomas
+  Scialom.
+\newblock Llama 2: Open foundation and fine-tuned chat models, 2023.
+
+\bibitem[Wang et~al.(2023{\natexlab{a}})Wang, Chen, Pei, Xie, Kang, Zhang, Xu, Xiong, Dutta, Schaeffer, Truong, Arora, Mazeika, Hendrycks, Lin, Cheng, Koyejo, Song, and Li]{wang2023decodingtrust}
+Boxin Wang, Weixin Chen, Hengzhi Pei, Chulin Xie, Mintong Kang, Chenhui Zhang, Chejian Xu, Zidi Xiong, Ritik Dutta, Rylan Schaeffer, Sang~T. Truong, Simran Arora, Mantas Mazeika, Dan Hendrycks, Zinan Lin, Yu~Cheng, Sanmi Koyejo, Dawn Song, and Bo~Li.
+\newblock Decodingtrust: A comprehensive assessment of trustworthiness in {GPT} models.
+\newblock In \emph{Thirty-seventh Conference on Neural Information Processing Systems Datasets and Benchmarks Track}, 2023{\natexlab{a}}.
+\newblock URL \url{https://openreview.net/forum?id=kaHpo8OZw2}.
+
+\bibitem[Wang et~al.(2024)Wang, Chen, Pei, Xie, Kang, Zhang, Xu, Xiong, Dutta, Schaeffer, Truong, Arora, Mazeika, Hendrycks, Lin, Cheng, Koyejo, Song, and Li]{wang2024decodingtrust}
+Boxin Wang, Weixin Chen, Hengzhi Pei, Chulin Xie, Mintong Kang, Chenhui Zhang, Chejian Xu, Zidi Xiong, Ritik Dutta, Rylan Schaeffer, Sang~T. Truong, Simran Arora, Mantas Mazeika, Dan Hendrycks, Zinan Lin, Yu~Cheng, Sanmi Koyejo, Dawn Song, and Bo~Li.
+\newblock Decodingtrust: A comprehensive assessment of trustworthiness in gpt models, 2024.
+
+\bibitem[Wang et~al.(2023{\natexlab{b}})Wang, Ivison, Dasigi, Hessel, Khot, Chandu, Wadden, MacMillan, Smith, Beltagy, and Hajishirzi]{wang2023far}
+Yizhong Wang, Hamish Ivison, Pradeep Dasigi, Jack Hessel, Tushar Khot, Khyathi~Raghavi Chandu, David Wadden, Kelsey MacMillan, Noah~A. Smith, Iz~Beltagy, and Hannaneh Hajishirzi.
+\newblock How far can camels go? exploring the state of instruction tuning on open resources, 2023{\natexlab{b}}.
+
+\bibitem[Wang et~al.(2023{\natexlab{c}})Wang, Li, Han, Nakov, and Baldwin]{wang2023donotanswer}
+Yuxia Wang, Haonan Li, Xudong Han, Preslav Nakov, and Timothy Baldwin.
+\newblock Do-not-answer: A dataset for evaluating safeguards in llms, 2023{\natexlab{c}}.
+
+\bibitem[Wei et~al.(2023)Wei, Haghtalab, and Steinhardt]{wei2023jailbroken}
+Alexander Wei, Nika Haghtalab, and Jacob Steinhardt.
+\newblock Jailbroken: How does llm safety training fail?, 2023.
+
+\bibitem[Wei et~al.(2024)Wei, Huang, Huang, Xie, Qi, Xia, Mittal, Wang, and Henderson]{wei2024assessing}
+Boyi Wei, Kaixuan Huang, Yangsibo Huang, Tinghao Xie, Xiangyu Qi, Mengzhou Xia, Prateek Mittal, Mengdi Wang, and Peter Henderson.
+\newblock Assessing the brittleness of safety alignment via pruning and low-rank modifications, 2024.
+
+\bibitem[Wei et~al.()Wei, Bosma, Zhao, Guu, Yu, Lester, Du, Dai, and Le]{weifinetuned}
+Jason Wei, Maarten Bosma, Vincent Zhao, Kelvin Guu, Adams~Wei Yu, Brian Lester, Nan Du, Andrew~M Dai, and Quoc~V Le.
+\newblock Finetuned language models are zero-shot learners.
+\newblock In \emph{International Conference on Learning Representations}.
+
+\bibitem[Weidinger et~al.(2022)Weidinger, Uesato, Rauh, Griffin, Huang, Mellor, Glaese, Cheng, Balle, Kasirzadeh, et~al.]{weidinger2022taxonomy}
+Laura Weidinger, Jonathan Uesato, Maribeth Rauh, Conor Griffin, Po-Sen Huang, John Mellor, Amelia Glaese, Myra Cheng, Borja Balle, Atoosa Kasirzadeh, et~al.
+\newblock Taxonomy of risks posed by language models.
+\newblock In \emph{Proceedings of the 2022 ACM Conference on Fairness, Accountability, and Transparency}, pp.\  214--229, 2022.
+
+\bibitem[Xu et~al.(2023)Xu, Sun, Zheng, Geng, Zhao, Feng, Tao, and Jiang]{xu2023wizardlm}
+Can Xu, Qingfeng Sun, Kai Zheng, Xiubo Geng, Pu~Zhao, Jiazhan Feng, Chongyang Tao, and Daxin Jiang.
+\newblock Wizardlm: Empowering large language models to follow complex instructions.
+\newblock \emph{arXiv preprint arXiv:2304.12244}, 2023.
+
+\bibitem[Yang et~al.(2023)Yang, Chern, Qiu, Neubig, and Liu]{yang2023alignment}
+Yuqing Yang, Ethan Chern, Xipeng Qiu, Graham Neubig, and Pengfei Liu.
+\newblock Alignment for honesty, 2023.
+
+\bibitem[Yong et~al.(2024)Yong, Menghini, and Bach]{yong2024lowresource}
+Zheng-Xin Yong, Cristina Menghini, and Stephen~H. Bach.
+\newblock Low-resource languages jailbreak gpt-4, 2024.
+
+\bibitem[Yu et~al.(2023)Yu, Lin, Yu, and Xing]{yu2023gptfuzzer}
+Jiahao Yu, Xingwei Lin, Zheng Yu, and Xinyu Xing.
+\newblock Gptfuzzer: Red teaming large language models with auto-generated jailbreak prompts, 2023.
+
+\bibitem[Yuan et~al.(2023)Yuan, Jiao, Wang, tse Huang, He, Shi, and Tu]{yuan2023gpt4}
+Youliang Yuan, Wenxiang Jiao, Wenxuan Wang, Jen tse Huang, Pinjia He, Shuming Shi, and Zhaopeng Tu.
+\newblock Gpt-4 is too smart to be safe: Stealthy chat with llms via cipher, 2023.
+
+\bibitem[Zeng et~al.(2024{\natexlab{a}})Zeng, Lin, Zhang, Yang, Jia, and Shi]{pap}
+Yi~Zeng, Hongpeng Lin, Jingwen Zhang, Diyi Yang, Ruoxi Jia, and Weiyan Shi.
+\newblock How johnny can persuade llms to jailbreak them: Rethinking persuasion to challenge ai safety by humanizing llms, 2024{\natexlab{a}}.
+
+\bibitem[Zeng et~al.(2024{\natexlab{b}})Zeng, Lin, Zhang, Yang, Jia, and Shi]{zeng2024johnny}
+Yi~Zeng, Hongpeng Lin, Jingwen Zhang, Diyi Yang, Ruoxi Jia, and Weiyan Shi.
+\newblock How johnny can persuade llms to jailbreak them: Rethinking persuasion to challenge ai safety by humanizing llms, 2024{\natexlab{b}}.
+
+\bibitem[Zhao et~al.(2024{\natexlab{a}})Zhao, Ren, Hessel, Cardie, Choi, and Deng]{zhao2024inthewildchat}
+Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, and Yuntian Deng.
+\newblock (inthe)wildchat: 570k chat{GPT} interaction logs in the wild.
+\newblock In \emph{The Twelfth International Conference on Learning Representations}, 2024{\natexlab{a}}.
+\newblock URL \url{https://openreview.net/forum?id=Bl8u7ZRlbM}.
+
+\bibitem[Zhao et~al.(2024{\natexlab{b}})Zhao, Yang, Pang, Du, Li, Wang, and Wang]{zhao2024weaktostrong}
+Xuandong Zhao, Xianjun Yang, Tianyu Pang, Chao Du, Lei Li, Yu-Xiang Wang, and William~Yang Wang.
+\newblock Weak-to-strong jailbreaking on large language models, 2024{\natexlab{b}}.
+
+\bibitem[Zheng et~al.(2023{\natexlab{a}})Zheng, Chiang, Sheng, Li, Zhuang, Wu, Zhuang, Li, Lin, Xing, Gonzalez, Stoica, and Zhang]{zheng2023lmsyschat1m}
+Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Tianle Li, Siyuan Zhuang, Zhanghao Wu, Yonghao Zhuang, Zhuohan Li, Zi~Lin, Eric.~P Xing, Joseph~E. Gonzalez, Ion Stoica, and Hao Zhang.
+\newblock Lmsys-chat-1m: A large-scale real-world llm conversation dataset, 2023{\natexlab{a}}.
+
+\bibitem[Zheng et~al.(2023{\natexlab{b}})Zheng, Chiang, Sheng, Zhuang, Wu, Zhuang, Lin, Li, Li, Xing, Zhang, Gonzalez, and Stoica]{zheng2023judging}
+Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Siyuan Zhuang, Zhanghao Wu, Yonghao Zhuang, Zi~Lin, Zhuohan Li, Dacheng Li, Eric.~P Xing, Hao Zhang, Joseph~E. Gonzalez, and Ion Stoica.
+\newblock Judging llm-as-a-judge with mt-bench and chatbot arena, 2023{\natexlab{b}}.
+
+\bibitem[Zhou et~al.(2024)Zhou, Liu, Xu, Iyer, Sun, Mao, Ma, Efrat, Yu, Yu, et~al.]{zhou2024lima}
+Chunting Zhou, Pengfei Liu, Puxin Xu, Srinivasan Iyer, Jiao Sun, Yuning Mao, Xuezhe Ma, Avia Efrat, Ping Yu, Lili Yu, et~al.
+\newblock Lima: Less is more for alignment.
+\newblock \emph{Advances in Neural Information Processing Systems}, 36, 2024.
+
+\bibitem[Zou et~al.(2023{\natexlab{a}})Zou, Wang, Carlini, Nasr, Kolter, and Fredrikson]{gcg}
+Andy Zou, Zifan Wang, Nicholas Carlini, Milad Nasr, J.~Zico Kolter, and Matt Fredrikson.
+\newblock Universal and transferable adversarial attacks on aligned language models, 2023{\natexlab{a}}.
+
+\bibitem[Zou et~al.(2023{\natexlab{b}})Zou, Wang, Kolter, and Fredrikson]{zou2023universal}
+Andy Zou, Zifan Wang, J~Zico Kolter, and Matt Fredrikson.
+\newblock Universal and transferable adversarial attacks on aligned language models.
+\newblock \emph{arXiv preprint arXiv:2307.15043}, 2023{\natexlab{b}}.
+
+\bibitem[Zou et~al.(2024)Zou, Phan, Wang, Duenas, Lin, Andriushchenko, Wang, Kolter, Fredrikson, and Hendrycks]{zou2024improving}
+Andy Zou, Long Phan, Justin Wang, Derek Duenas, Maxwell Lin, Maksym Andriushchenko, Rowan Wang, Zico Kolter, Matt Fredrikson, and Dan Hendrycks.
+\newblock Improving alignment and robustness with circuit breakers, 2024.
+
+\end{thebibliography}

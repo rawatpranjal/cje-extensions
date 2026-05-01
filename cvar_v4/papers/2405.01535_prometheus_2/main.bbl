@@ -1,0 +1,236 @@
+\begin{thebibliography}{47}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{Askell et~al.(2021)Askell, Bai, Chen, Drain, Ganguli, Henighan, Jones, Joseph, Mann, DasSarma, Elhage, Hatfield-Dodds, Hernandez, Kernion, Ndousse, Olsson, Amodei, Brown, Clark, McCandlish, Olah, and Kaplan}]{askell2021general}
+Amanda Askell, Yuntao Bai, Anna Chen, Dawn Drain, Deep Ganguli, Tom Henighan, Andy Jones, Nicholas Joseph, Ben Mann, Nova DasSarma, Nelson Elhage, Zac Hatfield-Dodds, Danny Hernandez, Jackson Kernion, Kamal Ndousse, Catherine Olsson, Dario Amodei, Tom Brown, Jack Clark, Sam McCandlish, Chris Olah, and Jared Kaplan. 2021.
+\newblock \href {http://arxiv.org/abs/2112.00861} {A general language assistant as a laboratory for alignment}.
+
+\bibitem[{Bai et~al.(2022)Bai, Jones, Ndousse, Askell, Chen, DasSarma, Drain, Fort, Ganguli, Henighan et~al.}]{bai2022training}
+Yuntao Bai, Andy Jones, Kamal Ndousse, Amanda Askell, Anna Chen, Nova DasSarma, Dawn Drain, Stanislav Fort, Deep Ganguli, Tom Henighan, et~al. 2022.
+\newblock Training a helpful and harmless assistant with reinforcement learning from human feedback.
+\newblock \emph{arXiv preprint arXiv:2204.05862}.
+
+\bibitem[{Chan et~al.(2023)Chan, Chen, Su, Yu, Xue, Zhang, Fu, and Liu}]{chan2023chateval}
+Chi-Min Chan, Weize Chen, Yusheng Su, Jianxuan Yu, Wei Xue, Shanghang Zhang, Jie Fu, and Zhiyuan Liu. 2023.
+\newblock Chateval: Towards better llm-based evaluators through multi-agent debate.
+\newblock \emph{arXiv preprint arXiv:2308.07201}.
+
+\bibitem[{Chiang et~al.(2023)Chiang, Li, Lin, Sheng, Wu, Zhang, Zheng, Zhuang, Zhuang, Gonzalez, Stoica, and Xing}]{vicuna2023}
+Wei-Lin Chiang, Zhuohan Li, Zi~Lin, Ying Sheng, Zhanghao Wu, Hao Zhang, Lianmin Zheng, Siyuan Zhuang, Yonghao Zhuang, Joseph~E. Gonzalez, Ion Stoica, and Eric~P. Xing. 2023.
+\newblock \href {https://lmsys.org/blog/2023-03-30-vicuna/} {Vicuna: An open-source chatbot impressing gpt-4 with 90\%* chatgpt quality}.
+
+\bibitem[{Cui et~al.(2023)Cui, Yuan, Ding, Yao, Zhu, Ni, Xie, Liu, and Sun}]{cui2023ultrafeedback}
+Ganqu Cui, Lifan Yuan, Ning Ding, Guanming Yao, Wei Zhu, Yuan Ni, Guotong Xie, Zhiyuan Liu, and Maosong Sun. 2023.
+\newblock Ultrafeedback: Boosting language models with high-quality feedback.
+\newblock \emph{arXiv preprint arXiv:2310.01377}.
+
+\bibitem[{Don-Yehiya et~al.(2022)Don-Yehiya, Venezian, Raffel, Slonim, Katz, and Choshen}]{don2022cold}
+Shachar Don-Yehiya, Elad Venezian, Colin Raffel, Noam Slonim, Yoav Katz, and Leshem Choshen. 2022.
+\newblock Cold fusion: Collaborative descent for distributed multitask finetuning.
+\newblock \emph{arXiv preprint arXiv:2212.01378}.
+
+\bibitem[{Dubois et~al.(2023)Dubois, Li, Taori, Zhang, Gulrajani, Ba, Guestrin, Liang, and Hashimoto}]{dubois2023alpacafarm}
+Yann Dubois, Xuechen Li, Rohan Taori, Tianyi Zhang, Ishaan Gulrajani, Jimmy Ba, Carlos Guestrin, Percy Liang, and Tatsunori~B Hashimoto. 2023.
+\newblock Alpacafarm: A simulation framework for methods that learn from human feedback.
+\newblock \emph{arXiv preprint arXiv:2305.14387}.
+
+\bibitem[{Freitag et~al.(2020)Freitag, Grangier, and Caswell}]{freitag2020bleu}
+Markus Freitag, David Grangier, and Isaac Caswell. 2020.
+\newblock Bleu might be guilty but references are not innocent.
+\newblock \emph{arXiv preprint arXiv:2004.06063}.
+
+\bibitem[{Gao et~al.(2024)Gao, Hu, Ruan, Pu, and Wan}]{gao2024llm}
+Mingqi Gao, Xinyu Hu, Jie Ruan, Xiao Pu, and Xiaojun Wan. 2024.
+\newblock Llm-based nlg evaluation: Current status and challenges.
+\newblock \emph{arXiv preprint arXiv:2402.01383}.
+
+\bibitem[{Gehrmann et~al.(2021)Gehrmann, Adewumi, Aggarwal, Ammanamanchi, Anuoluwapo, Bosselut, Chandu, Clinciu, Das, Dhole et~al.}]{gehrmann2021gem}
+Sebastian Gehrmann, Tosin Adewumi, Karmanya Aggarwal, Pawan~Sasanka Ammanamanchi, Aremu Anuoluwapo, Antoine Bosselut, Khyathi~Raghavi Chandu, Miruna Clinciu, Dipanjan Das, Kaustubh~D Dhole, et~al. 2021.
+\newblock The gem benchmark: Natural language generation, its evaluation and metrics.
+\newblock \emph{arXiv preprint arXiv:2102.01672}.
+
+\bibitem[{Gehrmann et~al.(2022)Gehrmann, Bhattacharjee, Mahendiran, Wang, Papangelis, Madaan, McMillan-Major, Shvets, Upadhyay, Yao et~al.}]{gehrmann2022gemv2}
+Sebastian Gehrmann, Abhik Bhattacharjee, Abinaya Mahendiran, Alex Wang, Alexandros Papangelis, Aman Madaan, Angelina McMillan-Major, Anna Shvets, Ashish Upadhyay, Bingsheng Yao, et~al. 2022.
+\newblock Gemv2: Multilingual nlg benchmarking in a single line of code.
+\newblock \emph{arXiv preprint arXiv:2206.11249}.
+
+\bibitem[{Goddard et~al.(2024)Goddard, Siriwardhana, Ehghaghi, Meyers, Karpukhin, Benedict, McQuade, and Solawetz}]{goddard2024arcee}
+Charles Goddard, Shamane Siriwardhana, Malikeh Ehghaghi, Luke Meyers, Vlad Karpukhin, Brian Benedict, Mark McQuade, and Jacob Solawetz. 2024.
+\newblock Arcee's mergekit: A toolkit for merging large language models.
+\newblock \emph{arXiv preprint arXiv:2403.13257}.
+
+\bibitem[{Gururangan et~al.(2023)Gururangan, Li, Lewis, Shi, Althoff, Smith, and Zettlemoyer}]{gururangan2023scaling}
+Suchin Gururangan, Margaret Li, Mike Lewis, Weijia Shi, Tim Althoff, Noah~A Smith, and Luke Zettlemoyer. 2023.
+\newblock Scaling expert language models with unsupervised domain discovery.
+\newblock \emph{arXiv preprint arXiv:2303.14177}.
+
+\bibitem[{Hanna and Bojar(2021)}]{hanna2021fine}
+Michael Hanna and Ond{\v{r}}ej Bojar. 2021.
+\newblock A fine-grained analysis of bertscore.
+\newblock In \emph{Proceedings of the Sixth Conference on Machine Translation}, pages 507--517.
+
+\bibitem[{Ilharco et~al.(2022)Ilharco, Ribeiro, Wortsman, Gururangan, Schmidt, Hajishirzi, and Farhadi}]{ilharco2022editing}
+Gabriel Ilharco, Marco~Tulio Ribeiro, Mitchell Wortsman, Suchin Gururangan, Ludwig Schmidt, Hannaneh Hajishirzi, and Ali Farhadi. 2022.
+\newblock Editing models with task arithmetic.
+\newblock \emph{arXiv preprint arXiv:2212.04089}.
+
+\bibitem[{Jang et~al.(2023{\natexlab{a}})Jang, Kim, Lin, Wang, Hessel, Zettlemoyer, Hajishirzi, Choi, and Ammanabrolu}]{jang2023personalized}
+Joel Jang, Seungone Kim, Bill~Yuchen Lin, Yizhong Wang, Jack Hessel, Luke Zettlemoyer, Hannaneh Hajishirzi, Yejin Choi, and Prithviraj Ammanabrolu. 2023{\natexlab{a}}.
+\newblock Personalized soups: Personalized large language model alignment via post-hoc parameter merging.
+\newblock \emph{arXiv preprint arXiv:2310.11564}.
+
+\bibitem[{Jang et~al.(2023{\natexlab{b}})Jang, Kim, Ye, Kim, Logeswaran, Lee, Lee, and Seo}]{jang2023exploring}
+Joel Jang, Seungone Kim, Seonghyeon Ye, Doyoung Kim, Lajanugen Logeswaran, Moontae Lee, Kyungjae Lee, and Minjoon Seo. 2023{\natexlab{b}}.
+\newblock Exploring the benefits of training expert language models over instruction tuning.
+\newblock \emph{arXiv preprint arXiv:2302.03202}.
+
+\bibitem[{Jiang et~al.(2023{\natexlab{a}})Jiang, Sablayrolles, Mensch, Bamford, Chaplot, Casas, Bressand, Lengyel, Lample, Saulnier et~al.}]{jiang2023mistral}
+Albert~Q Jiang, Alexandre Sablayrolles, Arthur Mensch, Chris Bamford, Devendra~Singh Chaplot, Diego de~las Casas, Florian Bressand, Gianna Lengyel, Guillaume Lample, Lucile Saulnier, et~al. 2023{\natexlab{a}}.
+\newblock Mistral 7b.
+\newblock \emph{arXiv preprint arXiv:2310.06825}.
+
+\bibitem[{Jiang et~al.(2024)Jiang, Sablayrolles, Roux, Mensch, Savary, Bamford, Chaplot, Casas, Hanna, Bressand et~al.}]{jiang2024mixtral}
+Albert~Q Jiang, Alexandre Sablayrolles, Antoine Roux, Arthur Mensch, Blanche Savary, Chris Bamford, Devendra~Singh Chaplot, Diego de~las Casas, Emma~Bou Hanna, Florian Bressand, et~al. 2024.
+\newblock Mixtral of experts.
+\newblock \emph{arXiv preprint arXiv:2401.04088}.
+
+\bibitem[{Jiang et~al.(2023{\natexlab{b}})Jiang, Li, Zhang, Huang, Lin, and Chen}]{jiang2023tigerscore}
+Dongfu Jiang, Yishan Li, Ge~Zhang, Wenhao Huang, Bill~Yuchen Lin, and Wenhu Chen. 2023{\natexlab{b}}.
+\newblock Tigerscore: Towards building explainable metric for all text generation tasks.
+\newblock \emph{arXiv preprint arXiv:2310.00752}.
+
+\bibitem[{Jiang et~al.(2023{\natexlab{c}})Jiang, Ren, and Lin}]{jiang2023llm}
+Dongfu Jiang, Xiang Ren, and Bill~Yuchen Lin. 2023{\natexlab{c}}.
+\newblock Llm-blender: Ensembling large language models with pairwise ranking and generative fusion.
+\newblock \emph{arXiv preprint arXiv:2306.02561}.
+
+\bibitem[{Kim et~al.(2023)Kim, Shin, Cho, Jang, Longpre, Lee, Yun, Shin, Kim, Thorne et~al.}]{kim2023prometheus}
+Seungone Kim, Jamin Shin, Yejin Cho, Joel Jang, Shayne Longpre, Hwaran Lee, Sangdoo Yun, Seongjin Shin, Sungdong Kim, James Thorne, et~al. 2023.
+\newblock Prometheus: Inducing fine-grained evaluation capability in language models.
+\newblock \emph{arXiv preprint arXiv:2310.08491}.
+
+\bibitem[{Kim et~al.(2024)Kim, Suk, Cho, Longpre, Kim, Yoon, Son, Cho, Shafayat, Baek et~al.}]{kim2024biggen}
+Seungone Kim, Juyoung Suk, Ji~Yong Cho, Shayne Longpre, Chaeeun Kim, Dongkeun Yoon, Guijin Son, Yejin Cho, Sheikh Shafayat, Jinheon Baek, et~al. 2024.
+\newblock The biggen bench: A principled benchmark for fine-grained evaluation of language models with language models.
+\newblock \emph{arXiv preprint arXiv:2406.05761}.
+
+\bibitem[{Lambert et~al.(2024)Lambert, Pyatkin, Morrison, Miranda, Lin, Chandu, Dziri, Kumar, Zick, Choi et~al.}]{lambert2024rewardbench}
+Nathan Lambert, Valentina Pyatkin, Jacob Morrison, LJ~Miranda, Bill~Yuchen Lin, Khyathi Chandu, Nouha Dziri, Sachin Kumar, Tom Zick, Yejin Choi, et~al. 2024.
+\newblock Rewardbench: Evaluating reward models for language modeling.
+\newblock \emph{arXiv preprint arXiv:2403.13787}.
+
+\bibitem[{Lee et~al.(2024)Lee, Kim, Park, Kim, and Seo}]{lee2024prometheus}
+Seongyun Lee, Seungone Kim, Sue~Hyun Park, Geewook Kim, and Minjoon Seo. 2024.
+\newblock Prometheus-vision: Vision-language model as a judge for fine-grained evaluation.
+\newblock \emph{arXiv preprint arXiv:2401.06591}.
+
+\bibitem[{Li et~al.(2023{\natexlab{a}})Li, Sun, Yuan, Fan, Zhao, and Liu}]{li2023generative}
+Junlong Li, Shichao Sun, Weizhe Yuan, Run-Ze Fan, Hai Zhao, and Pengfei Liu. 2023{\natexlab{a}}.
+\newblock Generative judge for evaluating alignment.
+\newblock \emph{arXiv preprint arXiv:2310.05470}.
+
+\bibitem[{Li et~al.(2022)Li, Gururangan, Dettmers, Lewis, Althoff, Smith, and Zettlemoyer}]{li2022branch}
+Margaret Li, Suchin Gururangan, Tim Dettmers, Mike Lewis, Tim Althoff, Noah~A Smith, and Luke Zettlemoyer. 2022.
+\newblock Branch-train-merge: Embarrassingly parallel training of expert language models.
+\newblock \emph{arXiv preprint arXiv:2208.03306}.
+
+\bibitem[{Li et~al.(2023{\natexlab{b}})Li, Zhang, Dubois, Taori, Gulrajani, Guestrin, Liang, and Hashimoto}]{alpaca_eval}
+Xuechen Li, Tianyi Zhang, Yann Dubois, Rohan Taori, Ishaan Gulrajani, Carlos Guestrin, Percy Liang, and Tatsunori~B. Hashimoto. 2023{\natexlab{b}}.
+\newblock Alpacaeval: An automatic evaluator of instruction-following models.
+\newblock \url{https://github.com/tatsu-lab/alpaca_eval}.
+
+\bibitem[{Li et~al.(2024)Li, Xu, Shen, Xu, Gu, and Tao}]{li2024leveraging}
+Zhen Li, Xiaohan Xu, Tao Shen, Can Xu, Jia-Chen Gu, and Chongyang Tao. 2024.
+\newblock Leveraging large language models for nlg evaluation: A survey.
+\newblock \emph{arXiv preprint arXiv:2401.07103}.
+
+\bibitem[{Lin(2004)}]{lin2004rouge}
+Chin-Yew Lin. 2004.
+\newblock Rouge: A package for automatic evaluation of summaries.
+\newblock In \emph{Text summarization branches out}, pages 74--81.
+
+\bibitem[{Liu et~al.(2023{\natexlab{a}})Liu, Iter, Xu, Wang, Xu, and Zhu}]{liu2023geval}
+Yang Liu, Dan Iter, Yichong Xu, Shuohang Wang, Ruochen Xu, and Chenguang Zhu. 2023{\natexlab{a}}.
+\newblock \href {http://arxiv.org/abs/2303.16634} {G-eval: Nlg evaluation using gpt-4 with better human alignment}.
+
+\bibitem[{Liu et~al.(2023{\natexlab{b}})Liu, Iter, Xu, Wang, Xu, and Zhu}]{liu2023gpteval}
+Yang Liu, Dan Iter, Yichong Xu, Shuohang Wang, Ruochen Xu, and Chenguang Zhu. 2023{\natexlab{b}}.
+\newblock Gpteval: Nlg evaluation using gpt-4 with better human alignment.
+\newblock \emph{arXiv preprint arXiv:2303.16634}.
+
+\bibitem[{Matena and Raffel(2022)}]{matena2022merging}
+Michael~S Matena and Colin~A Raffel. 2022.
+\newblock Merging models with fisher-weighted averaging.
+\newblock \emph{Advances in Neural Information Processing Systems}, 35:17703--17716.
+
+\bibitem[{Papineni et~al.(2002)Papineni, Roukos, Ward, and Zhu}]{papineni2002bleu}
+Kishore Papineni, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
+\newblock Bleu: a method for automatic evaluation of machine translation.
+\newblock In \emph{Proceedings of the 40th annual meeting of the Association for Computational Linguistics}, pages 311--318.
+
+\bibitem[{Rame et~al.(2024)Rame, Couairon, Dancette, Gaya, Shukor, Soulier, and Cord}]{rame2024rewarded}
+Alexandre Rame, Guillaume Couairon, Corentin Dancette, Jean-Baptiste Gaya, Mustafa Shukor, Laure Soulier, and Matthieu Cord. 2024.
+\newblock Rewarded soups: towards pareto-optimal alignment by interpolating weights fine-tuned on diverse rewards.
+\newblock \emph{Advances in Neural Information Processing Systems}, 36.
+
+\bibitem[{Schluter(2017)}]{schluter2017limits}
+Natalie Schluter. 2017.
+\newblock The limits of automatic summarisation according to rouge.
+\newblock In \emph{Proceedings of the 15th Conference of the European Chapter of the Association for Computational Linguistics}, pages 41--45. Association for Computational Linguistics.
+
+\bibitem[{Sukhbaatar et~al.(2024)Sukhbaatar, Golovneva, Sharma, Xu, Lin, Rozi{\`e}re, Kahn, Li, Yih, Weston et~al.}]{sukhbaatar2024branch}
+Sainbayar Sukhbaatar, Olga Golovneva, Vasu Sharma, Hu~Xu, Xi~Victoria Lin, Baptiste Rozi{\`e}re, Jacob Kahn, Daniel Li, Wen-tau Yih, Jason Weston, et~al. 2024.
+\newblock Branch-train-mix: Mixing expert llms into a mixture-of-experts llm.
+\newblock \emph{arXiv preprint arXiv:2403.07816}.
+
+\bibitem[{Touvron et~al.(2023)Touvron, Martin, Stone, Albert, Almahairi, Babaei, Bashlykov, Batra, Bhargava, Bhosale, Bikel, Blecher, Ferrer, Chen, Cucurull, Esiobu, Fernandes, Fu, Fu, Fuller, Gao, Goswami, Goyal, Hartshorn, Hosseini, Hou, Inan, Kardas, Kerkez, Khabsa, Kloumann, Korenev, Koura, Lachaux, Lavril, Lee, Liskovich, Lu, Mao, Martinet, Mihaylov, Mishra, Molybog, Nie, Poulton, Reizenstein, Rungta, Saladi, Schelten, Silva, Smith, Subramanian, Tan, Tang, Taylor, Williams, Kuan, Xu, Yan, Zarov, Zhang, Fan, Kambadur, Narang, Rodriguez, Stojnic, Edunov, and Scialom}]{touvron2023llama2}
+Hugo Touvron, Louis Martin, Kevin Stone, Peter Albert, Amjad Almahairi, Yasmine Babaei, Nikolay Bashlykov, Soumya Batra, Prajjwal Bhargava, Shruti Bhosale, Dan Bikel, Lukas Blecher, Cristian~Canton Ferrer, Moya Chen, Guillem Cucurull, David Esiobu, Jude Fernandes, Jeremy Fu, Wenyin Fu, Brian Fuller, Cynthia Gao, Vedanuj Goswami, Naman Goyal, Anthony Hartshorn, Saghar Hosseini, Rui Hou, Hakan Inan, Marcin Kardas, Viktor Kerkez, Madian Khabsa, Isabel Kloumann, Artem Korenev, Punit~Singh Koura, Marie-Anne Lachaux, Thibaut Lavril, Jenya Lee, Diana Liskovich, Yinghai Lu, Yuning Mao, Xavier Martinet, Todor Mihaylov, Pushkar Mishra, Igor Molybog, Yixin Nie, Andrew Poulton, Jeremy Reizenstein, Rashi Rungta, Kalyan Saladi, Alan Schelten, Ruan Silva, Eric~Michael Smith, Ranjan Subramanian, Xiaoqing~Ellen Tan, Binh Tang, Ross Taylor, Adina Williams, Jian~Xiang Kuan, Puxin Xu, Zheng Yan, Iliyan Zarov, Yuchen Zhang, Angela Fan, Melanie Kambadur, Sharan Narang, Aurelien Rodriguez, Robert Stojnic, Sergey Edunov, and Thomas
+  Scialom. 2023.
+\newblock \href {http://arxiv.org/abs/2307.09288} {Llama 2: Open foundation and fine-tuned chat models}.
+
+\bibitem[{Wang et~al.(2024)Wang, Lin, Xiong, Yang, Diao, Qiu, Zhao, and Zhang}]{wang2024arithmetic}
+Haoxiang Wang, Yong Lin, Wei Xiong, Rui Yang, Shizhe Diao, Shuang Qiu, Han Zhao, and Tong Zhang. 2024.
+\newblock Arithmetic control of llms for diverse user preferences: Directional preference alignment with multi-objective rewards.
+\newblock \emph{arXiv preprint arXiv:2402.18571}.
+
+\bibitem[{Wang et~al.(2023{\natexlab{a}})Wang, Li, Shao, Xu, Dai, Li, Chen, Wu, and Sui}]{wang2023math}
+Peiyi Wang, Lei Li, Zhihong Shao, RX~Xu, Damai Dai, Yifei Li, Deli Chen, Y~Wu, and Zhifang Sui. 2023{\natexlab{a}}.
+\newblock Math-shepherd: A label-free step-by-step verifier for llms in mathematical reasoning.
+\newblock \emph{arXiv preprint arXiv:2312.08935}.
+
+\bibitem[{Wang et~al.(2023{\natexlab{b}})Wang, Yu, Zeng, Yang, Wang, Chen, Jiang, Xie, Wang, Xie et~al.}]{wang2023pandalm}
+Yidong Wang, Zhuohao Yu, Zhengran Zeng, Linyi Yang, Cunxiang Wang, Hao Chen, Chaoya Jiang, Rui Xie, Jindong Wang, Xing Xie, et~al. 2023{\natexlab{b}}.
+\newblock Pandalm: An automatic evaluation benchmark for llm instruction tuning optimization.
+\newblock \emph{arXiv preprint arXiv:2306.05087}.
+
+\bibitem[{Yadav et~al.(2024)Yadav, Tam, Choshen, Raffel, and Bansal}]{yadav2024ties}
+Prateek Yadav, Derek Tam, Leshem Choshen, Colin~A Raffel, and Mohit Bansal. 2024.
+\newblock Ties-merging: Resolving interference when merging models.
+\newblock \emph{Advances in Neural Information Processing Systems}, 36.
+
+\bibitem[{Ye et~al.(2023)Ye, Kim, Kim, Hwang, Kim, Jo, Thorne, Kim, and Seo}]{ye2023flask}
+Seonghyeon Ye, Doyoung Kim, Sungdong Kim, Hyeonbin Hwang, Seungone Kim, Yongrae Jo, James Thorne, Juho Kim, and Minjoon Seo. 2023.
+\newblock Flask: Fine-grained language model evaluation based on alignment skill sets.
+\newblock \emph{arXiv preprint arXiv:2307.10928}.
+
+\bibitem[{Yu et~al.(2023)Yu, Yu, Yu, Huang, and Li}]{yu2023language}
+Le~Yu, Bowen Yu, Haiyang Yu, Fei Huang, and Yongbin Li. 2023.
+\newblock Language models are super mario: Absorbing abilities from homologous models as a free lunch.
+\newblock \emph{arXiv preprint arXiv:2311.03099}.
+
+\bibitem[{Zhang et~al.(2019)Zhang, Kishore, Wu, Weinberger, and Artzi}]{zhang2019bertscore}
+Tianyi Zhang, Varsha Kishore, Felix Wu, Kilian~Q Weinberger, and Yoav Artzi. 2019.
+\newblock Bertscore: Evaluating text generation with bert.
+\newblock \emph{arXiv preprint arXiv:1904.09675}.
+
+\bibitem[{Zheng et~al.(2023)Zheng, Chiang, Sheng, Zhuang, Wu, Zhuang, Lin, Li, Li, Xing et~al.}]{zheng2023judging}
+Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Siyuan Zhuang, Zhanghao Wu, Yonghao Zhuang, Zi~Lin, Zhuohan Li, Dacheng Li, Eric Xing, et~al. 2023.
+\newblock Judging llm-as-a-judge with mt-bench and chatbot arena.
+\newblock \emph{arXiv preprint arXiv:2306.05685}.
+
+\bibitem[{Zhu et~al.(2023)Zhu, Wang, and Wang}]{zhu2023judgelm}
+Lianghui Zhu, Xinggang Wang, and Xinlong Wang. 2023.
+\newblock Judgelm: Fine-tuned large language models are scalable judges.
+\newblock \emph{arXiv preprint arXiv:2310.17631}.
+
+\end{thebibliography}

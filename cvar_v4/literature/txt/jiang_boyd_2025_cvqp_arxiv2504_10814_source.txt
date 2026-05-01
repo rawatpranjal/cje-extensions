@@ -1,0 +1,878 @@
+letterpaper
+
+
+
+math, positioning, calc, shapes, arrows.meta, patterns
+
+
+ 
+ 
+[2][1=]
+[2][1=]
+
+
+
+mystyle 
+    backgroundcolor=,   
+    commentstyle=, 
+    keywordstyle=,
+    numberstyle=codegray, 
+    stringstyle=,
+    basicstyle=, 
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=t,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false, 
+    showtabs=false,                  
+    tabsize=2
+
+style=mystyle, commentstyle=, breaklines=True
+
+mypython
+
+	keywords=[1]from, import, as, assert, not, print, nonneg, boolean,
+	keywordstyle=[1],
+	keywords=[2]cp, np, pd, cvxpy, numpy, pandas, sum, multiply, Variable, array,
+    max, unique, sum_largest, hstack, matmul, Problem, Minimize, solve, range, set,
+    max_daily_powers,
+	keywordstyle=[2],
+	upquote=true,
+	showstringspaces=false,
+	basicstyle=,
+	columns=fullflexible,
+	keepspaces=true,
+	emph=True,False,def,return,float,class,match,switch,len,
+	emphstyle=,
+	belowskip=1em,
+	aboveskip=1em,
+    morecomment=[l]
+
+
+cvqp.bib
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+An Operator Splitting Method for Large-Scale CVaR-Constrained Quadratic Programs
+
+[1]Eric Luxenberg(Equal contribution.)
+
+[1]Steven Diamond
+[1]Stephen Boyd
+[1]Department of Electrical Engineering, Stanford University
+[2]Department of Chemical Engineering, Norwegian University of Science and Technology
+
+
+
+ 
+We introduce a fast and scalable method for solving quadratic programs with
+conditional value-at-risk (CVaR) constraints. While these problems can be
+formulated as standard quadratic programs, the number of variables and
+constraints grows linearly with the number of scenarios, making general-purpose
+solvers impractical for large-scale problems. Our method combines operator
+splitting with a specialized  algorithm for projecting onto CVaR
+constraints, where  is the number of scenarios. The method alternates between
+solving a linear system and performing parallel projections, onto CVaR
+constraints using our specialized algorithm and onto box constraints by
+simple clipping. Numerical examples from several application domains
+demonstrate that our method outperforms general-purpose solvers by several
+orders of magnitude on problems with up to millions of scenarios. Our method is
+implemented in an open-source package called CVQP.
+
+
+Introduction
+Many applications in finance and engineering require controlling the risk
+of extreme outcomes. A widely used measure for tail risk is the
+conditional value-at-risk (CVaR), defined as the expected value of
+losses exceeding a given quantile. CVaR is a coherent and convex risk
+measure , so optimization
+problems involving CVaR can be reliably and efficiently solved.
+
+Many practical applications, from portfolio optimization to quantile regression,
+can be formulated as quadratic programs with CVaR constraints. While these
+problems are convex and can be reformulated as standard quadratic programs, the
+number of variables and constraints grows linearly with the number of scenarios.
+For problems with many scenarios, general-purpose solvers become prohibitively
+slow or fail entirely. To address this challenge, we develop a fast and scalable
+method for solving quadratic programs with CVaR constraints.
+
+We present two main contributions. First, we develop an  algorithm
+for projecting onto CVaR constraints, where  is the number of scenarios.
+Building on this algorithm, our second contribution is an operator splitting
+method for solving large-scale CVaR-constrained quadratic programs. The method
+alternates between solving a linear system and performing parallel projections,
+onto CVaR constraints using our specialized algorithm and onto box constraints
+by simple clipping. Numerical examples from
+several application domains demonstrate that our method outperforms
+general-purpose solvers by several orders of magnitude on problems with up to
+millions of scenarios.
+
+Conditional value-at-risk (CVaR)
+The conditional value-at-risk (CVaR) at level  is a risk measure that
+captures the expected value over the worst  fraction of outcomes of a
+real-valued random variable. For a random variable  representing losses
+(where larger values are worse), we first define the value-at-risk (VaR) at
+level  as
+
+
+
+CVaR at level  is defined as the expected value of all losses exceeding
+VaR at level , 
+
+
+
+At the same level , CVaR provides an upper bound on VaR.
+
+Sample CVaR.
+For a finite set of samples  representing the distribution
+of losses, Rockafellar and Uryasev showed that
+the CVaR at level , denoted , can be
+computed as
+
+
+
+where  is the positive part of . 
+A CVaR constraint at level  can be represented by a set of linear
+inequality constraints,
+
+
+
+
+
+
+
+
+CVaR-constrained quadratic programs
+This work presents a customized solver for the CVaR-constrained
+quadratic program (CVQP),
+
+
+where  is the decision variable. The objective function is
+defined by a positive semidefinite matrix  and a vector . The CVaR constraint is defined by
+quantile level , threshold , and matrix
+. Additional linear inequality constraints are defined by a matrix
+, and vectors
+,
+. 
+Since  is positive semidefinite and the constraints are convex, the CVQP is
+a convex optimization problem.
+We focus on the case where ,
+, the number of additional constraints is much smaller than the number of
+scenarios.
+
+We assume the CVQP problem e-cvar_constrained_qp is feasible and
+that , , and  have zero common nullspace, which ensures that the
+problem is bounded. This condition also implies that the matrix
+ is positive definite for any , which
+is needed for the ADMM linear system solve described in s-admm.
+In practice the condition holds when  is positive definite or when 
+has full column rank.
+
+CVaR terms in the objective. 
+The CVQP formulation extends to problems with CVaR terms in the objective.
+Consider the problem
+
+
+
+
+
+
+Using the translation-equivariance property of CVaR (i.e., ), we introduce an auxiliary variable  and reformulate as
+
+
+
+
+
+
+Defining the decision variable as the pair , this is an instance
+of the standard CVQP form e-cvar_constrained_qp.
+
+Quadratic program solvers. By using the linear inequality
+representation of the CVaR constraint, the CVQP can be reformulated as a
+standard quadratic program and solved with any QP solver. However, when the
+number of scenarios  is large, this approach becomes prohibitively slow.
+
+Applications.
+CVaR-constrained quadratic programs arise in many domains.
+In portfolio optimization,  represents portfolio weights and 
+gives portfolio losses across  return scenarios; the CVaR constraint
+limits the expected loss in the worst  fraction of scenarios,
+while the quadratic objective captures risk-adjusted returns
+.
+In supply chain planning,  includes order quantities and routing
+decisions, with scenarios modeling demand uncertainty and supplier
+disruptions; CVaR constraints bound extreme total cost realizations
+.
+Similar formulations appear in network flow problems with stochastic
+capacities, facility location and
+disaster response logistics, energy systems
+with uncertain generation and prices, and radiation
+treatment planning, where CVaR constraints replace intractable
+dose-volume constraints.
+In control and statistical learning, CVaR provides tractable convex
+approximations to chance constraints
+.
+For a comprehensive review, see.
+
+Related work
+CVaR constraints were introduced by Rockafellar and Uryasev
+ and are now standard in risk-constrained
+optimization. Our method builds on operator
+splitting, which decomposes the problem into simpler
+subproblems: a linear system solve and projections.
+
+The CVaR projection algorithm adds to a family of finite-termination projection
+methods, including the classical simplex projection and
+isotonic regression. Concurrently with the
+development of our CVaR projection algorithm, Roth and Cui released a preprint, 
+later published as, containing two finite termination algorithms for CVaR projection attaining the
+same complexity. After corresponding with the authors, we were
+unable to find any equivalence between their algorithms and ours.
+
+Roth and Cui also proposed a second-order computational
+framework for CVaR-constrained optimization, using a semismooth Newton-based
+augmented Lagrangian method. As a second-order method, it can achieve superlinear convergence near a
+solution, while ADMM is a first-order method with an  convergence
+rate. On the other hand, each ADMM
+iteration is cheap (a single backsolve and parallel projections after an
+initial factorization), and the method is simple to implement. In our
+experience, ADMM reaches moderate accuracy in few iterations, which is
+sufficient for most applications.
+
+Outline
+This paper is organized as follows. In s-admm, we present an ADMM-based
+solution method for the CVQP. s-cvar_projection establishes theoretical
+foundations for projecting onto CVaR constraints, which we use to develop our
+ projection algorithm in s-procedure. In
+s-experiments, we present benchmark results comparing our method against
+state-of-the-art solvers on portfolio optimization and quantile regression
+problems with up to millions of scenarios. s-extensions discusses
+possible extensions to our method.
+
+Solution via ADMM
+
+ADMM
+We solve the CVQP by reformulating the problem
+and applying the alternating direction method of multipliers (ADMM).
+By introducing auxiliary variables  and
+, we can rewrite problem
+e-cvar_constrained_qp as
+
+
+
+
+
+
+where .
+The auxiliary variables  and  decouple the CVaR constraint
+from the box constraints, so that each can be handled separately
+in the ADMM updates below.
+Here,  and  are the indicator functions for the sets
+ and , respectively, given by 
+
+
+
+
+
+We use the scaled dual variables 
+and , where  is a hyperparameter and  and  are the vectors of dual variables
+associated with the equality constraints  and ,
+respectively.
+We use ADMM with over-relaxation 
+(see for
+analysis), with over-relaxation parameter .
+
+For notational convenience we define the linear system parameters
+
+
+
+Our assumption on the common nullspace of , , and  implies that
+ is positive definite.
+The ADMM updates are
+
+The operator  is the (Euclidean) projection onto
+ and
+ is the projection onto the set .
+The over-relaxation, dual updates, and box projection are all trivial
+operations; the linear system solve requires one cached factorization
+of . The main computational bottleneck is the CVaR projection
+e-update_z_proj-final, which we address in s-cvar_projection-.
+
+It is well known that this ADMM algorithm converges
+, with a worst-case 
+convergence rate, though linear convergence is commonly observed in
+practice for quadratic programs.
+
+Dynamic penalty parameter. 
+While ADMM converges for any fixed penalty parameter , the convergence
+rate can be improved by adaptively updating . A simple and effective
+update scheme adjusts  based on the relative magnitudes of the primal and
+dual residuals. When the primal residual is  times larger than the dual
+residual, we multiply  by a factor ; when the dual residual is
+ times larger than the primal residual, we divide  by . Since
+ appears in the matrix , each update requires re-factorizing the linear
+system. To balance computational cost with convergence benefits, we perform
+these updates at fixed intervals of  iterations.
+
+
+Evaluating the updates
+The updates
+e-update_z_half, e-update_ztilde_half, e-update_u, and
+e-update_utilde are trivial to implement.
+The update e-update_ztilde_proj-final is also a very simple clipping
+operation:
+
+
+
+
+
+
+
+where .
+
+The update e-update_x-final can be expressed as ,
+which requires the solution of a linear system of equations with positive definite 
+coefficient matrix .
+We factorize  once
+(for example, a sparse Cholesky or  factorization) so that subsequent solves
+require only the backsolve.
+This can substantially improve the efficiency of this step; when  is dense,
+for example, the first factorization costs  flops, while subsequent solves
+require only  flops.  (When  is sparse the speedup from caching 
+the factorization is smaller than , but still very significant.)
+
+That leaves only the CVaR projection e-update_z_proj-final, for
+which we develop an  algorithm in the next two sections.
+
+Summary
+For convenience we summarize the complete CVQP method in
+Algorithm . The CVaR projection is the main computational
+bottleneck and uses the  algorithm described in
+s-procedure.
+
+
+
+CVaR projection preliminaries We now present preliminaries that motivate our
+efficient algorithm for evaluating the projection operator , , 
+for solving the problem
+
+with variable .
+
+The CVaR constraint can be expressed equivalently using the sum of 
+largest components
+function, 
+e-sumkproj
+  f_k(z)=_i=1^k z_[i], 
+where  are the components of  in 
+nonincreasing order. This is a convex function that sums the  largest elements of a vector
+(the pointwise maximum of  linear functions).
+Setting  and evaluating the infimum over  in the
+Rockafellar-Uryasev formula (the minimizer is ), we obtain
+. The constraint  is
+therefore equivalent to .
+We rewrite problem e-cvar_projection as
+
+where . We assume 
+(and round up to the nearest integer if not).
+
+We will use the formulation e-sumklargest_projection to derive
+our CVaR projection algorithm. While this is a computationally tractable convex
+optimization problem, we seek closed form or computationally efficient ways to
+evaluate this projection operator. Since merely evaluating  with  has a
+complexity of , we desire a similar complexity for the projection
+operator. 
+
+Sorted projectionLet  be a permutation matrix that sorts  in
+descending order, , .
+We will denote the sorted vector  as .
+Since for any ,
+
+
+
+the solution to the projection problem is given by
+    z^&=& _f_k(z) d v-z_2^2
+
+            &=& _f_k(Pz) d Pv-Pz_2^2
+
+            &=& P^T(_f_k(u) d v'-u_2^2).
+
+The last equality is the change of variable .
+In words, we can sort  in descending order, project the sorted vector , and unsort
+the result to obtain the projection of  onto the set .
+
+Optimality conditionsWe characterize the optimality conditions of the projection problem; these
+conditions will be used in s-correctness to prove the correctness of the
+algorithm. Let 
+be the set of all  -hot indicator vectors.
+Since , the constraint
+ is equivalent to  for all .
+We can therefore rewrite problem e-sumklargest_projection
+in the equivalent form
+
+
+
+
+
+
+where the subscript  enumerates the elements of .
+
+The KKT conditions tell us a  pair is optimal if and only if 
+
+
+ 
+and
+
+
+
+
+
+The optimality conditions motivate an algorithm that solves the KKT
+system. We will define , where  is the vector we remove
+from  to get the projection. The KKT conditions above imply that
+ is a nonnegative combination of the vectors  for which
+, , the indicators of the largest  entries of . (Note
+that there are potentially several such vectors in the presence of ties: consider the
+largest 2 entries in the vector .)
+Thus, if we can construct a vector  that is a nonnegative combination of
+largest- indicator vectors, such that , 
+then we have found the projection .
+
+Algorithm motivation
+We describe at a high level the motivation behind our projection algorithm.
+We pre-process by sorting and work with the sorted vector , since from
+s-perm we know that sort-project-unsort is the same as projecting. We then proceed
+by incrementally constructing  until the sum of the  largest elements
+of  is equal to .
+
+We want to begin decreasing elements of  until the sum of the  largest
+elements is equal to . Intuitively, we should decrease the largest 
+elements without modifying the remaining elements, since they do not affect the sum.
+We begin by reducing the largest elements uniformly until either the constraint is
+satisfied, or until the th largest element ties the next element. 
+We reduce each of the  largest elements by the same amount because we are
+penalized by the sum of squared changes.
+
+If reducing the largest  elements causes elements  and  to tie, it is
+intuitive that the tied elements should be further reduced by the same amount;
+otherwise a reduction would be applied to an element not in the largest . 
+Since we also want to uniformly decrease the largest elements preceding the tie,
+we need to decide the ratio of these two reductions. Given this ratio, we reduce
+the untied and tied entries until either the constraint is satisfied or the next
+tie occurs.
+
+We will need to determine this ratio at each step of the algorithm, since
+at a given step of the algorithm, the altered vector  will be partitioned
+into three regions: first the largest  untied elements, then the
+ tied elements, and lastly the remaining unaltered elements:
+
+
+
+
+
+The core insight of the algorithm is deriving the ratio of reducing the untied
+and tied elements; this ratio is derived in s-procedure.
+
+CVaR projection algorithmWith the preliminaries in place, we now present our CVaR projection algorithm.
+Pre- and post-processing.
+The CVaR projection algorithm is applied to the vector  sorted in descending
+order as described in s-perm. The complexity of sorting  and then unsorting
+the projection is . The sorting and unsorting are in practice carried
+out with indices; the permutation matrix  is never explicitly formed.
+
+Algorithm state.
+The algorithm's state is
+2
+
+    : the iterate number,
+    : the number of untied entries,
+    : the number of tied entries,
+    : the decrease to the untied entries,
+    : the sum of the largest  entries,
+    : the value of the tied entries,
+    : the value of the last untied entry, 
+    : the value of the first unaltered entry.
+The algorithm is initialized with , , ,
+, , and .
+The algorithm repeats the decrease step described in s-decrease
+until , after which the projection of the sorted ,
+
+
+
+
+ 
+is formed, unsorted, and returned.
+
+Decrease stepAt each step, the algorithm decreases the entries of  along a direction
+ that depends on the current group structure.
+The update is , where  is chosen
+as the largest scaling such that  remains sorted and the sum of its
+ largest entries stays at least .
+Three events can limit :
+the last untied entry reaches the tied value
+      (merge: the untied block shrinks by one),
+the tied value reaches the first unaltered entry
+      (absorb: the tied block grows by one),
+the sum constraint  is met (termination).
+On every nonterminal step, the tied block grows by one entry
+(from a merge or an absorb).
+The algorithm terminates in at most  steps.
+We handle the first step separately because there is no tied block yet;
+all subsequent steps share the same general formulas.
+
+First step.
+On the first step,  and .
+The direction is
+
+
+
+
+, all  entries decrease uniformly.
+Since there is no tied block, only absorb and termination can occur, giving
+.
+If , the algorithm terminates with .
+Otherwise, entries  and  form a tied block, and the state
+is updated to
+
+
+
+
+
+
+
+The values of  and  are updated as in the general step below,
+using the new , , and .
+
+General step.
+For all subsequent steps,  and .
+The direction is
+
+
+
+
+
+The untied entries decrease at rate , the tied entries
+at rate , and the unaltered entries are unchanged.
+Note that  is a nonnegative combination of -hot indicator vectors:
+e-delta
+(n_u,n_t,k)=1n_t-1k-n_u-1_I(n_u,n_t,k),
+where
+
+
+
+
+
+
+
+
+is the set of -hot indicator vectors whose first  entries are ,
+with the remaining  ones among entries  through .
+
+Scaling the step.
+We now describe how to compute  for the general step.
+Let .
+The scaling  is the minimum of three candidate step sizes,
+corresponding to the three events described above.
+
+[label=(*)]
+Merge.
+The step  at which the last untied entry reaches the tied value,
+, .
+If , there are no untied entries, and . Otherwise,
+.
+
+Absorb.
+The step  at which the tied value reaches the first unaltered entry,
+, .
+If , there are no unaltered entries, and .
+Otherwise, since the tied entries decrease at unit rate while  is
+unchanged, .
+
+Termination.
+The step  at which the sum of the  largest entries equals ,
+, , where
+.
+The step is , and the update is
+.
+
+Updating the state.
+Instead of explicitly carrying out this
+vector subtraction at every step (which would have a complexity of  per
+iterate), the constant size algorithm state is updated to reflect the change
+in the vector. The updates are applied in the order shown:
+
+
+
+
+
+
+
+
+
+
+
+
+The first group (, , ) uses the pre-update values
+of  and ; the second group (, ) uses the
+updated values of , , and .
+
+Complexity
+At each step,  either decreases by , or remains the same. At each step,
+ increases by . If the algorithm hasn't terminated after  steps, then
+there are  tied entries, thus the subsequent decrease step will reduce the sum
+to the desired value, and the algorithm will terminate. Each step of the
+algorithm has constant complexity, and thus the algorithm (with sorted input)
+has complexity . Therefore, including the sorting and unsorting, the total
+complexity of the algorithm is .
+
+CorrectnessAt termination, the algorithm returns .
+Note that by e-delta, each  is a nonnegative combination of
+largest- indicator vectors.
+Thus, the algorithm returns  which satisfies
+e-proj-cond-1
+    v'-z = _i=1^mk _i a_i, _i 0, i=1,,mk.
+Since the decrease step maintains the monotonicity of ,
+all previous largest- indicators are still valid indicators of the largest
+ entries of . Thus, the termination criterion provides that
+e-proj-cond-2
+    a_i^Tz d, (a_i^Tz < d _i = 0), i=1,,mk.
+However, e-proj-cond-1 and e-proj-cond-2 are exactly
+the KKT conditions for the projection problem described in s-kkt.
+Therefore, the algorithm correctly computes the projection of  onto the set .
+
+Numerical experiments
+We compare our CVaR projection algorithm and our CVQP solver with two
+general-purpose solvers, Mosek and Clarabel. We first benchmark the projection
+algorithm on synthetic instances, then benchmark the CVQP solver on
+portfolio optimization and quantile regression problems.
+Code is available at https://github.com/cvxgrp/cvqp.
+
+Experimental setup
+All experiments were run on a Google Cloud n1-highmem-32 instance
+(32 vCPUs, 208 GB RAM), with a two-hour time limit per solve.
+For our CVQP solver we use ADMM penalty parameter ,
+over-relaxation parameter , and update  adaptively
+with parameters  and .
+We stop when primal and dual residuals satisfy absolute tolerance 
+and relative tolerance .
+Mosek and Clarabel are called through CVXPY with default settings.
+When we tighten our tolerances to , objective values agree with both solvers
+to about four significant figures.
+
+CVaR projection
+We generate random CVaR projection problems with vectors  having
+entries uniformly distributed on , with  and .
+For each , we set the constraint
+threshold to  in problem e-sumklargest_projection,
+where  controls problem difficulty (larger  gives easier
+problems), and project  onto the convex set .
+
+Results.
+Figure  shows solve times versus number of scenarios  for
+, averaged over 10 random instances. Our method solves these problems
+in  ms at  and  s at , more than two orders of
+magnitude faster than both Mosek and Clarabel across all tested sizes.
+Mosek does not solve instances with  within the time limit.
+
+
+            CVaR projection solve times, with .
+    
+
+Portfolio optimization
+We consider a portfolio optimization problem with  assets and  return
+scenarios. The matrix  contains asset returns, where
+ is the return of asset  in scenario . The mean return vector  and covariance matrix
+ are given by
+
+
+
+
+The portfolio optimization problem is
+
+
+
+
+
+
+
+
+with variable  (the portfolio weights), risk aversion
+parameter , and a CVaR constraint bounding the expected loss
+in the worst  fraction of scenarios.
+
+CVQP form. The problem maps to CVQP form as
+
+
+
+
+
+
+
+
+
+Problem instances. We generate return scenarios using a
+two-component Gaussian mixture model
+
+
+
+where  is the probability of normal market conditions,  is the mean
+return per asset (positive in normal conditions, negative in stress periods), and
+ scales the volatility during stress periods. We use parameters
+
+
+
+
+
+
+
+Results.
+Figure  shows solve times versus number of scenarios 
+for problems with  assets, averaged over 3 random instances. Our method
+is faster than both general-purpose solvers by one to three orders of magnitude.
+Mosek does not solve instances with  within the time limit,
+and Clarabel does not solve instances with .
+Our method solves instances with up to one million scenarios in under 26 minutes.
+
+
+            Portfolio optimization solve times, with  assets.
+    
+Quantile regression
+Given  data points with features  and responses
+, the -quantile regression problem is
+
+
+
+with variables  and , where
+ is the tilted  penalty
+and  is the quantile level. The asymmetric penalty weighs
+underpredictions  times more than overpredictions, so the optimal
+prediction is the conditional -quantile of  given , rather than
+the conditional mean.
+
+CVaR reformulation.
+Defining the feature matrix  with rows ,
+the response vector , and ,
+we use the identity  to write the objective as
+
+
+
+where . The terms involving  can be written as
+
+
+
+which is  times the sample CVaR formula evaluated at .
+Minimizing over  yields the infimum in the CVaR definition.
+Since  is constant and , the problem reduces to
+
+
+
+with variable . Introducing an epigraph variable  for the
+CVaR term gives
+
+
+
+
+
+
+
+CVQP form.
+We introduce an auxiliary variable  with the constraint , and define
+. The CVQP parameters, with CVaR
+level , are
+
+
+
+
+
+
+
+
+
+Problem instances.
+We generate features  with independent standard normal
+entries, a vector with entries ,
+and responses , where  follows a
+-distribution with 5 degrees of freedom scaled by . We use quantile
+level .
+
+Results.
+Figure  shows solve times versus number of scenarios  for
+quantile regression problems with  features, averaged over 3 random
+instances. Our method is faster than both Mosek and Clarabel across all tested sizes,
+by a factor ranging from about 5 to over 100.
+Mosek does not solve instances with  within the time limit,
+and Clarabel does not solve instances with .
+Our method scales to  scenarios.
+
+
+            Quantile regression solve times, with  features.
+    
+Extensions and variations
+Our method extends to more general problems and admits several practical variations.
+
+More general constraints on .
+When projection onto a set  is efficient (via a closed-form solution
+or a fast algorithm), we can directly handle constraints of the form
+ in place of the box constraints .
+
+Extensions to the -update.
+The method extends to additional constraints on  or
+nonquadratic objective functions. The -update then becomes
+
+
+
+
+
+
+where  is any convex function (not just quadratic), , and  is a convex set. Using a
+standard solver with warm-starting, the per-iteration cost remains manageable, 
+though typically higher than solving the original linear system.  
+
+Equilibration.
+Equilibration as a preprocessing step often improves
+ADMM convergence, particularly for problems with poorly scaled data.
+
+Warm starting.
+Two effective strategies for choosing the initial point are
+(1) solving with a reduced set of scenarios and using that solution to initialize the full problem,
+and (2) using a quadratic approximation of the CVaR constraint to compute an initial point.
+Similarly, the sorting step in the CVaR projection can be warm-started
+using the sorted order from the previous ADMM iteration.
+Since the projection input changes only slightly between iterations, the
+sorted order is nearly preserved, and an adaptive sorting algorithm can
+exploit this to reduce the per-iteration cost in practice.
+
+Acknowledgments
+David Pérez-Piñeiro received support from the Research Council of Norway and the
+HighEFF Research Centre (Centre for Environmentally Friendly Energy Research,
+Grant No. 257632).
+
+

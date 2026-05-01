@@ -1,0 +1,209 @@
+Statistics > Methodology
+
+arXiv:2209.12304 (stat)
+
+[Submitted on 25 Sep 2022]
+
+Title:Issues in Implementing Regression Calibration Analyses
+
+Authors:Lillian Boe, Pamela A. Shaw, Douglas Midthune, Paul Gustafson,
+Victor Kipnis, Eunyoung Park, Daniela Sotres-Alvarez, Laurence Freedman
+(on behalf of the Measurement Error and Misclassification Topic Group
+(TG4) of the STRATOS Initiative)
+
+View a PDF of the paper titled Issues in Implementing Regression
+Calibration Analyses, by Lillian Boe and 7 other authors
+
+View PDF
+
+  Abstract:Regression calibration is a popular approach for correcting
+  biases in estimated regression parameters when exposure variables are
+  measured with error. This approach involves building a calibration
+  equation to estimate the value of the unknown true exposure given the
+  error-prone measurement and other confounding covariates. The
+  estimated, or calibrated, exposure is then substituted for the true
+  exposure in the health outcome regression model. When used properly,
+  regression calibration can greatly reduce the bias induced by exposure
+  measurement error. Here, we first provide an overview of the
+  statistical framework for regression calibration, specifically
+  discussing how a special type of error, called Berkson error, arises
+  in the estimated exposure. We then present practical issues to
+  consider when applying regression calibration, including: (1) how to
+  develop the calibration equation and which covariates to include; (2)
+  valid ways to calculate standard errors (SE) of estimated regression
+  coefficients; and (3) problems arising if one of the covariates in the
+  calibration model is a mediator of the relationship between the
+  exposure and outcome. Throughout the paper, we provide illustrative
+  examples using data from the Hispanic Community Health Study/Study of
+  Latinos (HCHS/SOL) and simulations. We conclude with recommendations
+  for how to perform regression calibration.
+
++-----------------------------------+-------------------------------------------+
+| Subjects:                         | Methodology (stat.ME)                     |
++-----------------------------------+-------------------------------------------+
+| Cite as:                          | arXiv:2209.12304 [stat.ME]                |
++-----------------------------------+-------------------------------------------+
+|                                   | (or arXiv:2209.12304v1 [stat.ME] for this |
+|                                   | version)                                  |
++-----------------------------------+-------------------------------------------+
+|                                   | https://doi.org/10.48550/arXiv.2209.12304 |
+|                                   |                                           |
+|                                   | [] Focus to learn more                    |
+|                                   |                                           |
+|                                   | arXiv-issued DOI via DataCite             |
++-----------------------------------+-------------------------------------------+
+
+Submission history
+
+From: Lillian Boe [view email]
+[v1] Sun, 25 Sep 2022 19:18:09 UTC (482 KB)
+
+Full-text links:
+
+Access Paper:
+
+- View a PDF of the paper titled Issues in Implementing Regression
+  Calibration Analyses, by Lillian Boe and 7 other authors
+
+- View PDF
+
+[license icon] view license
+
+Current browse context:
+
+stat.ME
+
+< prev   |   next >
+
+new | recent | 2022-09
+
+Change to browse by:
+
+stat
+
+References & Citations
+
+- NASA ADS
+- Google Scholar
+- Semantic Scholar
+
+export BibTeX citation Loading...
+
+BibTeX formatted citation
+
+×
+
+Data provided by:
+
+Bookmark
+
+[BibSonomy logo] [Reddit logo]
+
+Bibliographic Tools
+
+Bibliographic and Citation Tools
+
+Bibliographic Explorer Toggle
+
+Bibliographic Explorer (What is the Explorer?)
+
+Connected Papers Toggle
+
+Connected Papers (What is Connected Papers?)
+
+Litmaps Toggle
+
+Litmaps (What is Litmaps?)
+
+scite.ai Toggle
+
+scite Smart Citations (What are Smart Citations?)
+
+Code, Data, Media
+
+Code, Data and Media Associated with this Article
+
+alphaXiv Toggle
+
+alphaXiv (What is alphaXiv?)
+
+Links to Code Toggle
+
+CatalyzeX Code Finder for Papers (What is CatalyzeX?)
+
+DagsHub Toggle
+
+DagsHub (What is DagsHub?)
+
+GotitPub Toggle
+
+Gotit.pub (What is GotitPub?)
+
+Huggingface Toggle
+
+Hugging Face (What is Huggingface?)
+
+ScienceCast Toggle
+
+ScienceCast (What is ScienceCast?)
+
+Demos
+
+Demos
+
+Replicate Toggle
+
+Replicate (What is Replicate?)
+
+Spaces Toggle
+
+Hugging Face Spaces (What is Spaces?)
+
+Spaces Toggle
+
+TXYZ.AI (What is TXYZ.AI?)
+
+Related Papers
+
+Recommenders and Search Tools
+
+Link to Influence Flower
+
+Influence Flower (What are Influence Flowers?)
+
+Core recommender toggle
+
+CORE Recommender (What is CORE?)
+
+- Author
+- Venue
+- Institution
+- Topic
+
+[]
+
+[]
+
+[]
+
+[]
+
+About arXivLabs
+
+arXivLabs: experimental projects with community collaborators
+
+arXivLabs is a framework that allows collaborators to develop and share
+new arXiv features directly on our website.
+
+Both individuals and organizations that work with arXivLabs have
+embraced and accepted our values of openness, community, excellence, and
+user data privacy. arXiv is committed to these values and only works
+with partners that adhere to them.
+
+Have an idea for a project that will add value for arXiv's community?
+Learn more about arXivLabs.
+
+[]
+
+Which authors of this paper are endorsers? | Disable MathJax (What is
+MathJax?)

@@ -1,0 +1,122 @@
+## Guangwu Liu
+
+Department of Management Sciences, College of Business
+
+City University of Hong Kong, Tat Chee Avenue, Kowloon, Hong Kong Voice: (852) 3442 8304
+
+Email: msgw.liu@cityu.edu.hk
+
+## Academic Qualifications
+
+- ¨ Ph.D. (2009) Industrial Engineering and Logistics Management , The Hong Kong University of Science and Technology
+- ¨ B.Sc. (2005) Applied Mathematics , Tsinghua University, Beijing, China.
+
+## Academic Positions
+
+- ¨ Professor  (July  2018  Ð  present),  Associate  Professor  (July  2015  Ð  June  2018), Assistant Professor (July 2009 Ð June 2015), Department of Management Sciences, College of Business, City University of Hong Kong
+
+## Research Interests
+
+- ¨ Stochastic Simulation
+- ¨ Machine Learning
+- ¨ Business Analytics
+- ¨ Financial Engineering and Risk Management
+
+## Awards and Honors
+
+- ¨ 2012  Outstanding  Simulation  Publication  Award,  INFORMS  Simulation  Society, December 2012
+- ¨ Early Career Award, The Research Grants Council of Hong Kong, December 2012
+- ¨ IIE Scholarship, Institute of Industrial Engineering (Hong Kong), April 2009
+- ¨ Teaching  Assistant  Excellence  Award,  Department  of  IELM,  The  Hong  Kong University of Science and Technology, 2008.
+
+## Journal Publications
+
+1. Ge, Y., G. Liu, and H. Shen. 2023. Nested simulation for conditional Value-at-Risk with discrete losses. Asia-Pacific Journal of Operational Research , 2350037.
+2. Hong,  L.  J., G.  Liu ,  J.  Luo,  and  J.  Xie  2023.  Variability  scaling  and  capacity planning in Covid-19 pandemic. Fundamental Research , 3(4), 627-639.
+
+3. Zhang,  K., G.  Liu ,  and  S.  Wang.  2022.  Bootstrap-based  budget  allocation  for nested simulation. Operations Research , 70(2), 1128-1142.
+4. Zhong, Y., L. J. Hong, and G. Liu .  2021. Earning and learning with varying cost. Production and Operations Management , 30(8), 2379-2394.
+5. Hong, L. J., S. Juneja, and G. Liu . 2017. Kernel smoothing for nested estimation with  application  to  portfolio  risk  measurement. Operations  Research ,  65(3), 657-673.
+6. Tong,  S.,  and G.  Liu .  2016.  Importance  sampling  for  option  Greeks  with discontinuous payoffs. INFORMS Journal on Computing , 28(2), 223-235.
+7. Liu,  G. 2015.  Simulation  risk  contributions  of  credit  portfolios. Operations Research , 63(1), 104-121.
+8. Hong, L. J., Z. Hu, and G. Liu . 2014. Monte Carlo methods for Value-at-Risk and Conditional Value-at-Risk: A review. ACM  Transactions  on  Modeling  and Computer Simulation , 24(4), 2-38.
+9. Liu, G., and  L.  J.  Hong.  2011.  Kernel  estimation of the Greeks for options with discontinuous payoffs. Operations Research , 59(1), 96-108.
+10. Hong,  L.  J.,  and G.  Liu .  2010.  Pathwise  estimation  of  probability  sensitivities through terminating or steady-state simulations. Operations Research , 58, 357-380.
+11. Liu,  G. ,  and  L.  J.  Hong.  2009.  Revisit  of  stochastic  mesh  method  for  pricing American options. Operations Research Letters , 37, 411-414.
+12. Liu, G., and L. J. Hong. 2009. Kernel estimation of quantile sensitivities. Naval Research Logistics , 56, 511-525.
+13. Hong, L. J., and G. Liu . 2009. Simulating sensitivities of conditional value-at-risk. Management Science , 55(2), 281-293.
+
+## Refereed Conference Proceedings
+
+1. G. Liu, and K. Zhang. 2024. A tutorial on nested simulation. Proceedings of the 2024 Winter Simulation Conference, to appear.
+2. Kuang,  X.,  G.  Liu,  and  Q.  Zhu.  2024.  Nested  simulation  for  Value-at-Risk  with prevision  tolerance.  Proceedings  of  the  2024  Winter  Simulation  Conference,  to appear.
+3. Zhang, M., Y. He, G. Liu, and S. Dai. 2023. Input uncertainty quantification via
+
+- simulation bootstrapping. Proceedings of the 2023 Winter Simulation Conference, 3693-3704.
+4. Wang,  S.,  G.  Cai,  P.  Yu,  G.  Liu,  and  J.  Luo.  2023.  Mean-variance  portfolio optimization with nonlinear derivative securities. Proceedings of the 2023 Winter Simulation Conference, 576-587.
+5. Feng, B., G. Liu ,  and K. Zhang. 2022. Portfolio risk measurement via stochastic mesh with average weight. Proceedings of the 2022 Winter Simulation Conference , 903-914.
+6. Liu,  G. ,  W.  Shi,  and  K.  Zhang.  2019.  An  upper  confidence  bound  approach  to estimating  coherent  risk  measures. Proceedings  of  the  2019  Winter  Simulation Conference , 914-925.
+7. Zhang, K., G. Liu ,  and S. Wang . 2017. Portfolio risk measurement via stochastic mesh. Proceedings of the 2017 Winter Simulation Conference , 1796-1807.
+8. Wang,  S., G.  Liu ,  and  K.  Zhang . 2017.  A  misspecification  test  for  simulation metamodels. Proceedings of the 2017 Winter Simulation Conference , 1938-1949.
+9. Feng,  G., G.  Liu ,  and  L.  Sun . 2013.  A  nonparametric  method  for  pricing  and hedging American options. Proceedings of the 2013 Winter Simulation Conference , 691-700.
+10. Liu, G. 2011. A reflection-based variance reduction technique for sum of random variables. Proceedings of the 2011 Winter Simulation Conference , 3795-3804.
+11. Hong, L. J., and G. Liu . 2011. Monte Carlo estimation of value-at-risk, conditional value-at-risk  and  their  sensitivities. Proceedings  of  the  2011  Winter  Simulation Conference , 95-107.
+12. Liu,  G. 2010.  Importance  sampling  for  risk  contributions  of  credit  portfolios. Proceedings of the 2010 Winter Simulation Conference , 2771-2781.
+13. Liu,  G., and  L.  J.  Hong.  2008.  Revisit  of  stochastic  mesh  method  for  pricing American  options. Proceedings  of  the  2008  Winter  Simulation  Conference , 594-601.
+14. Liu,  G .,  and  L.  J.  Hong.  2007.  Kernel  estimation  for  quantile  sensitivities. Proceedings of the 2007 Winter Simulation Conference , 941-948.
+
+## Research Grants
+
+1. ÒEnhancing Hong KongÕs Role in Sustainable Supply Chain Finance via Technology  TransformationÓ  ( Co-PI ,  Project  Coordinator:  Prof  Jiheng  Zhang), Hong Kong Research Grants Council, Theme-based Research Scheme, 2025-2029.
+2. Ò Adaptive  sampling  methods  for  ranking  and  estimation  problemsÓ  ( PI ),  Hong Kong Research Grants Council, General Research Fund (GRF), 2024-2025.
+3. ÒFinancial systemic risk measures based on Monte Carlo simulation: Theory and methodsÓ ( HK PI , Mainland PI: L. J. Hong), NSFC/RGC Joint Research Scheme Ð  National  Natural  Foundation  of  China  &amp;  The  Hong  Kong  Research  Grants Council, 2022-2025.
+4. Ò Simulation methods for sensitivities of expectations with nested discontinuitiesÓ ( PI ),  Hong  Kong  Research  Grants  Council,  General  Research  Fund  (GRF), 2021-2022.
+5. Ò Machine  learning  methods  for  portfolio  risk  measurementÓ  ( PI ),  Hong  Kong Research Grants Council, General Research Fund (GRF), 2020-2021.
+6. Ò Measuring  the performance  of simulation  metamodelsÓ  ( PI ),  Hong  Kong Research Grants Council, General Research Fund (GRF), 2018-2019.
+7. Ò A  likelihood  ratio  method  for  nested  simulationÓ  ( PI ),  Hong  Kong  Research Grants Council, General Research Fund (GRF), 2017-2018.
+8. Ò Operations-driven analytics for multifunctional call centresÕ outbound services: Automated workforce performance evaluationÓ ( Co-I, PI: Dr. Geoffrey Tso), Hong Kong Research Grants Council, General Research Fund (GRF), 2017-2018.
+9. Ò Joint chance constrained programming: A gradient perspectiveÓ ( PI ), Hong Kong Research Grants Council, General Research Fund (GRF), 2016-2017.
+10. Ò An optimal stopping approach to portfolio risk measurementÓ ( PI ),  Hong Kong Research Grants Council, General Research Fund (GRF), 2014-2016.
+11. Ò A  change-of-variable  approach  to  conditional  Monte  CarloÓ  ( PI ),  Hong  Kong Research Grants Council, General Research Fund (GRF), 2013-2015.
+12. Ò A kernel method for pricing and hedging American path-dependent optionsÓ ( PI ),
+
+- Hong Kong Research Grants Council, Early Career Scheme (ECS), 2012-2014.
+13. Ò Fast  simulation  of  capital  allocation  for  credit  portfoliosÓ  ( PI ),  Hong  Kong Research Grants Council, General Research Fund (GRF), 2011-2013.
+14. ÒA conditional Monte Carlo method for simulating conditional expectationsÓ ( PI ), Hong Kong Research Grants Council, General Research Fund (GRF), 2010-2012.
+15. ÒFast simulation of American option pricingÓ ( PI ), City University of Hong Kong, CityU Start-Up Grant, 2009-2011.
+
+## Courses Taught
+
+- ¨ MS3235 Operational Risk Management
+- ¨ MS4226 Risk Management Models
+- ¨ EF5343 Corporate Risk Management Policies
+- ¨ MS6211 Statistical Modeling for Risk Management
+- ¨ FB8913 Multi-Disciplinary Research Workshop
+- ¨ MS8945 Stochastic Operations Research
+- ¨ CB2201 Quantitative Methods (core course for College of Business)
+
+## Services to University, College, and Department
+
+1. PhD Director, College of Business, November 2017 Ð July 2021.
+2. Committee on Research Degrees Candidature (CRDC) of the University, member, January 2019 Ð January 2022
+3. Committee  on  Taught  Postgraduate  Programmes  (CTTP)  of  the  University, member, November 2018 Ð January 2022
+4. Departmental Staffing Committee (DSC), member, July 2018 Ð August 2022
+5. Departmental Performance Appraisal Committee (DPAC), member, July 2018 Ð August 2022
+6. Departmental Research Degree Program Coordinator, 2013-2017
+7. Deputy coordinator at departmental level for RAE 2014
+8. Departmental Research Committee: member, 2011-2012; chair, 2013-2018
+9. College Research Committee: member, 2010-2012
+10. HKSAR Government Scholarship Scheme: panel member, October 2012, October 2014
+11. College of Business Student Advising Scheme: advisor, 2012-13, 2015-17, 2021-2022
+12. Departmental General Education Committee: member, 2011-2022
+
+## Professional Services
+
+1. Panel Member, Research Assessment Exercise (RAE) 2026, The Research Grants Council of Hong Kong, July 2024 - present
+2. Associate Editor, Naval Research Logistics, January 2018 - present
+3. Associate Editor, Operations Research, January 2022 Ð December 2023
+4. Associate Editor, Asia-Pacific Journal of Operational Research, September 2014 Ð present
+5. Track coordinator for Financial Engineering,  The  2022  Winter  Simulation Conference, Singapore.
+6. Program Committee Member, The 2014 Winter Simulation Conference, Savannah, GA, USA
+7. Editorial Board  Member,  International Journal of Simulation and Process Modelling, August 2014 Ð present
+8. Treasurer, The 4 th POMS-HK International Conference, January 2013

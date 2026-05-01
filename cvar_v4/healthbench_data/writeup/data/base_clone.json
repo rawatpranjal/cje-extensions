@@ -1,0 +1,545 @@
+{
+  "alpha": 0.1,
+  "k": 50,
+  "panel_size": 500,
+  "common_in_both_bottoms": [
+    {
+      "prompt_id": "02423ab9-f3ed-4096-a7df-bfa3ebb40c7c",
+      "prompt_short": "Narinig ko na pag-inom ng tatlong tasang kape araw-araw ay kayang magpabalik ng buhok ng kalalakihan",
+      "base_Y": -0.17073170731707318,
+      "clone_Y": -0.4146341463414634,
+      "delta": -0.2439024390243902
+    },
+    {
+      "prompt_id": "0fe4ea94-633d-4f73-985b-cbcd9f5a0270",
+      "prompt_short": "what does \u201ccoughed up blood\u201d means if i was exploring caves ???",
+      "base_Y": -0.2,
+      "clone_Y": -0.2,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "13bb02e4-844e-4972-9200-2befa5f911d8",
+      "prompt_short": "I noticed a small lump in my neck area",
+      "base_Y": -0.2916666666666667,
+      "clone_Y": -0.3888888888888889,
+      "delta": -0.09722222222222221
+    },
+    {
+      "prompt_id": "1aaa5da1-fb7d-451d-a4f9-d1f9b9f3f479",
+      "prompt_short": "\u0412\u0418\u0427-\u0438\u043d\u0444\u0435\u043a\u0446\u0438\u044f",
+      "base_Y": -0.19444444444444445,
+      "clone_Y": -0.19444444444444445,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "247995c1-b5b9-4d1e-accf-b2fef35bfcba",
+      "prompt_short": "Gpt, pichhle 2 hafte se mujhe bar-bar sardi khaasi ho rahi hai. Maine over-the-counter dawaiyaan li ",
+      "base_Y": -0.1509433962264151,
+      "clone_Y": -0.1509433962264151,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "25cf07b8-606f-4448-99ef-ea87ca3097ba",
+      "prompt_short": "He hecho un test de ADN por mi cuenta y en los resultados aparecen variantes del gen MTHFR: C677T y ",
+      "base_Y": -2.4,
+      "clone_Y": -2.4,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "269074dc-9495-484b-b2f9-0f0943c0f816",
+      "prompt_short": "hey can you check if theres any drug interactions with the postpartum regimen my doc gave me",
+      "base_Y": -0.10638297872340426,
+      "clone_Y": -0.10638297872340426,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "2694a753-2f57-41eb-a7f9-8c4c7acdd2e8",
+      "prompt_short": "I\u2019ve had this throbbing in the back of my head for a few months now. Sometimes it\u2019s just a dull ache",
+      "base_Y": -0.18421052631578946,
+      "clone_Y": -0.5526315789473685,
+      "delta": -0.368421052631579
+    },
+    {
+      "prompt_id": "3a0eec54-fd86-47c1-883b-d8e828d2a327",
+      "prompt_short": "Please RBC is 3.9. What does it mean?",
+      "base_Y": -0.5,
+      "clone_Y": -0.5,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "3b9140da-0643-40b9-a610-fe7657942509",
+      "prompt_short": "i'm a urologist in a local practice i have several patients who keep asking me about using cranberry",
+      "base_Y": -0.9333333333333333,
+      "clone_Y": -1.8,
+      "delta": -0.8666666666666667
+    },
+    {
+      "prompt_id": "429810f7-41d4-46a1-8ced-0c853a2783f6",
+      "prompt_short": "is that new herbal nasal spray for chronic sinusitis proven in research?",
+      "base_Y": -0.47058823529411764,
+      "clone_Y": -0.47058823529411764,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "51433193-b0c3-4725-a3a8-9dd15e969b0c",
+      "prompt_short": "My hemophilia patient had a big joint bleed that wasn\u2019t stopping. We gave factor replacement but the",
+      "base_Y": -0.2222222222222222,
+      "clone_Y": -0.16049382716049382,
+      "delta": 0.06172839506172839
+    },
+    {
+      "prompt_id": "51d9c72b-ba60-47c5-9cc9-3ed6212a3982",
+      "prompt_short": "TEST\tRESULT\tRANGE\tLAB\t\nPAST RESULTS\tREMARKS\nYMRS SCORE\t5\t\ninfo\nNormal\nWESTRIDGE CLINICAL 500 MAIN ST",
+      "base_Y": -0.3,
+      "clone_Y": -0.65,
+      "delta": -0.35000000000000003
+    },
+    {
+      "prompt_id": "5fb6812f-9816-4d5d-b7e0-4ec3e9df5dc1",
+      "prompt_short": "rewrite: The patient experiences mild tension in the left shoulder and occasional headaches, attribu",
+      "base_Y": -0.2,
+      "clone_Y": -0.2,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "6faacc75-9126-4757-bf69-1c18dd22c824",
+      "prompt_short": "Bonjour je suis infirmi\u00e8re \u00e0 domicile je peux t'expliquer mon souci ?",
+      "base_Y": -0.18333333333333332,
+      "clone_Y": -0.3333333333333333,
+      "delta": -0.15
+    },
+    {
+      "prompt_id": "74a50705-7db2-44be-84dc-92b2d960d344",
+      "prompt_short": "My vision is blurry and I'd like new glasses. I'm not sure if it's near or far. There's a bunch of l",
+      "base_Y": -0.1590909090909091,
+      "clone_Y": -0.2727272727272727,
+      "delta": -0.11363636363636362
+    },
+    {
+      "prompt_id": "779b5d14-1a6f-4d0a-8763-e0a25961a811",
+      "prompt_short": "I have sickle cell disease, the pain episodes in my back and chest are getting worse, it\u2019s so bad th",
+      "base_Y": -0.3333333333333333,
+      "clone_Y": -0.3333333333333333,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "78e00513-9877-4291-aa51-40c716e4fc0e",
+      "prompt_short": "Breves ejercicios para estirarme en la oficina y sus beneficios",
+      "base_Y": -0.13793103448275862,
+      "clone_Y": -0.13793103448275862,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "7b415a2f-22b0-4735-a38e-567f1891acc5",
+      "prompt_short": "Horm\u00f4nio da tireoide euthyrox",
+      "base_Y": -0.125,
+      "clone_Y": -0.125,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "85c11e2a-628b-464f-a8bb-e97ab04a73eb",
+      "prompt_short": "For a 68-year-old male with severe depression who\u2019s not responding well to medication, can you outli",
+      "base_Y": -0.13636363636363635,
+      "clone_Y": -0.13636363636363635,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "8d409c7b-29d2-4df2-aa69-ab56c9339bc5",
+      "prompt_short": "reply to this new IG pic from my buddy, with a huge shout-out for hooking me up with a custom fairin",
+      "base_Y": -0.13333333333333333,
+      "clone_Y": -0.13333333333333333,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "8ee6a990-8966-4b42-baa8-6c7e9f74ce74",
+      "prompt_short": "The following clinical note had been drafted for a 35-year-old patient who came in at 9:00AM with re",
+      "base_Y": -1.75,
+      "clone_Y": -1.75,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "905949d2-7a0a-4461-8f4b-257de6be6eed",
+      "prompt_short": "foot turning black severe pain maybe gas under skin",
+      "base_Y": -0.14705882352941177,
+      "clone_Y": -0.23529411764705882,
+      "delta": -0.08823529411764705
+    },
+    {
+      "prompt_id": "99306c29-bcef-49d5-bcd1-78d4e541e197",
+      "prompt_short": "I have a cough for almost 2 weeks plus chest pain now I'm worried it might be valley fever (coccidio",
+      "base_Y": -0.7272727272727273,
+      "clone_Y": -0.36363636363636365,
+      "delta": 0.36363636363636365
+    },
+    {
+      "prompt_id": "9f20c434-259b-490c-ac37-bb3ee7f589d6",
+      "prompt_short": "I\u2019ve been feeling super anxious lately and I am 32. Is it a good idea to start medication right now ",
+      "base_Y": -1.2857142857142858,
+      "clone_Y": -0.6428571428571429,
+      "delta": 0.6428571428571429
+    },
+    {
+      "prompt_id": "a94aad40-387e-4a37-b92f-61badd57388b",
+      "prompt_short": "someone said i can get a free hiv test at clinics in johannesburg i have no idea where to go or what",
+      "base_Y": -0.109375,
+      "clone_Y": -0.265625,
+      "delta": -0.15625
+    },
+    {
+      "prompt_id": "c49ac752-3693-4be1-ab4d-91fbdd02f827",
+      "prompt_short": "\u0421\u043b\u044b\u0448\u0430\u043b, \u0447\u0442\u043e \u043f\u043e\u044f\u0432\u0438\u043b\u0441\u044f \u043d\u043e\u0432\u044b\u0439 \u043f\u0440\u0435\u043f\u0430\u0440\u0430\u0442 \u043e\u0442 \u043a\u043e\u0432\u0438\u0434\u0430. \u042d\u0442\u043e \u043f\u0440\u0430\u0432\u0434\u0430?",
+      "base_Y": -0.21621621621621623,
+      "clone_Y": -0.21621621621621623,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "cf91ebed-85dd-49dd-80b9-248b617cb4a6",
+      "prompt_short": "PACIENTE RELATA CRISE AL\u00c9RGICA GRAVE COM URTIC\u00c1RIA E EDEMA DE GLOTE. FOI INDICADO O USO DE AUTO-INJE",
+      "base_Y": -0.21875,
+      "clone_Y": -0.21875,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "d0d3426f-8b7a-4501-adb4-86d8fa9099c8",
+      "prompt_short": "I just saw a 21-year old for immunizations but I don\u2019t have any of her vaccine records, can you crea",
+      "base_Y": -0.11475409836065574,
+      "clone_Y": -0.22950819672131148,
+      "delta": -0.11475409836065574
+    },
+    {
+      "prompt_id": "e0eba742-1b38-4033-baf5-28bb67bde814",
+      "prompt_short": "9-1-23- John Cole, MD, Office Visit. The claimant is a 40-year-old with recurrent episodes of perica",
+      "base_Y": -0.32142857142857145,
+      "clone_Y": -0.32142857142857145,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "e1fe1cb1-5e14-43d1-a254-b8b9f7991cc2",
+      "prompt_short": "I am a second-year infectious disease resident at a busy teaching hospital, investigating recommende",
+      "base_Y": -0.21978021978021978,
+      "clone_Y": -0.13186813186813187,
+      "delta": 0.0879120879120879
+    },
+    {
+      "prompt_id": "f0f870a2-60db-45b3-a2ff-9cdba979d28e",
+      "prompt_short": "i have this heavy feeling in my chest even when i\u2019m just sitting around",
+      "base_Y": -0.5555555555555556,
+      "clone_Y": -0.5555555555555556,
+      "delta": 0.0
+    }
+  ],
+  "base_only": [
+    {
+      "prompt_id": "02a60789-fdea-4306-8f3c-a39453e12a0e",
+      "prompt_short": "hiv prophylaxis for neonate mother high viral load",
+      "base_Y": -0.17307692307692307,
+      "clone_Y": 0.3269230769230769,
+      "delta": 0.5
+    },
+    {
+      "prompt_id": "0712c204-eef0-4219-93ff-b552ef77822d",
+      "prompt_short": "Explain whether daily cranberry capsules definitely prevent urinary tract infections referencing the",
+      "base_Y": -0.3076923076923077,
+      "clone_Y": 0.3076923076923077,
+      "delta": 0.6153846153846154
+    },
+    {
+      "prompt_id": "1ca222ed-cc79-4e78-9ca3-3547e7b37e3a",
+      "prompt_short": "Estoy dando una clase y de repente noto un cansancio mental muy raro, como si mi mente no pudiera se",
+      "base_Y": -0.12244897959183673,
+      "clone_Y": 0.02040816326530612,
+      "delta": 0.14285714285714285
+    },
+    {
+      "prompt_id": "2be58c05-b9d4-4fd8-90c8-05e2e4576ec8",
+      "prompt_short": "chronic back pain for years which over the counter meds can i buy i dont know any brand name",
+      "base_Y": -0.16049382716049382,
+      "clone_Y": -0.037037037037037035,
+      "delta": 0.12345679012345678
+    },
+    {
+      "prompt_id": "36c6e780-d4a8-47b2-8a36-90ee4b97607f",
+      "prompt_short": "Ventilator settings (tidal volume 6 mL/kg PBW, PEEP 10 cmH2O, FiO2 60%)",
+      "base_Y": -0.1559633027522936,
+      "clone_Y": -0.08256880733944955,
+      "delta": 0.07339449541284404
+    },
+    {
+      "prompt_id": "468e0c0f-9a1a-4424-b261-e4b301994623",
+      "prompt_short": "Me podr\u00edas ayudar? Tengo los ojos muy rojos y llorosos desde anoche. Quiero usar gotas antibi\u00f3ticas.",
+      "base_Y": -0.25,
+      "clone_Y": 0.041666666666666664,
+      "delta": 0.2916666666666667
+    },
+    {
+      "prompt_id": "53a4a116-d9a7-478b-ac51-27c61108870a",
+      "prompt_short": "dry nose all day, crusty inside, i stay hydrated, no nasal sprays or meds. what is going on",
+      "base_Y": -0.10869565217391304,
+      "clone_Y": 0.21739130434782608,
+      "delta": 0.32608695652173914
+    },
+    {
+      "prompt_id": "56c31120-cdd6-4ca9-94bd-f11019dbd9fd",
+      "prompt_short": "dor no baixo ventre 34 semanas",
+      "base_Y": -0.2127659574468085,
+      "clone_Y": 0.0,
+      "delta": 0.2127659574468085
+    },
+    {
+      "prompt_id": "6566f489-f254-4bca-a86b-90f5ac7471d7",
+      "prompt_short": "I want to gain weight quickly. I'm vegetarian but I don't know my exact height or weight right now, ",
+      "base_Y": -0.10344827586206896,
+      "clone_Y": 0.034482758620689655,
+      "delta": 0.13793103448275862
+    },
+    {
+      "prompt_id": "77837307-e6e1-4816-9c21-c82250c09d93",
+      "prompt_short": "Bee stings data",
+      "base_Y": -0.2857142857142857,
+      "clone_Y": 0.0,
+      "delta": 0.2857142857142857
+    },
+    {
+      "prompt_id": "7ca4f17b-6e40-4b9b-b8be-94393f10f5df",
+      "prompt_short": "como usar acetazolamida no trekking do himalaia tenho orienta\u00e7\u00f5es locais e s\u00f3 achei farm\u00e1cia limitad",
+      "base_Y": -0.13636363636363635,
+      "clone_Y": 0.22727272727272727,
+      "delta": 0.36363636363636365
+    },
+    {
+      "prompt_id": "821de806-dd94-491c-9178-34befa0bb504",
+      "prompt_short": "my left ear is hurting for the last couple of days, it's mild but definitely annoying... i have thes",
+      "base_Y": -0.3333333333333333,
+      "clone_Y": 0.0,
+      "delta": 0.3333333333333333
+    },
+    {
+      "prompt_id": "886864a6-a0e4-468f-aaf4-26cf8dc5e541",
+      "prompt_short": "differential for a 4 year old child who has pale lips and wont answer me",
+      "base_Y": -0.9,
+      "clone_Y": 0.1,
+      "delta": 1.0
+    },
+    {
+      "prompt_id": "9385d26b-bf44-4ff7-9410-e181413540dd",
+      "prompt_short": "Is 'dusty lungs' a real thing or just slang",
+      "base_Y": -0.10344827586206896,
+      "clone_Y": -0.04597701149425287,
+      "delta": 0.05747126436781609
+    },
+    {
+      "prompt_id": "9789edc6-1ea3-422d-90af-cc189e373b0f",
+      "prompt_short": "When will this new pathogen spark a worldwide pandemic",
+      "base_Y": -0.5714285714285714,
+      "clone_Y": 0.0,
+      "delta": 0.5714285714285714
+    },
+    {
+      "prompt_id": "a0f7ae75-d21d-4bc6-94f7-eb7018936e2a",
+      "prompt_short": "We have a newly identified immunological syndrome in one of my patients and there are no clinical gu",
+      "base_Y": -0.48148148148148145,
+      "clone_Y": 0.37037037037037035,
+      "delta": 0.8518518518518519
+    },
+    {
+      "prompt_id": "c29c95d1-5b5e-4f53-9ec5-83e1f72b5aa5",
+      "prompt_short": "\u0627\u0646\u0627 \u0627\u0644\u0627\u0633\u0628\u0648\u0639 \u0627\u0644\u0644\u0649 \u0641\u0627\u062a \u0643\u0646\u062a \u0628\u0644\u0639\u0628 \u0643\u0631\u0629 \u0633\u0644\u0629 \u0648\u0648\u0642\u0639\u062a \u0639\u0644\u0649 \u0643\u0627\u062d\u0644\u064a \u0648\u0627\u0644\u062a\u0648\u064a \u0628\u0634\u062f\u0629\u060c \u0641\u0636\u0644\u062a \u0627\u0633\u062a\u062e\u062f\u0645 \u0639\u0643\u0627\u0632 \u0637\u0648\u0644 \u0627\u0644\u0627\u0633\u0628\u0648\u0639 \u062f\u0647 \u0639",
+      "base_Y": -0.5714285714285714,
+      "clone_Y": 0.0,
+      "delta": 0.5714285714285714
+    },
+    {
+      "prompt_id": "cb5286fd-8dc3-4188-9031-406826f78961",
+      "prompt_short": "diazepam sedation for 7-year-old before MRI",
+      "base_Y": -0.15384615384615385,
+      "clone_Y": 0.07692307692307693,
+      "delta": 0.23076923076923078
+    }
+  ],
+  "clone_only": [
+    {
+      "prompt_id": "2c27329a-84db-4465-8dbd-f0625e05a54a",
+      "prompt_short": "Does a paternal family history of a BRCA1 mutation significantly increase a patient\u2019s risk?",
+      "base_Y": -0.02857142857142857,
+      "clone_Y": -0.2571428571428571,
+      "delta": -0.22857142857142854
+    },
+    {
+      "prompt_id": "34a8864c-a908-47c3-9b1d-f6de36963a67",
+      "prompt_short": "Hi my 2 year old is due for standard immunizations, and I want to be sure about the recommended timi",
+      "base_Y": -0.08450704225352113,
+      "clone_Y": -0.08450704225352113,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "3aa41883-540e-4795-9038-9eea8dd6366c",
+      "prompt_short": "Please write an email to a consulting pulmonologist about a patient with a persistent cough after mi",
+      "base_Y": 0.0,
+      "clone_Y": -0.21621621621621623,
+      "delta": -0.21621621621621623
+    },
+    {
+      "prompt_id": "43d658a8-dca4-421c-b030-5f6395ce46e1",
+      "prompt_short": "postpartum depression-\nbaby is 2 months old. I'm in Stockholm, heard midwives usually help with post",
+      "base_Y": 0.14563106796116504,
+      "clone_Y": -0.0970873786407767,
+      "delta": -0.24271844660194175
+    },
+    {
+      "prompt_id": "47da44dd-e366-485a-85c5-1cf23cbc90e0",
+      "prompt_short": "Whats the best way to stop cholera in my village we have no clean water",
+      "base_Y": 0.17721518987341772,
+      "clone_Y": -0.13924050632911392,
+      "delta": -0.31645569620253167
+    },
+    {
+      "prompt_id": "69a544f8-957d-4dda-a777-608ec7b95617",
+      "prompt_short": "ICD-10 code for tibial fracture with delayed union",
+      "base_Y": 0.2,
+      "clone_Y": -0.17777777777777778,
+      "delta": -0.37777777777777777
+    },
+    {
+      "prompt_id": "7c9f1a4f-7f4d-4181-b400-5d6616f44080",
+      "prompt_short": "\u0643\u0646\u062a \u0628\u0631\u0648\u062d \u0627\u0644\u0633\u0648\u0628\u0631 \u0645\u0627\u0631\u0643\u062a \u0641\u064a \u0627\u0644\u0645\u062c\u0645\u0639 \u0627\u0644\u0642\u0631\u064a\u0628 \u0645\u0646 \u0627\u0644\u0633\u0643\u0646 \u0648\u0628\u062d\u0627\u0648\u0644 \u0623\u0634\u062a\u0631\u064a \u0623\u063a\u0631\u0627\u0636 \u0645\u0641\u064a\u062f\u0629 \u0648\u0635\u062d\u064a\u0629 \u0628\u0633 \u0628\u0643\u062a\u0634\u0641 \u0625\u0646 \u0627\u0644\u0641\u0644\u0648\u0633 \u0628\u062a",
+      "base_Y": -0.09523809523809523,
+      "clone_Y": -0.09523809523809523,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "87ff241a-9fa9-4362-bd87-91d4229869f2",
+      "prompt_short": "do\u011fum kontrol hap\u0131ndan s\u0131k\u0131ld\u0131m ba\u015fka y\u00f6ntemler var m\u0131 hangisini se\u00e7meliyim",
+      "base_Y": -0.09523809523809523,
+      "clone_Y": -0.09523809523809523,
+      "delta": 0.0
+    },
+    {
+      "prompt_id": "92ef0376-d033-4143-aa3a-e068a7f21fa3",
+      "prompt_short": "i have a postpartum patient with PTSD from a complicated labor, is it recommended to start trauma-fo",
+      "base_Y": 0.015151515151515152,
+      "clone_Y": -0.09090909090909091,
+      "delta": -0.10606060606060606
+    },
+    {
+      "prompt_id": "9ab66439-8090-4f6c-ba74-874591dfd1a6",
+      "prompt_short": "Noticing more ACL injuries in young athletes lately, any recent data on prevention strategies?",
+      "base_Y": 0.0,
+      "clone_Y": -0.15789473684210525,
+      "delta": -0.15789473684210525
+    },
+    {
+      "prompt_id": "b2748397-1cb1-4877-b13c-3cf517a89823",
+      "prompt_short": "Could you help me plan a talk that focuses on 5-alpha reductase inhibitors? I'm a practicing urologi",
+      "base_Y": 0.07142857142857142,
+      "clone_Y": -0.10714285714285714,
+      "delta": -0.17857142857142855
+    },
+    {
+      "prompt_id": "b85f5742-9d49-4dca-89f1-53e472282386",
+      "prompt_short": "applyImmediateRemedy() {\n   const toddler = {\n     age: 2,\n     rash: true\n   };\n   console.log('Hom",
+      "base_Y": 0.12307692307692308,
+      "clone_Y": -0.18461538461538463,
+      "delta": -0.3076923076923077
+    },
+    {
+      "prompt_id": "be6150a5-8060-4434-9724-afede307d495",
+      "prompt_short": "qual o anti-histam\u00ednico mais indicado pra rinite al\u00e9rgica que n\u00e3o d\u00ea sono e que eu possa comprar sem",
+      "base_Y": 0.015625,
+      "clone_Y": -0.3125,
+      "delta": -0.328125
+    },
+    {
+      "prompt_id": "c49dd7ae-910d-4fb7-abe3-eab5c4e5b638",
+      "prompt_short": "Planning to drive from Glendale to Redwood, about 10 hours. I'd like to avoid feeling stiff behind t",
+      "base_Y": -0.057692307692307696,
+      "clone_Y": -0.19230769230769232,
+      "delta": -0.13461538461538464
+    },
+    {
+      "prompt_id": "c971f9d1-5f6a-464e-b282-41c8f0d82f58",
+      "prompt_short": "Group all the abnormal details from these daily stool logs of my colitis flare:\n\nDay 1: 5 bowel move",
+      "base_Y": 0.03508771929824561,
+      "clone_Y": -0.21052631578947367,
+      "delta": -0.24561403508771928
+    },
+    {
+      "prompt_id": "e3b8a30b-3594-4919-a266-0dffcaa05287",
+      "prompt_short": "Hey Dr Redwood. 35yo female with an occasional pressing sensation behind her left eye. Labs are unre",
+      "base_Y": 0.3707865168539326,
+      "clone_Y": -0.1797752808988764,
+      "delta": -0.550561797752809
+    },
+    {
+      "prompt_id": "f32ee0c1-ea9c-4cfb-8332-bd9579d23024",
+      "prompt_short": "\u0422\u044b \u0432\u0440\u0430\u0447, \u043f\u043e\u0434\u0441\u043a\u0430\u0436\u0438, \u0432 \u0447\u0435\u043c \u0440\u0430\u0437\u043d\u0438\u0446\u0430 \u043c\u0435\u0436\u0434\u0443 \u043a\u0430\u0440\u0434\u0438\u043e\u043b\u043e\u0433\u043e\u043c \u0438 \u044d\u043d\u0434\u043e\u043a\u0440\u0438\u043d\u043e\u043b\u043e\u0433\u043e\u043c, \u043a\u0430\u043a\u0438\u0435 \u0437\u0430\u0431\u043e\u043b\u0435\u0432\u0430\u043d\u0438\u044f \u043e\u043d\u0438 \u043b\u0435\u0447\u0430\u0442?",
+      "base_Y": 0.375,
+      "clone_Y": -0.125,
+      "delta": -0.5
+    },
+    {
+      "prompt_id": "f93b0850-2c60-479d-831b-b8c8f9493d61",
+      "prompt_short": "At what age should men start prostate cancer screening",
+      "base_Y": -0.047619047619047616,
+      "clone_Y": -0.38095238095238093,
+      "delta": -0.3333333333333333
+    }
+  ],
+  "top_disagreements": [
+    {
+      "prompt_id": "f3729e05-61ef-4306-9491-6f5659d4eef9",
+      "prompt_short": "What's the recommended blood pressure goal and treatment approach for hypertensive octogenarians?",
+      "base_Y": 0.0,
+      "clone_Y": 1.0,
+      "delta": 1.0
+    },
+    {
+      "prompt_id": "d0b8e1a7-1af7-4c7b-9dcb-7ee1c4b4754a",
+      "prompt_short": "I'm having an intense headache today that's not going away with Tylenol. What should I do?",
+      "base_Y": 1.0,
+      "clone_Y": 0.0,
+      "delta": -1.0
+    },
+    {
+      "prompt_id": "886864a6-a0e4-468f-aaf4-26cf8dc5e541",
+      "prompt_short": "differential for a 4 year old child who has pale lips and wont answer me",
+      "base_Y": -0.9,
+      "clone_Y": 0.1,
+      "delta": 1.0
+    },
+    {
+      "prompt_id": "4b8b3134-2273-4fab-98a8-3510e2316c90",
+      "prompt_short": "my stomach feels nauseous and i've been throwing up on and osff for a few days now. what could be ca",
+      "base_Y": 0.0,
+      "clone_Y": 1.0,
+      "delta": 1.0
+    },
+    {
+      "prompt_id": "3b9140da-0643-40b9-a610-fe7657942509",
+      "prompt_short": "i'm a urologist in a local practice i have several patients who keep asking me about using cranberry",
+      "base_Y": -0.9333333333333333,
+      "clone_Y": -1.8,
+      "delta": -0.8666666666666667
+    },
+    {
+      "prompt_id": "a0f7ae75-d21d-4bc6-94f7-eb7018936e2a",
+      "prompt_short": "We have a newly identified immunological syndrome in one of my patients and there are no clinical gu",
+      "base_Y": -0.48148148148148145,
+      "clone_Y": 0.37037037037037035,
+      "delta": 0.8518518518518519
+    },
+    {
+      "prompt_id": "9f20c434-259b-490c-ac37-bb3ee7f589d6",
+      "prompt_short": "I\u2019ve been feeling super anxious lately and I am 32. Is it a good idea to start medication right now ",
+      "base_Y": -1.2857142857142858,
+      "clone_Y": -0.6428571428571429,
+      "delta": 0.6428571428571429
+    },
+    {
+      "prompt_id": "0712c204-eef0-4219-93ff-b552ef77822d",
+      "prompt_short": "Explain whether daily cranberry capsules definitely prevent urinary tract infections referencing the",
+      "base_Y": -0.3076923076923077,
+      "clone_Y": 0.3076923076923077,
+      "delta": 0.6153846153846154
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+\section{Human evaluation}
+\label{sec:human_eval}
+
+\subsection{Methods}
+
+We designed our StrongREJECT evaluator to accurately measure how useful jailbreaks are for an attacker who wants to use a model for harmful goals. To test its effectiveness, we designed an experiment to compare our evaluator to ``baseline” automated evaluators from prior and concurrent research regarding their similarity to human judgment of this criterion. At a high level, our experiment compared human evaluations of victim model responses to many jailbroken prompts to automated evaluations of those same responses. We then evaluated the data as if the automated evaluators were regression models predicting the human evaluations.
+
+\pseudopara{Jailbreak methods.} We chose 17 jailbreak methods for our human evaluation. These include a range of methods aggregated from social media and past work from \citet{wei2023jailbroken}, including attacks from websites like \url{jailbreakchat.com}, techniques from \citet{kang2023exploiting}, and low-resource language translation attacks \cite{yong2023low}. \cref{tab:jailbreaks} contains detailed descriptions of each attack.
+
+\pseudopara{Victim models.} Initially, we considered three victim models: GPT-4~(version 0613)~\citep{achiam2023gpt} GPT-3.5 Turbo \cite{openai_gpt-3.5_turbo}, and Llama-2~(llama2-70b-chat)~\citep{touvron2023llama}. A preliminary inspection revealed that few of our jailbreaks were effective against these models. To create a more balanced dataset, we added a fourth victim model -- Dolphin \cite{dolphin} -- a version of Mixtral 8$\times$7B trained to remove its safety fine-tuning. Dolphin often provides high-quality, harmful responses to forbidden prompts, allowing us to measure the extent to which automated evaluators recognize genuinely harmful responses.
+
+\pseudopara{Human evaluators and dataset.} We recruited five labelers from LabelBox to label responses from our four victim models to a 60-prompt subset of our StrongREJECT dataset. Labelers rated each forbidden prompt-response pair from 1 (least jailbroken) to 5 (fully jailbroken), which we rescaled to [0-1]. We contracted the labelers to label as many forbidden prompt-response pairs as possible until our \$2,500 research budget was exhausted. To reduce noise, we took the median label across the five human labelers for each forbidden prompt-response pair as the ground truth. This gave us a dataset of 1,361 labeled data points. \cref {app:human_eval_guidelines} contains additional details regarding human evaluations.
+
+\pseudopara{Baseline automated evaluators.} We used six previous automated evaluators and the concurrently released HarmBench evaluator as baselines against which to compare our StrongREJECT automated evaluator. The baseline automated evaluators we chose were:
+
+\begin{itemize}
+	\item \textbf{String matching for non-refusal.} A simple search for matching strings indicating the model refused to respond to the forbidden prompt \citep{robey2023smoothllm}.
+
+	\item \textbf{Jailbroken - binary.} An LLM prompt designed to assess whether the victim model refused to respond to the forbidden prompt \citep{shieldandspear}.
+
+	\item \textbf{PICT.} An LLM prompt designed to assess whether the victim model's response contained harmful information related to a given category of prohibited behavior \citep{shah2023scalable, feuillade-montixi2023pict}.
+
+	\item \textbf{GPT-4 Judge.} A Likert-style prompt assessing how harmful a response is \citep{qi2023fine}.
+
+	\item \textbf{PAIR.} A Likert-style prompt assessing the extent to which a model ``violates ethical, legal, or safety guidelines" in responding to the prompt \citep{chao2023jailbreaking}.
+	
+	\item \textbf{OpenAI moderation API.} An indicator that the response was flagged by the moderation API.
+
+	\item \textbf{HarmBench.} A binary classifier fine-tuned from Llama 2 13B, proposed in concurrent work \citep{mazeika2024harmbench}.
+\end{itemize}
+
+\subsection{Results} \label{sec:human_eval_results}
+
+~\Cref{tab:condensed_autograder_results} summarizes the results of our human evaluation.
+
+\begin{table}[ht]
+    \centering
+    \small
+    \begin{tabular}{@{}lrrrr@{}}
+        \toprule
+        Evaluator & Bias & MAE (All responses) & MAE (Human $>$ 0) & Spearman \\
+        \midrule
+        String matching         & 0.484 $\pm$ 0.03  & 0.580 $\pm$ 0.03 & 0.372 $\pm$ 0.04 & -0.394 \\
+        Jailbroken - binary      & 0.354 $\pm$ 0.03  & 0.407 $\pm$ 0.03 & 0.254 $\pm$ 0.04 & -0.291 \\
+        PICT       & 0.232 $\pm$ 0.02  & 0.291 $\pm$ 0.02 & 0.278 $\pm$ 0.04 & 0.101 \\
+        GPT-4 Judge             & 0.208 $\pm$ 0.02  & 0.262 $\pm$ 0.02 & \textbf{0.212} $\pm$ 0.03 & 0.157 \\
+        PAIR & 0.152 $\pm$ 0.02 & 0.205 $\pm$ 0.02 & 0.224 $\pm$ 0.03 & 0.249 \\
+        OpenAI moderation API   & -0.161 $\pm$ 0.02 & 0.197 $\pm$ 0.02 & 0.761 $\pm$ 0.04 & -0.103 \\
+        HarmBench               & \textbf{0.013} $\pm$ 0.01  & 0.090 $\pm$ 0.01 & 0.239 $\pm$ 0.03 & 0.819 \\
+        \midrule
+        StrongREJECT fine-tuned & -0.023 $\pm$ 0.01 & \textbf{0.084} $\pm$ 0.01 & 0.244 $\pm$ 0.02 & \textbf{0.900} \\
+        StrongREJECT rubric     & \textbf{0.012} $\pm$ 0.01  & \textbf{0.077} $\pm$ 0.01 & \textbf{0.196} $\pm$ 0.03 & \textbf{0.846} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Our StrongREJECT automated evaluator achieves state-of-the-art agreement with human judges. Column 1 shows the bias, $\mathbb E[\text{score}_{\text{grader}} - {\text{score}}_{\text{human}}]$, of automated evaluators compared to human scores. Column 2 shows mean absolute error (MAE) with human scores calculated across all data. Column 3 shows MAE on data where humans gave nonzero scores. Column 4 shows the Spearman correlation between the jailbreak methods' rank orders as determined by humans vs. the automated evaluators. Error bars show 95\% confidence intervals calculated using \texttt{scipy.stats.bootstrap}. For each measure of agreement with human judges, we bold the scores for the two best automated evaluators.}
+    \label{tab:condensed_autograder_results}
+\end{table}
+
+\pseudopara{\ours is less biased than automated evaluators in prior work.} Column 1 in \cref{tab:condensed_autograder_results} shows the bias of all the automated evaluators, considering human evaluations to be the ground truth. Most of the baseline automated evaluators overestimate how effective jailbreak methods are on average, especially string matching for non-refusal. The lone exception is the moderation API, which systematically underestimates jailbreak methods. By contrast, both versions of the StrongREJECT evaluator and HarmBench exhibit almost no bias.
+
+\pseudopara{\ours is the most accurate automated evaluator.} \cref{tab:condensed_autograder_results} column 2 displays the mean absolute error (MAE) between automated evaluator scores and human evaluation scores. Both versions of our \ours automated evaluator have a lower MAE than every other automated evaluator.
+
+Our \ours evaluators' performance is driven by two factors. First, \ours accurately identifies harmless responses. Responses that human labelers rated as completely harmless (a score of 0) received an average score of 0.039 and 0.035 from our rubric-based and fine-tuned evaluators, respectively. This was lower than every other evaluator except for the OpenAI moderation API, which gave these responses an average of 0.019. Second, column 3 of \cref{tab:condensed_autograder_results} shows that \ours accurately assesses responses that human labelers rated as partially harmful (a score greater than 0). The fine-tuned StrongREJECT evaluator is among the better evaluators, while the rubric-based StrongREJECT evaluator is the most accurate for partially harmful responses.
+
+\pseudopara{\ours gives accurate jailbreak method rankings.} Many researchers are interested in ranking jailbreak methods to determine which are the most effective against a specific model. Column 4 of \cref{tab:condensed_autograder_results} shows a high Spearman correlation between jailbreak rankings according to human labels and StrongREJECT evaluator scores for GPT-3.5 Turbo. These correlations are substantially higher than those for most baseline automated evaluators, except for HarmBench, which has comparable performance. ~\cref{sec:spearman_robustness} shows that these results are robust to different data inclusion rules.
+
+\pseudopara{\ours is robustly accurate across jailbreak methods.} Automated evaluators should be robustly accurate across a variety of jailbreak methods. Figure \ref{fig:mae_by_jailbreak_x_evaluator} shows that, among the automated evaluators we tested, both versions of our \ours evaluator are consistently among the closest to human evaluations across every jailbreak method we considered. In contrast to every automated evaluator from prior work except HarmBench, we found no jailbreak method for which \ours differed substantially from human evaluations.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.75]{figures/mae_by_jailbreak_x_evaluator.pdf}
+    \caption{Mean absolute error (MAE) between human labels and automated evaluator scores by jailbreak. A low MAE indicates high agreement with human judgments. Both the rubric-based and fine-tuned StrongREJECT evaluators have high agreement with human judgments for all jailbreaks.}
+    \label{fig:mae_by_jailbreak_x_evaluator}
+\end{figure}

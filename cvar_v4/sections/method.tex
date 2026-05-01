@@ -1,0 +1,62 @@
+\section{Audit-Gated CVaR-CJE}
+\label{sec:method}
+
+\subsection{Direct Stop-Loss Estimator}
+
+For each threshold $t$, define the oracle shortfall
+\begin{equation}
+Z_t=\shortfall{t}{\Y}.
+\end{equation}
+On the calibration slice from logger policy $\pzero$, fit a monotone or two-stage calibrator
+\begin{equation}
+\hat h_t(\Sscore,\X)\approx \E_{\pzero}[Z_t\mid \Sscore,\X].
+\end{equation}
+Then evaluate the target-policy objective on fresh target responses with cheap judge scores:
+\begin{equation}
+\hat\Psi_{\alpha,\ptarget}(t)
+=t-\frac{1}{\alpha n}\sum_{i=1}^{n}\hat h_t(\Sscore_i,\X_i).
+\end{equation}
+The direct CVaR-CJE estimate is
+\begin{equation}
+\widehat{\CVaR}_{\alpha}^{\mathrm{direct}}(\ptarget)
+=\max_{t\in\mathcal{T}}\hat\Psi_{\alpha,\ptarget}(t),
+\qquad
+\hat t_{\alpha}=\arg\max_{t\in\mathcal{T}}\hat\Psi_{\alpha,\ptarget}(t).
+\end{equation}
+The grid $\mathcal{T}$ should cover the plausible lower tail and be fixed before looking at policy comparisons.
+
+\subsection{Audit}
+
+The audit is computed on a held-out target-policy slice with both $\Sscore$ and $\Y$. It has two moments:
+\begin{align}
+g_1(O;\hat t_{\alpha}) &= \one\{\Y\leq \hat t_{\alpha}\}-\alpha,\\
+g_2(O;\hat t_{\alpha}) &= \shortfall{\hat t_{\alpha}}{\Y}-\hat h_{\hat t_{\alpha}}(\Sscore,\X).
+\end{align}
+The first checks whether the selected threshold has the intended target-policy tail mass. The second checks whether the shortfall calibrator transports to the target policy.
+
+Let $\bar g$ be the audit-slice mean of $(g_1,g_2)$ and let $\hat\Sigma$ be a calibration-aware covariance estimate. The Wald statistic is
+\begin{equation}
+W_n=\bar g^\top \hat\Sigma^{-1}\bar g.
+\label{eq:wald}
+\end{equation}
+The gate rejects at level $\eta$ if $W_n>\chi^2_{2,1-\eta}$. A rejection triggers \RefuseLevel{}: the paper may show the point estimate as a diagnostic, but the headline must not interpret it as a calibrated level claim.
+
+\paragraph{The $\alpha=1$ connection.}
+For $\Y\in[0,1]$, the optimizer in \cref{eq:stoploss-cvar} can be taken as $t=1$ when $\alpha=1$, and the CVaR equals $V(\ptarget)$. The first audit moment is then zero, and the second is the negative of the mean-CJE residual up to the same calibration mapping. Thus mean-CJE is the full-distribution special case, while CVaR-CJE is the lower-tail extension.
+
+\subsection{Estimator Set}
+
+The main paper should keep the estimator set small:
+\begin{enumerate}[leftmargin=*,nosep]
+\item naive judge CVaR on raw cheap scores;
+\item oracle-only CVaR on the labeled slice;
+\item direct CVaR-CJE with stop-loss calibration;
+\item direct+cov CVaR-CJE with response-length and stratum covariates;
+\item quantile-CJE as a companion summary.
+\end{enumerate}
+DR, IPS, stacked estimators, and alternative audits belong in the appendix unless they change the empirical conclusion.
+
+\subsection{Inference}
+
+Confidence intervals use a cluster bootstrap over prompts. Each bootstrap replicate resamples prompt clusters, refits the shortfall calibrators, re-optimizes $\hat t_{\alpha}$, and recomputes both the estimate and the audit statistic. Re-optimizing the threshold inside the bootstrap is required; otherwise the audit variance ignores a first-order nuisance in the CVaR functional.
+

@@ -1,0 +1,32 @@
+\begin{table}[H]
+\centering
+\caption{Accuracy \& Uncertainty Metrics}
+\label{tab:accuracy}
+\setlength{\tabcolsep}{4pt} % tighten columns a bit
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Estimator & $\mathrm{RMSE}^{\mathrm{d}}$ $\downarrow$ & IS (interval score) $\downarrow$ & Coverage \\% $\to 95$ & SE GM $\downarrow$ & Pairwise \% $\uparrow$ & Top-1 \% $\uparrow$ & $\tau$ $\uparrow$ & Runtime (s) $\downarrow$ \\
+\midrule
+naive-direct & 0.0828 & 2.9580 & 0.0 & \textbf{0.0039} & 90.9 & 79.6 & 0.817 & 0.4 \\
+direct & \textbf{0.0223} & \textbf{0.0542} & 85.0 & \underline{0.0068} & 91.8 & 84.1 & 0.837 & 0.7 \\
+direct+cov & 0.0256 & \underline{0.0568} & 86.1 & 0.0074 & \textbf{94.4} & \textbf{89.5} & \textbf{0.888} & 1.6 \\
+SNIPS & 0.1596 & 0.7379 & 98.3 & 0.1815 & 38.3 & 8.7 & -0.235 & \textbf{0.3} \\
+SNIPS+cov & 0.1842 & 0.7544 & 97.8 & 0.1842 & 37.4 & 6.4 & -0.252 & \underline{0.3} \\
+calibrated-ips & 0.0246 & 0.5727 & 99.1 & 0.0963 & 47.1 & 19.0 & -0.059 & 0.3 \\
+calibrated-ips+cov & 0.0262 & 0.6084 & 99.2 & 0.1027 & 46.5 & 20.5 & -0.070 & 0.4 \\
+dr-cpo & 0.0459 & 0.2203 & 99.2 & 0.0371 & 78.3 & 46.3 & 0.566 & 3.1 \\
+dr-cpo+cov & 0.0570 & 0.2657 & 99.4 & 0.0449 & 79.1 & 50.1 & 0.581 & 9.6 \\
+calibrated-dr-cpo & 0.0224 & 0.1357 & 99.5 & 0.0230 & 90.9 & 81.0 & 0.818 & 3.2 \\
+calibrated-dr-cpo+cov & 0.0260 & 0.1398 & 99.3 & 0.0236 & \underline{94.1} & \underline{87.7} & \underline{0.882} & 9.7 \\
+stacked-dr & \underline{0.0224} & 0.0788 & \textbf{95.6} & 0.0125 & 91.9 & 83.1 & 0.838 & 8.9 \\
+stacked-dr+cov & 0.0281 & 0.0806 & \underline{96.1} & 0.0128 & 92.1 & 84.8 & 0.842 & 38.2 \\
+\bottomrule
+\end{tabular}
+}
+\footnotesize{
+$\downarrow$: lower is better, $\uparrow$: higher is better, $\to 95$: target is 95\%. 
+\textbf{Bold}: best (closest to target for Coverage \%), \underline{underlined}: second-best. 
+Metrics averaged across all regimes.
+}
+\end{table}

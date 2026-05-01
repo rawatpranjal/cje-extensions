@@ -1,0 +1,70 @@
+\section{Mining Jailbreak Tactics}
+\label{asec:strategy_mine}
+
+
+\subsection{Manually-Mined Jailbreak Tactics}
+\label{assec:manually_mined}
+
+\input{tables/manual_tactics_full}
+
+The complete list of manually-mined jailbreaking tactics is shown in Table \ref{tab:appendix_example_tactics} and \ref{tab:appendix_example_tactics_cont}.
+
+\subsection{Automatically Mining Jailbreak Tactics with \gptfour}
+\label{assec:tactics_mining_prompts}
+
+The instruction prompt used to simplify an adversarial harmful prompt into a vanilla counterpart that captures the main harmful intent is shown in Table \ref{tab:adversarial_prompt_simplification_prompt}. The instruction prompt used to mine jailbreak tactics from an adversarial prompt is shown in Table \ref{tab:strategy_mining_prompt}. Examples of automatically-mined jailbreaking tactics are shown in Table 
+\ref{tab:appendix_example_auto_tactics}.
+
+\input{tables/adversarial_prompt_simplification_prompt}
+
+\input{tables/strategy_mining_prompt}
+
+\input{tables/automatic_tactics_examples}
+
+\subsection{Analysis of Mined Jailbreak Tactics}
+
+\paragraph{Cluster Deduplication}
+We duplicate all items of mined tactics by clustering on their corresponding definitions with sentence embeddings obtained from Nomic Embed\footnote{\url{https://huggingface.co/nomic-ai/nomic-embed-text-v1}} with the clustering threshold of 0.75. Examples of tactic clusters are shown in Table \ref{tab:tactic_cluster_examples}.
+
+\input{tables/tactic_cluster_examples}
+
+\paragraph{Cluster Distribution} We analyze the distribution of various clusters of jailbreak tactics identified by \method. Figure \ref{fig:tactics_pie_chart} presents a pie chart illustrating the top 20 clusters. We can see that these top tactics constitute only a small fraction of all attack strategies, highlighting the diversity of jailbreak tactics \method has identified.
+
+\paragraph{Word Cloud} We compute the word cloud for jailbreak tactics identified by \method, as shown in Figure \ref{fig:word_cloud}. The most common themes among jailbreak tactics are ``role play,''  ``coded language,'' ``fictional character.'' ``surrogate modality,'' ``detailed character,''  ``denial of ethical constraint,'' ``rule breaking,'' and ``third party.'' We also observe a diverse distribution of themes among jailbreak tactics, reflecting the variety of jailbreak tactics that \method has identified.
+
+\paragraph{Cluster Visualization} We visualize the jailbreak tactics identified by \method in Figure \ref{fig:tactics_pca}, where we plot the sentence embeddings of each tactic description after reducing dimensions using PCA. We highlight the top-10 clusters with colors.
+
+\paragraph{Tactics Co-occurrence} We plot the chord diagram for the top-15 clusters to analyze the co-occurrence of jailbreak tactics identified by \method, as illustrated in Figure \ref{fig:chord_diagram}. We found tactics from smaller clusters frequently co-occur with dominant tactics, such as ``fictional justifications,'' ``content normalization through competition narratives,'' ``specific detailed instructions'' and ``sexual character assignment.''
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/tactics_pie-rotated.pdf}
+    \caption{The pie chart shows the percentages of the top 20 clusters of jailbreak tactics. We can see that these top tactics constitute only a small fraction of all attack tactics, highlighting the diversity of attacking methods \method has identified.}
+    \label{fig:tactics_pie_chart}
+\end{figure*}
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/value_cloud.png}
+    \caption{Words cloud of jailbreak tactics \method identifies. The most common themes among jailbreak tactics are ``role play,''  ``coded language,'' ``fictional character.'' ``surrogate modality,'' ``detailed character,''  ``denial of ethical constraint,'' ``rule breaking,'' and ``third party.''}
+    \label{fig:word_cloud}
+\end{figure*}
+
+
+\begin{figure*}[h]
+    \centering
+  
+    \includegraphics[width=1\textwidth]{figures/pca.png}
+      \caption{Visualization of SentenceBert embeddings for definitions of jailbreak tactics identified by \method, reduced via PCA. The top-10 clusters are highlighted in color.}
+    \label{fig:tactics_pca}
+\end{figure*}
+
+\begin{figure*}[h]
+    \centering
+  
+    \includegraphics[width=1\textwidth]{figures/chord_diagram_rotated.pdf}
+      \caption{Chord diagram illustrating the co-occurrence of jailbreak tactics identified by \method in the top-15 clusters. Tactics from smaller clusters frequently co-occur with dominant tactics, including ``fictional justifications,'' ``content normalization through competition narratives,'' ``specific detailed instructions'' and ``sexual character assignment''.}
+    \label{fig:chord_diagram}
+\end{figure*}
+
+

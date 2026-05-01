@@ -1,0 +1,101 @@
+\documentclass{article}
+
+
+% if you need to pass options to natbib, use, e.g.:
+\PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2024
+
+% ready for submission
+% \usepackage{neurips_2024}
+\usepackage[preprint]{neurips_2024}
+
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2024}
+
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+%     \usepackage[final]{neurips_2024}
+
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2024}
+
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+\usepackage{amsmath}
+\usepackage{rotating} % used for rotating cells 
+% \usepackage{subcaption}
+
+%% package for the appendix
+\usepackage[toc,page]{appendix}
+\usepackage{titletoc}
+
+\title{\methodemoji\method at Scale: From In-the-Wild Jailbreaks to (Adversarially) Safer Language Models}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+
+% Liwei Jiang, Kavel Rao, Seungju Han, Allyson Ettinger, Faeze Brahman, Sachin Kumar, Niloofar Mireshghallah, Ximing Lu, Maarten Sap, Nouha Dziri, Yejin Choi
+
+\author{%
+ Liwei Jiang$^{1,2}$ \quad
+ Kavel Rao$^{*,1}$ \quad 
+ Seungju Han$^{*,2,3}$ \quad
+ Allyson Ettinger$^{2}$ \\ 
+ \textbf{Faeze Brahman$^{2}$ \quad Sachin Kumar$^{2}$ \quad Niloofar Mireshghallah$^{1}$ \quad Ximing Lu$^{1,2}$} \\ 
+ \textbf{Maarten Sap$^{2,4}$ \quad Yejin Choi$^{1,2}$ \quad Nouha Dziri$^{2}$} \\
+ [1ex]
+ $^{1}$University of Washington \quad 
+ $^{2}$Allen Institute for Artificial Intelligence \\
+ $^{3}$Seoul National University \quad
+ $^{4}$Carnegie Mellon University \\
+ [1ex]
+ \texttt{\href{mailto:lwjiang@cs.washington.edu}{lwjiang@cs.washington.edu}}  \quad \texttt{\href{mailto:nouhad@allenai.org}{nouhad@allenai.org}}
+ \quad $^{*}$Co-second-authors \\
+  \vspace{-0.8em}
+\\ {\github{} Code \& Models:~\texttt{\url{https://github.com/allenai/wildteaming}}} 
+\\ {\huggingface Data:~\texttt{\url{https://huggingface.co/datasets/allenai/wildjailbreak}}}
+}
+
+\input{dfns}
+\input{math_commands}
+
+\begin{document}
+
+\maketitle
+
+\input{sections/0_abstract}
+\input{sections/1_introduction}
+\input{sections/2_mine}
+\input{sections/3_attack}
+\input{sections/4_dataset}
+\input{sections/5_train}
+\input{sections/6_discussions}
+\input{sections/7_related_work}
+\input{sections/8_conclusion}
+\input{sections/ethics_statement}
+\input{sections/acknowledgement}
+
+\newpage
+
+\bibliography{reference}
+\bibliographystyle{reference}
+
+\input{sections/z_appendix}
+\end{document}

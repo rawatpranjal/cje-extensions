@@ -1,0 +1,560 @@
+\clearpage
+\section{Adaptive Strategy for Allocating Calibration Samples Across Labels}
+
+We propose an adaptive strategy for allocating calibration sample sizes across the two true-label types (\emph{`correct'} and \emph{`incorrect'}) using a small pilot calibration set. Leveraging pilot estimates of sensitivity $\tilde{q}_1$ and specificity $\tilde{q}_0$, Algorithm~\ref{alg:allocation} attains an optimal allocation under a fixed total calibration budget, leading to shorter confidence intervals.
+
+\begin{algorithm}[h!]
+\caption{Adaptive strategy for allocating calibration sample sizes across true label types}
+\label{alg:allocation}
+{\bfseries Input:} Total calibration budget $m$, pilot sample size $2m_{\mathrm{pilot}}$ with $2m_{\mathrm{pilot}} \le m$, and the estimate $\hat{p}$ from the test dataset. \\
+{\bfseries Output:} Allocated calibration sample sizes $(m_0, m_1)$.
+\begin{algorithmic}[1]
+\STATE \textbf{Pilot calibration.}
+\STATE \hspace{1em} Collect $m_{\mathrm{pilot}}$ calibration examples with true label $z_j = 0$, and $m_{\mathrm{pilot}}$ examples with $z_j = 1$.
+\STATE \hspace{1em} Compute $\tilde{q}_0$ and $\tilde{q}_1$:
+\[
+\tilde{q}_0 = \frac{\sum_{z_j=0} \mathbf{1}\{ \hat{z}_j = 0, z_j = 0\}+1}{m_{\mathrm{pilot}}+2}, 
+\quad
+\tilde{q}_1 = \frac{\sum_{z_j=1} \mathbf{1}\{ \hat{z}_j =1, z_j = 1\}+1}{m_{\mathrm{pilot}}+2}.
+\]
+\STATE  \hspace{1em} Compute the estimated error ratio: 
+\[
+    \hat{\kappa} = \frac{1 - \tilde{q}_0}{1 - \tilde{q}_1}.
+\]
+\STATE \textbf{Compute adaptive allocation.}
+\STATE  \hspace{1em} Using the approximation in Proposition~\ref{thm:allocation}, compute the provisional allocation:
+\[
+m_1^\star = \mathrm{round}\left( \frac{m}{1 + (1/\hat{p} -1) \sqrt{\hat{\kappa}}} \right).
+\]
+
+\STATE  \hspace{1em} Enforce pilot size:
+\[
+m_1 = \min\big\{ \max\{m_1^\star,\, m_{\mathrm{pilot}}\}, m-m_{\mathrm{pilot}} \big\}
+, \quad
+m_0 = m - m_1.
+\]
+\end{algorithmic}
+\end{algorithm}
+
+% \clearpage
+\section{Proofs}
+\label{appendix:proof}
+
+% This section provides the proofs deferred from the main paper.
+
+\subsection{Deriving the Variance of Estimators}
+\label{appendix:proof:var}
+
+Because $p$ follows a binomial distribution, the variance of $\hat{p}$ is
+\begin{align}
+    \Var (\hat{p})
+    = \hat{p}(1 - \hat{p})/ n
+    .
+\end{align}
+Similarly, we have $\Var (\hat{q}_0) = \hat{q}_0(1 - \hat{q}_0)/m_0$ and $\Var (\hat{q}_1) = \hat{q}_1(1 - \hat{q}_1)/m_1$.
+
+We now derive the asymptotic variance of $\hat{\theta}$ using the delta method \citep{dorfman1938note, ver2012invented} for $\hat{\theta} = \frac{\hat{p} + \hat{q}_0 - 1}{\hat{q}_0 + \hat{q}_1 - 1}$. The first order derivatives with respect to $\hat{p}$, $\hat{q}_0$, and $\hat{q}_1$ are 
+\begin{align}
+    \frac{\partial \hat{\theta}}{\partial \hat{p}}
+    =
+    \frac{ 1 }{\hat{q}_0 + \hat{q}_1 - 1}
+    ,\qquad
+    \frac{\partial \hat{\theta}}{\partial \hat{q}_0}
+    =
+    \frac{ 1 - \hat{\theta}}{\hat{q}_0 + \hat{q}_1 - 1}
+    ,\qquad
+    \frac{\partial \hat{\theta}}{\partial \hat{q}_1}
+    =
+    \frac{ -\hat{\theta}}{\hat{q}_0 + \hat{q}_1 - 1}
+    .
+\end{align}
+Assuming independence between the test dataset and the calibration dataset, the delta method gives
+\begin{align}
+    \Var (\hat{\theta})
+    =
+    \frac{
+    \hat{p}(1 - \hat{p})/n
+    + (1 - \hat{\theta})^2 \cdot \hat{q}_0(1 - \hat{q}_0)/m_0
+    + \hat{\theta}^2 \cdot \hat{q}_1(1 - \hat{q}_1)/m_1
+    }{
+    (\hat{q}_0 + \hat{q}_1 - 1)^2
+    } .
+\end{align}
+
+\clearpage
+\subsection{Proofs of Propositions}
+
+\begin{proposition}
+    Suppose that $m := 2m_0 = 2m_1$ and that $q := q_0 = q_1$ with $0.5 < q \leq 1$. For sufficiently large $m\gtrsim 2q/(2q-1)^2$, the absolute bias of $\hat{\theta}$ in~\eqref{eq:theta} is always smaller than that of $\hat{p}$ in~\eqref{eq:avg-pred} for all $\theta \in [0,1]$.
+\end{proposition}
+\begin{proof}
+First, note that the bias of $\hat{p}$ in~\eqref{eq:avg-pred} is
+\begin{align}
+    \E[\hat{p}] - \theta
+    &=
+    (q_0 + q_1 - 1)\theta + (1 - q_0) - \theta
+    % \\ &
+    =
+    (2\theta - 1)(1 - q).
+\end{align}
+Next, consider the bias of $\hat{\theta}$ in~\eqref{eq:theta}. By the second-order delta method, we have
+\begin{align}
+    \E[\hat{\theta}]
+    &\approx
+    \frac{p + q_0 - 1}{q_0 + q_1 - 1}
+    +
+    \frac{1}{2}\left(
+        -\frac{2(q_1 - p)}{(q_0 + q_1 - 1)^3} \cdot \frac{q_0(1 - q_0)}{m_0}
+        + \frac{2(p + q_0 - 1)}{(q_0 + q_1 - 1)^3} \cdot \frac{q_1(1 - q_1)}{m_1}
+    \right)
+    \\ &=
+    \theta
+    - \frac{(q_1 - p)}{(q_0 + q_1 - 1)^3} \cdot \frac{q_0(1 - q_0)}{m_0}
+    + \frac{(p + q_0 - 1)}{(q_0 + q_1 - 1)^3} \cdot \frac{q_1(1 - q_1)}{m_1},
+\end{align}
+which implies
+\begin{align}
+    \E[\hat{\theta}] - \theta
+    &\approx
+    \frac{
+        - (1 - \theta) q_0(1 - q_0)/m_0
+        + \theta q_1(1 - q_1)/m_1
+    }{(q_0 + q_1 - 1)^2}
+    % \\ &
+    =
+    \frac{1}{m} \cdot
+    \frac{2q}{(2q - 1)^2} 
+    \cdot
+    (2\theta - 1)(1 - q)
+    .
+\end{align}
+Hence, for sufficiently large $m$ satisfying $m\gtrsim 2q/(2q-1)^2$,
+we conclude the following for all $\theta \in [0,1]$:
+\begin{align}
+    \big| \E[\hat{\theta}] - \theta \big|
+    &\approx
+    \left|
+        \frac{1}{m} \cdot
+        \frac{2q}{(2q - 1)^2} 
+    \right|
+    \cdot \left| (2\theta - 1)(1-q) \right|
+    <
+    \left| (2\theta - 1)(1-q) \right|
+    =
+    \big| \E[\hat{p}] - \theta \big|.
+\end{align}
+\end{proof}
+
+\begin{proposition}
+    Suppose that $n \to \infty$ and $q := q_0 = q_1$ with $\frac{1}{2} + \frac{1}{2\sqrt{2}} < q \leq 1$.
+    Let $M_1 \sim \mathrm{Binomial}(m, \theta)$ denote the number of \emph{`correct'} responses by human evaluation, and define $\hat{\phi} := M_1 / m$.
+    Let $\hat{\theta}$ be the bias-corrected estimator in \eqref{eq:adjusted:proportion}.
+    Fix $\delta\in(0,1)$ and define $\epsilon := \sqrt{\tfrac{\log(2/\delta)}{2m}}$.
+    If $\epsilon < \min\{\theta,1-\theta\}$, then with probability at least $1-\delta$,
+    \begin{align}
+        \Var(\hat{\theta})
+        \le
+        \Var(\hat{\phi})
+        \quad\text{whenever}\quad
+        \theta(1-\theta)
+        \ge
+        \frac{q(1-q)}{(2q-1)^2}\cdot
+        \left(
+            1
+            +
+            \frac{(1-\theta)\epsilon}{1-\theta-\epsilon}
+            +
+            \frac{\theta\epsilon}{\theta-\epsilon}
+        \right).
+        \label{eq:appendix:sufficient_condition}
+    \end{align}
+    Moreover, since $\epsilon = O(m^{-1/2})$, as $m\to\infty$ the sufficient condition in \eqref{eq:appendix:sufficient_condition} reduces to the necessary and sufficient condition $\theta(1-\theta)\ge \frac{q(1-q)}{(2q-1)^2}$, which is equivalent to
+    \begin{align}
+        \theta \in
+        \left[
+            \frac{1}{2}-\sqrt{\frac{1}{2}-\frac{1}{4(2q-1)^2}},
+            \frac{1}{2}+\sqrt{\frac{1}{2}-\frac{1}{4(2q-1)^2}}
+        \right].
+    \end{align}
+\end{proposition}
+\begin{proof}
+    Since $M_1\sim \mathrm{Binomial}(m,\theta)$, we have
+    \begin{align}
+        \Var(\hat{\phi})
+        =
+        \frac{\theta(1-\theta)}{m}.
+    \end{align}
+
+    From \eqref{eq:var}, as $n\to\infty$ the contribution of $\hat p$ vanishes, and hence
+    \begin{align}
+        \Var(\hat{\theta})
+        =
+        \frac{
+            (1-\theta)^2 \cdot \frac{q(1-q)}{m-M_1}
+            + \theta^2 \cdot \frac{q(1-q)}{M_1}
+        }{
+            (2 q - 1)^2
+        }.
+        \label{eq:appendix:var_theta_exact}
+    \end{align}
+    Since $\hat{\phi}=M_1/m$, Hoeffding's inequality implies that for any $\delta\in(0,1)$,
+    \begin{align}
+        \Pr\Big( |\hat{\phi}-\theta| \geq \epsilon \Big)
+        \leq \delta,
+        \qquad
+        \epsilon := \sqrt{\frac{\log(2/\delta)}{2m}}.
+    \end{align}
+    Hence, with probability at least $1-\delta$, we have $|\hat{\phi}-\theta|\le \epsilon$. This implies $M_1 \ge m(\theta-\epsilon)$ and $m-M_1 \ge m(1-\theta-\epsilon)$, and therefore
+    \begin{align}
+        \frac{1}{M_1}
+        \leq
+        \frac{1}{m(\theta-\epsilon)},
+        \qquad
+        \frac{1}{m-M_1}
+        \leq
+        \frac{1}{m(1-\theta-\epsilon)}.
+    \end{align}
+    Substituting these bounds into \eqref{eq:appendix:var_theta_exact} gives
+    \begin{align}
+        \Var(\hat{\theta})
+        &\leq
+        \frac{q(1-q)}{(2q-1)^2}
+        \left(
+            (1-\theta)^2 \cdot \frac{1}{m(1-\theta-\epsilon)}
+            +\theta^2\cdot \frac{1}{m(\theta-\epsilon)}
+        \right)
+        \\
+        &=
+        \frac{1}{m}\cdot\frac{q(1-q)}{(2q-1)^2}
+        \left(
+            \frac{(1-\theta)^2}{1-\theta-\epsilon}
+            +\frac{\theta^2}{\theta-\epsilon}
+        \right)
+        \\
+        &=
+        \frac{1}{m}\cdot\frac{q(1-q)}{(2q-1)^2}
+        \left(
+            1
+            +
+            \frac{(1-\theta)\epsilon}{1-\theta-\epsilon}
+            +
+            \frac{\theta\epsilon}{\theta-\epsilon}
+        \right).
+    \end{align}
+    Therefore, with probability at least $1-\delta$, the inequality $\Var(\hat{\theta}) \le \Var(\hat{\phi})$ holds whenever
+    \begin{align}
+        \theta(1-\theta)
+        \ge
+        \frac{q(1-q)}{(2q-1)^2}\cdot
+        \left(
+            1
+            +
+            \frac{(1-\theta)\epsilon}{1-\theta-\epsilon}
+            +
+            \frac{\theta\epsilon}{\theta-\epsilon}
+        \right),
+    \end{align}
+    which proves \eqref{eq:sufficient_condition_hp}.
+    Finally, as $m\to\infty$, we have $\epsilon=\sqrt{\log(2/\delta)/(2m)}\to 0$, and the above condition approaches $\theta(1-\theta)\ge \frac{q(1-q)}{(2q-1)^2}$, which is then necessary and sufficient.
+    Solving this quadratic inequality gives
+    \begin{align}
+        \theta \in
+        \left[
+            \frac{1}{2}-\sqrt{\frac{1}{2}-\frac{1}{4(2q-1)^2}},
+            \frac{1}{2}+\sqrt{\frac{1}{2}-\frac{1}{4(2q-1)^2}}
+        \right].
+    \end{align}
+    The interval is real-valued if and only if
+    $q \geq \frac{1}{2}+\frac{1}{2\sqrt{2}}$.
+\end{proof}
+
+
+
+\subsection{Equivalence between the Misclassification-Adjusted Estimator and Our Estimator}
+\label{sec:appendix:equivalence}
+
+We show that the misclassification-adjusted estimator $\left( \Pr_{\sQ}(\hat{\vZ} \mid \vZ) \right)^{-1} \E_{\sP}[\hat{\vZ}]$ in Section~\ref{sec:other:estimator}
+is equivalent to our estimator $\hat{\theta}$ in~\eqref{eq:point-estimator}.
+From the definition, we have
+\begin{align}
+    \big( \Pr_{\sQ}(\hat{\vZ} \mid \vZ) \big)^{-1} \E_{\sP}[\hat{\vZ}]
+    &=
+    \begin{pmatrix}
+    \Pr_{\sQ}(\hat Z=1 \mid Z=1) & \Pr_{\sQ}(\hat Z=1 \mid Z=0) \\
+    \Pr_{\sQ}(\hat Z=0 \mid Z=1) & \Pr_{\sQ}(\hat Z=0 \mid Z=0)
+    \end{pmatrix}^{-1}
+    \begin{pmatrix}
+    \Pr_{\sP}(\hat Z=1) \\
+    \Pr_{\sP}(\hat Z=0)
+    \end{pmatrix} \\
+    &=
+    \begin{pmatrix}
+     \hat{q}_1 & 1 - \hat{q}_0 \\
+     1 - \hat{q}_1 & \hat{q}_0
+    \end{pmatrix}^{-1}
+    \begin{pmatrix}
+    \hat{p} \\
+    1 - \hat{p}
+    \end{pmatrix} \\
+    &=
+    \frac{1}{\hat{q}_0 + \hat{q}_1 - 1}
+    \begin{pmatrix}
+        \hat{q}_0 & -(1 - \hat{q}_0) \\
+        -(1 - \hat{q}_1) & \hat{q}_1
+    \end{pmatrix}
+    \begin{pmatrix}
+    \hat{p} \\
+    1 - \hat{p}
+    \end{pmatrix},
+\end{align}
+provided that $\hat{q}_0 + \hat{q}_1 \neq 1$. This gives
+\begin{align}
+    \big( \Pr_{\sQ}(\hat{\vZ} \mid \vZ) \big)^{-1} \E_{\sP}[\hat{\vZ}]
+    =
+    \frac{1}{\hat{q}_0 + \hat{q}_1 - 1}
+    \begin{pmatrix}
+        \hat{p} + \hat{q}_0 - 1 \\
+        \hat{q}_1 - \hat{p}
+    \end{pmatrix}.
+\end{align}
+
+In particular, the first component corresponds to the estimator of
+$\theta = \Pr_{\sP}(Z = 1)$:
+\begin{align}
+    \hat{\theta}
+    =
+    \frac{\hat{p} + \hat{q}_0 - 1}{\hat{q}_0 + \hat{q}_1 - 1},
+\end{align}
+which exactly matches $\hat{\theta}$ in~\eqref{eq:point-estimator}.
+
+
+
+\clearpage
+\section{Code}
+\label{sec:code}
+
+All code used for this paper, including a plug-in Python implementation of the introduced method for LLM-as-a-judge evaluation, is available in \githuburl. To make this appendix self-contained, we provide below the key functions that compute the bias-corrected estimator and its confidence interval, corresponding to the method described in Section~\ref{sec:method}.
+ 
+\lstdefinestyle{pythoncode}{
+    backgroundcolor=\color{gray!10},
+    basicstyle=\ttfamily\small,
+    frame=single,
+    rulecolor=\color{gray!40},
+    keywordstyle=\color{blue!70!black},
+    commentstyle=\color{gray!70},
+    stringstyle=\color{green!40!black},
+    showstringspaces=false,
+    breaklines=true,
+    tabsize=4
+}
+
+\begin{figure}[!ht]
+\centering
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[style=pythoncode, language=Python]
+from math import sqrt
+from scipy.stats import norm
+
+def clip(x, low=0.0, high=1.0):
+    return max(low, min(high, x))
+
+def point_estimator(p, q0, q1):
+    """Compute the adjusted point estimate."""
+    th = (p+q0-1)/(q0+q1-1)
+    return clip(th)
+
+def confidence_interval(p, q0, q1, n, m0, m1, alpha=0.05):
+    """Compute the adjusted (1 - alpha) confidence interval."""
+    z = norm.ppf(1-alpha/2)
+    p, q0, q1 = (n*p+z**2/2)/(n+z**2), (m0*q0+1)/(m0+2), (m1*q1+1)/(m1+2)
+    n, m0, m1 = n+z**2, m0+2, m1+2
+    th = (p+q0-1)/(q0+q1-1)
+    dth = 2*z**2*(-(1-th)*q0*(1-q0)/m0+th*q1*(1-q1)/m1)
+    se = sqrt(p*(1-p)/n+(1-th)**2*q0*(1-q0)/m0+th**2*q1*(1-q1)/m1)/(q0+q1-1)
+    return clip(th+dth-z*se), clip(th+dth+z*se)
+\end{lstlisting}
+\caption{Python code implementation of the adjustment method described in Section~\ref{sec:method} that computes the bias-corrected estimate and the $(1-\alpha)$ confidence interval for the true accuracy $\theta$. The inputs \texttt{p}, \texttt{q0}, and \texttt{q1} are empirical estimates from the test and calibration datasets.}
+\label{fig:code}
+\end{minipage}
+\end{figure}
+
+
+
+
+\section{Additional Results on Monte Carlo Simulation}
+\label{sec:additional:mc}
+
+To complement the main simulation results in Figure~\ref{fig:mc-simulation}, we report additional Monte Carlo experiments across multiple configurations with test set size $n=1000$, calibration sizes $m \in \{200,500\}$, and $(q_0, q_1) \in \{(0.9,0.9), (0.7,0.7), (0.9,0.7), (0.7,0.9)\}$. All other aspects of the simulation design follow the main-text setup.
+
+Across all $(n, m, q_0, q_1)$ configurations, the main simulation findings remain consistent: bias correction improves estimation accuracy, empirical coverage matches the nominal level, and optimized calibration allocation produces shorter confidence intervals. Each figure corresponds to a specific $(n, m, q_0, q_1)$ setting and contains three subplots.
+
+
+\subsection{Results for $n = 1000$ and $m = 200$}
+
+\begin{figure}[!h]
+\centering
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m200_q0-70_q1-70_plot1.pdf}
+\caption{Estimates}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m200_q0-70_q1-70_plot2.pdf}
+\caption{Coverage probability}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m200_q0-70_q1-70_plot3.pdf}
+\caption{Confidence interval length}
+\end{subfigure}
+\caption{
+Monte Carlo results for $(n, m, q_0, q_1) = (1000, 200, 0.7, 0.7)$.
+}
+\end{figure}
+
+\begin{figure}[!h]
+\centering
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m200_q0-70_q1-90_plot1.pdf}
+\caption{Estimates}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m200_q0-70_q1-90_plot2.pdf}
+\caption{Coverage probability}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m200_q0-70_q1-90_plot3.pdf}
+\caption{Confidence interval length}
+\end{subfigure}
+\caption{
+Monte Carlo results for $(n, m, q_0, q_1) = (1000, 200, 0.7, 0.9)$.
+}
+\end{figure}
+
+\begin{figure}[!h]
+\centering
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m200_q0-90_q1-70_plot1.pdf}
+\caption{Estimates}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m200_q0-90_q1-70_plot2.pdf}
+\caption{Coverage probability}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m200_q0-90_q1-70_plot3.pdf}
+\caption{Confidence interval length}
+\end{subfigure}
+\caption{
+Monte Carlo results for $(n, m, q_0, q_1) = (1000, 200, 0.9, 0.7)$.
+}
+\end{figure}
+
+\begin{figure}[!h]
+\centering
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m200_q0-90_q1-90_plot1.pdf}
+\caption{Estimates}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m200_q0-90_q1-90_plot2.pdf}
+\caption{Coverage probability}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m200_q0-90_q1-90_plot3.pdf}
+\caption{Confidence interval length}
+\end{subfigure}
+\caption{
+Monte Carlo results for $(n, m, q_0, q_1) = (1000, 200, 0.9, 0.9)$.
+}
+\end{figure}
+
+
+\clearpage
+\subsection{Results for $n = 1000$ and $m = 500$}
+
+\begin{figure}[!h]
+\centering
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m500_q0-70_q1-70_plot1.pdf}
+\caption{Estimates}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m500_q0-70_q1-70_plot2.pdf}
+\caption{Coverage probability}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m500_q0-70_q1-70_plot3.pdf}
+\caption{Confidence interval length}
+\end{subfigure}
+\caption{
+Monte Carlo results for $(n, m, q_0, q_1) = (1000, 500, 0.7, 0.7)$.
+}
+\end{figure}
+
+\begin{figure}[!h]
+\centering
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m500_q0-70_q1-90_plot1.pdf}
+\caption{Estimates}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m500_q0-70_q1-90_plot2.pdf}
+\caption{Coverage probability}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m500_q0-70_q1-90_plot3.pdf}
+\caption{Confidence interval length}
+\end{subfigure}
+\caption{
+Monte Carlo results for $(n, m, q_0, q_1) = (1000, 500, 0.7, 0.9)$.
+}
+\end{figure}
+
+\begin{figure}[!h]
+\centering
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m500_q0-90_q1-70_plot1.pdf}
+\caption{Estimates}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m500_q0-90_q1-70_plot2.pdf}
+\caption{Coverage probability}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m500_q0-90_q1-70_plot3.pdf}
+\caption{Confidence interval length}
+\end{subfigure}
+\caption{
+Monte Carlo results for $(n, m, q_0, q_1) = (1000, 500, 0.9, 0.7)$.
+}
+\end{figure}
+
+\begin{figure}[!h]
+\centering
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m500_q0-90_q1-90_plot1.pdf}
+\caption{Estimates}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m500_q0-90_q1-90_plot2.pdf}
+\caption{Coverage probability}
+\end{subfigure}\hfill
+\begin{subfigure}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{figs/n1000_m500_q0-90_q1-90_plot3.pdf}
+\caption{Confidence interval length}
+\end{subfigure}
+\caption{
+Monte Carlo results for $(n, m, q_0, q_1) = (1000, 500, 0.9, 0.9)$.
+}
+\end{figure}
+
+\vspace{32pt}
+\section{Experimental Setup for Distribution-Shift Analysis}
+\label{sec:appendix:distshift}
+
+We describe the experimental setup used to produce the distribution-shift results in Figure~\ref{fig-dist-shift}.
+The setup matches the Monte Carlo simulation in Section~\ref{sec:experiment}, except that we vary the true accuracy of the calibration dataset.
+
+We fix the LLM judge behavior to $(q_0, q_1) = (0.7, 0.9)$ and the test-set accuracy to $\theta_{\sP} = 0.5$, while varying the calibration-set accuracy over $\theta_{\sQ} \in [0.25, 0.75]$. For each setting $(\theta_{\sP}, \theta_{\sQ})$, we generate a test dataset of size $1000$ with $\Pr_{\sP}(Z=1) = \theta_{\sP}$ and a calibration dataset of size $200$ with $\Pr_{\sQ}(Z=1) = \theta_{\sQ}$. We average results over 10{,}000 Monte Carlo replications.
+
+
+

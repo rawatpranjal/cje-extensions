@@ -1,0 +1,22 @@
+\section{Introduction}
+\label{sec:intro}
+
+LLM evaluation pipelines increasingly use a cheap judge to compare prompts, models, tools, or safety interventions. The standard report is a mean: average judge score, average calibrated score, or pairwise win rate. For many deployment decisions, the mean is not the operational risk. A medical assistant, customer-support bot, or content-moderation system can look acceptable on average while failing badly on the small fraction of cases that matter most.
+
+Causal Judge Evaluation (CJE) addresses one central problem with LLM-as-judge evaluation: a cheap judge score is a surrogate, not the oracle outcome \citep{LandesbergNarayan2026CJE}. CJE calibrates the judge against a small oracle slice, evaluates target policies at scale, and audits whether calibration transports to each target policy. This paper extends that logic from means to tails.
+
+\paragraph{Why CVaR?}
+The $\alpha$-quantile says where the worst $\alpha$ fraction begins. CVaR says how bad outcomes are inside that fraction. If a policy has a rare but severe failure mode, the quantile can hide severity beyond the cutoff, while CVaR integrates it. We therefore treat quantiles and CVaR as complementary summaries: the quantile localizes the tail, CVaR measures severity inside it.
+
+\paragraph{The audit is the headline.}
+Tail estimation adds a new failure mode. The mean audit asks whether a calibrated prediction of $Y$ is unbiased under the target policy. CVaR-CJE must also ask whether the estimated threshold really identifies the target tail. We use a two-moment audit: one moment checks tail coverage, and one checks shortfall transport. If the audit rejects, the method refuses the level claim for that policy. This is not a nuisance; it is the safety feature.
+
+\paragraph{Contributions.}
+\begin{enumerate}[leftmargin=*,nosep]
+\item We define CVaR-CJE, an audit-gated extension of CJE for lower-tail policy evaluation.
+\item We give a stop-loss direct estimator that reuses the CJE surrogate-calibration idea for the CVaR variational objective.
+\item We introduce a two-moment audit for threshold validity and shortfall transport, and show that $\alpha=1$ recovers the original mean audit.
+\item We specify Arena-Tail, a benchmark design for tail-risk evaluation with continuous oracle labels, controlled policies, and audit-positive shifts.
+\item We outline the Monte Carlo and appendix contract needed for a 10-page arXiv paper with a deeper online appendix.
+\end{enumerate}
+

@@ -1,0 +1,15 @@
+\begin{table*}[]
+\caption{Agreement rates between previous metrics and classifiers compared to human judgments on our manually labeled validation set. Our classifier, trained on distilled data from GPT-4-0613, achieves performance comparable to GPT-4. AdvBench \cite{zou2023universal}, primarily focuses on refusal detection. GPTFuzz is a fine-tuned Roberta model from \cite{yu2023gptfuzzer}.}
+\label{cls_results}
+\vskip 0.15in
+\centering
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\multirow{2}{*}{} & \multirow{2}{*}{AdvBench} & \multirow{2}{*}{GPTFuzz} & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}ChatGLM\\ \cite{shen2023do}\end{tabular}} & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Llama-Guard\\ \cite{bhatt2023purple}\end{tabular}} & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}GPT-4\\ \cite{chao2023jailbreaking}\end{tabular}} & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}HarmBench\\ (Ours)\end{tabular}} \\
+ &  &  &  &  &  \\ \midrule
+Standard & 71.14 & 77.36 & 65.67 & 68.41 & 89.8 & 94.53 \\
+Contextual & 67.5 & 71.5 & 62.5 & 64.0 & 85.5 & 90.5 \\ \midrule
+Average (↑) & 69.93 & 75.42 & 64.29 & 66.94 & 88.37 & 93.19 \\ \bottomrule
+\end{tabular}
+\vskip -0.1in
+\end{table*}

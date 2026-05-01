@@ -1,0 +1,9 @@
+\section{Related Work}
+\label{sec:relatedwork}
+
+\paragraph{Statistical Reliability in LLMs' Evaluation.}
+Recent efforts have sought to formalize the statistical reliability of language model evaluations. While frameworks for calculating error bars and confidence intervals in benchmarks exist~\citep{miller2024adding}, they assume that LLM evaluators provide true labels. However, this assumption does not hold in the LLM-as-a-judge setting, where imperfect judges introduce bias into LLM-based scores. Recent works have examined these biases across various contexts, including natural language inference and test-time compute scaling~\citep{godbole-jia-2025-verify, mukherjee2025test, feng2025we}. Aligned with this line of work, we propose a bias-corrected estimator together with statistically sound confidence intervals.
+
+
+\paragraph{Estimation Methods to Mitigate Bias.}
+To address bias arising from imperfect evaluators (e.g., diagnostic or screening tests, or LLM-based judges), \citet{rogan1978estimating} proposed an adjustment that corrects prevalence estimates when sensitivity and specificity are known. Subsequent work has developed more general frameworks, most notably Prediction-Powered Inference~\citep{angelopoulos2023prediction, angelopoulos2023ppi++, zrnic2024cross, broska2025mixed, boyeau2025autoeval}, which leverages a small set of true labels to improve estimation, as well as conditional calibration estimators~\citep{buonaccorsi2010measurement, kloos2021comparing, meertens2022improving}; see Section~\ref{sec:other:estimator} for details. While these methods offer distinct advantages, such as variance reduction~\citep{kloos2021comparing, chen2026efficient}, our approach builds on \citet{rogan1978estimating, lang2014confidence}, adopting distributional assumptions that remain valid under shifts between the calibration and test datasets and are particularly well-suited to the LLM-as-a-judge setting.

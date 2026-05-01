@@ -1,0 +1,152 @@
+
+\documentclass{article}
+
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} %
+
+\usepackage{wrapfig}
+
+\usepackage{makecell}
+
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{arydshln}
+\usepackage{subcaption}
+\usepackage{caption}
+\usepackage{fancyvrb}
+\usepackage{fancybox}
+\usepackage{tcolorbox}
+\usepackage{float}
+
+
+
+\usepackage{lipsum}
+\usepackage{enumitem}
+\usepackage{changepage,threeparttable} %
+
+\usepackage{alltt,xcolor}
+\definecolor{lightgray}{gray}{0.95} %
+\newenvironment{FVerbatim}
+{\VerbatimEnvironment
+  \setlength{\fboxsep}{0.1in}
+  \begin{Sbox}
+    \begin{minipage}{0.9\columnwidth}
+    \begin{alltt}}
+{\end{alltt}
+  \end{minipage}
+  \end{Sbox}
+  \begin{center}
+    \fcolorbox{black}{lightgray}{\TheSbox}
+  \end{center}
+}
+
+
+
+\usepackage{hyperref}
+
+
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+
+\usepackage[accepted]{icml2024}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+
+\usepackage[capitalize,noabbrev]{cleveref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\usepackage[textsize=tiny]{todonotes}
+
+\newcommand{\bo}[1]{\textcolor{blue}{BL: #1}}
+
+\icmltitlerunning{HarmBench: A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{HarmBench: A Standardized Evaluation Framework for\\Automated Red Teaming and Robust Refusal}
+
+
+
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Mantas Mazeika}{1}
+\icmlauthor{Long Phan}{2}
+\icmlauthor{Xuwang Yin}{2}
+\icmlauthor{Andy Zou}{3,2}
+\icmlauthor{Zifan Wang}{2}
+\icmlauthor{Norman Mu}{4}
+\icmlauthor{Elham Sakhaee}{5}
+\icmlauthor{Nathaniel Li}{4,2}
+\icmlauthor{Steven Basart}{2}
+\icmlauthor{Bo Li}{1}
+\icmlauthor{David Forsyth}{1}
+\icmlauthor{Dan Hendrycks}{2}
+\end{icmlauthorlist}
+
+\icmlaffiliation{1}{University of Illinois Urbana-Champaign}
+\icmlaffiliation{2}{Center for AI Safety}
+\icmlaffiliation{3}{Carnegie Mellon University}
+\icmlaffiliation{4}{UC Berkeley}
+\icmlaffiliation{5}{Microsoft}
+
+\icmlcorrespondingauthor{Mantas Mazeika}{mantas3@illinois.edu}
+
+\icmlkeywords{red teaming, automated red teaming, LLM attacks, alignment, refusal, robust refusal, adversarial training, ML security, ML safety}
+
+\vskip 0.3in
+]
+
+
+
+\printAffiliationsAndNotice{}  %
+
+\begin{abstract}
+Automated red teaming holds substantial promise for uncovering and mitigating the risks associated with the malicious use of large language models (LLMs), yet the field lacks a standardized evaluation framework to rigorously assess new methods. To address this issue, we introduce HarmBench, a standardized evaluation framework for automated red teaming. We identify several desirable properties previously unaccounted for in red teaming evaluations and systematically design HarmBench to meet these criteria. Using HarmBench, we conduct a large-scale comparison of $18$ red teaming methods and $33$ target LLMs and defenses, yielding novel insights. We also introduce a highly efficient adversarial training method that greatly enhances LLM robustness across a wide range of attacks, demonstrating how HarmBench enables codevelopment of attacks and defenses. We open source HarmBench at \url{https://github.com/centerforaisafety/HarmBench}.
+\end{abstract}
+
+\input{sections/1-introduction}
+\input{sections/2-related-work}
+\input{sections/3-automated-red-teaming}
+\input{sections/4-harmbench}
+\input{sections/5-robust-refusal}
+\input{sections/6-experiments}
+\input{sections/7-conclusion}
+
+\section*{Impact Statement}
+Our work introduces HarmBench: an standardized evaluation framework for red teaming, alongside a novel adversarial training method, R2D2, marking significant advancements in evaluating and improving the safety of large language models (LLMs). By offering a comprehensive evaluation across seven critical categories of misuse, such as cybercrime and misinformation, our work embarks on preemptively identifying and mitigating vulnerabilities of LLMs. This proactive examination uncovers that even after alignment training, no model is robust against all malicious attacks we evaluate against, emphasizing the need for sophisticated, multidimensional defense strategies. The open accessibility of our datasets and code invites collaborative efforts, setting the stage for further innovations in creating safe and secure AI models. While curating the dataset, we meticulously reviewed the behaviors and context strings, trimming any information that could potentially be harmful if used differentially, thus rendering it useless to malicious actors. In the case of copyright behaviors, we release only the cryptographic hashes of the copyrighted material, which are irreversible, to ensure maximum protection.
+
+The ethical and societal implications of our work are significant, balancing between enhancing AI defenses and the potential for informing more sophisticated attacks. Our commitment to advancing LLM safety is nested within a broader ethical dialogue that advocates for responsible AI advancement, ensuring benefits are democratized while guarding against misuse. By catalyzing further research and fostering a collaborative ecosystem among academics, industry practitioners, and policymakers, we aim to navigate the complexities of AI development.
+
+
+
+\bibliography{main}
+\bibliographystyle{icml2024}
+
+
+\newpage
+\appendix
+\onecolumn
+
+\input{sections/appendix}
+
+
+
+\end{document}

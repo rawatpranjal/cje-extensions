@@ -1,0 +1,233 @@
+\begin{thebibliography}{44}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Achiam et~al.(2023)Achiam, Adler, Agarwal, Ahmad, Akkaya, Aleman, Almeida, Altenschmidt, Altman, Anadkat, et~al.]{achiam2023gpt}
+J.~Achiam, S.~Adler, S.~Agarwal, L.~Ahmad, I.~Akkaya, F.~L. Aleman, D.~Almeida, J.~Altenschmidt, S.~Altman, S.~Anadkat, et~al.
+\newblock {GPT-4} technical report.
+\newblock \emph{arXiv preprint arXiv:2303.08774}, 2023.
+
+\bibitem[{Anonymous authors}(2023)]{shieldandspear}
+{Anonymous authors}.
+\newblock Shield and spear: Jailbreaking aligned {LLM}s with generative prompting.
+\newblock ACL ARR, 2023.
+\newblock URL \url{https://openreview.net/forum?id=1xhAJSjG45}.
+
+\bibitem[Bailey et~al.(2023)Bailey, Ong, Russell, and Emmons]{bailey2023image}
+L.~Bailey, E.~Ong, S.~Russell, and S.~Emmons.
+\newblock Image hijacks: Adversarial images can control generative models at runtime.
+\newblock \emph{arXiv preprint arXiv:2309.00236}, 2023.
+
+\bibitem[Chao et~al.(2023)Chao, Robey, Dobriban, Hassani, Pappas, and Wong]{chao2023jailbreaking}
+P.~Chao, A.~Robey, E.~Dobriban, H.~Hassani, G.~J. Pappas, and E.~Wong.
+\newblock Jailbreaking black box large language models in twenty queries.
+\newblock \emph{arXiv preprint arXiv:2310.08419}, 2023.
+
+\bibitem[Chen et~al.(2022)Chen, Gao, Cui, Qi, Huang, Liu, and Sun]{chen2022should}
+Y.~Chen, H.~Gao, G.~Cui, F.~Qi, L.~Huang, Z.~Liu, and M.~Sun.
+\newblock Why should adversarial perturbations be imperceptible? rethink the research paradigm in adversarial nlp.
+\newblock \emph{arXiv preprint arXiv:2210.10683}, 2022.
+
+\bibitem[CognitiveComputations(2023)]{dolphin}
+CognitiveComputations.
+\newblock dolphin-2.6-mixtral-8x7b.
+\newblock https://huggingface.co/cognitivecomputations/dolphin-2.6-mixtral-8x7b, 2023.
+\newblock Accessed: [2024].
+
+\bibitem[Deng et~al.(2023{\natexlab{a}})Deng, Liu, Li, Wang, Zhang, Li, Wang, Zhang, and Liu]{deng2023jailbreaker}
+G.~Deng, Y.~Liu, Y.~Li, K.~Wang, Y.~Zhang, Z.~Li, H.~Wang, T.~Zhang, and Y.~Liu.
+\newblock Jailbreaker: Automated jailbreak across multiple large language model chatbots.
+\newblock \emph{arXiv preprint arXiv:2307.08715}, 2023{\natexlab{a}}.
+
+\bibitem[Deng et~al.(2023{\natexlab{b}})Deng, Liu, Li, Wang, Zhang, Li, Wang, Zhang, and Liu]{dengmasterkey}
+G.~Deng, Y.~Liu, Y.~Li, K.~Wang, Y.~Zhang, Z.~Li, H.~Wang, T.~Zhang, and Y.~Liu.
+\newblock {MASTERKEY}: Automated jailbreaking of large language model chatbots, 2023{\natexlab{b}}.
+
+\bibitem[European~Parliament(2023)]{eu2023aiActAmendment102}
+C.~o. t. E.~U. European~Parliament.
+\newblock Regulation of the european parliament and of the council laying down harmonised rules on artificial intelligence (artificial intelligence act) and amending certain union legislative acts, amendment 102.
+\newblock Technical Report 2021/0106 (COD), European Commission, jun 2023.
+
+\bibitem[Feuillade-Montixi(2023)]{feuillade-montixi2023pict}
+Q.~Feuillade-Montixi.
+\newblock {PICT}: A zero-shot prompt template to automate evaluation, 2023.
+\newblock URL \url{https://www.lesswrong.com/posts/HJinq3chCaGHiNLNE/pict-a-zero-shot-prompt-template-to-automate-evaluation-1}.
+\newblock Accessed on LessWrong.
+
+\bibitem[Ganguli et~al.(2022)Ganguli, Lovitt, Kernion, Askell, Bai, Kadavath, Mann, Perez, Schiefer, Ndousse, et~al.]{ganguli2022red}
+D.~Ganguli, L.~Lovitt, J.~Kernion, A.~Askell, Y.~Bai, S.~Kadavath, B.~Mann, E.~Perez, N.~Schiefer, K.~Ndousse, et~al.
+\newblock Red teaming language models to reduce harms: Methods, scaling behaviors, and lessons learned.
+\newblock \emph{arXiv preprint arXiv:2209.07858}, 2022.
+
+\bibitem[Gemma~Team et~al.(2024)Gemma~Team, Hardin, Dadashi, Bhupatiraju, Sifre, Rivière, Kale, Love, Tafti, Hussenot, and et~al.]{gemma_2024}
+T.~M. Gemma~Team, C.~Hardin, R.~Dadashi, S.~Bhupatiraju, L.~Sifre, M.~Rivière, M.~S. Kale, J.~Love, P.~Tafti, L.~Hussenot, and et~al.
+\newblock Gemma.
+\newblock 2024.
+\newblock \doi{10.34740/KAGGLE/M/3301}.
+\newblock URL \url{https://www.kaggle.com/m/3301}.
+
+\bibitem[Greshake et~al.(2023)Greshake, Abdelnabi, Mishra, Endres, Holz, and Fritz]{greshake2023not}
+K.~Greshake, S.~Abdelnabi, S.~Mishra, C.~Endres, T.~Holz, and M.~Fritz.
+\newblock Not what you've signed up for: Compromising real-world {LLM}-integrated applications with indirect prompt injection.
+\newblock In \emph{Proceedings of the 16th ACM Workshop on Artificial Intelligence and Security}, pages 79--90, 2023.
+
+\bibitem[Hendrycks et~al.(2021)Hendrycks, Burns, Basart, Zou, Mazeika, Song, and Steinhardt]{hendryckstest2021}
+D.~Hendrycks, C.~Burns, S.~Basart, A.~Zou, M.~Mazeika, D.~Song, and J.~Steinhardt.
+\newblock Measuring massive multitask language understanding.
+\newblock \emph{Proceedings of the International Conference on Learning Representations (ICLR)}, 2021.
+
+\bibitem[Huang et~al.(2023)Huang, Gupta, Xia, Li, and Chen]{huang2023catastrophic}
+Y.~Huang, S.~Gupta, M.~Xia, K.~Li, and D.~Chen.
+\newblock Catastrophic jailbreak of open-source {LLMs} via exploiting generation.
+\newblock \emph{arXiv preprint arXiv:2310.06987}, 2023.
+
+\bibitem[Kang et~al.(2023)Kang, Li, Stoica, Guestrin, Zaharia, and Hashimoto]{kang2023exploiting}
+D.~Kang, X.~Li, I.~Stoica, C.~Guestrin, M.~Zaharia, and T.~Hashimoto.
+\newblock Exploiting programmatic behavior of {LLMs}: Dual-use through standard security attacks.
+\newblock \emph{arXiv preprint arXiv:2302.05733}, 2023.
+
+\bibitem[Lapid et~al.(2023)Lapid, Langberg, and Sipper]{lapid2023open}
+R.~Lapid, R.~Langberg, and M.~Sipper.
+\newblock Open sesame! universal black box jailbreaking of large language models.
+\newblock \emph{arXiv preprint arXiv:2309.01446}, 2023.
+
+\bibitem[Liu et~al.(2023{\natexlab{a}})Liu, Zhao, Qing, Kang, Sun, Kuang, and Wu]{liu2023goal}
+C.~Liu, F.~Zhao, L.~Qing, Y.~Kang, C.~Sun, K.~Kuang, and F.~Wu.
+\newblock Goal-oriented prompt attack and safety evaluation for {LLM}s.
+\newblock \emph{arXiv e-prints}, pages arXiv--2309, 2023{\natexlab{a}}.
+
+\bibitem[Liu et~al.(2023{\natexlab{b}})Liu, Deng, Xu, Li, Zheng, Zhang, Zhao, Zhang, and Liu]{liu2023jailbreaking}
+Y.~Liu, G.~Deng, Z.~Xu, Y.~Li, Y.~Zheng, Y.~Zhang, L.~Zhao, T.~Zhang, and Y.~Liu.
+\newblock Jailbreaking chatgpt via prompt engineering: An empirical study.
+\newblock \emph{arXiv preprint arXiv:2305.13860}, 2023{\natexlab{b}}.
+
+\bibitem[Mazeika et~al.(2024)Mazeika, Phan, Yin, Zou, Wang, Mu, Sakhaee, Li, Basart, Li, Forsyth, and Hendrycks]{mazeika2024harmbench}
+M.~Mazeika, L.~Phan, X.~Yin, A.~Zou, Z.~Wang, N.~Mu, E.~Sakhaee, N.~Li, S.~Basart, B.~Li, D.~Forsyth, and D.~Hendrycks.
+\newblock Harmbench: A standardized evaluation framework for automated red teaming and robust refusal, 2024.
+
+\bibitem[Mehrotra et~al.(2023)Mehrotra, Zampetakis, Kassianik, Nelson, Anderson, Singer, and Karbasi]{mehrotra2023tree}
+A.~Mehrotra, M.~Zampetakis, P.~Kassianik, B.~Nelson, H.~Anderson, Y.~Singer, and A.~Karbasi.
+\newblock Tree of attacks: Jailbreaking black-box {LLM}s automatically.
+\newblock \emph{arXiv preprint arXiv:2312.02119}, 2023.
+
+\bibitem[{Meta}(2024)]{Llama31modelcard2024}
+{Meta}.
+\newblock Llama-3.1 system card.
+\newblock Technical report, Meta, 8 2024.
+\newblock URL \url{https://llama.meta.com/docs/model-cards-and-prompt-formats/llama3_1/}.
+
+\bibitem[OpenAI(2023)]{openai_gpt-3.5_turbo}
+OpenAI.
+\newblock {GPT-3 API} [text-davinci-003].
+\newblock \url{https://openai.com/}, 2023.
+\newblock Accessed: [2024].
+
+\bibitem[{OpenAI}(2024)]{GPT4modelcard2024}
+{OpenAI}.
+\newblock Gpt-4o system card.
+\newblock Technical report, OpenAI, 8 2024.
+\newblock URL \url{https://openai.com/index/gpt-4o-system-card/?trk=public_post_comment-text}.
+
+\bibitem[Perez et~al.(2022)Perez, Huang, Song, Cai, Ring, Aslanides, Glaese, McAleese, and Irving]{perez2022red}
+E.~Perez, S.~Huang, F.~Song, T.~Cai, R.~Ring, J.~Aslanides, A.~Glaese, N.~McAleese, and G.~Irving.
+\newblock Red teaming language models with language models.
+\newblock \emph{arXiv preprint arXiv:2202.03286}, 2022.
+
+\bibitem[Qi et~al.(2023)Qi, Zeng, Xie, Chen, Jia, Mittal, and Henderson]{qi2023fine}
+X.~Qi, Y.~Zeng, T.~Xie, P.-Y. Chen, R.~Jia, P.~Mittal, and P.~Henderson.
+\newblock Fine-tuning aligned language models compromises safety, even when users do not intend to!
+\newblock \emph{arXiv preprint arXiv:2310.03693}, 2023.
+
+\bibitem[Robey et~al.(2023)Robey, Wong, Hassani, and Pappas]{robey2023smoothllm}
+A.~Robey, E.~Wong, H.~Hassani, and G.~J. Pappas.
+\newblock {SmoothLLM}: Defending large language models against jailbreaking attacks.
+\newblock \emph{arXiv preprint arXiv:2310.03684}, 2023.
+
+\bibitem[Shah et~al.(2023{\natexlab{a}})Shah, Sharma, Dhamyal, Olivier, Shah, Konan, Alharthi, Bukhari, Baali, Deshmukh, Kuhlmann, Raj, and Singh]{shah2023loft}
+M.~A. Shah, R.~Sharma, H.~Dhamyal, R.~Olivier, A.~Shah, J.~Konan, D.~Alharthi, H.~T. Bukhari, M.~Baali, S.~Deshmukh, M.~Kuhlmann, B.~Raj, and R.~Singh.
+\newblock Loft: Local proxy fine-tuning for improving transferability of adversarial attacks against large language model.
+\newblock \emph{arXiv preprint arXiv:2310.04445}, 2023{\natexlab{a}}.
+
+\bibitem[Shah et~al.(2023{\natexlab{b}})Shah, Pour, Tagade, Casper, Rando, et~al.]{shah2023scalable}
+R.~Shah, S.~Pour, A.~Tagade, S.~Casper, J.~Rando, et~al.
+\newblock Scalable and transferable black-box jailbreaks for language models via persona modulation.
+\newblock \emph{arXiv preprint arXiv:2311.03348}, 2023{\natexlab{b}}.
+
+\bibitem[Shaikh et~al.(2022)Shaikh, Zhang, Held, Bernstein, and Yang]{shaikh2022second}
+O.~Shaikh, H.~Zhang, W.~Held, M.~Bernstein, and D.~Yang.
+\newblock On second thought, let's not think step by step! bias and toxicity in zero-shot reasoning.
+\newblock \emph{arXiv preprint arXiv:2212.08061}, 2022.
+
+\bibitem[Shen et~al.(2023)Shen, Chen, Backes, Shen, and Zhang]{shen2023anything}
+X.~Shen, Z.~Chen, M.~Backes, Y.~Shen, and Y.~Zhang.
+\newblock ``do anything now''': Characterizing and evaluating in-the-wild jailbreak prompts on large language models.
+\newblock \emph{arXiv preprint arXiv:2308.03825}, 2023.
+
+\bibitem[Touvron et~al.(2023)Touvron, Martin, Stone, Albert, Almahairi, Babaei, Bashlykov, Batra, Bhargava, Bhosale, Bikel, Blecher, Ferrer, Chen, Cucurull, Esiobu, Fernandes, Fu, Fu, Fuller, Gao, Goswami, Goyal, Hartshorn, Hosseini, Hou, Inan, Kardas, Kerkez, Khabsa, Kloumann, Korenev, Koura, Lachaux, Lavril, Lee, Liskovich, Lu, Mao, Martinet, Mihaylov, Mishra, Molybog, Nie, Poulton, Reizenstein, Rungta, Saladi, Schelten, Silva, Smith, Subramanian, Tan, Tang, Taylor, Williams, Kuan, Xu, Yan, Zarov, Zhang, Fan, Kambadur, Narang, Rodriguez, Stojnic, Edunov, and Scialom]{touvron2023llama}
+H.~Touvron, L.~Martin, K.~Stone, P.~Albert, A.~Almahairi, Y.~Babaei, N.~Bashlykov, S.~Batra, P.~Bhargava, S.~Bhosale, D.~Bikel, L.~Blecher, C.~C. Ferrer, M.~Chen, G.~Cucurull, D.~Esiobu, J.~Fernandes, J.~Fu, W.~Fu, B.~Fuller, C.~Gao, V.~Goswami, N.~Goyal, A.~Hartshorn, S.~Hosseini, R.~Hou, H.~Inan, M.~Kardas, V.~Kerkez, M.~Khabsa, I.~Kloumann, A.~Korenev, P.~S. Koura, M.-A. Lachaux, T.~Lavril, J.~Lee, D.~Liskovich, Y.~Lu, Y.~Mao, X.~Martinet, T.~Mihaylov, P.~Mishra, I.~Molybog, Y.~Nie, A.~Poulton, J.~Reizenstein, R.~Rungta, K.~Saladi, A.~Schelten, R.~Silva, E.~M. Smith, R.~Subramanian, X.~E. Tan, B.~Tang, R.~Taylor, A.~Williams, J.~X. Kuan, P.~Xu, Z.~Yan, I.~Zarov, Y.~Zhang, A.~Fan, M.~Kambadur, S.~Narang, A.~Rodriguez, R.~Stojnic, S.~Edunov, and T.~Scialom.
+\newblock Llama 2: Open foundation and fine-tuned chat models, 2023.
+
+\bibitem[Wei et~al.(2023)Wei, Haghtalab, and Steinhardt]{wei2023jailbroken}
+A.~Wei, N.~Haghtalab, and J.~Steinhardt.
+\newblock Jailbroken: How does {LLM} safety training fail?
+\newblock \emph{arXiv preprint arXiv:2307.02483}, 2023.
+
+\bibitem[Weimann et~al.(2024)Weimann, Pack, Sulciner, Scheinin, Rapaport, and Diaz]{westpoint2024generating}
+G.~Weimann, A.~T. Pack, R.~Sulciner, J.~Scheinin, G.~Rapaport, and D.~Diaz.
+\newblock Generating terror: The risks of generative {AI} exploitation.
+\newblock Technical report, West Point, jan 2024.
+
+\bibitem[{White House}(2023)]{whitehouse2023voluntarycommitments}
+{White House}.
+\newblock Voluntary {AI} commitments.
+\newblock Technical report, White House, jul 2023.
+
+\bibitem[{White House Briefing Room}(2023)]{whitehouse2023factsheet}
+{White House Briefing Room}.
+\newblock Fact sheet: Biden-harris administration secures voluntary commitments from leading artificial intelligence companies to manage the risks posed by {AI}.
+\newblock Technical report, White House, jul 2023.
+
+\bibitem[WitchBot(2023)]{WitchBot}
+WitchBot.
+\newblock You can use {GPT-4} to create prompt injections against {GPT-4}, 2023.
+\newblock URL \url{https://www.lesswrong.com/posts/bNCDexejSZpkuu3yz/you-can-use-gpt-4-to-create-prompt-injections-against-gpt-4}.
+
+\bibitem[Xu et~al.(2023)Xu, Wang, Zhou, Li, Xiao, and Chen]{xu2023cognitive}
+N.~Xu, F.~Wang, B.~Zhou, B.~Z. Li, C.~Xiao, and M.~Chen.
+\newblock Cognitive overload: Jailbreaking large language models with overloaded logical thinking.
+\newblock \emph{arXiv preprint arXiv:2311.09827}, 2023.
+
+\bibitem[Yong et~al.(2023)Yong, Menghini, and Bach]{yong2023low}
+Z.-X. Yong, C.~Menghini, and S.~H. Bach.
+\newblock Low-resource languages jailbreak {GPT-4}.
+\newblock \emph{arXiv preprint arXiv:2310.02446}, 2023.
+
+\bibitem[Yu et~al.(2023)Yu, Lin, and Xing]{yu2023gptfuzzer}
+J.~Yu, X.~Lin, and X.~Xing.
+\newblock {GPTFuzzer}: Red teaming large language models with auto-generated jailbreak prompts.
+\newblock \emph{arXiv preprint arXiv:2309.10253}, 2023.
+
+\bibitem[Zeng et~al.(2024)Zeng, Lin, Zhang, Yang, Jia, and Shi]{zeng2024johnny}
+Y.~Zeng, H.~Lin, J.~Zhang, D.~Yang, R.~Jia, and W.~Shi.
+\newblock How johnny can persuade llms to jailbreak them: Rethinking persuasion to challenge ai safety by humanizing llms.
+\newblock \emph{arXiv preprint arXiv:2401.06373}, 2024.
+
+\bibitem[Zhan et~al.(2023)Zhan, Fang, Bindu, Gupta, Hashimoto, and Kang]{zhan2023removing}
+Q.~Zhan, R.~Fang, R.~Bindu, A.~Gupta, T.~Hashimoto, and D.~Kang.
+\newblock Removing {RLHF} protections in {GPT-4} via fine-tuning.
+\newblock \emph{arXiv preprint arXiv:2311.05553}, 2023.
+
+\bibitem[Zhu et~al.(2023)Zhu, Zhang, An, Wu, Barrow, Wang, Huang, Nenkova, and Sun]{zhu2023autodan}
+S.~Zhu, R.~Zhang, B.~An, G.~Wu, J.~Barrow, Z.~Wang, F.~Huang, A.~Nenkova, and T.~Sun.
+\newblock {AutoDAN}: Automatic and interpretable adversarial attacks on large language models.
+\newblock \emph{arXiv preprint arXiv:2310.15140}, 2023.
+
+\bibitem[Zou et~al.(2023)Zou, Wang, Kolter, and Fredrikson]{zou2023universal}
+A.~Zou, Z.~Wang, J.~Z. Kolter, and M.~Fredrikson.
+\newblock Universal and transferable adversarial attacks on aligned language models.
+\newblock \emph{arXiv preprint arXiv:2307.15043}, 2023.
+
+\end{thebibliography}

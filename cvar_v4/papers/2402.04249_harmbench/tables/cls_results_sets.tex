@@ -1,0 +1,14 @@
+\begin{wraptable}{r}{0.42\textwidth}
+\begin{tabular}{@{}llll|l@{}}
+\toprule
+ & Set 1 & Set 2 & Set 3 & Avg (↑) \\ \midrule
+AdvBench & 45.2 & 28.2 & 35.2 & 32.0 \\
+GPTFuzz & 68.9 & 96.3 & 35.2 & 65.8 \\
+Llama Guard & 50.8 & 99.0 & 72.8 & 74.2 \\
+GPT-4\textsubscript{PAIR} & 89.0 & 100.0 & 78.7 & 89.6 \\
+Ours & 95.68 & 98.0 & 93.4 & 95.7 \\ \bottomrule
+\end{tabular}
+\caption{The accuracy of different classifiers on three prequalification sets for gauging robustness. For (1) we prompt an uncensored chat model to start by refusing the harmful behavior yet continue to elicit the behavior. For (2), we randomly choose a completion from a harmless instruction tunning dataset \cite{ding2023enhancing}. For (3), we sample harmful completions of random behaviors in HarmBench for each behavior. While previous classifiers and metrics failed to recognize these scenarios, our classifier matches GPT-4 performance on these sets.}
+\label{table:cls_results_sets}
+
+\end{wraptable}

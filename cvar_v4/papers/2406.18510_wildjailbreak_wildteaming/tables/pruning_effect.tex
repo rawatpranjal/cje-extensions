@@ -1,0 +1,37 @@
+\begin{wrapfigure}[15]{t}{0.5\textwidth}
+    \small
+    \captionof{table}{Ablations of pruners and whether to fix the seed leading sentence tactic for attacking \vicuna-7B with the validation set of \harmbench.}
+    \label{tab:jailbreak_ablations}
+    
+    \begin{tabular}{l@{\hspace{0.8\tabcolsep}}
+    r@{\hspace{0.9\tabcolsep}}
+    r@{\hspace{0.9\tabcolsep}}
+    r@{\hspace{0.9\tabcolsep}}
+    r@{\hspace{0.9\tabcolsep}}}
+    \toprule
+
+    & \multicolumn{2}{c}{\textbf{Effectiveness}} & \multicolumn{2}{c}{\textbf{Diversity}} \\
+
+    \cmidrule(r){2-3} \cmidrule(r){4-5}
+         
+    & \scriptsize \rotatebox{0}{ASR} $\uparrow$ & 
+            \scriptsize \rotatebox{0}{Query} $\downarrow$ &
+            \scriptsize \rotatebox{0}{ASR$^{\times5}_{30}$} $\uparrow$ & 
+            \scriptsize \rotatebox{0}{Query$^{\times5}_{30}$} $\downarrow$ \\
+
+    \midrule 
+    
+    No Pruning & 95.1 & 3.64 & 83.4 & 9.97 \\
+    Off-topics Only & 95.1 & 2.95 & 83.9 & 9.64 \\
+    Low-Risk Only   & 95.1 & 2.62 & 85.9 & 9.14 \\
+    \rowcolor{columbiablue} Combined & 95.1 & 2.46 & 86.8 & 8.94 \\
+    
+    \midrule
+    
+    \pair & 97.6 & 4.10 & 56.1 & 13.95 \\
+    Not Fix & 92.7 & 3.42 & 80.5 & 9.94 \\
+
+    \bottomrule
+    \end{tabular}
+\end{wrapfigure}
+

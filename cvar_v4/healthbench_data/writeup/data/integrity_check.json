@@ -1,0 +1,167 @@
+{
+  "policies": {
+    "base": {
+      "counts": {
+        "responses": 500,
+        "cheap": 500,
+        "cheap_raw": 5644,
+        "oracle": 500,
+        "oracle_raw": 5644
+      },
+      "y_stats": {
+        "mean": 0.28886648150494537,
+        "median": 0.29080338266384775,
+        "min": -2.4,
+        "max": 1.0,
+        "p10": -0.10344827586206896,
+        "p25": 0.06557377049180328,
+        "p75": 0.5079365079365079,
+        "p90": 0.7
+      },
+      "s_stats": {
+        "mean": 0.4971080234792093,
+        "median": 0.5259497057249867,
+        "min": -1.75,
+        "max": 1.0
+      },
+      "pearson_s_y": 0.6525510026224803,
+      "all_n_oracle_rows": 0,
+      "mean_response_chars": 1495.596,
+      "mean_n_criteria": 11.288,
+      "nan_count": 0
+    },
+    "clone": {
+      "counts": {
+        "responses": 500,
+        "cheap": 500,
+        "cheap_raw": 5644,
+        "oracle": 500,
+        "oracle_raw": 5644
+      },
+      "y_stats": {
+        "mean": 0.292314377106901,
+        "median": 0.3,
+        "min": -2.4,
+        "max": 1.0,
+        "p10": -0.08450704225352113,
+        "p25": 0.06896551724137931,
+        "p75": 0.5,
+        "p90": 0.6962025316455697
+      },
+      "s_stats": {
+        "mean": 0.4821347940108819,
+        "median": 0.5,
+        "min": -1.75,
+        "max": 1.0
+      },
+      "pearson_s_y": 0.6750635543548048,
+      "all_n_oracle_rows": 0,
+      "mean_response_chars": 1497.052,
+      "mean_n_criteria": 11.288,
+      "nan_count": 0
+    },
+    "premium": {
+      "counts": {
+        "responses": 500,
+        "cheap": 500,
+        "cheap_raw": 5644,
+        "oracle": 500,
+        "oracle_raw": 5644
+      },
+      "y_stats": {
+        "mean": 0.42778059709891975,
+        "median": 0.45168067226890757,
+        "min": -1.75,
+        "max": 1.0,
+        "p10": 0.0,
+        "p25": 0.19047619047619047,
+        "p75": 0.6724137931034483,
+        "p90": 0.8947368421052632
+      },
+      "s_stats": {
+        "mean": 0.5802806258106455,
+        "median": 0.6258333333333334,
+        "min": -0.7857142857142857,
+        "max": 1.0
+      },
+      "pearson_s_y": 0.7635644111867731,
+      "all_n_oracle_rows": 0,
+      "mean_response_chars": 1761.746,
+      "mean_n_criteria": 11.288,
+      "nan_count": 0
+    },
+    "parallel_universe_prompt": {
+      "counts": {
+        "responses": 500,
+        "cheap": 500,
+        "cheap_raw": 5644,
+        "oracle": 500,
+        "oracle_raw": 5644
+      },
+      "y_stats": {
+        "mean": 0.10643028983756574,
+        "median": 0.07142857142857142,
+        "min": -2.4,
+        "max": 1.0,
+        "p10": -0.23333333333333334,
+        "p25": -0.058823529411764705,
+        "p75": 0.2717391304347826,
+        "p90": 0.5
+      },
+      "s_stats": {
+        "mean": 0.3027224089632743,
+        "median": 0.281650641025641,
+        "min": -0.9,
+        "max": 1.0
+      },
+      "pearson_s_y": 0.672335041321423,
+      "all_n_oracle_rows": 0,
+      "mean_response_chars": 404.212,
+      "mean_n_criteria": 11.288,
+      "nan_count": 0
+    },
+    "unhelpful": {
+      "counts": {
+        "responses": 500,
+        "cheap": 500,
+        "cheap_raw": 5644,
+        "oracle": 500,
+        "oracle_raw": 5644
+      },
+      "y_stats": {
+        "mean": -0.09001821944419515,
+        "median": -0.03149801587301587,
+        "min": -2.8,
+        "max": 0.5416666666666666,
+        "p10": -0.2857142857142857,
+        "p25": -0.16853932584269662,
+        "p75": 0.0,
+        "p90": 0.05555555555555555
+      },
+      "s_stats": {
+        "mean": -0.0759852339359563,
+        "median": 0.0,
+        "min": -1.0555555555555556,
+        "max": 0.7297297297297297
+      },
+      "pearson_s_y": 0.4042479096663117,
+      "all_n_oracle_rows": 0,
+      "mean_response_chars": 153.45,
+      "mean_n_criteria": 11.288,
+      "nan_count": 0
+    }
+  },
+  "panel": {
+    "n_common_prompts": 500,
+    "n_per_policy": {
+      "base": 500,
+      "clone": 500,
+      "premium": 500,
+      "parallel_universe_prompt": 500,
+      "unhelpful": 500
+    },
+    "cje_dataset_rows": 500
+  },
+  "hard_fails": [],
+  "soft_warns": []
+}

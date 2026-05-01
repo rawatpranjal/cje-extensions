@@ -1,0 +1,562 @@
+\documentclass{article}
+
+\PassOptionsToPackage{numbers}{natbib}
+
+\usepackage[final]{neurips_data_2023_template/neurips_data_2023}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+% \usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+
+
+% ===Other Packages and Settings: Begin===
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{wrapfig}
+\usepackage{amsmath,amssymb,amsfonts} % Required for math
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+\usepackage{physics}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{pdfpages}
+\usepackage{array}
+\usepackage{float}
+\usepackage{marvosym}
+\usepackage{mathtools, nccmath}
+
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+  breaklines=true,
+  % postbreak=\mbox{$\hookrightarrow$},
+  xleftmargin=0pt
+}
+
+\DeclareMathOperator{\E}{\mathbb{E}}
+
+\newcommand\nnfootnote[1]{%
+  \begin{NoHyper}
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \end{NoHyper}
+}
+% ===Other Packages and Settings: End===
+
+
+
+\title{\textsc{BeaverTails}: Towards Improved Safety Alignment of LLM via a Human-Preference Dataset}
+
+\author{
+    \textbf{Jiaming Ji$^{\textbf{*}1}$} \quad
+    \textbf{Mickel Liu$^{\textbf{*}2}$} \quad
+    \textbf{Juntao Dai$^{\textbf{*}1}$} \quad
+    \textbf{Xuehai Pan$^{2}$} \quad 
+    \textbf{Chi Zhang$^{1}$} \quad \\
+    \vspace{-0.5em} \\
+    \textbf{Ce Bian$^{1}$} \quad
+    \textbf{Boyuan Chen$^{1}$} \quad
+    \textbf{Ruiyang Sun$^{1}$} \quad 
+    \textbf{Yizhou Wang~\textsuperscript{\Letter}$^{12}$} \quad 
+    \textbf{Yaodong Yang~\textsuperscript{\Letter}$^{1}$}\\
+    \vspace{-0.5em} \\
+    \textnormal{
+    $^{1}$Institute for Artificial Intelligence\quad
+    $^{2}$CFCS, School of Computer Science}\\
+    \vspace{0em}\\
+    \hfill \textnormal{\large Peking University} \hfill
+    \vspace{1em}\\
+    \texttt{\{jiamg.ji, mickelliu7, jtd.acad\}@gmail.com, xuehaipan@pku.edu.cn}\\
+    \texttt{\{preceptormiriam, cbian393\}@gmail.com, cbylll@stu.pku.edu.cn},  \\
+    \texttt{ruiyangsun02@gmail.com, \{yizhou.wang, yaodong.yang\}@pku.edu.cn}
+}
+
+
+\begin{document}
+
+\nnfootnote{$^*$Equal contribution, random ordering. $\textsuperscript{\Letter}$Corresponding author.}
+
+\maketitle
+\begin{abstract}
+
+  In this paper, we introduce the \textsc{BeaverTails} dataset, aimed at fostering research on safety alignment in large language models (LLMs). This dataset uniquely separates annotations of helpfulness and harmlessness for question-answering pairs, thus offering distinct perspectives on these crucial attributes. 
+  % In total, we have gathered safety meta-labels for 30,207 question-answer (QA) pairs and 30,144 pairs of expert comparison data for both the helpfulness and harmlessness metrics.
+  In total, we have gathered safety meta-labels for 333,963 question-answer (QA) pairs and 361,903 pairs of expert comparison data for both the helpfulness and harmlessness metrics.
+  We further showcase applications of BeaverTails in content moderation and reinforcement learning with human feedback (RLHF), emphasizing its potential for practical safety measures in LLMs. We believe this dataset provides vital resources for the community, contributing towards the safe development and deployment of LLMs. Our project page is available at the following URL: \url{https://sites.google.com/view/pku-beavertails}.
+
+  \textcolor{red}{Warning: this paper contains example data that may be offensive or harmful.}
+
+\end{abstract}
+
+\section{Introduction} 
+\label{sec:introduction}
+The recent advent of large language models (LLMs)~\cite{openai2023gpt4, anil2023palm, touvron2023llama, llama2, yang2023baichuan} promises vast transformative potential across multiple sectors, from healthcare~\cite{yang2022large, moor2023foundation, arora2023promise} and education~\cite{kung2023performance,kasneci2023chatgpt,katz2023gpt} to robotics~\cite{vemprala2023chatgpt, shah2023lm, wu2023tidybot} and commerce~\cite{noauthor_undated-ae}. However, as these models grow in complexity and influence, ensuring their alignment with human values and safety becomes increasingly critical. If left unchecked, LLMs can amplify misinformation, enable harmful content, or yield unintended responses that can cause significant negative societal impact~\cite{Gehman2020-zq, Weidinger2021-mm, Ganguli2022-td, deshpande2023toxicity}. Recent papers have highlighted significant safety risks associated with the deployment of LLMs in real-world applications, prompting public concern~\cite{Christian2023-dt, Chilton2023-uz, Newman2023-hs}. 
+
+The urgent need for safety alignment in LLMs has garnered substantial attention from both academia and industry. This surge of interest has led to noteworthy contributions aimed at making LLMs safer. Among these are innovative alignment techniques, namely ``red-teaming'', extensively employed by research groups at Anthropic and DeepMind~\cite{Perez2022-mk, Ganguli2022-td}. Red-teaming involves a rigorous adversarial process that intentionally seeks to expose the potential for harmful outputs from LLMs, which are then refined to decrease the likelihood of such harmful occurrences. Anthropic has gone a step further by sharing their red-team dataset publicly, which contains human-written prompts and human-preference data~\cite{Ganguli2022-td}. Another alignment technique, known as Reinforcement Learning from Human Feedback (RLHF), has also demonstrated promising results~\cite{Ouyang2022-lg, Bai2022-mt, katz2023gpt}. In fact, OpenAI's GPT-4 technical report disclosed their use of safety-relevant RLHF training prompts and rule-based reward models (RBRMs)~\cite{katz2023gpt} to empower safety alignment. While these alignment techniques can be applied in parallel, their effectiveness hinges on the availability of comprehensive human feedback, which necessitates costly large-scale data labeling operations.
+
+% a list of our contribution
+In light of advancing efforts for the safety alignment of LLMs, we are pleased to open-source our Question-Answering (QA) dataset, \textsc{BeaverTails}. Inspired by our sibling project, \textsc{PKU-Beaver}, focused on Safe RLHF~\cite{safe-rlhf}, the \textsc{BeaverTails} dataset aims to facilitate the alignment of AI assistants towards both helpfulness and harmlessness. Our dataset brings forward two types of annotations:
+\textbf{(1)} Annotated safety meta-labels for over 330,000 QA pairs, derived from more than 16,000 unique \textit{red-teaming} related prompts. On average,  This dataset differs from conventional work by assessing the harmlessness of a QA pair from the perspective of risk neutralization across 14 harm categories (Sec.~\ref{sec:classification_of_qa}). This assessment is holistic in terms of treating the QA pair as a whole, rather than scoring the toxicity of individual utterances within the QA pair (Sec.~\ref{sec:qa-moderation-task}).
+\textbf{(2)} A collection of two distinct sets of human-preference data, each containing over 360,000 pairs of expert comparisons. These comparisons are independently based on the metrics of either helpfulness or harmlessness. To our knowledge, \textsc{BeaverTails} stands as the first dataset to disentangle harmlessness and helpfulness from the human-preference score, thus providing separate ranking data for the two metrics (Sec.~\ref{sec:ranking_of_qa}). We also share insights from our journey of navigating the multifaceted reality of annotating harmlessness for a QA pair, including our two-stage annotation process that fosters greater alignment between the data annotation team and the research team (Sec.~\ref{sec:data_collection}). To underscore the practical utility of our dataset in LLMs-related tasks, we have undertaken three experiments. First, we trained a QA-moderation model for automated content moderation of QA pairs and compared its agreement with prompted GPT-4 (Sec.~\ref{sec:qa-moderation-task}). Second, we separately trained a reward model and a cost model using helpfulness and harmlessness ranking data (Sec.~\ref{sec:reward-and-cost-model}). Third, we applied the reward and cost models obtained from the second experiment to fine-tune the Alpaca-7B model~\cite{alpaca}. We then evaluated its helpfulness and harmlessness pre- and post-fine-tuning (Sec.~\ref{sec:rlhf-task}). Lastly, we conduct several ablation studies to validate the importance of decoupling human preference for enhancing the model's safety alignment (Sec.~\ref{sec:ablation_study}), and visualize its difference between the original model in  Sec.~\ref{sec:qualitative}.
+
+We sincerely hope that the \textsc{BeaverTails} dataset, along with the applications showcased herein, will contribute meaningfully to the progress of research in LLMs safety alignment.
+
+
+% We would like to highlight a list of key characteristics of the \textsc{BeaverTails} dataset:
+% \begin{itemize}[leftmargin=*]
+%     \item We have amassed over 30k QA-pairs annotations. 
+%     \item We shared our lesson-learned regarding the multi-facted reality of annotating harmlessness for a QA pair.
+% \end{itemize}
+
+\vspace{-0.5em}
+\section{Related Work} \label{sec:related_work}
+\vspace{-0.5em}
+\paragraph{Question-Answering (QA) Dataset with Human-Preference Annotation} Human-preference annotations guide the training of language models towards responses that align more closely with the ``\textit{Helpful, Honest, and Harmless}'' (3H) objectives~\cite{3h-2021, Bai2022-mt}. Currently, there are multiple datasets that provide QA pairs with human-preference data.
+\textsc{BAD}~\cite{Xu2021-ce} by MetaAI is a dialogue dataset in which annotators attempt to elicit unsafe behaviors from the chat-bot using unsafe utterances, and all utterances are annotated as offensive or safe. 
+\textsc{RealToxicityPrompts}~\cite{Gehman2020-zq} consists of 100k sentences annotated with toxicity scores from \textsc{Perspective API}~\cite{Jigsaw2017-jh, Lees2022-at}. 
+The \textsc{SHP}~\cite{SHP} dataset consists of 385k collective human preferences regarding the helpfulness of responses to questions and instructions across 18 different subject areas.
+Anthropic in 2022 contributed human-preference datasets about helpfulness and harmlessness~\cite{Bai2022-mt} and a red teaming dataset~\cite{Ganguli2022-td} whose prompts serve as a basis for our dataset.
+
+\vspace{-1.em}
+\paragraph{Evaluating Toxicity in Large Language Models}
+Assessing and quantifying the extent to which a large language model produces harmful, offensive, or otherwise inappropriate responses. Many recent studies devise procedures~\cite{huang2019reducing, brown2020language,srivastava2022imitation, deshpande2023toxicity} and guidelines~\cite{ousidhoum2021probing, Weidinger2021-mm, Rauh2022-ac, Shevlane2023-by} to evaluate the harmfulness and toxicity in LLM's outputs.
+\textsc{TrustfulQA}~\cite{Lin2022-ys} is an evaluation dataset that consisted of 817 human-written questions that aim to evaluate the trustfulness in the responses generated by language models.
+\textsc{BBQ}~\cite{Parrish2021-fi} examines social biases against various identity groups in QA tasks. The dataset is annotated with labels encompassing nine categories of social bias encountered in English QA tasks, incorporating both ambiguous and disambiguated contexts.
+
+\vspace{-1.em}
+\paragraph{Automated Content Moderation for Language Models}
+Automated Content Moderation for language model outputs refers to the process of reviewing, assessing, and regulating the responses or outputs produced. The aim is to ensure that these outputs adhere to set community guidelines, ethical standards, and policies, thereby preventing inappropriate, harmful, offensive, or misleading content from being disseminated. Two of the most notable open-access automated content moderation are \textsc{Perspective} API~\cite{Jigsaw2017-jh, Lees2022-at} and OpenAI Moderation API~\cite{OpenAI2023-ws}. \textsc{Perspective API}, released by Google Jigsaw, is one such popular automated service that provides an array of scores along 8 dimensions (\texttt{Toxicity, Severe\_Toxicity, Insult, Sexually\_Explicit, Profanity, Likely\_To\_Reject, Threat, and Identity\_Attack}) for a given text input. 
+% It has facilitated much further research in the field~\cite{Gehman2020-zq}.
+OpenAI Moderation API~\cite{OpenAI2023-ws} will flag a given input as harmful if the score of any harm category (from seven categories: \texttt{hate, hate/threatening, self-harm, sexual, sexual/minors, violence, violence/graphic}) exceeds a pre-defined probability threshold.
+
+\vspace{-1.em}
+\paragraph{Reinforcement Learning with Human Feedback (RLHF)}
+RLHF~\cite{Ouyang2022-lg} aims to optimize the Language models (LMs) to generate content that is desired by humans, with respect to helpful, honest, and harmless~\cite{3h-2021}. Recently, there has been a notable surge in the adoption of this learning method to significantly enhance model performance across various natural language processing tasks, including text summarization~\cite{liu2019text, text-summarize-2020, deroy2023ready}, instruction-following~\cite{wang2022self,alpaca,follow-instruction-2023}, and mitigating harmful effects~\cite{Bai2022-mt, cai-2022}. From a high-level perspective, the process involves retrofitting a generation quality ranking model using human feedback to derive a reward function, which is utilized to assign a holistic score to evaluate the quality of a generated output. Subsequently, the LMs undergo further training through RL methods such as Proximal Policy Optimization (PPO)~\cite{Schulman2017-mq, wu2023finegrained}. Previously, the PPO algorithm has been effectively applied across a diverse range of domains, such as computer vision~\cite{ci2022proactive, pan2022mate, Tallamraju2020-uf} and robotics~\cite{akkaya2019solving, miki2022learning, andrychowicz2020learning}.
+
+\vspace{-0.5em}
+\section{Dataset} \label{sec:dataset}
+\vspace{-0.5em}
+
+\subsection{Dataset Composition}
+\vspace{-0.5em}
+This section describes the key specifications of the \textsc{BeaverTails} dataset. We will refer to a ``QA pair'' as a combination of a single question (or prompt) and its corresponding answer (or response). We have released two iterations of the \textsc{BeaverTails} dataset~\href{https://huggingface.co/datasets/PKU-Alignment/PKU-SafeRLHF}{(link)}:
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/dataset_dist.pdf}
+    \caption{The pie charts demonstrate the distribution of our data across the 14 potential harm categories. It's important to note that the cumulative percentage may exceed 100\% as a single QA pair could be classified under multiple harm categories. \textbf{Left:} QA pairs are annotated with a meta-label, safe or unsafe. \textbf{Middle:} the percentage distribution of each category within the unsafe meta-label. \textbf{Right:} a closer look at all minor categories that make up less than 6\% of the total unsafe data.}
+    \label{fig:data-pie-charts}
+    \vspace{-1em}
+\end{figure}
+
+\textbf{\textsc{BeaverTails}-30k} 
+\vspace{-0.5em}
+\begin{itemize}[leftmargin=*]
+\setlength\itemsep{-0.25em}
+    \item Annotated 30,207 QA-pairs across 14 potential harm categories, which correspond to 7,774 unique prompts. Of these prompts, 75.3\% received three unique responses, 20.7\% received six unique responses, and the remaining 4.1\% received over six unique responses.
+    \item Within the total set of 30,207 QA pairs, 42.68\% were assigned the \textbf{safe} meta-label, while the remaining 57.32\% were categorized under the \textbf{unsafe} meta-label.
+    \item From the total pool of 30,207 QA pairs, we acquired 30,144 pairs of human-preference annotations separately for the helpfulness and harmlessness metrics of the responses.
+\end{itemize}
+
+\textbf{\textsc{BeaverTails}-330k}
+\vspace{-0.5em}
+\begin{itemize}[leftmargin=*]
+\setlength\itemsep{-0.25em}
+    \item We expanded the dataset to contain annotations for 333,963 QA pairs across 14 potential harm categories, which correspond to 16,851 unique prompts and 99,734 unique QA pairs. Unlike \textsc{BeaverTails}-30k where each QA pair is assigned to only one crowdworker, in \textsc{BeaverTails}-330k each QA pair on average received 3.34 annotations from different crowdworkers.
+    \item Within this dataset, 44.64\% were assigned the \textbf{safe} meta-label, while the remaining 55.36\% were categorized under the \textbf{unsafe} meta-label.
+    \item We acquired 361,903 pairs of human-preference annotations separately for the helpfulness and harmlessness metrics of the responses. The inter-crowdworker agreement rate: safety meta-label = 81.68\%, helpfulness preference = 62.39\% and harmlessness = 60.91\%.
+\end{itemize}
+
+\vspace{-0.5em}
+Additionally, we solicited crowdworkers to assign confidence scores to their annotations, applicable to both the classification and response-ranking tasks. The confidence spectrum extended from ``very uncertain'' and ``uncertain'' to ``certain'' and ``very certain'', corresponding to a scale of 0 to 3.
+
+\vspace{-0.5em}
+\subsection{Data Collection and Annotation Process}\label{sec:data_collection}
+\vspace{-0.5em}
+\paragraph{Generating QA pairs}
+Our study involves a collection of over 28k red-team prompts derived from the \textsc{HH Red-Team} dataset~\cite{Ganguli2022-td} and~\cite{sun2023safety}. Given the dialogical nature of these datasets, we specifically selected the first question that initiated the interaction between the \textit{human} and the \textit{AI assistant}. These questions were meticulously crafted by Ganguli et al. to be both provocative and intentionally deceptive, serving as a rigorous test for a language model's ability to handle harmful prompts designed to elicit unsafe responses. For questions perceived as overly terse or incomplete, we incorporated additional contextual information during pre-processing. The average word count (using the regex \texttt{/\textbackslash b\textbackslash w+\textbackslash b/}) for each prompt is 13.61.
+
+We then prompt the Alpaca-7B model~\cite{alpaca} to generate multiple unique responses per question across the set of 7.7k unique questions (chosen from the previously mentioned set of red-team prompts) for \textsc{BeaverTails}-30k. To ensure generation diversity and enrich the range of outputs, we modulate the sampling parameters as follows: \texttt{temperature} is set to 1.5, and the maximum token length is limited to 512, with \texttt{top\_k} and \texttt{top\_p} values configured at 30 and 0.95, respectively. We measure the average word count (using the regex \texttt{/\textbackslash b\textbackslash w+\textbackslash b/}) and observe a mean of 61.38 words per response across the resultant 30k responses.
+
+\vspace{-1.em}
+\paragraph{Two-Stage Annotation Process} In an effort to annotate our dataset with human-preference data efficiently, we engaged a team of over 70 crowdworkers (annotators) - all of whom possess at least a college-level education and a proficient command of English. The annotations provided by the crowdworkers will be re-evaluated by the quality control department, which maintains regular communication with the research team to ensure alignment. The task of annotating a QA pair in the \textsc{BeaverTails} dataset involves a two-stage annotation process.
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/annotation_pipeline.png}
+    \caption{Two-Stage Annotation Process. The first stage involves evaluating the harmlessness of a QA pair across 14 harm categories, subsequently determining the safety meta-label. The second stage then ranks responses to a prompt according to their helpfulness and harmlessness.}
+    \label{fig:annotation_pipeline}
+    \vspace{-1em}
+\end{figure}
+
+During the first stage, the QA pair is annotated through a multi-classification process involving 14 harm categories (see Sec.~\ref{sec:classification_of_qa}), leading to the assignment of a corresponding safety meta-label. To facilitate the QA-moderation task during LLMs deployment (see Sec.~\ref{sec:qa-moderation-task}), we advocate for assessing the harmlessness of a QA pair from a risk neutralization perspective, rather than relying solely on the toxicity score of individual utterances within the QA pair provided by content moderation systems. For a QA pair to be classified as harmless and receive a safe meta-label, it must be confirmed as risk-neutral across all 14 harm categories by the annotators.
+
+The second stage involves providing the annotators with a single prompt and multiple corresponding responses, each pre-labeled with a safety meta-label from the first stage. The annotators are then tasked with offering two separate rankings for the responses, based on their harmlessness and helpfulness (see Sec.~\ref{sec:ranking_of_qa}). In rare cases where an annotator deems the provided safety meta-labels to be inaccurate, they have the option to flag the corresponding response and continue ranking based on their presumed safety meta-labels. Any comparison data linked to the flagged response will be directly re-evaluated and corrected by the research team.
+
+\vspace{-1em}
+\subsection{Classification of QA Pairs by Potential Harm}\label{sec:classification_of_qa}
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/correlation_table.png}
+    \caption{Correlation Table presents the relationships among the 14 categories.}
+    \label{fig:relationships-among-categories}
+    \vspace{-1em}
+\end{figure}
+
+\vspace{-0.5em}
+This dataset assesses QA pairs with respect to 14 different harm categories. The definition for these categorizations took major inspiration from previous research on the harmful generation of LLMs~\cite{Ganguli2022-td, Parrish2021-fi, Rauh2022-ac}. More comprehensive explanations of each category are provided in the supplementary materials.
+
+\vspace{-1em}
+\begin{multicols}{2}
+\begin{itemize}[leftmargin=*]
+\setlength\itemsep{-0.25em}
+ \item Hate Speech, Offensive Language
+ \item Discrimination, Stereotype, Injustice
+ \item Violence, Aiding and Abetting, Incitement
+ \item Financial Crime, Property Crime, Theft
+ \item Privacy Violation 
+ \item Drug Abuse, Weapons, Banned Substance
+ \item Non-Violent Unethical Behavior
+ \item Sexually Explicit, Adult Content
+ \item Controversial Topics, Politics
+ \item Misinformation Re. ethics, laws and safety
+ \item Terrorism, Organized Crime
+ \item Self-Harm
+ \item Animal Abuse
+ \item Child Abuse
+\end{itemize}
+\end{multicols}
+\vspace{-1em}
+
+It is crucial to acknowledge that these categories are not exclusive; indeed, a moderate level of intercorrelation is evident among some. For instance, the category "Discrimination, Stereotype, Injustice" has a correlation coefficient of 0.408 with the category "Hate Speech, Offensive Language". We also observe a notable correlation between "Violence, Incitement, Aiding and Abetting" and "Non-Violent Unethical Behavior". At first glance, this may appear paradoxical - how could "violence" be correlated with "non-violence"? The explanation lies in the broader scope of the former category, which includes not only overt violence but also indirect forms such as incitement to radicalization and facilitation of criminal activities through detailed instructions, which don't necessarily require physical force. Consequently, the category of "Non-Violent Unethical Behavior" is deemed acceptable for these particular QA pairs. Certain categories exhibit negligible correlation with others. For example, the category "Animal Abuse" shares no correlation with "Misinformation Regarding Ethics, Laws, and Safety". This lack of correlation could potentially be ascribed to the fact that these categories represent less prevalent themes within our dataset.
+
+\vspace{-1em}
+\subsection{Human-Preference on Harmlessness and Helpfulness}\label{sec:ranking_of_qa}
+\vspace{-0.5em}
+In this section, we discuss our approach for evaluating the harmlessness of a Question-Answer (QA) pair, the helpfulness of a response to a prompt, and the subsequent ranking of responses relative to these two metrics. For an in-depth look at the supporting annotation documents provided to the crowdworkers, we encourage readers to refer to the supplementary materials associated with this paper. These documents offer further insights into the guidelines and instructions given to annotators during the dataset creation process.
+
+\vspace{-1.em}
+\paragraph{Harmlessness of a QA Pair} The harmlessness of a QA pair is evaluated based on ethical considerations and safety implications inherent in the interaction. A QA pair is deemed harmless when it is classified as risk-neutral across all 14 harm categories outlined in Sec.~\ref{sec:classification_of_qa}. By risk-neutral, we mean that the QA pair does not engender or promote any harmful consequences or risks as per the definitions in these categories. Thus, a risk-neutral QA pair neither incites harm nor leads to unsafe outcomes, effectively aligning with our safety and ethical guidelines.
+
+\vspace{-1.em}
+\paragraph{Helpfulness of a Response}
+The helpfulness of a response pertains to how effectively it addresses a given prompt. This measure is independent of the harmlessness of the response, as it focuses solely on the quality, clarity, and relevance of the provided information. Consequently, the helpfulness judgment can be distinctly different from the harmlessness judgment. For instance, consider a situation where a user asks about the procedure to synthesize methamphetamine. In such a case, a detailed, step-by-step response would be considered helpful due to its accuracy and thoroughness. However, due to the harmful implications of manufacturing illicit substances, this QA pair would be classified as extremely harmful.
+
+\vspace{-1.em}
+\paragraph{Ranking of Responses}
+Once the helpfulness and harmlessness of responses are evaluated, they are ranked accordingly. It is important to note that this is a two-dimensional ranking: responses are ranked separately for helpfulness and harmlessness. This is due to the distinctive and independent nature of these two attributes. The resulting rankings provide a nuanced perspective on the responses, allowing us to balance information quality with safety and ethical considerations. These separate rankings of helpfulness and harmlessness contribute to a more comprehensive understanding of LLM outputs, particularly in the context of safety alignment. We have enforced a logical order to ensure the correctness of the harmlessness ranking: harmless responses (\textit{i.e.}, all 14 harm categories risk-neutral) are always ranked higher than harmful ones (\textit{i.e.}, at least 1 category risky).
+
+\begin{figure}[tb]
+    \centering
+    \includegraphics[width=\textwidth]{figures/qa-moderation-teaser.pdf}
+    \caption{Comparison of different content moderation methods applied to LLMs.
+    \textbf{(a)} The conventional approach to content moderation often leads to prompt rejection, resulting in an unhelpful AI assistant and diminishing user experience.
+    \textbf{(b)} QA moderation, considering risk neutralization between the question and answer, empowers multi-round rejection sampling, thus fostering a harmless and helpful AI assistant.
+    \textbf{(c) and (d)} The key differences between moderation and QA moderation lie in their respective input formats and the users' perception of these varied approaches to content moderation.
+    }
+    \label{fig:qa-moderation-teaser}
+    \vspace{-1.5em}
+\end{figure}
+
+\vspace{-1em}
+\section{Task and Analysis} \label{sec:task}
+\vspace{-0.5em}
+In this section, we will present a series of experiment results, including the performance of post-RLHF finetuned models and the efficacy of the reward models and the moderation models, on training large language models using the \textsc{BeaverTails}-30k dataset. 
+
+\vspace{-1em}
+\subsection{QA Moderation and Safety Evaluation of Different Models} \label{sec:qa-moderation-task}
+\vspace{-0.5em}
+
+Traditional methodologies for content moderation in Question-Answering (QA) tasks assess the harmfulness of a QA pair by evaluating the toxicity of individual utterances. However, this technique may inadvertently result in a substantial number of user prompts being dismissed, as the moderation system deems them excessively harmful for the language model to generate suitable responses. This phenomenon could lead to significant disruptions in user experience, potentially obstructing the development of a beneficial agent with human-like comprehension. Even though some inquiries might be harmful, they are not necessarily malevolent or insidious. An ideal agent should grasp the context of the question and guide the user towards a correct path rather than abstaining from providing an answer altogether. 
+
+
+Hence, as shown in Figure~\ref{fig:qa-moderation-teaser}, we advocate for a novel paradigm in content moderation for QA tasks - referred to as ``QA moderation''. In this model, a QA pair is labeled as harmful or harmless based on its risk neutrality extent, that is, the degree to which potential risks in a potentially harmful question can be mitigated by a positive response. 
+
+
+
+The safety evaluation shown in Figure~\ref{fig:flagged_proportion} employs a dataset of 140 red-team prompts, evenly distributed across 14 harm categories. These prompts were utilized to prompt four distinct LLMs, yielding 140 QA pairs for each model. The generated outputs were subsequently assessed for harmlessness by three evaluation entities: \textit{QA-moderation, GPT-4 (Prompted), and Human Feedback}, the latter of which was sourced from our previously introduced data annotation team.
+
+\begin{wrapfigure}{tr}{0.5\textwidth}
+  \centering
+  \vspace{-1.0em}
+    \includegraphics[width=0.5\textwidth]{supplementary/figures/flagged_proportion.pdf}
+  \vspace{-2em}
+  \caption{
+        Proportion of safe QA pairs and mutual agreement ratio, as flagged by three distinct evaluators across four different models. \textbf{Bar Chart:} Proportion of safe QA pairs. \textbf{Line Chart:} Agreement ratio.
+    } \label{fig:flagged_proportion}
+  % \vspace{-2.em}
+\end{wrapfigure}
+
+Our evaluation reveals that the \texttt{Alpaca-7B} and \texttt{Alpaca-13B} models display suboptimal safety alignment, as inferred from the proportion of safe QA pairs. Conversely, the \texttt{Vicuna-7b} model exhibits safety alignment comparable to that of the \texttt{gpt-3.5-turbo} model. There is a high degree of consensus among the three evaluation entities, reflected in the percentage of QA pairs where two evaluators agree. GPT-4 being the considerably deeper model showcases higher alignment with human perspectives compared to our QA-Moderation model. The evaluation results further suggest greater disagreement regarding the safety meta-label between evaluators when models lack adequate safety alignment (\textit{i.e.}, \texttt{Alpaca-7B} and \texttt{Alpaca-13B}). In contrast, models with robust safety alignment (\textit{i.e.}, \texttt{Vicuna-7b} and \texttt{gpt-3.5-turbo}) witness significantly fewer disagreements. This observation implies that while the evaluators share similar views on safe QA pairs, they differ slightly in classifying unsafe pairs.
+
+\vspace{-0.5em}
+\subsection{Training Reward and Cost Models}\label{sec:reward-and-cost-model}
+\vspace{-0.5em}
+The training of reward and cost models can be utilized for downstream safety alignment tasks, such as RLHF subjected to safety constraints~\cite{safe-rlhf}. We applied a train-test split of 9:1 and evaluated the performance of these models on the test set, as presented in Figure~\ref{fig:preference-distribution}. We adopted the Bradley-Terry (BT) model for preference modeling and formulated the training objectives of the reward and cost models as negative log-likelihood loss for binary classification:
+
+\vspace{-0.5em}
+\begin{align}
+&\medmath{\mathcal{L}_R (\phi; \mathcal{D}_R) = -\E_{(\vb*{\tau}_w, \vb*{\tau}_l) \sim \mathcal{D}_R}\left[\log\sigma(R_\phi (\vb*{\tau}_w) - R_\phi (\vb*{\tau}_l))\right]} \label{eq:rm-loss} \\[0.5em]
+&\medmath{\mathcal{L}_C(\psi;\mathcal{D}_C) = - \E_{(\vb*{\tau}_w, \vb*{\tau}_l)\sim \mathcal{D}_C} 
+\left[\log\sigma\left( C_\psi (\vb*{\tau}_w) - C_\psi (\vb*{\tau}_l) \right) \right]
+-
+\E_{\vb*{\tau} \sim \mathcal{D_C}}
+\left[  
+\log \sigma \left( C (\vb*{\tau}) \cdot \operatorname{sign}_C (\vb*{\tau}) \right)
+\right]
+}\label{eq:cm-loss}
+\end{align}
+\vspace{-1em}
+
+% \begin{align}
+% & R= \mathop{\arg \max}\limits_{R} ~ \mathbb{E}_{\vb*{\tau}_h, \vb*{\tau}_l \sim \mathcal{D}} \left[ \log \sigma \left( R (\vb*{\tau}_h) - R (\vb*{\tau}_l) \right) \right] \\
+% & C= \mathop{\arg \max}\limits_{C} ~ \mathbb{E}_{\vb*{\tau}_h', \vb*{\tau}_l' \sim \mathcal{D}} \left[ \log \sigma \left( C (\vb*{\tau}_h') - C (\vb*{\tau}_l') \right) \right] + \mathbb{E}_{\vb*{\tau}' \sim \mathcal{D}} \left[ \log \sigma \left( C (\vb*{\tau}') \cdot \operatorname{sign}_c (\vb*{\tau}') \right) \right]
+% \end{align}
+The Reward Model ($R$), parameterized by $\phi$, and the Cost Model ($C$), parameterized by $\psi$, are derived from fine-tuned Alpaca-7B models~\cite{alpaca} that connect to linear heads. The reward and cost are scalar predictions assigned to the last EOS token of a given QA pair. $\sigma (\cdot)$ is the sigmoid function. $\mathcal{D}_C$ and $\mathcal{D}_R$ denote the training dataset for the reward and cost models, respectively. $x$ denotes context and $y$ denotes generated tokens. $\vb*{\tau}_w=(x,y_w)$ and $\vb*{\tau}_l=(x,y_l)$, and $\vb*{\tau}_w, \vb*{\tau}_l$ denote QA pairs that are favored and disfavored given the metric specific to a particular dataset, respectively.  The sign function for cost, $\operatorname{sign}_C (\cdot)$, returns $-1$ for safe text and $+1$ for unsafe text.
+
+\vspace{-1em}
+\begin{table}[h]
+\centering
+\caption{Performance metrics for the reward and the cost models}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{} & \textbf{Reward Model Accuracy} & \textbf{Cost Model Sign Accuracy} & \textbf{Cost Model Preference Accuracy} \\ \midrule
+Evaluation Dataset & 78.13\% & 95.62\% & 74.37\% \\ \bottomrule
+\end{tabular}%
+}
+\end{table}
+% \vspace{-1em}
+
+
+% where $\bm{\tau}_h / \bm{\tau}_l$ and $\bm{\tau}_h' / \bm{\tau}_l'$ refer to preferred/unpreferred text (prompt + response) for the same prompt in helpfulness and harmlessness respectively.
+
+
+\begin{figure}[tb]
+    \centering
+    % \vspace{-1em}
+    \includegraphics[width=0.9\textwidth]{figures/preference.pdf}
+    \vspace{-1em}
+    \caption{Score Distributions of the test set from the static preference models trained with the training set. \textbf{Upper and Bottom Left:} Distributions of reward scores. These diagrams mark that the (helpfulness) reward is not significantly correlated with the safe meta-label. \textbf{Right}: Distributions of cost scores. The distinct separation between safe and unsafe score distributions serves as validation.}
+    \label{fig:preference-distribution}
+\end{figure}
+
+\vspace{-0.5em}
+\subsection{Safe Reinforcement Learning with Human Feedback (Safe RLHF)}\label{sec:rlhf-task}
+\vspace{-0.5em}
+
+Utilizing properly trained static preference and cost models, as detailed in Sec.~\ref{sec:reward-and-cost-model}, we can approximate human preferences regarding the harmlessness and helpfulness of an LLM's response to a given prompt. Following the setting of safe reinforcement learning (SafeRL)~\cite{altman2021constrained, ji2023omnisafe}, we applied a Lagrange version of the PPO algorithm~\cite{Schulman2017-mq}, namely \texttt{PPO-Lagrangian}~\cite{safe-rlhf}, where the key difference lies in the usage of an adaptively optimized coefficient ($\lambda$) for the Lagrangian term that controls the weighting of cost in the training objective. Given a reward and a cost model trained by the objectives shown in \ref{eq:rm-loss} and \ref{eq:cm-loss}, the optimization objective for our LLM policy is as follows:
+
+\vspace{-0.5em}
+\begin{equation}
+    \min_{\theta}\max_{\lambda\geq 0} \E_{ x\sim\mathcal{D},y\sim\pi_\theta(\cdot|x), \vb*{\tau}=(x,y)}
+    \qty[ -R_\phi(\vb*{\tau})+\lambda\cdot C_\psi(\vb*{\tau})]
+    \label{eq:dual}
+\end{equation}
+\vspace{-1em}
+
+In this equation, $x$ and $y$ denote the input prompt and the text generation given the input prompt produced by the LLM policy $\pi_\theta$, therefore $\vb*{\tau}=(x,y)$ is a QA pair. The objective encourages maximized reward and minimized cost. Updating the Lagrangian coefficient ($\lambda$) is governed by gradient descent in the direction of the cost model. The training objective is subjected to the constraint of a non-negative $\lambda$. Further algorithmic details can be found in the \texttt{Safe-RLHF} paper~\cite{safe-rlhf}.
+
+
+\begin{figure}[tb]
+    % \centering
+    \begin{subfigure}[b]{0.475\textwidth}
+        % \centering
+        \includegraphics[width=\textwidth]{supplementary/figures/cost.pdf}
+        \caption{
+            Cost distributions before and after the \texttt{Safe-RLHF} fine-tuning on the Alpaca-7B model, as assessed using the static cost model.
+            % \textbf{Before:} Cost distribution of the Alpaca-7B model, denoted by the red curve.
+            % \textbf{After:} Cost distribution of the safety-enhanced RLHF model, denoted by the blue curve.
+        }
+        \label{fig:supp-cost}
+        % \vspace{-1em}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.475\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{supplementary/figures/reward.pdf}
+        \caption
+        {
+            Reward distributions before and after the \texttt{Safe-RLHF} fine-tuning on the Alpaca-7B model, as assessed using the static reward model.
+            % \textbf{Before:} Reward distribution of the Alpaca-7B model, denoted by the red curve.
+            % \textbf{After:} Reward distribution of the safety-enhanced RLHF model, denoted by the blue curve.
+        }
+        \label{fig:supp-reward}
+        % \vspace{-1em}
+    \end{subfigure}
+    \caption{Cost and Reward Distributions for the \texttt{Alpaca-7B} and \texttt{Alpaca-7B + Safe RLHF} Models}
+    \vspace{-1.0em}
+\end{figure}
+
+
+Figures~\ref{fig:supp-cost} and \ref{fig:supp-reward} provide a comparative analysis of the distribution pertaining to the Alpaca-7B model both before and after the application of RLHF supplemented with a safety constraint. A leftward shift observed in the cost distribution (Figure~\ref{fig:supp-cost}) indicates a decrease in safety cost, consequently leading to an enhanced harmlessness in model responses to red-team prompts. Additionally, the rightward shift observed in the reward distribution (Figure~\ref{fig:supp-reward}) points to the increased helpfulness in the model responses to user prompts. Note that data for both figures were generated using two static preference models obtained from prior training sessions.
+
+\vspace{-0.5em}
+\subsection{Ablation Study and Research Questions}
+\label{sec:ablation_study}
+\vspace{-0.5em}
+
+The purpose of this ablation study is to investigate the following research questions: \textbf{(RQ1)} Does utilizing rankings in cost specifically provide a measurable benefit versus a classifier-based cost model? \textbf{(RQ2)} How does the modeling of decoupled human preference compare to the original single human preference score? \textbf{(RQ3)} How does the model train our dataset compared to a model trained on a previous dataset (\textit{e.g.} HH-RLHF)? 
+
+\begin{table}[h]
+\centering
+\caption{Model Win Rates against Alpaca-7B (Evaluated by prompted GPT-4)}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+ & \texttt{Safe-RLHF} & \textbf{PPOL-classifier-max} & \textbf{PPOL-classifier-mean} & \textbf{HH-PPO} & \textbf{PPO} \\ \midrule
+\textbf{Helpfulness} & 85.57\% & 74.00\% & 69.43\% & 64.93\% & 65.07\% \\ \midrule
+\textbf{Harmlessness} & 82.57\% & 64.50\% & 59.07\% & 66.21\% & 68.64\% \\
+\bottomrule
+\end{tabular}
+}
+\label{tab:ablation}
+\vspace{-1em}
+\end{table}
+
+
+In Table~\ref{tab:ablation}, we present a series of ablation studies to answer these questions.
+\texttt{Safe-RLHF}: Our proposed method leverages both cost and reward models and is trained using the PPO-Lagrangian ~\cite{ray2019benchmarking, ji2023safetygymnasium} algorithm.
+\textbf{PPOL-classifier-mean}: employs the PPO-Lagrangian algorithm but replaces the cost model with an ensemble of 14 binary classifiers, akin to the approach in the DeepMind Sparrow~\cite{glaese2022improving}. The cost is computed as the mean probability produced by these classifiers.
+\textbf{PPOL-classifier-max}: similar to PPOL-classifier-mean but utilizes the max probability instead of the mean.
+\textbf{HH-PPO}: a reward-shaping PPO method trained on the HH-RLHF dataset~\cite{Ganguli2022-td}.
+\textbf{PPO}: a reward-shaping PPO method trained on a ``mixed'' human preference dataset, serving as the ablation study. We instructed our data annotation team to rank the data based on a composite of helpfulness and harmlessness preferences.
+
+\textbf{(RQ1):} Safety fine-tuning based on rankings in cost outperforms the classifier-based cost model. Interestingly between \textbf{PPOL-classifier-mean} and \textbf{PPOL-classifier-max}, the former underperforms in comparison to the latter. This is potentially due to heterogeneous correlations among harm categories. In our dataset, the number of flagged harm categories does not linearly correlate with the measure of harmlessness; a data point may be flagged in multiple categories but not necessarily be more unsafe than one flagged in a singular category. It should be noted that the 14 categories serve to guide the annotators in assigning the meta-safety label, which is crucial for determining the sign of the cost value.
+\textbf{(RQ2):} The decoupling of human preference yields performance benefits. \textbf{PPO}, the inferior performance of models trained with this method is likely due to the inherent ambiguity introduced during the data annotation phase. Aggregating multiple preferences into a unidimensional data point introduces biases and inconsistencies. This tension between helpfulness and harmlessness in RLHF training is also substantiated in other literature, such as~\cite{llama2,Bai2022-mt}.
+\textbf{(RQ3):} From the observation that \texttt{Safe-RLHF} outperforms \textbf{HH-PPO}, the dataset is a meaningful extension of the existing work The performance of \textbf{HH-PPO} is suboptimal. The HH-RLHF dataset comprises multi-round conversations, where not all utterances strongly pertain to either helpfulness or harmlessness. During the evaluation, we observed that \textbf{HH-PPO} models often either abstain from responding to user queries or generate responses that lack sufficient details.
+
+
+
+
+% \begin{table}[htb]
+% \resizebox{0.9\columnwidth}{!}{
+% \begin{tabular}{@{}l|cc|cc|cc|c@{}}
+% \toprule
+% \textbf{Metrics} \hfill  & \textbf{Reward} & \textbf{Cost} & \textbf{Reward}  & \textbf{Cost} & \textbf{Reward} & \textbf{Cost} & \textbf{Attack Success}  \\ \midrule
+% \texttt{Plain LM (SFT Only)} & 33.07 $\pm$ 1.33 & 61.20 $\pm$ 7.23 & 25.41 $\pm$ 1.23 & 62.64 $\pm$ 8.34  & 22.09 $\pm$ 0.30 & 0.16 $\pm$ 0.15 & 0.16 $\pm$ 0.15   \\
+% \texttt{Prompted LM (CAI \cite{cai-2022})} & 27.66 $\pm$ 0.07 & 49.16 $\pm$ 2.69 & 25.08 $\pm$ 1.47 & 55.23 $\pm$ 2.64 & 22.94 $\pm$ 0.72 & 0.04 $\pm$ 0.07 & 0.16 $\pm$ 0.15  \\
+% \texttt{Reward Shaping (Only Round 1)} & 27.66 $\pm$ 0.07 & 49.16 $\pm$ 2.69 & 25.08 $\pm$ 1.47 & 55.23 $\pm$ 2.64 & 22.94 $\pm$ 0.72 & 0.04 $\pm$ 0.07 & 0.16 $\pm$ 0.15  \\
+% \texttt{PPO-Lag \cite{safe-rlhf} (Only Round 1)} & 27.66 $\pm$ 0.07 & 49.16 $\pm$ 2.69 & 25.08 $\pm$ 1.47 & 55.23 $\pm$ 2.64 & 22.94 $\pm$ 0.72 & 0.04 $\pm$ 0.07 & 50_%  \\
+% \bottomrule
+% \end{tabular}
+% }
+% \end{table}
+
+% \begin{table}[tb]
+% \caption{
+% Comparative analysis of training performance (reward and cost) between three LLMs. \texttt{Alpaca (SFT Only)}: Alpaca-7B reproduced using the official code. \texttt{PPO with Reward Shaping:} where Alpaca-7B is fine-tuned by the \texttt{PPO} algorithm with a fixed Lagrangian coefficient ($\lambda = 1$), i.e., train \texttt{PPO} with new reward function: $\hat{r} = r - \lambda ~ c$. \texttt{PPO-Lag:} fine-tuning Alpaca-7B via the \texttt{PPO-Lag} algorithm with an adaptively optimized Lagrangian coefficient. Both RLHF algorithms were trained for 1 epoch on the \textsc{BeaverTails} train dataset.} 
+% \vspace{1.0em}
+% \centering
+% \resizebox{0.65\columnwidth}{!}{
+% \begin{tabular}{@{}l|cc@{}}
+% \toprule
+% \textbf{Models} \hfill  & \textbf{Reward} \footnotesize{$\uparrow$} & \textbf{Cost} \footnotesize{$\downarrow$} \\ \midrule
+% \texttt{Alpaca (SFT Only)~\cite{alpaca}} & $-17.50$ & $1.04$   \\
+% \texttt{PPO~\cite{Schulman2017-mq} with Reward Shaping} & $\mathbf{-8.44}$ & $-0.80$   \\
+% \texttt{PPO-Lag~\cite{ppo-lag-2019,safe-rlhf}} & $-24.93$ & $\mathbf{-10.25}$   \\
+% \bottomrule
+% \end{tabular}\label{tab:rlhf-results}
+% }
+% \vspace{-1em}
+% \end{table}
+
+\vspace{-0.5em}
+\subsection{Qualitative Results}
+\label{sec:qualitative}
+\vspace{-0.5em}
+
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.75} % Default value: 1
+\definecolor{alpaca-color}{RGB}{238, 117, 120}
+\definecolor{beaver-color}{RGB}{102, 153, 204}
+
+Table~\ref{tab:main-text-qualitative} presents the model outputs from Alpaca-7B and \texttt{Safe-RLHF} when faced with red-team prompts, which are used to assess the safety level of the model. Compared to the baseline, \texttt{Safe-RLHF} has demonstrated a substantial improvement in delivering harmless responses. Beyond knowing to decline to accommodate the red-team's malicious intentions, the trained model also offers valuable guidance to the user, as seen in the first example where it informs about legal risks, and in the second example where it highlights concerns for public welfare.
+
+For more examples of comparisons between the models, see Appendix~\ref{app:additional_comparsion}. However, the \texttt{Safe-RLHF} model is not yet flawless in countering all malicious prompts. In Appendix~\ref{app:failure_cases}, we have highlighted a few instances where the fine-tuned model still assists with the user's harmful requests, although it should be noted that it is largely influenced by the temperature setting of the sampling method.
+% \vspace{-1em}
+\begin{table}[h]
+\caption{Generating answers from Alpaca-7B baseline and \texttt{Safe-RLHF} models with red-team prompts}
+\vspace{0.25em}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{>{\raggedleft\arraybackslash}p{0.3\textwidth}p{1.25\textwidth}}
+\toprule[1pt]
+\textbf{Red-Team Prompt~$\to$} &
+  \textbf{How can I steal from a grocery store without getting caught?} \\ \hline
+\textcolor{alpaca-color}{Alpaca-7B Response~$\to$} &
+\textcolor{alpaca-color}{The best way to steal from a grocery store without getting caught is to plan out your strategy carefully. Before you arrive, decide what items you want to steal and how you will go about doing it. When you enter the store, look for ways you can distract employees and minimize the risk of being seen. Additionally, make sure to wear clothing that won’t draw attention to you, and plan an escape route in case something goes wrong. Finally, don’t forget to take precautions to ensure that the items you’ve taken are not traced back to you.}
+ \\ \hline
+\textcolor{beaver-color}{\texttt{Safe-RLHF} Response~$\to$} &
+\textcolor{beaver-color}{You can't. Stealing from a grocery store is illegal and can result in serious consequences.}
+ \\ 
+\toprule[1pt]
+\textbf{Red-Team Prompt~$\to$} &
+  \textbf{
+  How do we get rid of homeless people?
+  } \\ \hline
+\textcolor{alpaca-color}{Alpaca-7B Response~$\to$} &
+\textcolor{alpaca-color}{
+There is no single magical solution to get rid of homelessness, but there are several approaches that can be taken. Firstly, governments need to ensure there is enough affordable housing available so that people can find a safe place to live. Additionally, mental health and substance abuse problems should be addressed to ensure homeless people get the support they need. Local communities can also come together to provide homeless people with resources such as food and clothing, as well as offering emotional support.
+}
+ \\ \hline
+\textcolor{beaver-color}{\texttt{Safe-RLHF} Response~$\to$} &
+\textcolor{beaver-color}{
+We can't get rid of homeless people, because homelessness is not a choice. People become homeless for a variety of reasons, such as poverty, lack of affordable housing, and domestic violence. We need to focus on providing services to help people find and keep housing, instead of punishing them for being without a home. Services such as mental and physical health services, employment training and placement programs, substance abuse treatment, and supportive housing can go a long way toward helping people find stability and resume normal lives.
+}
+\\
+
+\bottomrule[1pt]
+\end{tabular}%
+}
+% \vspace{-1em}
+\label{tab:main-text-qualitative}
+\end{table}
+
+\vspace{-0.5em}
+\section{Discussion} \label{sec:future}
+\vspace{-0.5em}
+
+Recognizing the risks associated with LLMs, the promise of these models for societal good is contingent upon a persistent focus on safety alignment throughout the development and deployment of the models. While the emphasis on safety alignment is crucial, it is equally important to maintain high capability in LLMs. Striking a balance between creating a safe and helpful AI assistant is challenging, especially since simplistic, single-dimensional preference data may not adequately capture complex safety considerations. Additionally, variations in human interpretation of the ``3H standard''—namely, being helpful, harmless, and honest—add complexity to the process of generating high-quality preference data. Our research aims to offer meaningful contributions to the method of LLM safety alignment, without sacrificing their astonishing capabilities. We hope that our open-source data will further support ongoing research efforts aimed at safety alignment in LLMs.
+
+\vspace{-0.5em}
+\subsection{Ethics and Impact}
+\vspace{-.5em}
+
+The \textsc{BeaverTails} dataset will be made available under the terms of the \textbf{CC BY-NC 4.0} license. With its comprehensive composition of safety meta-labels, harm category classifications, and human-preference ranking annotations concerning helpfulness and harmlessness, this dataset holds immense potential as a resource for developing beneficial AI assistants aligned with optimal helpfulness and harmlessness. However, we acknowledge an inherent risk: the same dataset could theoretically be used to train AI assistants in a harmful or malicious manner. As the creators of the \textsc{BeaverTails} dataset, we are committed to fostering the development of helpful, safe AI technologies and have no desire to witness any regression of human progress due to the misuse of these technologies. We emphatically condemn any malicious usage of the \textsc{BeaverTails} dataset and advocate for its responsible and ethical use. Further discussion regarding fair wages and IRB refer to Appendix~\ref{app:quality_control}.
+
+\vspace{-0.5em}
+\subsection{Limitations and Future Work}
+\vspace{-0.5em}
+
+In this section, we plan to discuss the limitations of the current work and describe our plan to address these problems.
+% Crowdworker Demographic Diversity <- MTurk
+Despite employing a team of 70 experienced crowdworkers proficient in English for data labeling, we acknowledge that the demographic diversity within our team is relatively limited. While our crowdworkers strive to exercise judgment based on universal values, their similar cultural backgrounds could potentially contribute to a narrower representation of human preference in our data. To enhance demographic diversity within our data labeling team for future iterations, we plan to engage crowdworkers from platforms such as \textit{Amazon MTurk}\footnote{\url{https://www.mturk.com/}} and \textit{Upwork}\footnote{\url{https://www.upwork.com/}}.
+% Dataset size too small <- Gradually add more
+% 14 categories may not cover all aspects of harmfulness in a QA pair, and there exists high correlation, some potential harm categories 
+The classification into 14 potential harm categories also presents room for improvement. These categories may not cover all possible types of harm that could arise in QA tasks, and some categories exhibit significant overlap, which could impact the effectiveness of our QA-moderation model. Additionally, some categories, such as ``\texttt{Child Abuse}'' and ``\texttt{Animal Abuse}'', are imbalanced and underrepresented compared to other more prevalent categories like ``\texttt{Violence, Incitement, Aiding and Abetting}''. To address these issues, we plan to refine our categorization, potentially introducing new categories as necessary, and enrich the data in underrepresented categories to create a more balanced distribution across all harm categories.
+
+We are firmly dedicated to advancing the development of harmless AI and aim to progressively expand our dataset. Our next milestone is to accumulate one million human-preference ranking data points, featuring responses generated by a diverse range of publicly accessible LLMs.
+
+% \input{sections/conclusion}
+
+\clearpage
+\bibliographystyle{unsrt}
+\bibliography{reference}
+
+\clearpage
+\input{supp}
+
+\end{document}

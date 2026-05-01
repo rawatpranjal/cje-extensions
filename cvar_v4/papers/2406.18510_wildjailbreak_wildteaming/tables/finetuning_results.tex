@@ -1,0 +1,89 @@
+\begin{table}[t!]
+    \caption{Evaluation results of the general capability and safety of \tulu finetuned with \tulumix and different components of \dataset (WJ). All models are 7B except [+\texttt{WJ (13B)}]. For the safety evaluations, we highlight the \textbf{best}, the \underline{\textbf{second best}}, the \colorbox{coralpink}{worst}, and the \colorbox{pink}{second worst} scores of each task for 7B models trained with \datasetshort to highlight balanced performance of the model trained on all components of \datasetshort. } 
+    
+    \label{tab:finetune_results}
+    
+    \centering
+    \small
+    \begin{tabular}{l@{\hspace{0.8\tabcolsep}}
+    r@{\hspace{1\tabcolsep}}
+    r@{\hspace{1\tabcolsep}} |
+    r@{\hspace{1\tabcolsep}} 
+    r@{\hspace{1\tabcolsep}}
+    r@{\hspace{1\tabcolsep}}
+    r@{\hspace{1\tabcolsep}}
+    r@{\hspace{1\tabcolsep}}
+    r@{\hspace{1\tabcolsep}}
+    r@{\hspace{1\tabcolsep}}
+    r@{\hspace{1\tabcolsep}}
+    r@{\hspace{1\tabcolsep}}
+    r@{\hspace{1\tabcolsep}}
+    r
+    }
+        \toprule
+        
+        & \multicolumn{2}{c|}{\textbf{General}} & \multicolumn{5}{c}{\textbf{Safety-Vanilla}} & \multicolumn{5}{c}{\textbf{Safety-Adversarial}} \\
+
+        \cmidrule(r){2-3} \cmidrule(r){4-8} \cmidrule(r){9-13}
+
+         & 
+        \textbf{\scriptsize MTB} & 
+        \textbf{\scriptsize AlpE1} & 
+        \textbf{\scriptsize HarmB} & 
+        \textbf{\scriptsize ToxiG} & 
+        \textbf{\scriptsize XST$_\text{all}$} & 
+        \textbf{\scriptsize XST$_\text{H}$} & 
+        \textbf{\scriptsize XST$_\text{B}$} & 
+        \textbf{\scriptsize JT} & 
+        \textbf{\scriptsize DAN} & 
+        \textbf{\scriptsize \datasetshort$_\text{all}$} & 
+        \textbf{\scriptsize \datasetshort$_\text{H}$} & 
+        \textbf{\scriptsize \datasetshort$_\text{B}$}  \\
+        
+        \textbf{Train Data} & 
+        \scriptsize total$\uparrow$ & 
+        \scriptsize win$\uparrow$ & 
+        \scriptsize asr$\downarrow$ & 
+        \scriptsize tox\%$\downarrow$ & 
+        \scriptsize f1$\uparrow$ & 
+        \scriptsize rta$\uparrow$ & 
+        \scriptsize rta$\downarrow$ & 
+        \scriptsize rta$\uparrow$ & 
+        \scriptsize asr$\downarrow$ & 
+        \scriptsize acc$\uparrow$ & 
+        \scriptsize asr$\downarrow$ & 
+        \scriptsize rta$\downarrow$  \\
+        \midrule
+
+    
+        \scriptsize \texttt{\tulumix (\tulumixshort)} & 5.87 & 72.7 & 20.8 & 3.3 & 85.1 & 83.0 & 9.6  & 74.8 & 49.7 & 69.0 & 60.4 & 1.6 \\
+
+        \scriptsize \texttt{\tulumixshort-no-refusal} & 5.84 & 75.9 & 59.1 & 65.9 & 83.7 & 79.5 & 8.4 & 60.0 & 66.0 & 64.1 & 71.0 & 0.8 \\
+
+        \scriptsize \texttt{\tulumixshort-public-safety} & 6.10 & 70.4 & 66.0 & 56.8 & 79.3  & 72.0 & 7.6 & 63.5 & 27.3 & 66.0 & 67.7 & 0.4 \\
+        \midrule
+
+        \rowcolor{columbiablue} \scriptsize \texttt{+\dataset (WJ)} & 6.29 & 74.6 & \underline{\textbf{3.1}} & \underline{\textbf{0.2}} & 87.6 & 86.5 & 8.8 & \textbf{86.8} & \textbf{14.0} & \underline{\textbf{98.4}} & 1.7 & \textbf{\underline{1.6}} \\
+        
+        \scriptsize \texttt{+WJ-harm-only} & 6.06 & 73.9 & 5.7 & 1.8 & \underline{\textbf{88.1}} & \textbf{\underline{88.5}} & \colorbox{pink}{10.0} & 81.8 & 36.7 & 72.7 & \textbf{0.2} & \colorbox{pink}{54.4} \\
+     
+       \scriptsize \texttt{+WJ-vani-only} & 6.21 & 72.4 & \textbf{1.9} & 4.5 & 87.2 & \colorbox{pink}{83.5} & \textbf{6.4} & \colorbox{coralpink}{79.8} & 43.7 & \colorbox{pink}{70.7} & \colorbox{pink}{57.5} & \textbf{1.2} \\
+        
+       \scriptsize \texttt{+WJ-vani-harm-only} & 6.08 & 74.5 & 5.0 & \colorbox{coralpink}{16.6} & \textbf{88.9} & \textbf{90.5} & \colorbox{coralpink}{10.4} & \textbf{\underline{82.5}} & \colorbox{coralpink}{49.3} & \colorbox{coralpink}{69.9} & \colorbox{coralpink}{58.2} & 2.0 \\
+        
+        \scriptsize \texttt{+WJ-adv-only} & 6.16 & 72.6 & \colorbox{pink}{20.8} & \textbf{0.1} & \colorbox{coralpink}{85.5} & \colorbox{coralpink}{81.0} & \textbf{\underline{6.8}} & \colorbox{pink}{80.0} & \textbf{\underline{16.0}} & \textbf{97.4} & 2.5 & 2.8 \\
+
+        
+        \scriptsize \texttt{+WJ-adv-harm-only} & 6.15 & 73.5 & \colorbox{coralpink}{32.1} & \colorbox{pink}{15.5} & \colorbox{pink}{86.8} & \colorbox{pink}{83.5} & 7.2 & 80.5 & \colorbox{pink}{44.3} & 72.1 & \underline{\textbf{1.0}} & \colorbox{coralpink}{54.8} \\
+
+        \midrule
+        \rowcolor{columbiablue} \scriptsize \texttt{+\datasetshort (13B)} & 6.59 & 80.5 & 2.5 & 0 & 87.6 & 86.5 & 8.4 & 86.8 & 10.7 & 98.1 & 1.5 & 2.4 \\
+
+         \bottomrule
+    \end{tabular}
+\end{table}
+
+
+
+
+

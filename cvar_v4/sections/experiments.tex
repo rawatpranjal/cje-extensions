@@ -1,0 +1,59 @@
+\section{Empirical Results}
+\label{sec:experiments}
+
+This section is intentionally written as a result template. The v4 paper should not over-interpret the current 5k Arena data; the main claims should be filled after Arena-Tail is created.
+
+\subsection{Result 1: Tail Ranking Is Not Mean Ranking}
+
+\begin{figure}[t]
+\centering
+\fbox{\parbox{0.88\linewidth}{
+\centering
+\vspace{0.35in}
+Placeholder: mean vs. $\CVaR_{0.10}$ scatter.\\
+Highlight policy pairs with overlapping mean CIs but separated tail CIs.
+\vspace{0.35in}
+}}
+\caption{Mean and lower-tail value answer different questions. The target empirical result is a pair of policies with similar means and different audit-accepted CVaR.}
+\label{fig:mean-vs-cvar}
+\end{figure}
+
+\subsection{Result 2: Audit-Gated Leaderboard}
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lccccc}
+\toprule
+Policy & Mean & $q_{0.10}$ & $\CVaR_{0.10}$ & Audit $p$ & Gate \\
+\midrule
+base & TBD & TBD & TBD & TBD & pass/fail \\
+clone & TBD & TBD & TBD & TBD & pass/fail \\
+premium & TBD & TBD & TBD & TBD & pass/fail \\
+safety & TBD & TBD & TBD & TBD & pass/fail \\
+adversarial & diagnostic & diagnostic & diagnostic & $<0.05$ & \RefuseLevel{} \\
+\bottomrule
+\end{tabular}
+\caption{Headline results must be audit-gated. A rejected policy can be shown diagnostically, but not interpreted as a calibrated level claim.}
+\label{tab:audit-gated-leaderboard}
+\end{table}
+
+\subsection{Result 3: Tail Curves Across Alpha}
+
+\begin{figure}[t]
+\centering
+\fbox{\parbox{0.88\linewidth}{
+\centering
+\vspace{0.35in}
+Placeholder: tail-risk curves over $\alpha\in\{0.20,0.10,0.05,0.01\}$.\\
+Use $\alpha=0.01$ as appendix/headline only if powered.
+\vspace{0.35in}
+}}
+\caption{Tail-risk curves show whether policy differences grow as the tail gets deeper.}
+\label{fig:tail-curves}
+\end{figure}
+
+\subsection{Result 4: Estimator Comparison}
+
+The estimator comparison should answer a narrow question: does calibrated shortfall estimation improve over raw judge tails and oracle-only tails at the same oracle budget? Report bias, RMSE, coverage, CI length, and audit rejection rate. Do not mix rejected and accepted rows when reporting level-error summaries; use an accepted-only analysis and a separate rejection-power analysis.
+

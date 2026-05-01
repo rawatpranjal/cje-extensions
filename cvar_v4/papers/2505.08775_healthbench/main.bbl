@@ -1,0 +1,286 @@
+\begin{thebibliography}{51}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Ayers et~al.(2023)Ayers, Poliak, Dredze, Leas, Zhu, Kelley, Faix, Goodman, Longhurst, Hogarth, et~al.]{ayers2023comparing}
+J.~W. Ayers, A.~Poliak, M.~Dredze, E.~C. Leas, Z.~Zhu, J.~B. Kelley, D.~J. Faix, A.~M. Goodman, C.~A. Longhurst, M.~Hogarth, et~al.
+\newblock Comparing physician and artificial intelligence chatbot responses to patient questions posted to a public social media forum.
+\newblock \emph{JAMA internal medicine}, 183\penalty0 (6):\penalty0 589--596, 2023.
+
+\bibitem[Baker et~al.(2024)Baker, Dwyer, Kalidoss, and et~al.]{baker2024documentation}
+H.~P. Baker, E.~Dwyer, S.~Kalidoss, and et~al.
+\newblock Chatgpt's ability to assist with clinical documentation: A randomized controlled trial.
+\newblock \emph{Journal of the American Academy of Orthopaedic Surgeons}, 32\penalty0 (3):\penalty0 123--129, 2024.
+\newblock \doi{10.5435/JAAOS-D-23-00474}.
+
+\bibitem[Beam and Kohane(2018)]{beam2018bigdata}
+A.~L. Beam and I.~S. Kohane.
+\newblock Big data and machine learning in health care.
+\newblock \emph{JAMA}, 319\penalty0 (13):\penalty0 1317--1318, 2018.
+\newblock \doi{10.1001/jama.2017.18391}.
+
+\bibitem[Chen et~al.(2024)Chen, Chen, Liu, Jiang, and Wang]{chen2024humans}
+G.~H. Chen, S.~Chen, Z.~Liu, F.~Jiang, and B.~Wang.
+\newblock Humans or llms as the judge? a study on judgement biases.
+\newblock \emph{arXiv preprint arXiv:2402.10669}, 2024.
+
+\bibitem[Cl{{\'e}}men{\c{c}}on et~al.(2016)Cl{{\'e}}men{\c{c}}on, Colin, and Bellet]{clemencon2016}
+S.~Cl{{\'e}}men{\c{c}}on, I.~Colin, and A.~Bellet.
+\newblock Scaling-up empirical risk minimization: Optimization of incomplete $u$-statistics.
+\newblock \emph{Journal of Machine Learning Research}, 17\penalty0 (76):\penalty0 1--36, 2016.
+\newblock URL \url{http://jmlr.org/papers/v17/15-012.html}.
+
+\bibitem[Clusmann et~al.(2023)Clusmann, Kolbinger, Muti, Carrero, Eckardt, et~al.]{clusmann2023future}
+J.~Clusmann, F.~R. Kolbinger, H.~S. Muti, Z.~I. Carrero, J.-N. Eckardt, et~al.
+\newblock The future landscape of large language models in medicine.
+\newblock \emph{Communications Medicine}, 3:\penalty0 141, 2023.
+\newblock \doi{10.1038/s43856-023-00370-1}.
+
+\bibitem[Cosentino et~al.(2024)Cosentino, Belyaeva, Liu, Furlotte, Yang, Lee, Schenck, Patel, Cui, Schneider, et~al.]{cosentino2024towards}
+J.~Cosentino, A.~Belyaeva, X.~Liu, N.~A. Furlotte, Z.~Yang, C.~Lee, E.~Schenck, Y.~Patel, J.~Cui, L.~D. Schneider, et~al.
+\newblock Towards a personal health large language model.
+\newblock \emph{arXiv preprint arXiv:2406.06474}, 2024.
+
+\bibitem[Dash et~al.(2023)Dash, Thapa, Banda, Swaminathan, Cheatham, Kashyap, Kotecha, Chen, Gombar, Downing, et~al.]{dash2023evaluation}
+D.~Dash, R.~Thapa, J.~M. Banda, A.~Swaminathan, M.~Cheatham, M.~Kashyap, N.~Kotecha, J.~H. Chen, S.~Gombar, L.~Downing, et~al.
+\newblock Evaluation of gpt-3.5 and gpt-4 for supporting real-world information needs in healthcare delivery.
+\newblock \emph{arXiv preprint arXiv:2304.13714}, 2023.
+
+\bibitem[Esteva et~al.(2017)Esteva, Kuprel, Novoa, Ko, Swetter, Blau, and Thrun]{esteva2017dermatology}
+A.~Esteva, B.~Kuprel, R.~A. Novoa, J.~Ko, S.~M. Swetter, H.~M. Blau, and S.~Thrun.
+\newblock Dermatologist-level classification of skin cancer with deep neural networks.
+\newblock \emph{Nature}, 542\penalty0 (7639):\penalty0 115--118, 2017.
+\newblock \doi{10.1038/nature21056}.
+
+\bibitem[Fast et~al.(2024)Fast, Adams, Busch, Fallon, Huppertz, Siepmann, Prucker, Bayerl, Truhn, Makowski, et~al.]{fast2024autonomous}
+D.~Fast, L.~C. Adams, F.~Busch, C.~Fallon, M.~Huppertz, R.~Siepmann, P.~Prucker, N.~Bayerl, D.~Truhn, M.~Makowski, et~al.
+\newblock Autonomous medical evaluation for guideline adherence of large language models.
+\newblock \emph{NPJ Digital Medicine}, 7\penalty0 (1):\penalty0 1--14, 2024.
+
+\bibitem[Fleming et~al.(2024)Fleming, Lozano, Haberkorn, Jindal, Reis, Thapa, Blankemeier, Genkins, Steinberg, Nayak, et~al.]{fleming2024medalign}
+S.~L. Fleming, A.~Lozano, W.~J. Haberkorn, J.~A. Jindal, E.~Reis, R.~Thapa, L.~Blankemeier, J.~Z. Genkins, E.~Steinberg, A.~Nayak, et~al.
+\newblock Medalign: A clinician-generated dataset for instruction following with electronic medical records.
+\newblock In \emph{Proceedings of the AAAI Conference on Artificial Intelligence}, volume~38, pages 22021--22030, 2024.
+
+\bibitem[Gilson et~al.(2023)Gilson, Safranek, Huang, Socrates, Chi, Taylor, Chartash, et~al.]{gilson2023does}
+A.~Gilson, C.~W. Safranek, T.~Huang, V.~Socrates, L.~Chi, R.~A. Taylor, D.~Chartash, et~al.
+\newblock How does chatgpt perform on the united states medical licensing examination (usmle)? the implications of large language models for medical education and knowledge assessment.
+\newblock \emph{JMIR medical education}, 9\penalty0 (1):\penalty0 e45312, 2023.
+
+\bibitem[Goh et~al.(2024)Goh, Gallo, Hom, Strong, Weng, Kerman, Cool, Kanjee, Parsons, Ahuja, et~al.]{goh2024large}
+E.~Goh, R.~Gallo, J.~Hom, E.~Strong, Y.~Weng, H.~Kerman, J.~A. Cool, Z.~Kanjee, A.~S. Parsons, N.~Ahuja, et~al.
+\newblock Large language model influence on diagnostic reasoning: a randomized clinical trial.
+\newblock \emph{JAMA Network Open}, 7\penalty0 (10):\penalty0 e2440969--e2440969, 2024.
+
+\bibitem[Gulshan et~al.(2016)Gulshan, Peng, Coram, Stumpe, Wu, Narayanaswamy, Venugopalan, Widner, Madams, Cuadros, Kim, Raman, Nelson, Mega, and Webster]{gulshan2016dr}
+V.~Gulshan, L.~Peng, M.~Coram, M.~C. Stumpe, D.~Wu, A.~Narayanaswamy, S.~Venugopalan, K.~Widner, T.~Madams, J.~Cuadros, R.~Kim, R.~Raman, P.~C. Nelson, J.~L. Mega, and D.~R. Webster.
+\newblock Development and validation of a deep learning algorithm for detection of diabetic retinopathy in retinal fundus photographs.
+\newblock \emph{JAMA}, 316\penalty0 (22):\penalty0 2402--2410, 2016.
+\newblock \doi{10.1001/jama.2016.17216}.
+
+\bibitem[Hartman et~al.(2024)Hartman, Zhang, Poddar, and et~al.]{hartman2024handoff}
+V.~Hartman, X.~Zhang, R.~Poddar, and et~al.
+\newblock Developing and evaluating large language model–generated emergency medicine handoff notes.
+\newblock \emph{JAMA Network Open}, 7\penalty0 (12):\penalty0 e2448723, 2024.
+\newblock \doi{10.1001/jamanetworkopen.2024.48723}.
+
+\bibitem[Heinz et~al.(2025)Heinz, Jacobson, Wright, and et~al.]{heinz2025therabot}
+M.~V. Heinz, N.~Jacobson, E.~Wright, and et~al.
+\newblock Randomized trial of a generative ai chatbot for mental health treatment.
+\newblock \emph{NEJM AI}, 1\penalty0 (2):\penalty0 e2400802, 2025.
+\newblock \doi{10.1056/AIoa2400802}.
+
+\bibitem[Hurst et~al.(2024)Hurst, Lerer, Goucher, Perelman, Ramesh, Clark, Ostrow, Welihinda, Hayes, Radford, et~al.]{hurst2024gpt}
+A.~Hurst, A.~Lerer, A.~P. Goucher, A.~Perelman, A.~Ramesh, A.~Clark, A.~Ostrow, A.~Welihinda, A.~Hayes, A.~Radford, et~al.
+\newblock Gpt-4o system card.
+\newblock \emph{arXiv preprint arXiv:2410.21276}, 2024.
+
+\bibitem[Jain et~al.(2021)Jain, Agrawal, Saporta, Truong, Duong, Bui, Chambon, Zhang, Lungren, Ng, et~al.]{jain2021radgraph}
+S.~Jain, A.~Agrawal, A.~Saporta, S.~Q. Truong, D.~N. Duong, T.~Bui, P.~Chambon, Y.~Zhang, M.~P. Lungren, A.~Y. Ng, et~al.
+\newblock Radgraph: Extracting clinical entities and relations from radiology reports.
+\newblock \emph{arXiv preprint arXiv:2106.14463}, 2021.
+
+\bibitem[Jin et~al.(2021)]{jin2021medqa}
+D.~Jin et~al.
+\newblock What disease does this patient have? a large-scale open-domain medical qa dataset.
+\newblock \emph{arXiv preprint arXiv:2010.06081}, 2021.
+
+\bibitem[Jin et~al.(2019)Jin, Dhingra, and Cohen]{jin2019pubmedqa}
+Q.~Jin, D.~Dhingra, and W.~Cohen.
+\newblock Pubmedqa: A dataset for biomedical research question answering.
+\newblock In \emph{EMNLP}, 2019.
+
+\bibitem[Kanjee et~al.(2023)Kanjee, Crowe, and Rodman]{kanjee2023accuracy}
+Z.~Kanjee, B.~Crowe, and A.~Rodman.
+\newblock Accuracy of a generative artificial intelligence model in a complex diagnostic challenge.
+\newblock \emph{Jama}, 330\penalty0 (1):\penalty0 78--80, 2023.
+
+\bibitem[Lee et~al.(2023)Lee, Bubeck, and Petro]{lee2023gpt4}
+P.~Lee, S.~Bubeck, and J.~Petro.
+\newblock Benefits, limits, and risks of {GPT‑4} as an {AI} chatbot for medicine.
+\newblock \emph{New England Journal of Medicine}, 388:\penalty0 1233--1239, 2023.
+\newblock \doi{10.1056/NEJMsr2214184}.
+
+\bibitem[Li et~al.(2023)Li, Wong, Zhang, Usuyama, Liu, Yang, Naumann, Poon, and Gao]{li2023llava}
+C.~Li, C.~Wong, S.~Zhang, N.~Usuyama, H.~Liu, J.~Yang, T.~Naumann, H.~Poon, and J.~Gao.
+\newblock Llava-med: Training a large language-and-vision assistant for biomedicine in one day.
+\newblock \emph{Advances in Neural Information Processing Systems}, 36:\penalty0 28541--28564, 2023.
+
+\bibitem[Lin et~al.(2025)Lin, Deng, Chandu, Ravichander, Pyatkin, Dziri, Le~Bras, and Choi]{lin2025wildbench}
+B.~Y. Lin, Y.~Deng, K.~Chandu, A.~Ravichander, V.~Pyatkin, N.~Dziri, R.~Le~Bras, and Y.~Choi.
+\newblock Wildbench: Benchmarking {LLMs} with challenging tasks from real users in the wild.
+\newblock In \emph{Proceedings of the 13$^\text{th}$ International Conference on Learning Representations (ICLR 2025)}, 2025.
+\newblock URL \url{https://openreview.net/forum?id=MKEHCx25xp}.
+\newblock Spotlight.
+
+\bibitem[Liu et~al.(2023)Liu, McDuff, Kovacs, Galatzer‑Levy, Sunshine, et~al.]{liu2023fewshot}
+X.~Liu, D.~McDuff, G.~Kovacs, I.~Galatzer‑Levy, J.~Sunshine, et~al.
+\newblock Large language models are few‑shot health learners.
+\newblock arXiv preprint arXiv:2305.15525, 2023.
+\newblock URL \url{https://arxiv.org/abs/2305.15525}.
+
+\bibitem[Luo et~al.(2022)Luo, Sun, Xia, Qin, Zhang, Poon, and Liu]{luo2022biogpt}
+R.~Luo, L.~Sun, Y.~Xia, T.~Qin, S.~Zhang, H.~Poon, and T.-Y. Liu.
+\newblock Biogpt: generative pre-trained transformer for biomedical text generation and mining.
+\newblock \emph{Briefings in bioinformatics}, 23\penalty0 (6):\penalty0 bbac409, 2022.
+
+\bibitem[McDuff et~al.(2025)McDuff, Schaekermann, Tu, and et~al.]{mcduff2025amie}
+D.~McDuff, M.~Schaekermann, T.~Tu, and et~al.
+\newblock Towards accurate differential diagnosis with large language models.
+\newblock \emph{Nature}, 626:\penalty0 102--118, 2025.
+\newblock \doi{10.1038/s41586-025-08869-4}.
+
+\bibitem[Moor et~al.(2023)Moor, von Rueden, Adler, Ping, Valentin, et~al.]{moor2023medflamingo}
+M.~Moor, L.~von Rueden, S.~Adler, W.~Ping, H.~Valentin, et~al.
+\newblock Med‑flamingo: A multimodal medical few‑shot learner.
+\newblock In \emph{Proceedings of the 3rd Machine Learning for Health Symposium}, pages 353--367. PMLR, 2023.
+
+\bibitem[Nakano et~al.(2022)Nakano, Hilton, Balaji, Wu, Ouyang, Kim, Hesse, Jain, Kosaraju, Saunders, Jiang, Cobbe, Eloundou, Krueger, Button, Knight, Chess, and Schulman]{nakano2022webgpt}
+R.~Nakano, J.~Hilton, S.~Balaji, J.~Wu, L.~Ouyang, C.~Kim, C.~Hesse, S.~Jain, V.~Kosaraju, W.~Saunders, X.~Jiang, K.~Cobbe, T.~Eloundou, G.~Krueger, K.~Button, M.~Knight, B.~Chess, and J.~Schulman.
+\newblock Webgpt: Browser-assisted question-answering with human feedback.
+\newblock \emph{arXiv preprint arXiv:2112.09332}, 2022.
+\newblock \doi{10.48550/arXiv.2112.09332}.
+
+\bibitem[Nori et~al.(2023)Nori, King, McKinney, Carignan, and Horvitz]{nori2023gpt4}
+H.~Nori, N.~King, S.~McKinney, D.~Carignan, and E.~Horvitz.
+\newblock Capabilities of gpt-4 on medical challenge problems.
+\newblock \emph{arXiv preprint arXiv:2303.13375}, 2023.
+\newblock \doi{10.48550/ARXIV.2303.13375}.
+
+\bibitem[Omiye et~al.(2024)Omiye, Gui, Rezaei, Zou, and Daneshjou]{omiye2024potentials}
+J.~A. Omiye, H.~Gui, S.~J. Rezaei, J.~Zou, and R.~Daneshjou.
+\newblock Large language models in medicine: the potentials and pitfalls: a narrative review.
+\newblock \emph{Annals of Internal Medicine}, 177\penalty0 (2):\penalty0 210--220, 2024.
+\newblock \doi{10.7326/M23-2772}.
+
+\bibitem[Pal et~al.(2022)]{pal2022medmcqa}
+S.~Pal et~al.
+\newblock Medmcqa: A large-scale multi-subject multi-choice dataset for the medical domain.
+\newblock In \emph{EMNLP}, 2022.
+
+\bibitem[Pfohl et~al.(2024)Pfohl, Cole-Lewis, Sayres, Neal, Asiedu, Dieng, Tomasev, Rashid, Azizi, Rostamzadeh, et~al.]{pfohl2024toolbox}
+S.~R. Pfohl, H.~Cole-Lewis, R.~Sayres, D.~Neal, M.~Asiedu, A.~Dieng, N.~Tomasev, Q.~M. Rashid, S.~Azizi, N.~Rostamzadeh, et~al.
+\newblock A toolbox for surfacing health equity harms and biases in large language models.
+\newblock \emph{Nature Medicine}, 30\penalty0 (12):\penalty0 3590--3600, 2024.
+
+\bibitem[Saab et~al.(2024)Saab, Tu, Weng, Tanno, Stutz, Wulczyn, Zhang, Strother, Park, Vedadi, et~al.]{saab2024capabilities}
+K.~Saab, T.~Tu, W.-H. Weng, R.~Tanno, D.~Stutz, E.~Wulczyn, F.~Zhang, T.~Strother, C.~Park, E.~Vedadi, et~al.
+\newblock Capabilities of gemini models in medicine.
+\newblock \emph{arXiv preprint arXiv:2404.18416}, 2024.
+
+\bibitem[{Scale AI}(2025)]{scaleai2025vista}
+{Scale AI}.
+\newblock {VISTA}: Visual–language understanding leaderboard.
+\newblock \url{https://scale.com/leaderboard/visual_language_understanding}, 2025.
+\newblock Accessed 3 May 2025.
+
+\bibitem[Shah et~al.(2025)Shah, Pfeffer, and Liang]{Shah_Pfeffer_Liang}
+N.~Shah, M.~Pfeffer, and P.~Liang.
+\newblock Holistic evaluation of large language models for medical applications, 2025.
+\newblock URL \url{https://hai.stanford.edu/news/holistic-evaluation-of-large-language-models-for-medical-applications}.
+
+\bibitem[Singhal et~al.(2023)Singhal, Azizi, Tu, Mahdavi, Wei, Chung, Scales, Tanwani, Cole-Lewis, Pfohl, et~al.]{singhal2023large}
+K.~Singhal, S.~Azizi, T.~Tu, S.~S. Mahdavi, J.~Wei, H.~W. Chung, N.~Scales, A.~Tanwani, H.~Cole-Lewis, S.~Pfohl, et~al.
+\newblock Large language models encode clinical knowledge.
+\newblock \emph{Nature}, 620\penalty0 (7972):\penalty0 172--180, 2023.
+
+\bibitem[Singhal et~al.(2025)Singhal, Tu, Gottweis, Sayres, Wulczyn, Amin, Hou, Clark, Pfohl, Cole-Lewis, et~al.]{singhal2025toward}
+K.~Singhal, T.~Tu, J.~Gottweis, R.~Sayres, E.~Wulczyn, M.~Amin, L.~Hou, K.~Clark, S.~R. Pfohl, H.~Cole-Lewis, et~al.
+\newblock Toward expert-level medical question answering with large language models.
+\newblock \emph{Nature Medicine}, pages 1--8, 2025.
+
+\bibitem[Sirdeshmukh et~al.(2025)Sirdeshmukh, Deshpande, Mols, Jin, Cardona, Lee, Kritz, Primack, Yue, and Xing]{sirdeshmukh2025multichallenge}
+V.~Sirdeshmukh, K.~Deshpande, J.~Mols, L.~Jin, E.-Y. Cardona, D.~Lee, J.~Kritz, W.~Primack, S.~Yue, and C.~Xing.
+\newblock Multichallenge: A realistic multi‑turn conversation evaluation benchmark challenging to frontier {LLMs}.
+\newblock \emph{arXiv preprint arXiv:2501.17399}, 2025.
+\newblock URL \url{https://arxiv.org/abs/2501.17399}.
+
+\bibitem[Starace et~al.(2025)Starace, Jaffe, Sherburn, Aung, Chan, Maksin, Dias, Mays, Kinsella, Thompson, et~al.]{starace2025paperbench}
+G.~Starace, O.~Jaffe, D.~Sherburn, J.~Aung, J.~S. Chan, L.~Maksin, R.~Dias, E.~Mays, B.~Kinsella, W.~Thompson, et~al.
+\newblock Paperbench: Evaluating ai's ability to replicate ai research.
+\newblock \emph{arXiv preprint arXiv:2504.01848}, 2025.
+
+\bibitem[Takagi et~al.(2023)Takagi, Watari, Erabi, Sakaguchi, et~al.]{takagi2023performance}
+S.~Takagi, T.~Watari, A.~Erabi, K.~Sakaguchi, et~al.
+\newblock Performance of gpt-3.5 and gpt-4 on the japanese medical licensing examination: comparison study.
+\newblock \emph{JMIR medical education}, 9\penalty0 (1):\penalty0 e48002, 2023.
+
+\bibitem[Tanno et~al.(2025)Tanno, Barrett, Sellergren, Ghaisas, Dathathri, See, Welbl, Lau, Tu, Azizi, et~al.]{tanno2025collaboration}
+R.~Tanno, D.~G. Barrett, A.~Sellergren, S.~Ghaisas, S.~Dathathri, A.~See, J.~Welbl, C.~Lau, T.~Tu, S.~Azizi, et~al.
+\newblock Collaboration between clinicians and vision--language models in radiology report generation.
+\newblock \emph{Nature Medicine}, 31\penalty0 (2):\penalty0 599--608, 2025.
+
+\bibitem[Thirunavukarasu et~al.(2023)Thirunavukarasu, Ting, Elangovan, Gutierrez, Tan, and Ting]{thirunavukarasu2023large}
+A.~J. Thirunavukarasu, D.~S.~J. Ting, K.~Elangovan, L.~Gutierrez, T.~F. Tan, and D.~S.~W. Ting.
+\newblock Large language models in medicine.
+\newblock \emph{Nature medicine}, 29\penalty0 (8):\penalty0 1930--1940, 2023.
+
+\bibitem[Topol(2019)]{topol2019highperf}
+E.~J. Topol.
+\newblock High-performance medicine: The convergence of human and artificial intelligence.
+\newblock \emph{Nature Medicine}, 25\penalty0 (1):\penalty0 44--56, 2019.
+\newblock \doi{10.1038/s41591-018-0300-7}.
+
+\bibitem[Tu et~al.(2024)Tu, Azizi, Driess, Schaekermann, Amin, Chang, Carroll, Lau, Tanno, Ktena, et~al.]{tu2024towardsgeneralist}
+T.~Tu, S.~Azizi, D.~Driess, M.~Schaekermann, M.~Amin, P.-C. Chang, A.~Carroll, C.~Lau, R.~Tanno, I.~Ktena, et~al.
+\newblock Towards generalist biomedical ai.
+\newblock \emph{Nejm Ai}, 1\penalty0 (3):\penalty0 AIoa2300138, 2024.
+
+\bibitem[Tu et~al.(2025)Tu, Schaekermann, Palepu, Saab, Freyberg, Tanno, Wang, Li, Amin, Cheng, et~al.]{tu2025towardsconversational}
+T.~Tu, M.~Schaekermann, A.~Palepu, K.~Saab, J.~Freyberg, R.~Tanno, A.~Wang, B.~Li, M.~Amin, Y.~Cheng, et~al.
+\newblock Towards conversational diagnostic artificial intelligence.
+\newblock \emph{Nature}, pages 1--9, 2025.
+
+\bibitem[Williams et~al.(2024)Williams, Subramanian, Ali, and et~al.]{williams2024discharge}
+C.~Y.~K. Williams, C.~R. Subramanian, S.~S. Ali, and et~al.
+\newblock Physician‑ and large language model‑generated hospital discharge summaries: A blinded, comparative quality and safety study.
+\newblock \emph{medRxiv}, 2024.
+\newblock \doi{10.1101/2024.09.29.24314562}.
+
+\bibitem[Ye et~al.(2024)Ye, Wang, Huang, Chen, Zhang, Moniz, Gao, Geyer, Huang, Chen, et~al.]{ye2024justice}
+J.~Ye, Y.~Wang, Y.~Huang, D.~Chen, Q.~Zhang, N.~Moniz, T.~Gao, W.~Geyer, C.~Huang, P.-Y. Chen, et~al.
+\newblock Justice or prejudice? quantifying biases in llm-as-a-judge.
+\newblock \emph{arXiv preprint arXiv:2410.02736}, 2024.
+
+\bibitem[Zakka et~al.(2024)Zakka, Kiani, Wong, Shi, Raffel, et~al.]{zakka2024almanac}
+C.~Zakka, N.~Kiani, A.~Wong, J.~Shi, C.~Raffel, et~al.
+\newblock Almanac — retrieval‑augmented language models for clinical medicine.
+\newblock \emph{NEJM AI}, 2024.
+\newblock \doi{10.1056/AIoa2300068}.
+
+\bibitem[Zhao et~al.(2024)Zhao, Ren, Hessel, Cardie, Choi, and Deng]{zhao2024wildchat}
+W.~Zhao, X.~Ren, J.~Hessel, C.~Cardie, Y.~Choi, and Y.~Deng.
+\newblock Wildchat: 1m chatgpt interaction logs in the wild.
+\newblock \emph{arXiv preprint arXiv:2309.11998}, 2024.
+\newblock \doi{10.48550/arXiv.2309.11998}.
+
+\bibitem[Zheng et~al.(2024)Zheng, Chiang, Sheng, Li, Zhuang, Wu, Zhuang, Li, Lin, Xing, Gonzalez, Stoica, and Zhang]{zheng2024lmsys}
+L.~Zheng, W.-L. Chiang, Y.~Sheng, T.~Li, S.~Zhuang, Z.~Wu, Y.~Zhuang, Z.~Li, Z.~Lin, E.~P. Xing, J.~E. Gonzalez, I.~Stoica, and H.~Zhang.
+\newblock Lmsys-chat-1m: A large-scale real-world llm conversation dataset.
+\newblock \emph{arXiv preprint arXiv:2405.01470}, 2024.
+\newblock \doi{10.48550/arXiv.2405.01470}.
+
+\end{thebibliography}

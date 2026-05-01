@@ -1,0 +1,1760 @@
+
+
+verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in
+
+
+
+
+
+
+
+date
+
+
+
+
+(),autheryear,,
+
+
+assumptionAssumption
+
+theoremTheorem
+
+
+
+corollaryCorollary
+conditionCondition
+propositionProposition
+definitionDefinition
+lemmaLemma
+proofProof
+
+
+stepStepremarkRemarkexampleExample
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+ 
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+Two-phase rejective sampling and its asymptotic properties
+Shu YangDepartment of Statistics, North Carolina State University, North Carolina
+27695, U.S.A. Email: syang24@ncsu.eduand Peng DingDepartment of Statistics, University of California, Berkeley, California
+94720, U.S.A. Email: pengdingpku@berkeley.edu
+
+Rejective sampling improves design and estimation efficiency of single-phase
+sampling when auxiliary information in a finite population is available.
+When such auxiliary information is unavailable, we propose to use
+two-phase rejective sampling (TPRS), which involves measuring auxiliary
+variables for the sample of units in the first phase, followed by
+the implementation of rejective sampling for the outcome in the second
+phase. We explore the asymptotic design properties of double expansion
+and regression estimators under TPRS. We show that TPRS enhances the
+efficiency of the double expansion estimator, rendering it comparable
+to a regression estimator. We further refine the design to accommodate
+varying importance of covariates and extend it to multi-phase sampling.
+
+
+ Our asymptotic results for TPRS immediately cover the
+existing single-phase rejective sampling, under which the asymptotic
+theory has not been fully established. 
+
+
+ Keywords: Covariate Adjustment; Design Property; Double
+Sampling; Multi-Phase Sampling
+
+Introductionsec:Introduction
+
+Two-phase sampling, also known as double sampling, is a cost-effective
+method in large surveys, initially using auxiliary variables for broad
+measurement in the first phase, followed by targeted measurement of
+primary study variables in the second phase. Pioneered byand further developed by and,
+two-phase sampling integrates auxiliary variables in both the design
+and analysis stages. In the design stage, stratified sampling is often
+used to leverage discrete auxiliary variables from the first phase
+to inform the selection of the second-phase sample. This strategy
+enhances the efficiency of estimators like weighted expansion estimators
+oh1983weighting over simple random sampling of the same size.
+In the analysis stage, auxiliary variables can be used to enhance
+the efficiency of estimation, for example, through regression adjustment.
+Regression estimators work for both discrete and continuous variables,
+providing gains in efficiency over traditional approaches without
+auxiliary variables.
+
+Regression estimators, however, have the practical drawback of having
+potential negative weights. Methods such as rejective sampling and
+balanced sampling (yates1946review;;
+deville2004efficient,deville2005variance;)
+have been developed to mitigate the problem of negative weights associated
+with regression estimators.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+We introduce two-phase rejective sampling (TPRS) and explore its asymptotic
+design properties with commonly-used estimators, namely weighted expansion
+and regression estimators.
+
+TPRS allows for using both continuous and discrete auxiliary variables
+in the design stage, relaxing the requirement of observing auxiliary
+variables in the whole finite population typically associated with
+single-phase sampling. TPRS offers several practical benefits: it
+ensures an unbiased sample of the target population, reduces the variance
+of the population mean estimator for covariates, prevents the selection
+of samples with extreme auxiliary variable values, and reduces the
+likelihood of negative weights in regression estimators. Additionally,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The paper proceeds as follows. Section  provides
+a review of existing design and analysis strategies of using auxiliary
+variables. Sections  and discuss TPRS with simple random sampling and general sampling, respectively.
+Section  provides several extensions. Section
+ reports simulation results and an application
+that illustrates the finite-sample performance of TPRS. We relegate
+all technical details and proofs to the supplementary material.
+
+A review of design and analysis strategies of using auxiliary variablessec:A-review-of
+
+Consider a finite population with a known size . For each unit
+,  is a -dimensional auxiliary variable, and 
+is the study variable of interest. 
+The finite population quantities 
+are fixed. For simplicity, we suppress the subscript  on 
+when there is no ambiguity. The parameter of interest is the finite
+population mean of the study variable .
+
+Two-phase sampling offers an efficient and economical method for conducting
+large-scale surveys. In this section, we review the existing methods
+for using auxiliary variables in two-phase sampling to enhance estimation
+efficiency and identify areas needing new strategies.
+
+Existing design strategy: two-phase stratified samplingsubsec:Existing-design-strategy
+
+During the design stage, auxiliary variables are incorporated by selecting
+a second-phase sample through stratified sampling. Strata are based
+on first-phase variables, either directly from discrete variable categories
+or via discretization of continuous variables. We define 
+as the stratum indicator vector, where  if unit  is
+in stratum , and  otherwise. Two-phase stratified sampling
+proceeds as follows: 
+
+[Step] From the population , select a first-phase
+sample  of size . For  record .
+Define the sample size in each stratum  as  for .
+The total first-phase sample size is . 
+[Step] From each stratum , randomly select 
+units, independently across strata, as the second-phase sample .
+For  record the study variable . The total second-phase
+sample size is . 
+In two-phase sampling, the double-expansion estimator (
+estimator;) and the reweighted
+expansion estimator (REE;)
+are the canonical estimators for the population mean. The 
+estimator,
+
+
+
+
+where  with 
+and , adjusts individual
+observations by the product of their inclusion probabilities in both
+phases. We can also replace  in  by ,
+emulating the Hajek estimator. However, the combined probability 
+is generally not the unconditional probability of a unit being in
+the phase- sample ,
+the average probability across all possible first-phase samples, unless
+ is invariant of the first-phase sample.
+The REE,
+
+
+
+
+recalculates the mean estimate for each stratum by a modified ratio
+estimator, where the stratum-specific mean of  is approximated
+based on phase- data, while the coefficient is derived from phase-
+data. These estimators are often more efficient than the sample mean
+estimator under simple random sampling with the same size . 
+
+Existing analysis strategy: regression adjustment
+
+
+
+
+
+
+
+In simple random sampling across both phases, we observe variable
+ in phase I and variables  in phase II. Then we can calculate
+the mean estimates 
+from phase I and 
+from phase II. The two-phase regression estimator is 
+
+
+
+where 
+
+is the regression coefficient based on the phase-II sample.
+
+The regression estimator  can also be written as
+a weighted average of the second-phase outcomes, where the corresponding
+weights are called the generalized regression estimation weights.
+The regression estimator provides improved efficiency over 
+in large samples if  is predictive of . However, issues
+like large numbers of -variables or imbalance between 
+and  can lead to extreme or negative weights and affect
+the performance of  in finite samples. Researchers
+have explored various methods to mitigate the issue of negative weights
+associated with regression estimators, such as balanced sampling or
+rejective sampling, but these approaches have mainly been studied
+in single-phase sampling (yates1946review;;
+deville2004efficient;;).
+
+We have reviewed existing design and analysis strategies in multi-phase
+sampling for better efficiency, but currently it lacks strategies
+for integrating both continuous and discrete variables in the design
+stage. We will explore rejective sampling in multi-phase sampling
+to fill the gap.
+
+TPRS: two-phase rejective samplingsec:Proposed-method
+
+Setup and notation
+
+Throughout this paper, we use  and  to be generic notation
+for variables, which can be components of either  or . Define
+, , and 
+as expectation, covariance, and variance under the sampling design.
+The finite population mean for  and covariance for 
+and  are 
+
+The phase-I sample mean for  and covariance for  and
+ are
+
+
+We assume  and  are positive definite.  
+
+We introduce general notation to be used throughout the paper. For
+a generic vector , let  denote . Define
+ as the random variable bounded in probability, and 
+as the random variable that converges to zero in probability as 
+increases. Let  represent the th quantile
+of the standard normal distribution.
+
+TPRS with simple random sampling
+
+Rejective sampling aims for balanced phase-II sample selection by
+comparing the mean differences between phase-II and phase-I samples.
+We define TPRS with simple random sampling as follows.
+
+[TPRS with simple random sampling]TPRS
+with simple random sampling consists of two steps: 
+
+[Step] Select a phase- sample  of size 
+by simple random sampling. For  record . 
+[Step] Select a phase- sample  of size 
+by simple random sampling from phase- sample . Accept the
+phase- sample if 
+
+
+
+where  is a pre-specified constant, and 
+is the phase- design variance of 
+given . For  record . 
+
+In Definition , if  is below a specified threshold
+, the phase-II sample is considered balanced and accepted
+for further analysis. Based on the TPRS, the sample mean estimator
+for the population mean  is 
+
+
+
+
+
+Large-sample design properties
+
+We investigate the asymptotic design-based property of 
+under TPRS in Definition . For asymptotic inference,
+we adopt the framework of, which establishes
+the asymptotic properties of estimators within a fixed sequence of
+populations and corresponding random samples. This involves a series
+of nested finite populations 
+and sequences of samples with increasing sample sizes 
+and ).
+For simplicity, we will not explicitly mention the dependence of ,
+, and  on , and refer to the asymptotic
+regime as the scenario where index  or  goes to infinity. 
+
+The linear projection of  onto  in the finite population
+ is ,
+where 
+
+
+
+which equals 
+
+
+
+Assume  contains IID samples from a superpopulation of 
+with two conditions: (i) The sequence of  has finite 
+moments for some , implying 
+and  with respect to the superpopulation
+model; (ii)  and 
+for some  and . 
+
+Assumption (i) sets moment conditions
+for the superpopulation, which aids in applying central limit theorems.
+chen2007asymptotic studied sufficient moment conditions on
+the finite population that ensure the asymptotic normality of estimators
+in two-phase sampling. Assumption (i) implies
+that for any components  and  of  and , 
+
+where  is a constant vector or matrix. Assumption (ii)
+defines the sampling fractions  and  for the
+phase-I and phase-II samples, respectively. Sampling from a finite
+population or phase-I sample without replacement can introduce dependency
+among the individual samples. The sampling fractions serve to adjust
+for such dependency when calculating the asymptotic design variances
+and covariances.
+
+Define the adjusted outcome as .
+The error in the sample mean estimator  of the population
+mean  decomposes into three parts: 
+
+In (), 
+and  represent the
+errors of  and  in the phase-II sample conditional on the
+phase-I sample, respectively, and 
+represents the error of  in the phase-I sample. The limiting distribution
+of  is given in the following lemma.
+
+Suppose Assumption holds. Without the rejection step in TPRS in Definition ,
+ in the decomposition ()
+has the following limiting distribution: 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ for all sequences of finite populations, where  is
+defined in (), and  and  are
+defined in Assumption .
+
+
+With the rejection step in TPRS, the distribution of the error 
+equals 
+without rejective sampling. We use the normalized distance 
+for the phase-II sample to represent the acceptance criteria 
+by . By Lemma , 
+and thus  a.s.. We define
+the superpopulation squared correlation between  and  as .
+We show the limiting distribution of 
+comprises three independent random components.
+
+Suppose Assumption holds. Under TPRS in Definition , 
+follows the limiting distribution: 
+
+n_^1/2(y_-y_0)(Q_<^2) (1-f_,)V_yyR^2 ^1/2L_p,^2
+
++ (1-f_,)V_yy(1-R^2) ^1/2Z_1+ f_,(1-f_,0)V_yy ^1/2Z_2,where 
+
+with ,
+ follows a uniform distribution on , 
+, and 
+is the first coordinate of the uniform random vector over the -dimensional
+unit sphere,  and  are standard normal variables,
+and  are jointly independent.
+
+
+The random variable , first introduced infor rerandomization in causal inference, is also relevant here. Our
+context is more complex due to the uncertainty in phase-I estimators.
+
+Denote , which equals 
+by () and is less than or equal to .
+
+Under Assumption and TPRS in Definition , the asymptotic design variance
+of  is 
+
+
+
+The percentage reduction in asymptotic design variance compared with
+the standard two-phase simple random sampling is 
+
+provided . If  indicating
+a census situation, this reduction is zero. 
+
+
+
+
+
+
+
+
+
+
+
+
+From Theorem  and Corollary , we discuss
+the trade-off between variance and utility of the sample when selecting
+. A lower  reduces the asymptotic variance
+of , and in particular, 
+can be eliminated from the asymptotic distribution ()
+if  approaches . In
+the limit with , the asymptotic distribution
+of  under TPRS is approximately the same as the sum
+of two normal random variables .
+However, it also lowers the acceptance rate for the phase-II sample
+and potentially limits randomness and observations in the tail of
+the  distribution, as discussed by
+
+
+In practice, if the primary focus is the
+population parameter associated with,
+we recommend settingto the 
+quantile of the distribution. This
+results in an approximate acceptance rate of , as in a related
+experimental design context 
+Moreover, when , indicating no correlation between auxiliary
+and study variables, the rejective procedure does not affect the limiting
+distribution for . Conversely, with , the
+variance reduction for  is maximized due to the strong
+correlation between auxiliary and study variables.
+
+Regression estimator
+
+Design and analysis strategies can be integrated:combined rejective sampling and regression adjustment in surveys,
+and combined rerandomization and regression
+adjustment in experiments. Under TPRS, a regression estimator is 
+
+with  specified earlier in ().
+To derive the asymptotic distribution of  in
+TPRS, we decompose it as follows 
+
+Here,  represents the
+error of  in the phase-II sample conditional on the phase-I sample,
+
+is of order , and 
+represents the error of  in the phase-I sample. The limiting distribution
+of  is given in the following theorem.
+
+Suppose Assumption holds. Under TPRS in Definition , the regression estimator
+ in () has the following limiting
+distribution:
+
+
+, where  is defined in (), ,
+and  and  are defined in Assumption .
+
+
+fuller2009some provided the consistency and asymptotic variance
+of the regression estimator under single phase rejective sampling,
+but did not include the asymptotic distribution results. The asymptotic
+distribution result in Theorem  complements's
+work, specifically by considering a census in phase .
+
+The limiting distribution of 
+in () under TPRS does not depend on ,
+and as  increases, it becomes equivalent to non-rejective
+sampling. This demonstrates the equivalence of the limiting distributions
+of  with and without rejective sampling, aligning
+with, who found similar performance of regression
+estimators in single-phase samples regardless of rejective sampling.
+
+Theorems  and  highlight the role of
+rejective sampling in estimation. When , the
+asymptotic design variance of the simple mean estimator 
+is close to that of the two-phase regression estimator .
+That is, the simple mean estimator under rejective sampling performs
+similarly to the regression estimator. 
+
+
+
+
+Despite
+similar limiting properties with and without rejective sampling,recommended rejective sampling for its practical benefits. We can
+express the regression estimator as a weighted average of the 's
+in the phase-II sample ,
+where 
+
+
+
+are the weights. Without rejective sampling,  may be
+negative due to influential values of , which affects the
+robustness of the regression estimator. Rejective sampling reduces
+this chance, as demonstrated by simulation fromunder single-phase sampling and further confirmed by our simulation
+under TPRS. 
+
+
+
+Moreover, rejective sampling improves the covariate balances in phase-II
+sample, evidenced by a smaller asymptotic design variance of 
+compared with designs without rejective sampling. Specially, under
+TPRS, the limit of the design covariance 
+is always no larger than that without rejective sampling .
+
+Inference: variance estimators and confidence intervalssubsec:ve-srs
+
+To infer the population mean  based on Theorems and , we first estimate the asymptotic design
+variances and covariances. Let the estimator for  be
+
+
+
+
+
+Under Assumption ,
+ is a consistent estimator of  under both
+two-phase simple random sampling and TPRS in Definition .
+
+
+A consistent estimator for  is .
+The variance estimator for  under TPRS is 
+
+
+
+Define  for phase-II
+samples. Then, we can estimate  by 
+
+
+
+where  adjusts for degrees of freedom due to estimating
+. Decompose  into 
+and estimate it by .
+A consistent variance estimator for  is 
+
+
+We can construct the asymptotic  confidence interval
+of  based on  as 
+
+
+
+where  as the th quantile of the
+distribution of 
+
+
+
+and the counterpart based on  as 
+
+
+
+
+
+TPRS with general samplingsec:General=000020pi=000020estimator 
+
+Notation
+
+
+
+
+
+
+
+
+We now consider two-phase sampling with general phase- and 
+designs. Let  be the probability of including unit 
+in the phase- sample , and let  be
+the conditional probability of including unit  in the phase-
+sample  given that unit  is in the phase- sample. Let
+ and  be the sample sizes of the phase-I sample
+and the phase-II sample, respectively. 
+
+Define the finite population mean as .
+With slight abuse of the notation, define the phase- estimator
+and the phase-II estimator as 
+
+and 
+
+respectively. The phase-I estimator is a Hájek estimator for ,
+while the phase-II estimator, known as the double expansion estimator
+kott1997can or a  estimator,
+is generally not a Hájek estimator for  because 
+is not the probability of  being selected for phase II in general
+as we discussed in Section .
+
+To calculate the design variances for () and (),
+we require positive second-order inclusion probabilities. The probabilities,
+ and ,
+determine the probability or the conditional probability of pairs
+of units being included in phase-I and phase-II samples, respectively.
+
+Under suitable regularity conditions on sampling (with details in
+Section ), the sums 
+and  are design consistent
+for the population size . Using Taylor expansion and ignoring
+small order terms, the design covariance of  and 
+is
+
+
+and the conditional design covariance of  and 
+given the phase- sample is 
+
+We assume that  and  are positive definite
+for all phase-I samples.
+
+TPRS with general samplingsubsec:Two-phase-rejective
+
+We define TPRS with general sampling designs as follows.
+
+[TPRS with general sampling]TPRS with general sampling consists of two steps: 
+
+[Step] Select a phase- sample  by a general 
+sampling with the inclusion probability . For 
+record . 
+[Step] Treat the phase- sample  as the population
+and select a phase- sample  by a general  sampling
+with the conditional inclusion probability .
+Accept the phase- sample if 
+
+
+
+where  is a pre-specified constant, and 
+is the design variance of  given ,
+given by () with  and  being . For 
+record . 
+
+For the population mean , the  estimator is
+
+recalling that . We
+focus on the  estimator for simplicity because the REE reviewed
+in Section  is more natural
+for two-phase stratified sampling. Below we will show that integrating
+the  estimator with TPRS suffices to attain favorable design
+properties.
+
+Large-sample design properties
+
+To understand the limiting properties of , we follow
+the asymptotic framework in Section  and
+specify the following regularity conditions for TPRS in Definition
+.
+
+Assumption (i)
+and (ii) hold. (iii) The phase- estimator () satisfies
+
+
+
+with , where 
+represents components of either  or .
+
+(iv) The sequence of phase- selection probabilities are bounded
+by  for
+all , for some positive  and ,
+and the design weighted sums of moments converge to constants, 
+
+
+
+where  is a matrix of constants.
+
+(v) The phase- estimator () satisfies 
+
+
+
+and ;
+
+(vi) The sequence of phase- selection probabilities are bounded
+by 
+for all , for some positive  and ,
+and the design weighted sums of moments converge to constants, 
+
+
+
+where  is a matrix of constants.
+
+(vii) The design covariance between the differences in  and 
+in phases I and II is negligible: .
+
+
+The conditions in Assumption  are standard
+for sample moments and sampling designs (fuller2009sampling,
+Theorem 3.3.1). They ensure the general applicability of the phase-I
+and phase-II estimators across various designs (Chapter 3,).
+For instance, Assumption (vii) holds under
+two-phase simple random sampling and stratified sampling. A heuristic
+explanation is provided below. Let 
+be the residual based on the phase-I regression had the study variables
+been measured in the phase-I sample, where
+is the phase-I regression coefficient. Then, we have .
+Recall that , which can be written
+as . Thus, we
+have 
+
+Because 
+, where the probability distribution in  is induced
+by phase-II sampling given , and ,
+where the probability distribution in  is induced by phase-I
+sampling, the quantity in () is of order . 
+
+Following the decomposition in (), we decompose
+ into three components
+
+where ,
+, and 
+with the general  estimators for  and 
+defined in () and (), respectively. The
+limiting distribution of  is given in the following
+lemma.
+
+Suppose Assumption holds. Without the rejection step in TPRS in Definition ,
+the joint distribution of  in the decomposition
+() has the following limiting distribution:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ for all sequences of finite populations, where 
+
+
+
+By construction, the distribution of 
+under TPRS in Definition  is equivalent to the
+distribution of 
+without rejective sampling. To study the asymptotic design property,
+we define .
+Then,  is expressed as , with 
+and thus  a.s..
+
+Suppose Assumption holds. Under TPRS  in Definition , 
+follows the limiting distribution: 
+where ,  and  are defined in ()-(),
+ and  are standard normal variables, and 
+are jointly independent.
+
+
+The results of TPRS with general sampling are similar to those of
+TPRS with simple random sampling, hence inheriting all the benefits,
+including enhanced covariate balance, and reduced variance and quantile
+range, as detailed in Section .
+
+Regression estimator
+
+Integrating the design and analysis strategies, the two-phase regression
+estimator for  is 
+
+where 
+
+
+
+is the regression coefficient based on the phase-II sample.
+
+Suppose Assumption holds. Under TPRS in Definition , the regression
+estimator  in () has the following
+limiting distribution:
+
+
+
+ for all sequences of finite populations, where 
+
+
+
+with  and  defined in ()
+and (), respectively.
+
+
+Theorem  indicates that the advantages of TPRS are
+also applicable to the regression estimator in a general setup.
+
+Inference: variance estimators and confidence intervalssubsec:ve-pi
+
+We estimate the asymptotic design variances of  and
+ in general TPRS. For , the variance
+is estimated by 
+where 
+
+and  and 
+are () with  being . For ,
+the variance is estimated by 
+
+Regarding variance estimation in
+two-phase sampling, two points are noteworthy. First, obtaining the
+joint inclusion probabilities  and 
+may be difficult in practice, and approximations may be needed. For
+example, andconsidered a simplified variance estimator which does not require
+the information on  and specified conditions
+under which the bias of the variance estimator is negligible.
+
+Second, while Horvitz-Thompson-type variance estimators ()
+and () are standard, they can be unstable and negative
+in unequal probability sampling. An alternative is the Sen-Yates-Grundy-type
+(sen1953estimate,yates1953selection) variance estimators
+
+These estimators are asymptotically equivalent to  and
+ with additional mean zero terms but are more stable
+and non-negative for various sampling designs with fixed sample sizes
+hidiroglou2009variance.
+
+
+We can construct the asymptotic  confidence interval
+for  based on  as
+
+
+
+where  as the th quantile
+of the distribution of ,
+and the counterpart based on  as
+
+
+
+
+
+Extensionssec:Extensions
+
+Other designs
+
+When covariates have varying importance, applying different thresholds
+for different covariates in rejective sampling can be more effective.
+Legg2010 explored two approaches for this: 
+ and sequential rejective sampling, with the former
+also studied by and the latter byand in rerandomization in experiments. We
+further develop sequential rejective sampling in two-phase sampling
+in Section  of the supplementary
+material and demonstrate that it provides better balance control for
+each specific covariate compared with weighted rejective sampling. 
+
+Moreover, we introduce multi-phase rejective sampling and establish
+asymptotic design properties of the double expansion estimator and
+the regression estimator in Section of the supplementary material. As a special case, if phase I is a
+census, the three-phase rejective sampling reduces to TPRS with rejective
+sampling in both phases. In both sequential and multi-phase rejective
+sampling methods, we employ block-wise Gram-Schmidt orthogonalization
+on tiers or phases of covariates. This strategy ensures a clear distinction
+between various sets of covariates, categorizing them according to
+their level of importance or their availability across different phases.
+
+General parameters
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+follows the limiting distribution:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Empirical studiessec:Simulation
+
+We evaluate the finite-sample performance of rejective sampling through
+simulation. We first apply the TPRS with simple random sampling in
+Section . We then apply the three-phase rejective
+sampling based on an actual study in Section  to
+showcase the effectiveness of multiple phases.
+
+TPRS with simple random samplingsubsec:sim1
+
+Consider the finite population with bivariate data ,
+where  and 
+with  and . This setup yields
+ values of .
+
+We implement two-phase simple random sampling with phase-I and phase-II
+sample sizes of  and , respectively,
+and the corresponding TPRS with various .
+We compare the mean estimators  and 
+in both sampling scenarios.
+
+We summarize the results in Tables  and .
+In all scenarios,  with rejective sampling improves
+the efficiency of  without rejective sampling with
+the percentage of variance reduction increasing with  and
+decreasing with , which is cohesive with our theoretical
+results in Theorem  and Corollary . Table
+ presents the theoretical values of percentage of
+variance reduction () under the simulation
+setup. The results in Table  are consistent with
+that in Table . The performance of 
+with rejective sampling is close to that of ,
+and the results for  in both rejective and non-rejective
+samples are similar, aligning with our theoretical results in Theorem
+.
+
+Moreover, the regression
+weights in  can be negative for  simulated
+datasets under two-phase non-rejective sampling; however, the regression
+weights are always positive with rejective sampling in this simulation
+setting. This demonstrates the practical value of rejective sampling.
+Additionally, our variance estimators and confidence intervals, based
+on the asymptotic variance formula, prove accurate in both variance
+estimation and coverage rates, as evidenced in Table .
+
+
+tab:Sim1-1Simulation results based on  Monte
+Carlo samples: bias (Bias ), variance (Var ),
+mean squared error (MSE ), variance estimate (VE )
+and coverage rate (Cvg ) for  confidence intervals calculated
+based on the asymptotic variance formula, and the percentage of variance
+reduction of the estimator (VarRed ) under rejective sampling
+compared to the corresponding estimator under two phase sample random
+sampling. 
+
+
+
+
+
+tab:Sim1-2Theoretical values of percentage of variance
+reduction under the simulation setup
+
+
+
+
+
+Three-phase sampling based on the Academic Performance Index datasubsec:sim2 
+
+To demonstrate the practical relevance, we use the Academic Performance
+Index (API) data. The full population data consist of  observations
+for all California schools with at least 100 students based on standardized
+testing of students. We use the API in 2000 as the study variable
+, the API in 1999 as the auxiliary variable , and the percentage
+of English Language Learners, the percentage of students eligible
+for subsidized meals, the percentage of students for whom this is
+the first year at the school as additional auxiliary variable 
+in both the design and analysis stages. The parameter of interest
+is the population mean of the API in 2000.
+
+We employed three-phase sampling designs. We select a phase-I sample
+ of size  by simple random sampling. For ,
+we observe . We select a phase-II sample  of size 
+by Poisson sampling with , where
+ is the expected sample size of the phase-II sample,
+ and . For ,
+we observe  and calculate .
+We select a phase- sample  by Poisson sampling with 
+where  is the expected sample size of the phase-III
+sample,  is proportional to the summation of components
+in  and . For , we
+observe . We consider the above three-phase sampling without
+rejective sampling and with rejective sampling described in Section
+. 
+
+For comparison, we also consider two-phase sampling designs. In a
+two-phase sampling, we assume that the outcome is measured for the
+phase- samples. This may be more costly than the three-phase
+sampling.
+
+Simulation results, summarized in Figures  and ,
+show that phase-II estimators are more efficient due to more information
+collection, but phase-III designs might provide greater cost-effectiveness.
+For instance, phase-II rejective regression estimators with an average
+sample size of  had a variance of , compared with
+phase-III estimators with a smaller average sample size of 
+but a higher variance of . This implies that multiple phases
+can achieve desired variances with smaller samples. The efficiency
+of rejective regression estimators improves with tighter constraints
+ and  , especially 
+. Increasing the phase-II sample size showed minimal impact on the
+efficiency of phase-III estimator. The coverage rates of the confidence
+intervals align well with the nominal level, confirming our results
+on the asymptotic distributions.
+
+
+
+
+
+Footnote: n2 is , n3 is ,
+g1 is , and g2 is ; simple2 and
+reg2 are  and  without rejective
+sampling; rej2 and rej-reg2 are  and 
+with rejective sampling; simple3 and reg3 are  and
+ without rejective sampling; rej3 and rej-reg3
+are  and  with rejective sampling.
+
+fig:2-1Simulation results for simple estimators and
+regression estimators under two/three-phase w/o rejective sampling
+with 
+
+
+
+
+
+Footnote: n2 is , n3 is ,
+g1 is , and g2 is ; simple2 and
+reg2 are  and  without rejective
+sampling; rej2 and rej-reg2 are  and 
+with rejective sampling; simple3 and reg3 are  and
+ without rejective sampling; rej3 and rej-reg3
+are  and  with rejective sampling.
+
+fig:2-2Simulation results for simple estimators and
+regression estimators under two/three-phase w/o rejective sampling
+with 
+
+
+
+
+Footnote: n2 is , n3 is ,
+simple2 and reg2 are  and  without
+rejective sampling; rej2 and rej-reg2 are  and 
+with rejective sampling; simple3 and reg3 are  and
+ without rejective sampling; rej3 and rej-reg3
+are  and  with rejective sampling.
+
+fig:2-3-cvgCoverage rates
+
+
+Acknowledgments
+
+We thank the associate editor and two reviewers for helpful comments.
+Chongguang Tao proofread the final version of the paper. Yang was
+partially funded by the U.S. National Institutes of Health (grant
+ 1R01AG066883) and the U.S. National Science Foundation (grant 
+SES 2242776). Ding was partially funded by the U.S. National Science
+Foundation (grant  1945136). 
+
+dcu
+
+
+
+Sequation
+
+Slemma
+
+Stable
+
+Sexample
+
+Sdefinition
+
+Ssection
+
+Stheorem
+
+Scondition
+
+Sremark
+
+Sstep
+
+Sassumption
+
+Sproof
+
+Sproposition
+
+Sfigure
+ 
+
+Spage
+
+Supplementary material
+center
+
+ arabic
+
+
+Section  describes sequential
+rejective sampling with tiers of covariates. Section presents multi-phase rejective sampling. Section provides all proofs. 
+
+Sequential rejective sampling with tiers of covariatessec:Sequential-rejective-sampling
+
+Partition covariate  into  tiers of decreasing importance,
+denoted by , each  having dimension .
+Let . It is convenient to apply
+the block-wise Gram-Schmidt orthogonalization to the covariates:
+construct  from , and 
+
+
+
+for . We assume 
+ for  under suitable regularity conditions. See the
+discussion of Assumption (vii) in the main
+paper. For each tier , we can impose a threshold ,
+where  is a positive constant and  is the
+weight for tier , with higher  indicating a stricter
+threshold.
+
+We define two-phase sequential rejective sampling (TPSRS) as follows.
+
+[TPSRS with general sampling]TPSRS with general sampling consists of two steps: 
+
+[Step] Select a phase-I sample  by a general 
+sampling with the inclusion probability . For 
+record . 
+[Step] Treat the phase-I sample  as the population
+and select a phase-II sample  by a general  sampling with
+the conditional inclusion probability given unit  is in the phase- sample. Accept the phase-II
+sample if
+
+done sequentially from tier  to . For  record . 
+
+In a weighted rejective sampling, we accept the phase-II
+sample if
+
+where the 's may be different from the ones in the sequential
+rejective sampling as in ().
+
+Sequential rejective sampling, unlike weighted rejective sampling,
+ensures balance across all tiers, as it requires each tier to individually
+meet its threshold. Weighted rejective sampling is less stringent,
+allowing some tiers to be poorly balanced if others are well balanced.
+
+ The limiting distributions
+of  and  under weighted rejective
+sampling () are more complicated compared
+with the TPSRS in Definition .
+
+
+To study the limiting properties of , let 
+be the probability limit of . By the Gram-Schmidt
+orthogonalization,  is a diagonal matrix with the th
+block diagonal component . We decompose 
+as  with 
+being the probability of . The
+decomposition of  then becomes 
+*
+Let ,
+then . For any , 
+and  are asymptotically independent
+given  . Therefore, 
+
+
+
+has the same limiting distribution of 
+
+
+
+Theorem  below describes the limiting distributions
+of  and  under TPSRS with general
+sampling.
+
+Suppose Assumption holds. Under TPSRS in Definition , 
+follows the limiting distribution:
+
+ where 
+ and  are defined in () and (),
+respectively,  and  are independent standard normal
+variables, and 
+are jointly independent. Moreover, 
+
+
+
+
+
+Multi-phase rejective samplingsec:Multi-phase-rejective-sampling
+
+Notation
+
+We extend our theory to multi-phase rejective sampling. To simplify
+the presentation, we discuss three-phase sampling below. Let ,
+, and  represent the probabilities
+of a unit being included in the phase-I, phase-II, and phase-III samples,
+with each phase indexed by ,  and , respectively.
+The combined probability for phase-III is .
+Let , , and  be the sampling sizes of
+the phase-I sample, the phase-II sample, and the phase-III sample,
+respectively. 
+
+For the finite population mean , the phase-, phase-II,
+and phase-III estimators are (), (),
+and 
+
+respectively. The design variance for the phase-III estimator involves
+conditional second-order inclusion probabilities .
+By Taylor expansion and ignoring the small order terms, the design
+covariance of  and  given
+the phase- sample is 
+
+
+
+Three-phase rejective samplingsubsec:Three-phase-rejective-sampling
+
+We define a three-phase rejective sampling method with -dimensional
+phase-I covariate  and -dimensional phase-II covariate
+ as follows.
+
+[Three-phase rejective sampling with general sampling]Three-phase rejective sampling with general sampling consists of three
+steps: 
+
+[Step] Select a phase- sample  by a general 
+sampling with the inclusion probability . For 
+record . 
+[Step] Select a phase- sample  by a general
+ sampling with the conditional inclusion probability 
+given unit  is in the phase- sample. Accept the phase-
+sample if 
+
+
+
+where , and  is the positive definite
+design variance of  given the phase-
+sample. For  record . It is convenient to apply
+the Gram-Schmidt orthogonalization to  and construct a
+phase- covariate ,
+where 
+
+Let  represent the combined vector of phase-
+covariates, where  can be seen as the part of  that is both
+correlated with  and orthogonal to , representing the additional
+information beyond what is available from phase . 
+[Step] Select a phase- rejective sample  by
+a general  sampling with the conditional inclusion probability
+ given unit  is in the phase- sample.
+Accept the phase- sample if 
+
+
+
+where , and  is the positive definite
+design variance of  given the phase-
+sample. For  record  . 
+
+In Step 3, balance can be directly controlled on 
+instead of , because  is a linear
+transformation of  and 
+given  and the Mahalanobis distance is invariant
+to linear transformations.
+
+For the population mean , the  estimator based
+on the phase- rejective sample is 
+
+
+
+To derive the asymptotic properties of , we need
+the following regularity condition. 
+
+ The phase-
+estimator () satisfies 
+
+
+
+with ,
+where  represents components of either  or . 
+
+The sequence of phase- selection probabilities are bounded by
+
+for all  for some positive  and .
+Assume that the design is such that 
+
+
+
+where  is a matrix of constants. Moreover, .
+
+
+Suppose Assumptions and  hold. Under three-phase rejective
+sampling in Definition ,  follows
+the limiting distribution:
+
+n_^1/2(y_-y_0)(Q_z,<_1^2,Q_c,<_2^2)
+
+V_,1^1/2L_p_1+p_2,_2^2+V_,2^1/2Z_1+V_,3^1/2L_p_1,_1^2+V_,4^1/2Z_2+V_,5^1/2Z_3,where 
+
+, , and  are standard normal variables, and
+
+are jointly independent.
+
+
+Regression estimatorsubsec:Regression-estimator
+
+Integrating the design and analysis strategies, the three-phase regression
+estimator of  is 
+
+where  by our construction of , and
+
+
+
+The regression estimator exhibitsthe same asymptotic
+behavior, irrespective of the use of rejective sampling.
+
+Under Assumptions and , under three-phase rejective sampling
+in Definition , the regression estimator 
+in () has the following limiting distribution:
+
+
+
+ for all sequences of finite populations, where 
+
+
+
+and ,  and  are defined in (),
+() and (), respectively.
+
+
+Thus, the limiting distribution of 
+remains unchanged with or without rejective procedure. Combining the
+results from Theorems  and  suggests that
+utilizing auxiliary variables in both the design stage (via rejective
+sampling) and analysis stage (via regression) can improve estimation
+efficiency.
+
+Inference: variance estimators and confidence intervalssubsec:ve-pi-1
+
+We derive the asymptotic design variance formula. Let 
+be () with  and  being 
+and , ,
+and  be () with  being
+. We estimate , 
+and  by 
+*
+respectively. Then, the variance estimator for  is
+
+
+
+The variance estimator for  is 
+
+We can construct the asymptotic  confidence interval
+for  based on  as
+
+
+
+where  as the th
+quantile of the distribution of ,
+and the counterpart based on  as
+
+
+
+
+
+Proofs sec:Proofs
+
+Useful lemmas
+
+We state some useful lemmas for two-phase simple random sampling.
+
+ 
+and .
+
+
+
+and .
+
+
+
+and .
+
+
+Lemmas  and  are standard
+textbook results; therefore,
+we omit their proofs.
+
+For a sequence of finite populations, the variability of the estimators
+comes from the sampling design. In the following proofs for the asymptotic
+design properties, the asymptotic design variance and covariance (the
+limits of the design variance and covariances), denoted by 
+
+Proof of Lemma 
+
+Recall the following definitions ,
+,
+and . The asymptotic
+normality follows by Assumption ; see, e.g., Chapter
+1 in.
+
+Because  is a simple random sample from , and  is
+a simple random sample from , by Lemma ,
+we have 
+
+and therefore , for .
+
+We then show the asymptotic variance formulas. First, the asymptotic
+design variance of  given  is 
+*
+where the second equality follows by () and Lemma ,
+and the third equality follows by Lemma . Second,
+by writing ,
+the asymptotic design variance of  given  is 
+*
+where the second equality follows by () and Lemma ,
+and the third equality follows by Lemma . Third,
+the asymptotic design variance of  given  is ,
+.
+
+Finally, we show that all covariances of cross terms are zero asymptotically.
+We have 
+
+where the second equality follows by Lemma .
+Because conditional on  and ,  is a constant, we
+then have 
+
+Combining ()-(), we have 
+*
+
+Combining all results, we complete the proof.
+
+Proof of Theorem 
+
+To express () further, by the moment condition in Assumption
+, we have ,
+*
+and therefore 
+We then express () as 
+
+
+Under TPRS in Definition , based on (),
+the design variance 
+is approximately 
+*
+where the second equality follows by Lemma .
+
+Under TPRS in Definition , 
+is equivalent to 
+without rejective sampling. Similar to (), we can show
+that  and  are asymptotically
+independent. Moreover, we can show that 
+and  are asymptotically independent. Based on (),
+ and  are
+asymptotically independent. As a result, 
+has the same distribution under two-phase sampling with and without
+rejective sampling.
+
+Proof of Proposition 
+
+We follow the proofs in. Under TPRS in Definition
+,  , and 
+*
+where the last line follows from Assumption .
+Next, we have 
+
+To further evaluate (), we have 
+*
+and 
+*
+Therefore, under Assumption , 
+
+
+By the law of total probability, we have
+*
+Combining the above inequality with (), we obtain
+*
+Therefore, , which completes the proof.
+
+Proof of Lemma 
+
+By the constructions of phase  and  samples and estimators,
+we have 
+
+and therefore , for .
+
+We then show the asymptotic variance formulas. First, the asymptotic
+design variance of  given  is 
+*
+(T_1)_N(T_1)=_N[ E(T_1,) +E (T_1,) ]
+
+=_N[0+E n_N^2_i_j_ij-_i_j_i^*_j^*(y_i-y_0)(y_j-y_0) ]=V_1, .
+Second, the asymptotic design variance of  given  is
+*
+(T_2)_N(T_2)=_N[ E(T_2,) +E (T_2,) ]
+
+=_N[0+E n_N^2_i_j_ij-_i_j_i^*_j^*(e_i-e_0)(e_j-e_0) ]=V_2, .
+Third, the asymptotic design variance of  given  is 
+*
+(T_3)_N(T_3)
+
+=_N n_N^2_i=1^N_j=1^N_ij-_i_j_i_j(y_i-y_0)(y_j-y_0) =V_3, .
+Note that ,  and  are finite, guaranteed by
+Assumption .
+
+Finally, we show that all covariances of cross terms are zero asymptotically.
+By Assumption (vii), 
+. Because conditional on ,  is a constant, we
+then have 
+
+Combining ()-(), we have 
+*
+
+Combining all results completes the proof.
+
+Proof of Theorem 
+
+To derive the asymptotic design property of the two-phase regression
+estimator, we use the following decomposition:
+*
+where the second equality follows by 
+due to  and .
+
+Therefore, the asymptotic design variance of 
+is 
+*
+
+
+Proof of Remark 
+
+For the phase- and phase- sample sizes, we have 
+)
+By taking the expectation of (), we obtain 
+
+By taking the conditional expectation of () given ,
+we obtain 
+
+
+Multiplying () by  and multiplying ()
+by  we obtain 
+
+By taking the expectation of (), we obtain 
+
+By taking the conditional expectation of () given ,
+we obtain 
+
+
+We now write 
+*
+Moreover,
+
+where () follows by (), and ()
+follows by (). Therefore, 
+is asymptotically equivalent to  adding a mean zero
+term.
+
+We also write 
+*
+Moreover, 
+
+where () follows by () and ().
+Therefore,  is asymptotically equivalent
+to  adding a mean zero term.
+
+Proof Theorem 
+
+We use the following decomposition: 
+*
+We have 
+and .
+Therefore, we have 
+*
+
+
+Proof of Theorem 
+
+To derive the asymptotic design properties of the three-phase regression
+estimator, we use the following facts: 
+
+
+
+where the probability distribution in  is due to phase-III
+random sampling given , ,
+and  is defined as () with
+ and  being  and , and 
+
+
+
+the probability distribution in  is due to phase-II random
+sampling given . Therefore, we use the following decomposition:
+*
+By repeated application of conditional expectation arguments, the
+asymptotic design variance of  is 
+
+
+
+Then, under Assumptions  and ,
+we establish the result in Theorem .
+
+Proof of Theorem 
+
+We first state the regularity conditions for Theorem .
+
+ The following conditions
+hold for the population parameter  and the population estimating
+function : 
+
+[(i)]  The population parameter  lies within a closed interval
+.
+[(ii)]  The function  is bounded.
+[(iii)]  The population estimating function  converges
+uniformly to  on  as ,
+and the equation  has a unique root within the interior
+of .
+[(iv)]  The limiting function  is strictly increasing in each
+component of  and absolutely continuous, with finite first and
+second derivatives in . Additionally, the derivative
+ is bounded away from zero within
+.
+[(v)]  The following conditions on the population quantities are satisfied:
+
+
+
+and
+
+
+
+
+Assumption (i)-(iv) are common for M-estimators
+serfling1980approximation. Assumption (v)
+applies to differentiable estimating functions and has been examined
+by for non-differentiable estimating functions.
+wang2011asymptotic demonstrate that under appropriate conditions
+on the probability mechanism generating the  values and the
+function , Assumption (v) holds
+with probability one.
+
+We will now show the results in Theorem .
+Under Assumption , and using the theory for
+M-estimators for differentiable estimating functions or the results
+of for non-differentiable estimating functions,
+we can express
+
+By Assumption (iv),  is
+smooth, implying  
+and the left-hand side of () is  
+
+Because Assumption  holds for ,
+we define the residual vector as 
+
+
+
+where 
+
+
+
+Under TPRS  in Definition , we have
+where  and  are standard normal variables, and 
+are jointly independent.
+
+Combining the results () and (),
+we obtain
+
+
+
+as . 

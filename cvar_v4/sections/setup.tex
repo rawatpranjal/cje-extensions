@@ -1,0 +1,32 @@
+\section{Setup and Estimands}
+\label{sec:setup}
+
+For prompt $\X$, policy $\ptarget$ generates response $\A_{\ptarget}$. A cheap judge returns score $\Sscore_{\ptarget}$ and an expensive oracle returns label $\Y_{\ptarget}\in[0,1]$. The oracle may be a human, expert panel, downstream metric, or stronger model. We observe cheap judge scores broadly and oracle labels only on a smaller calibration/audit slice.
+
+The mean value of a policy is
+\begin{equation}
+V(\ptarget)=\E_{\ptarget}[\Y].
+\end{equation}
+CJE estimates $V(\ptarget)$ by fitting a calibrated predictor $f(\Sscore,\X)$ of $\Y$ on an oracle slice and averaging it over target-policy responses, subject to a transport audit.
+
+For tail risk, let
+\begin{equation}
+q_{\alpha}(\ptarget)=\inf\{t:\Pp_{\ptarget}(\Y\leq t)\geq \alpha\}
+\end{equation}
+be the lower $\alpha$-quantile. When the distribution of $\Y$ is continuous at $q_{\alpha}(\ptarget)$, the lower-tail CVaR is
+\begin{equation}
+\CVaR_{\alpha}(\ptarget)
+=\E_{\ptarget}\!\left[\Y \mid \Y\leq q_{\alpha}(\ptarget)\right].
+\label{eq:conditional-cvar}
+\end{equation}
+Our formal definition is the equivalent optimization form
+\begin{equation}
+\CVaR_{\alpha}(\ptarget)
+=\sup_{t\in\R}\left\{t-\frac{1}{\alpha}\E_{\ptarget}\!\left[\shortfall{t}{\Y}\right]\right\}.
+\label{eq:stoploss-cvar}
+\end{equation}
+The optimizer is an $\alpha$-quantile under standard continuity conditions. This form is the right primitive for estimation because it reduces tail risk to a family of mean shortfall problems.
+
+\paragraph{Discrete outcomes.}
+If $\Y$ is a Likert rating or any other atomic outcome, \cref{eq:conditional-cvar} is not the right definition without tie handling. The optimization form in \cref{eq:stoploss-cvar} remains well-defined; the appendix gives the partial-atom version of expected shortfall. The main benchmark therefore targets continuous rubric-style outcomes in $[0,1]$.
+

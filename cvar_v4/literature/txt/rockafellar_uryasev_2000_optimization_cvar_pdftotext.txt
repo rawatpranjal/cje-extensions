@@ -1,0 +1,1744 @@
+Implemented in Portfolio Safeguard by AORDA.com
+
+Optimization of conditional value-at-risk
+R. Tyrrell Rockafellar
+Department of Applied Mathematics, University of Washington, 408 L Guggenheim Hall,
+Box 352420, Seattle, Washington 98195-2420, USA
+
+Stanislav Uryasev
+Department of Industrial and Systems Engineering, University of Florida, PO Box 116595,
+303 Weil Hall, Gainesville, Florida 32611-6595, USA
+
+A new approach to optimizing or hedging a portfolio of ®nancial instruments to
+reduce risk is presented and tested on applications. It focuses on minimizing
+conditional value-at-risk (CVaR) rather than minimizing value-at-risk (VaR), but
+portfolios with low CVaR necessarily have low VaR as well. CVaR, also called mean
+excess loss, mean shortfall, or tail VaR, is in any case considered to be a more
+consistent measure of risk than VaR. Central to the new approach is a technique for
+portfolio optimization which calculates VaR and optimizes CVaR simultaneously. This
+technique is suitable for use by investment companies, brokerage ®rms, mutual funds,
+and any business that evaluates risk. It can be combined with analytical or scenariobased methods to optimize portfolios with large numbers of instruments, in which
+case the calculations often come down to linear programming or nonsmooth
+programming. The methodology can also be applied to the optimization of percentiles
+in contexts outside of ®nance.
+
+1. INTRODUCTION
+This paper introduces a new approach to optimizing a portfolio so as to reduce
+the risk of high losses. Value-at-risk (VaR) has a role in the approach, but the
+emphasis is on conditional value-at-risk (CVaR), which is also known as mean
+excess loss, mean shortfall, or tail VaR. By de®nition, with respect to a speci®ed
+probability level , the -VaR of a portfolio is the lowest amount such that,
+with probability , the loss will not exceed , whereas the -CVaR is the
+conditional expectation of losses above that amount . Three values of are
+commonly considered: 0.90, 0.95, and 0.99. The de®nitions ensure that the VaR is never more than the -CVaR, so portfolios with low CVaR must have
+low VaR as well.
+A description of various methodologies for the modeling of VaR can be seen,
+along with related resources, at URL http://www.gloriamundi.org/. Most approaches to calculating VaR rely on linear approximation of the portfolio risks
+and assume a joint normal (or lognormal) distribution of the underlying market
+parameters (see, e.g., Due and Pan 1997, Jorion 1996, Pritsker 1997,
+JP Morgan 1996, Simons 1996, Beder 1995, Stambaugh 1996). Also, historical
+21
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+22
+
+R. T. Rockafellar and S. Uryasev
+
+or Monte Carlo simulation-based tools are used when the portfolio contains
+nonlinear instruments such as options (Bucay and Rosen 1999, Jorion 1996,
+Mauser and Rosen 1999, Pritsker 1997, JP Morgan 1996, Beder 1995,
+Stambaugh 1996). Discussions of optimization problems involving VaR can
+be found in papers by Litterman (1997a,1997b), Kast et al. (1998), and Lucas
+and Klaassen (1998).
+Although VaR is a very popular measure of risk, it has undesirable
+mathematical characteristics such as a lack of subadditivity and convexity (see
+Artzner et al. 1997, 1999). VaR is coherent only when it is based on the standard
+deviation of normal distributions (for a normal distribution, VaR is proportional to the standard deviation). For example, VaR associated with a
+combination of two portfolios can be deemed greater than the sum of the risks
+of the individual portfolios. Furthermore, VaR is dicult to optimize when it is
+calculated from scenarios. Mauser and Rosen (1999) and McKay and Keefer
+(1996) showed that VaR can be ill-behaved as a function of portfolio positions
+and can exhibit multiple local extrema, which can be a major handicap in trying
+to determine an optimal mix of positions or even the VaR of a particular mix.
+As an alternative measure of risk, CVaR is known to have better properties than
+VaR (see Artzner et al. 1997 and Embrechts et al. 1999). Recently, P¯ug (2000)
+proved that CVaR is a coherent risk measure having the following properties:
+transition-equivariant, positively homogeneous, convex, monotonic w.r.t. stochastic dominance of order 1, and monotonic w.r.t. monotonic dominance of
+order 2. A simple description of the approach for minimization of CVaR and
+optimization problems with CVaR constraints can be found in the review paper
+by Uryasev (2000). Although CVaR has not become a standard in the ®nance
+industry, CVaR is gaining in the insurance industry (see Embrechts et al. 1997).
+Bucay and Rosen (1999) used CVaR in credit risk evaluations. A case study on
+application of the CVaR methodology to the credit risk is described by
+Andersson and Uryasev (1999). Measures similar to CVaR have been used
+before in the stochastic programming literature, although not in a ®nancial
+mathematics context. The conditional expectation constraints and integrated
+chance constraints described by Prekopa (1995) may serve the same purpose
+as CVaR.
+Minimizing the CVaR of a portfolio is closely related to minimizing VaR, as
+already observed from the de®nition of these measures. The basic contribution
+of this paper is a practical technique of optimizing CVaR and calculating VaR
+at the same time. It aords a convenient way of evaluating:
+à linear and nonlinear derivatives (options, futures);
+à market, credit, and operational risks;
+à circumstances in any corporation that is exposed to ®nancial risks.
+It can be used for such purposes by investment companies, brokerage ®rms,
+mutual funds, and elsewhere.
+In the optimization of portfolios, the new approach leads to solving a
+stochastic optimization problem. Many numerical algorithms are available for
+Journal of Risk
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+Optimization of conditional value-at-risk
+
+that (see, e.g., Birge and Louveaux 1997, Ermoliev and Wets 1988, Kall and
+Wallace 1995, Kan and Kibzun 1996, P¯ug 1996, Prekopa 1995). These
+algorithms are able to make use of special mathematical features in the
+portfolio and can readily be combined with analytical or simulation-based
+methods. In cases where the uncertainty is modeled by scenarios and a ®nite
+family of scenarios is selected as an approximation, the problem to be solved
+can even reduce to one of linear programming. For applications of programming in ®nance, see, for instance, Zenios (1996) and Ziemba and Mulvey
+(1998).
+
+2. DESCRIPTION OF THE APPROACH
+Let f x; y be the loss associated with the decision vector x, to be chosen from a
+certain subset X of Rn , and the random vector y in Rm . The vector x can be
+interpreted as representing a portfolio, with X as the set of available portfolios
+(subject to various constraints), but other interpretations are also possible. The
+vector y stands for the uncertainties, e.g. market variables, that can aect the
+loss. Of course, the loss might be negative and thus, in eect, constitute a gain.
+For each x, the loss f x; y is a random variable having a distribution in R
+induced by that of y. The underlying probability distribution of y in Rm will be
+assumed for convenience to have density, which we denote by p y. However, as
+will be shown later, an analytical expression p y for the implementation of the
+approach is not needed. It is sucient to have an algorithm (code) which
+generates random samples from p y. A two-step procedure can be used to
+derive analytical expression for p y or construct a Monte Carlo simulation code
+for drawing samples from p y (see, e.g., JP Morgan 1996): (1) modeling of risk
+factors in Rm1 , with m1 < m; (2) based on the characteristics of instrument i
+(i  1; . . . ; n), the distribution p y can be derived or code transforming random
+samples of risk factors to the random samples from density p y can be
+constructed.
+The probability of f x; y not exceeding a threshold is then given by
+x;  
+
+p y dy:
+
+1
+
+f x;y6
+
+As a function of for ®xed x, is the cumulative distribution function for the
+loss associated with x. It completely determines the behavior of this random
+variable and is fundamental in de®ning VaR and CVaR. In general, x;  is
+nondecreasing with respect to
+and continuous from the right, but not
+necessarily from the left because of the possibility of jumps. We assume,
+however, in what follows that the probability distributions are such that no
+jumps occur, or, in other words, that
+x;  is everywhere continuous with
+respect to . This assumption, like the previous one about density in y, is made
+for simplicity. Without it there are mathematical complications, even in the
+Volume 2/Number 3, Spring 2000
+
+23
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+24
+
+R. T. Rockafellar and S. Uryasev
+
+de®nition of CVaR, which would need more explanation. We prefer to leave
+such technical issues for a subsequent paper. In some common situations, the
+required continuity follows from properties of loss f x; y and the density p y
+(see Uryasev 1995).
+The -VaR and -CVaR values for the loss random variable associated with
+x and any speci®ed probability level in 0; 1 will be denoted by
+x and
+ x. In our setting, they are given by
+x  minf
+
+2R:
+
+x;  > g
+
+2
+
+f x; y p y dy:
+
+3
+
+and
+ x  1
+
+ 1
+f x;y>
+
+x
+
+x comes out as the left endpoint of the nonempty
+In the ®rst formula,
+interval consisting of the values such that
+x;   . (This follows from
+x;  being continuous and nondecreasing with respect to . The interval
+might contain more than a single point if
+has ``¯at spots''.) In the second
+formula, the probability that f x; y >
+x is therefore equal to 1
+. Thus,
+ x comes out as the conditional expectation of the loss associated with x
+x or greater.
+relative to that loss being
+x in terms of
+The key to our approach is a characterization of  x and
+the function F on X  R de®ned as follows:
+F x;  
+
+ 1
+
+ 1
+
+f x; y
+y2R
+
+where
+
+
+t 
+
+
+
+t
+0
+
+ p y dy;
+
+4
+
+m
+
+when t > 0,
+when t 6 0.
+
+The crucial features of F , under the assumptions made above, are as follows.
+For background on convexity, which is a key property in optimization that in
+particular eliminates the possibility of a local minimum being dierent from a
+global minimum, see Rockafellar (1970) or Shor (1985), for instance.
+Theorem 1 As a function of , F x;  is convex and continuously dierentiable. The -CVaR of the loss associated with any x 2 X can be determined from
+the formula
+ x  min F x; :
+5
+2R
+
+In this formula, the set consisting of the values of for which the minimum is
+attained, namely
+A x  argmin F x; ;
+6
+2R
+
+Journal of Risk
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+Optimization of conditional value-at-risk
+
+is a nonempty closed bounded interval (perhaps reducing to a single point), and the
+-VaR of the loss is given by
+x  left endpoint of A x.
+
+7
+
+In particular, one always has
+x 2 argmin F x; 
+2R
+
+and
+
+ x  F x;
+
+
+x :
+
+8
+
+Theorem 1 is proved in the Appendix. Note that for computational purposes
+one could just as well minimize 1
+F x;  as minimize F x; . This would
+avoid dividing the integral by 1
+and might be better numerically when 1
+is small.
+The power of the formulas in Theorem 1 is apparent because continuously
+dierentiable convex functions are especially easy to minimize numerically. Also
+revealed is the fact that -CVaR can be calculated without ®rst having to
+calculate the -VaR on which its de®nition depends, which would be more
+complicated. The -VaR may be obtained instead as a by-product, but the extra
+eort that this might entail (in determining the interval A x and extracting its
+left endpoint, if it contains more than one point) can be omitted if -VaR is not
+needed.
+Furthermore, the integral in the de®nition (4) of F x;  can be approximated in various ways. For example, this can be done by sampling the
+probability distribution of y according to its density p y. If the sampling
+generates a collection of vectors y1 ; . . . ; yq , then the corresponding approximation to F x;  is
+q
+X
+1
+F~ x;   
+f x; yk 
+ :
+9
+q1
+ k1
+The expression F~ x;  is convex and piecewise linear with respect to .
+Although it is not dierentiable with respect to , it can readily be minimized,
+either by line search techniques or by representation in terms of an elementary
+linear programming problem.
+Other important advantages of viewing VaR and CVaR through the
+formulas in Theorem 1 are evident in the next theorem.
+Theorem 2 Minimizing the -CVaR of the loss associated with x over all x 2 X
+is equivalent to minimizing F x;  over all x;  2 X  R, in the sense that
+min  x 
+x2X
+
+min
+
+x;  2 XR
+
+F x; ;
+
+10
+
+where, moreover, a pair x ;   achieves the second minimum if and only if x
+achieves the ®rst minimum and  2 A x . In particular, therefore, in circumstances where the interval A x  reduces to a single point (as is typical), the
+minimization of F x;  over x;  2 X  R produces a pair x ;  , not
+Volume 2/Number 3, Spring 2000
+
+25
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+26
+
+R. T. Rockafellar and S. Uryasev
+
+necessarily unique, such that x minimizes the -CVaR and  gives the
+corresponding -VaR.
+Furthermore, F x;  is convex with respect to x; , and  x is convex
+with respect to x, when f x; y is convex with respect to x, in which case, if the
+constraints are such that X is a convex set, the joint minimization is an instance of
+convex programming.
+Again, the proof is furnished in the Appendix. According to Theorem 2, it is
+not necessary, for the purpose of determining an x that yields minimum CVaR, to work directly with the function  x, which may be hard to do
+x and the
+because of the nature of its de®nition in terms of the -VaR value
+often troublesome mathematical properties of that value. Instead, one can
+operate on the far simpler expression F x;  with its convexity in the variable
+and even, very commonly, with respect to x; .
+The optimization approach supported by Theorem 2 can be combined with
+ideas for approximating the integral in the de®nition (4) of F x;  such as have
+already been mentioned. This oers a rich range of possibilities. Convexity of
+f x; y with respect to x produces convexity of the approximating expression
+F~ x;  in (9), for instance.
+The minimization of F over X  R falls into the category of stochastic
+optimization, or more speci®cally stochastic programming, because of the
+presence of an ``expectation'' in the de®nition of F x; . At least for the cases
+involving convexity, there is a vast literature on solving such problems (Birge
+and Louveaux 1997, Ermoliev and Wets 1988, Kall and Wallace 1995, Kan and
+Kibzun 1996, P¯ug 1996, Prekopa 1995). Theorem 2 opens the door to applying
+stochastic programming approaches to the minimization of -CVaR.
+
+3. AN APPLICATION TO PORTFOLIO OPTIMIZATION
+To illustrate the approach we propose, we now consider the case where the
+decision vector x represents a portfolio of ®nancial instruments in the sense that
+x  x1 ; . . . ; xn , with xj being the position in instrument j and
+xj > 0
+
+for j  1; . . . ; n; with
+
+n
+X
+j1
+
+xj  1:
+
+11
+
+Denoting by yj the return on instrument j, we take the random vector to be
+y  y1 ; . . . ; yn . The distribution of y constitutes a joint distribution of the
+various returns and is independent of x; it has density p y.
+The return on a portfolio x is the sum of the returns on the individual
+instruments in the portfolio, scaled by the proportions xj . The loss, being the
+negative of this, is therefore given by
+f x; y 
+
+x1 y1      xn yn  
+
+xT y:
+
+12
+Journal of Risk
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+Optimization of conditional value-at-risk
+
+As long as p y is continuous with respect to y, the cumulative distribution
+function for the loss associated with x will itself be continuous (see Kan and
+Kibzun 1996, Uryasev 1995).
+Although VaR and CVaR are usually de®ned in terms of monetary value,
+here they are de®ned as percentage returns. We consider the case when there is a
+one-to-one correspondence between percentage return and monetary value (this
+may not be true for the portfolios with zero net investment). In this section, we
+compare the minimum CVaR methodology with the minimum variance
+approach, and so, to be consistent, we consider the loss in percentage terms.
+The performance function on which we focus here in connection with -VaR
+and -CVaR is
+F x;  
+
+ 1
+
+ 1
+
+ xT y
+y2R
+
+ p y dy:
+
+13
+
+n
+
+It is important to observe that, in this setting, F x;  is convex as a function of
+x and , not just . Often, it is also dierentiable in these variables (see Kan and
+Kibzun 1996, Uryasev 1995). Such properties set the stage very attractively for
+implementation of the kinds of computational schemes suggested above.
+For a closer look, let  x and  x denote the mean and variance of the loss
+associated with portfolio x; in terms of the mean m and variance V of y, we have
+ x 
+
+xT m
+
+and
+
+ 2 x  xT V x:
+
+14
+
+Clearly,  x is a linear function of x, whereas  x is a quadratic function of x.
+We impose the requirement that only portfolios that can be expected to return at
+least a given amount R will be admitted. In other words, we introduce the linear
+constraint
+ x 6 R
+15
+and take the feasible set of portfolios to be
+
+X  x : x satis®es (11) and (15) :
+
+16
+
+This set X is convex (in fact ``polyhedral'', owing to linearity in all the
+constraints). The problem of minimizing F over X  R is therefore one of
+convex programming, for the reasons laid out in Theorem 2.
+Now consider the kind of approximation of F obtained by sampling the
+probability distribution in y, as in (9). A sample set y1 ; . . . ; yq yields the
+approximate function
+F~ x;  
+
+
+
+1
+q1
+
+q
+X
+ xT y k
+
+ k1
+
+ :
+
+17
+
+The minimization of F~ over X  R, in order to get an approximate solution to
+the minimization of F over X  R, can in fact be reduced to convex
+programming. In terms of auxiliary real variables uk for k  1; . . . ; r, it is
+Volume 2/Number 3, Spring 2000
+
+27
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+28
+
+R. T. Rockafellar and S. Uryasev
+
+equivalent to minimizing the linear expression
+
+
+1
+q1
+
+q
+X
+
+ k1
+
+uk
+
+subject to the linear constraints (11), (15), and
+uk > 0
+
+and xT yk 
+
+ uk > 0
+
+for k  1; . . . ; r:
+
+Note that the possibility of such reduction to linear programming does not
+depend on y having a special distribution, such as a normal distribution; it
+works for nonnormal distributions just as well.
+The discussion so far has been directed toward minimizing -CVaR, or, in
+other words, the problem
+P1
+
+minimize  x
+
+over x 2 X;
+
+since that is what is accomplished, on the basis of Theorem 2, when F is
+minimized over X  R. The related problem of ®nding a portfolio that
+minimizes -VaR (Kast et al. 1998, Mauser and Rosen 1999), i.e., one that
+solves the problem
+P2
+
+minimize
+
+x
+
+over x 2 X;
+
+x, solutions to (P1) should
+is not covered directly. However, because  x >
+also be good from the perspective of (P2). According to Theorem 2, the
+technique of minimizing F x;  over X  R to solve (P1) also determines the
+-VaR of the portfolio x that minimizes -CVaR. This is not the same as
+solving (P2), but anyway it appears that (P1) is a better problem to be solving
+for risk management than (P2).
+In this framework, it is useful also to compare (P1) and (P2) with a very
+popular problem, that of minimizing variance (see Markowitz 1952):
+P3
+
+minimize  2 x over x 2 X:
+
+An attractive mathematical feature of problem (P3) is that it reduces to quadratic
+programming, but like (P2) its suitability has been questioned. Many other
+approaches could, of course, also be mentioned. The mean absolute deviation
+approach of Konno and Yamazaki (1991), the regret optimization approach of
+Dembo (1995) and Dembo and King (1992), and the minimax approach
+described by Young (1998) are notable in connection with the approximation
+scheme (17) for CVaR minimization because they also use linear programming
+algorithms.
+These problems can yield, in at least one important case, the same optimal
+portfolio x . We establish this fact next and then put it to use in numerical
+testing.
+Journal of Risk
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+Optimization of conditional value-at-risk
+
+Proposition 1 Suppose that the loss associated with each x is normally
+distributed, as holds when y is normally distributed. If > 0:5 and the constraint
+(15) is active at solutions to any two of the problems (P1), (P2), and (P3), then
+the solutions to those two problems are the same; a common portfolio x is optimal
+by both criteria.
+Proof. Using the analytical capabilities of the Mathematica package, under the
+normality assumption and with > 0:5, we expressed the -VaR and -CVaR in
+terms of mean and variance by
+p
+x   x  c1  x; with c1   2 erf 1 2
+1
+18
+and
+ x   x  c2  x;
+
+with c2  
+
+p
+2 experf 1 2
+
+12 1
+
+
+
+where erf 1 denotes the inverse of the error function, which is de®ned by
+
+1
+
+;
+
+19
+
+2 z 2
+erf z  p e t dt:
+ 0
+When the constraint (15) is active at optimality, the set X can just as well be
+replaced in the minimization by the generally smaller set X0 obtained by
+substituting the equation  x  R for the inequality  x 6 R. For
+x 2 X0 , however, we have
+x 
+
+R  c1  x and
+
+ x 
+
+R  c2  x;
+
+where the coecients c1  and c2  are positive. Minimizing either of these
+expressions over x 2 X0 is evidently the same as minimizing  x2 over x 2 X0 .
+Thus, if the constraint (15) is active in two of the problems, then any portfolio
+x that minimizes  x over x 2 X0 is optimal for those two problems. &
+Proposition 1 furnishes an opportunity of using quadratic programming
+solutions for problem (P3) as a benchmark in testing the method of minimizing
+-CVaR by the sampling approximations in (17) and their reduction to linear
+programming. We carry this out for an example in which an optimal portfolio is
+to be constructed from three instruments: S&P 500, a portfolio of long-term US
+government bonds, and a portfolio of small-cap stocks, the returns on these
+instruments being modeled by a (joint) normal distribution. The calculations
+were conducted by Carlos Testuri as part of a project in the Stochastic
+Optimization course at the University of Florida.
+The mean m of monthly returns and the covariance matrix V in this example
+are given in Tables 1 and 2, respectively. We took R  0:011 in the constraint
+(15) on expected loss/return.
+First, we solved the quadratic programming problem (P3) for these data
+elements, obtaining the portfolio x displayed in Table 3 as the unique optimal
+portfolio in the Markowitz minimum variance sense. The corresponding
+Volume 2/Number 3, Spring 2000
+
+29
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+30
+
+R. T. Rockafellar and S. Uryasev
+
+TABLE 1. Portfolio mean return.
+Instrument
+
+Mean return
+
+S&P
+Gov. bond
+Small cap
+
+0.0101110
+0.0043532
+0.0137058
+
+TABLE 2. Portfolio covariance matrix.
+
+S&P
+Gov. bond
+Small cap
+
+S&P
+
+Gov. bond
+
+Small cap
+
+0.00324625
+0.00022983
+0.00420395
+
+0.00022983
+0.00049937
+0.00019247
+
+0.00420395
+0.00019247
+0.00764097
+
+TABLE 3. Optimal portfolio with the minimum variance approach.
+S&P
+
+Gov. bond
+
+Small cap
+
+0.452013
+
+0.115573
+
+0.432414
+
+TABLE 4. VaR and CVaR obtained with the minimum
+variance approach.
+
+VaR
+CVaR
+
+ 0:90
+
+ 0:95
+
+ 0:99
+
+0.067847
+0.096975
+
+0.090200
+0.115908
+
+0.132128
+0.152977
+
+variance was  x 2  0:00378529 and the mean was  x   0:011; thus, the
+constraint (15) was active in this instance of (P3). Then, for the -values 0.99,
+0.95, and 0.90, we calculated the -VaR and -CVaR of this portfolio x from
+(18) and (19), obtaining the results given in Table 4.
+With these values at hand for comparison purposes, we proceeded with our
+approach, based on Theorem 2, of solving the -CVaR problem (P1) by
+minimizing F x;  over x;  2 X  R. To approximate the integral in the
+expression (13) for F x; , we sampled the return vector y according to its
+density p y in the (multi)normal distribution N m; V  2 R3 . The samples
+produced approximations F~ x;  as in (17). The minimization of F~ x;  over
+x;  2 X  R was converted in each case to a linear programming problem in
+Journal of Risk
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+Optimization of conditional value-at-risk
+
+the manner explained after (17). These approximate calculations yielded
+estimates x for the optimal portfolio in (P1) along with corresponding estimates
+
+for their -VaR and F~ x ;   for their -CVaR.
+The linear programming calculations were carried out using the CPLEX
+linear programming solver on a 300 MHz Pentium II machine. In generating the
+random samples, we worked with two types of ``random'' numbers: the
+pseudorandom sequence of numbers (conventional Monte Carlo approach)
+and the Sobol quasirandom sequence (Press et al. 1992, p. 310). For similar
+applications of the quasirandom sequences, see Birge (1995), Boyle et al. (1997),
+and Kreinin et al. (1998). The results for the pseudorandom sequence are shown
+in Table 5, while those for the quasirandom sequence are shown in Table 6.
+In comparing the results in Table 5 for our minimum CVaR approach with
+pseudorandom sampling to those that correspond to the optimal portfolio
+under the minimum variance approach in Tables 3 and 4, we see that the CVaR
+values dier by only few percentage points, depending upon the number of
+samples, and likewise for the VaR values. However, the convergence of the
+CVaR estimates in Table 5 to the values in Table 4 (which Proposition 1 leads us
+to expect) is slow at best. This slowness might be attributable to the sampling
+errors in the Monte Carlo simulations. Besides, at optimality the variance, VaR,
+and CVaR appear to have low sensitivities to the changes in the portfolio
+positions.
+TABLE 5. The portfolio, VaR, and CVaR from minimum CVaR approach: Monte Carlo
+simulations generated by pseudorandom numbers.
+Sample
+size
+
+S&P
+
+1000
+3000
+5000
+10000
+20000
+
+0.35250 0.15382 0.49368 0.06795
+0.55726 0.07512 0.36762 0.06537
+0.42914 0.12436 0.44649 0.06662
+0.48215 0.10399 0.41386 0.06622
+0.45951 0.11269 0.42780 0.06629
+
+0.154
+3.645
+1.809
+2.398
+2.299
+
+0.09962
+0.09511
+0.09824
+0.09503
+0.09602
+
+2.73
+1.92
+1.30
+2.00
+0.98
+
+1157
+636
+860
+2290
+8704
+
+0.0
+0.0
+0.1
+0.3
+1.5
+
+0.95 1000 0.53717 0.08284 0.37999 0.09224
+0.95 3000 0.54875 0.07839 0.37286 0.09428
+0.95 5000 0.57986 0.06643 0.35371 0.09175
+0.95 10000 0.47102 0.10827 0.42072 0.08927
+0.95 20000 0.49038 0.10082 0.40879 0.09136
+
+2.259
+4.524
+1.715
+1.03
+1.284
+
+0.11516
+0.11888
+0.11659
+0.11467
+0.11719
+
+0.64
+2.56
+0.59
+1.00
+1.11
+
+156
+652
+388
+1451
+2643
+
+0.0
+0.0
+0.1
+0.2
+0.7
+
+0.99 1000 0.41844 0.12848 0.45308 0.13454
+0.99 3000 0.61960 0.05116 0.32924 0.12791
+0.99 5000 0.63926 0.04360 0.31714 0.13176
+0.99 10000 0.45203 0.11556 0.43240 0.12881
+0.99 20000 0.45766 0.11340 0.42894 0.13153
+
+1.829
+3.187
+0.278
+2.51
+0.451
+
+0.14513
+0.14855
+0.15122
+0.14791
+0.15334
+
+5.12
+2.89
+1.14
+3.31
+0.24
+
+340
+1058
+909
+680
+3083
+
+0.0
+0.0
+0.1
+0.1
+0.9
+
+0.9
+0.9
+0.9
+0.9
+0.9
+
+Gov.
+bond
+
+Volume 2/Number 3, Spring 2000
+
+Small
+cap
+
+VaR
+
+VaR
+CVaR CVaR Itera- Time
+di. (%)
+di. (%) tions (min)
+
+31
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+32
+
+R. T. Rockafellar and S. Uryasev
+
+TABLE 6. The portfolio, VaR, and CVaR from minimum CVaR approach: simulations
+generated by quasirandom Sobel sequences.
+Sample
+size
+
+S&P
+
+1000
+3000
+5000
+10000
+20000
+
+0.43709 0.12131 0.44160 0.06914
+0.45425 0.11471 0.43104 0.06762
+0.44698 0.11751 0.43551 0.06784
+0.45461 0.11457 0.43081 0.06806
+0.46076 0.11221 0.42703 0.06790
+
+1.90
+0.34
+0.02
+0.32
+0.08
+
+0.09531
+0.09658
+0.09664
+0.09695
+0.09692
+
+1.71
+0.41
+0.35
+0.02
+0.06
+
+429
+523
+837
+1900
+4818
+
+0.0
+0.0
+0.1
+0.3
+0.6
+
+0.95 1000 0.43881 0.12065 0.44054 0.09001
+0.95 3000 0.43881 0.12065 0.44054 0.09001
+0.95 5000 0.46084 0.11218 0.42698 0.09036
+0.95 10000 0.45723 0.11357 0.42920 0.09016
+0.95 20000 0.45489 0.11447 0.43064 0.09023
+
+0.21
+0.21
+0.18
+0.05
+0.03
+
+0.11249
+0.11511
+0.11516
+0.11577
+0.11577
+
+2.95
+0.69
+0.64
+0.12
+0.12
+
+978
+407
+570
+1345
+1851
+
+0.0
+0.0
+0.1
+0.2
+0.7
+
+0.99 1000 0.52255 0.08846 0.38899 0.12490
+0.99 3000 0.43030 0.12392 0.44578 0.12801
+0.99 5000 0.45462 0.11457 0.43081 0.13073
+0.99 10000 0.39156 0.13881 0.46963 0.13288
+0.99 20000 0.46065 0.11225 0.42710 0.13198
+
+5.47
+3.12
+1.06
+0.57
+0.11
+
+0.14048
+0.15085
+0.14999
+0.15208
+0.15211
+
+8.17
+1.39
+1.95
+0.59
+0.57
+
+998
+419
+676
+1065
+1317
+
+0.0
+0.0
+0.1
+0.2
+0.5
+
+0.9
+0.9
+0.9
+0.9
+0.9
+
+Gov.
+bond
+
+Small
+cap
+
+VaR
+
+VaR
+CVaR CVaR Itera- Time
+di. (%)
+di. (%) tions (min)
+
+The results obtained in Table 6 from our minimum CVaR approach with
+quasirandom sampling exhibit dierent and better behavior. There is relatively
+fast convergence to the values for the minimum variance problem. When the
+sample size is above 10 000, the dierences in CVaR and VaR obtained with the
+minimum CVaR and the minimum variance approaches are less than 1%.
+
+4. AN APPLICATION TO HEDGING
+As a further illustration of our approach, we consider next an example where a
+Nikkei portfolio is hedged. This problem, out of Mauser and Rosen (1999), was
+provided to us by the research group of Algorithmics Inc. Mauser and Rosen
+(1999) considered two ways of hedging: parametric and simulation VaR
+techniques. In each case, the best hedge is calculated by one-instrument
+minimization of VaR, i.e., by keeping all but one of the positions in the
+portfolio ®xed and varying that one, within a speci®ed range, until the VaR
+of the portfolio appears to be as low as possible. Here, we show ®rst that when
+the same procedure is followed but in terms of minimizing CVaR, the oneinstrument hedges obtained are very close to the ones obtained in terms of
+minimizing VaR. We go on to show, however, that CVaR minimization has the
+advantage of being practical beyond the one-instrument setting. Positions of
+Journal of Risk
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+Optimization of conditional value-at-risk
+
+several, or even many, instruments may be adjusted simultaneously in a broader
+mode of hedging.
+As in the application to portfolio optimization in the preceding section, the
+calculations could be reduced to linear programming by the kind of maneuver
+described after (16), which adds an extra variable for each scenario that is
+introduced. This might be advantageous for hedges involving the simultaneous
+adjustment of positions in a large number of instruments (say >1000), but we
+demonstrate here that, for hedges with relatively few instruments being adjusted,
+nonsmooth optimization techniques can compete with linear programming.
+With such techniques, there is no need to add extra variables, and the dimension
+of the problem stays the same regardless of how many scenarios are considered.
+Table 7 shows a portfolio that implements a butter¯y spread on the Nikkei
+index, as of 1 July 1997. In addition to common shares of Komatsu and
+Mitsubishi, the portfolio includes several European call and put options on
+these equities. This portfolio makes extensive use of options to achieve the
+desired payo pro®le. Figure 1, reproduced from Mauser and Rosen (1999),
+shows the distribution of one-day losses over a set of 1000 Monte Carlo
+scenarios. It indicates that the normal distribution ®ts the data poorly. Therefore, minimum CVaR and minimum variance approaches could, in this case,
+lead to quite dierent optimal solutions.
+For the 11 instruments in question, let x be the vector of positions in the
+portfolio to be determined, in contrast to z, the vector of initial positions in
+Table 7 (the ®fth column). These vectors belong to R11 . In the hedging, we were
+only concerned, of course, with varying some of the positions in x away from
+those in z, but we wanted to test out dierent combinations. This can be thought
+of in terms of selecting an index set J within f1; . . . ; 11g to indicate the
+instruments that are open to adjustment. In the case of one-instrument hedging,
+TABLE 7. Nikkei portfolio, reproduced from Mauser and Rosen (1999).
+Instrument
+
+Type
+
+Days to
+maturity
+
+Strike price
+(103 JPY)
+
+Position
+(103 )
+
+Value
+(103 JPY)
+
+Mitsubishi EC 6mo 860
+Mitsubishi Corp
+Mitsubishi Cjul29 800
+Mitsubishi Csep30 836
+Mitsubishi Psep30 800
+Komatsu Ltd
+Komatsu Cjul29 900
+Komatsu Cjun2 670
+Komatsu Cjun2 760
+Komatsu Paug31 760
+Komatsu Paug31 830
+
+Call
+Equity
+Call
+Call
+Put
+Equity
+Call
+Call
+Call
+Put
+Put
+
+184
+n/a
+7
+70
+70
+n/a
+7
+316
+316
+40
+40
+
+860
+n/a
+800
+836
+800
+n/a
+900
+670
+760
+760
+830
+
+11.5
+2.0
+16.0
+8.0
+40.0
+2.5
+28.0
+22.5
+7.5
+10.0
+10.0
+
+563340
+1720000
+967280
+382070
+2418012
+2100000
+11593
+5150461
+1020110
+68919
+187167
+
+Volume 2/Number 3, Spring 2000
+
+33
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+R. T. Rockafellar and S. Uryasev
+
+0.25
+
+Empirical
+0.20
+
+Probability
+
+34
+
+Normal approx.
+
+0.15
+
+0.10
+
+0.05
+
+0.00
+–194
+
+–157
+
+–121
+
+–48
+
+–84
+
+–11
+
+25
+
+62
+
+Size of loss (millions JPY)
+
+FIGURE 1. Distribution of losses for the Nikkei portfolio with best normal approximation (1000 scenarios), reproduced from Mauser and Rosen (1999).
+
+for instance, we took J to specify a single instrument but consecutively went
+through dierent choices of that instrument.
+Having selected a particular J, for the case when J contains more than one
+index, we imposed, on the coordinates xj of x, the constraints
+and
+thus taking
+
+jzj j 6 xj 6 jzj j
+xj  zj
+
+for j 2 J;
+
+for j 2
+= J;
+
+
+X  x : x satis®es (20) and (21) :
+
+20
+21
+22
+
+The constraints (21) could, of course, be used to eliminate the variables xj for
+j2
+= J from the problem, which we did in practice, but this formulation simpli®es
+the notation and facilitates comparisons between dierent choices of J. The
+absolute values appear in (20) because short positions are represented by
+negative numbers.
+Let m be the vector of initial prices (per unit) of the instruments in question
+and let y be the random vector of prices one day later. The loss to be dealt with
+in this context is the initial value of the entire portfolio minus its value one day
+later, namely
+f x; y  xT m xT y  xT m y:
+23
+Journal of Risk
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+Optimization of conditional value-at-risk
+
+The corresponding function in our CVaR minimization approach is therefore
+F x;  
+
+ 1
+
+ 1
+
+xT m
+
+ p y dy:
+
+y
+
+24
+
+y2R11
+
+The problem to be solved, in accordance with Theorem 2, is that of minimizing F x;  over X  R. This is the minimization of a convex function over a
+convex set.
+To approximate the integral, we generated sample points y1 ; . . . ; yq and
+accordingly replaced F x;  by
+F~ x;  
+
+
+
+1
+q1
+
+q
+X
+xT m
+
+ k1
+
+yk 
+
+ ;
+
+25
+
+an expression that is again convex in x;  and, moreover, piecewise linear.
+Passing from there to the minimization of F~ x;  over X  R, we could have
+converted the calculations to linear programming, but instead, as already
+explained, took the route of nonsmooth optimization. This involved working
+with the subgradient (or generalized gradient) set associated with F~ at x; ,
+which consists of all vectors in R11  R of the form
+8
+>
+k  1
+if xT m yk 
+> 0,
+>
+q
+<
+X
+1
+0; 1 
+ m yk ; 1 with k 2 0; 1 if xT m yk 
+ 0,
+>
+q1
+ k1 k
+>
+:
+T
+if x m yk 
+< 0.
+k  0
+26
+We used the variable metric algorithm developed by Uryasev (1991) for
+nonsmooth optimization problems, taking  0:95, which made the initial
+-VaR and -CVaR values of the portfolio 657 816 and 2 022 060.
+The results for the one-instrument hedging tests, where we followed our
+approach to minimize -CVaR with J  f1g, then with J  f2g, and so forth, are
+presented in Table 8. The optimal hedges we obtained are close to the ones that
+were obtained by Mauser and Rosen (1999) by minimizing -VaR. Because J
+consisted of a single index, x was just one-dimensional in these tests; minimization with respect to x;  was therefore two-dimensional. The algorithm needed
+less than 100 iterations to ®nd 6 correct digits in the performance function and
+variables.
+For testing purposes, we employed the Mathematica version of the variable
+metric code on a 450 MHz Pentium II machine. (The Fortran and Mathematica
+versions of the code are available at http://www.ise.u¯.edu/uryasev.) The
+constraints were accounted for by nonsmooth penalty functions. Each run took
+less than one minute of computer time. The calculation time could be
+signi®cantly improved using the algorithm implemented with Fortran or C;
+however, such computational studies were beyond the scope of this paper.
+After ®nishing with the one-instrument tests, we tried hedging with respect
+Volume 2/Number 3, Spring 2000
+
+35
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+36
+
+R. T. Rockafellar and S. Uryasev
+
+TABLE 8. Best hedge and corresponding VaR and CVaR with minimum
+CVaR approach: one-instrument hedges (  0:95).
+Instrument
+Mitsubishi EC 6mo 860
+Mitsubishi Corp
+Mitsubishi Cjul29 800
+Mitsubishi Csep30 836
+Mitsubishi Psep30 800
+Komatsu Ltd
+Komatsu Cjul29 900
+Komatsu Cjun2 670
+Komatsu Cjun2 760
+Komatsu Paug31 760
+Komatsu Paug31 830
+
+Best hedge
+
+VaR
+
+CVaR
+
+7337.53
+926.073
+18978.6
+4381.22
+43637.1
+196.167
+124939
+19964.9
+4745.20
+31426.3
+19356.3
+
+205927
+1180000
+1170000
+1150000
+1150000
+1180000
+1200000
+1220000
+1200000
+1120000
+1150000
+
+1183040
+551892
+553696
+549022
+542168
+551892
+593078
+385698
+363556
+538662
+536500
+
+the last 4 of the 11 instruments, simultaneously. The optimal hedge we
+determined in this way is indicated in Table 9. The optimization did not change
+the positions of Komatsu Cjun2 670 and Komatsu Paug31 760, but the
+positions of Komatsu Cjun2 760 and Komatsu Paug31 830 changed not only
+in magnitude but also in sign. In comparison with one-instrument hedging, we
+observe that multiple-instrument hedging considerably improved the VaR and
+CVaR. In this case, the ®nal -VaR equals 1 400 000 and the ®nal -CVaR
+equals 37 334.6, which is lower than best one-dimension hedge with
+VaR  1 200 000 and
+CVaR  363 556 (see line 9 of Table 8). Six
+correct digits in the performance function and the positions were obtained after
+400±800 iterations of the variable metric algorithm by Uryasev (1991), depending upon the initial parameters. It took about 4±8 minutes with a Mathematica
+version of the variable metric code on a 450 MHz Pentium II.
+In contrast to the application in the preceding section, where we used
+linear programming techniques, the dimension of the nonsmooth optimization
+TABLE 9. Initial positions and best hedge with minimum
+CVaR approach: simultaneous optimization with respect
+to four instruments (  0:95; VaR of best hedge equals
+1 400 000, whereas CVaR equals 37334.6).
+Instrument
+Komatsu Cjun2 670
+Komatsu Cjun2 760
+Komatsu Paug31 760
+Komatsu Paug31 830
+
+Position in
+portfolio
+
+Best hedge
+
+22500
+7500
+10000
+10000
+
+22500
+527
+10000
+10000
+Journal of Risk
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+Optimization of conditional value-at-risk
+
+problem does not change with an increase in the number of scenarios. This may
+give some computational advantages for problems with a very large number of
+scenarios.
+This example clearly shows, by the way, the superiority of CVaR over VaR in
+capturing risk. Portfolios are displayed that have positive -CVaR but negative
+-VaR for the same level of  0:95. The portfolio corresponding to the ®rst
+line of Table 8, for instance, has -VaR equal to 205 927 but -CVaR equal to
+1 183 040. A negative loss is, of course, a gain.1 The portfolio in question will
+thus result with probability 0.95 in a gain of 205 927 or more. That ®gure does
+not reveal, however, how serious the outcome might be the rest of the time. The
+CVaR ®gure says in fact that, in the cases where the gain of at least 205 927 is
+not realized, there is, on the average, a loss of 1 183 040.
+
+5. CONCLUDING REMARKS
+The paper considered a new approach for simultaneous calculation of VaR and
+optimization of CVaR for a broad class of problems. We showed that CVaR can
+be eciently minimized using linear programming and nonsmooth optimization
+techniques. Although, formally, the method minimizes only CVaR, our numerical experiments indicate that it also lowers VaR because CVaR > VaR.
+We demonstrated with two examples that the approach provides valid results.
+These examples have relatively low dimensions and are oered here for
+illustrative purposes. Numerical experiments have been conducted for larger
+problems, but those results will be presented elsewhere in a comparison of
+numerical aspects of various linear programming techniques for portfolio
+optimization.
+There is room for much improvement and re®nement of the suggested
+approach. For instance, the assumption that there is a joint density of
+instrument returns can be relaxed. Furthermore, extensions can be made to
+optimization problems with value-at-risk constraints. Linear programming and
+nonsmooth optimization algorithms that utilize the special structure of the
+minimum CVaR approach can be developed. Additional research needs to be
+conducted on various theoretical and numerical aspects of the methodology.
+
+APPENDIX
+Central to establishing Theorems 1 and 2 is the following fact about the
+behavior with respect to of the integral expression in the de®nition (4) of
+F x; . We rely here on our assumption that x;  is continuous with respect
+to , which is equivalent to knowing that, regardless of the choice of x, the set
+1
+VaR may be negative because it is de®ned relative to zero, but not relative to the mean as in VaR
+based on the standard deviation.
+
+Volume 2/Number 3, Spring 2000
+
+37
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+38
+
+R. T. Rockafellar and S. Uryasev
+
+of y with f x; y 
+
+has probability zero, i.e.,
+p y dy  0:
+
+27
+
+f x;y
+
+
+Lemma 1 With x ®xed, let G   y2Rm g ; yp y dy, where g ; y 
+f x; y
+ . Then G is a convex continuously dierentiable function with
+derivative
+G0   x;  1:
+28
+Proof. This lemma follows from Proposition 2.1 of Shapiro and Wardi
+(1994). &
+Proof of Theorem 1. In view of the de®ning formula for F x;  in (4), it is
+immediate from Lemma 1 that F x;  is convex and continuously dierentiable
+with derivative
+@
+F x;   1  1
+@
+
+ 1
+
+x; 
+
+ 1
+
+1  1
+
+x; 
+
+:
+
+30
+
+Therefore the values of that furnish the minimum of F x; , i.e., the ones
+comprising the set A x in (6), are precisely those for which x; 
+ 0.
+They form a nonempty closed interval, inasmuch as x;  is continuous and
+nondecreasing in with limit 1 as ! 1 and limit 0 as ! 1. This further
+yields the validity of the -VaR formula in (7). In particular, then, we have
+min F x;   F x;
+2R
+
+x 
+
+x  1
+
+ 1
+
+x p y dy:
+
+f x; y
+y2Rm
+
+But the integral here equals
+f x; y
+f x;y>
+
+x
+
+x p y dy
+
+
+f x; y p y dy
+
+x
+
+p y dy;
+
+f x;y>
+
+x
+
+f x;y>
+
+x
+
+where the ®rst integral
+on the right is by de®nition 1
+
+x by virtue of (27). Moreover,
+x;
+is 1
+x;
+min F x;  
+2R
+
+x  1
+
+This con®rms the formula for
+Theorem 1. &
+
+ 1 1
+
+ x
+
+
+ x and the second
+x  . Thus,
+x 1
+
+   x:
+
+-CVaR in (5) and completes the proof of
+
+Proof of Theorem 2. The initial claims, surrounding (10), are elementary consequences of the formula for  x in Theorem 1 and the fact that the
+minimization of F x;  with respect to x;  2 X  R can be carried out
+Journal of Risk
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+Optimization of conditional value-at-risk
+
+by ®rst minimizing over 2 R for ®xed x and then minimizing the result
+over x 2 X.
+Justi®cation of the convexity claim starts with the observation that F x; 
+is convex with respect to x;  whenever the integrand f x; y
+ in the
+formula (4) for F x;  is itself convex with respect to x; . For each y, this
+integrand is the composition of the function x;  7! f x; y
+with the
+nondecreasing convex function t 7! t , so, by the rules given in Rockafellar
+(1970, Theorem 5.1), it is convex as long as the function x;  7! f x; y
+is
+convex. The latter is true when f x; y is convex with respect to x. The convexity
+of the function  x follows from the fact that minimizing an extended-realvalued convex function of two vector variables (with in®nity representing
+constraints) with respect to one of these variables results in a convex function
+of the remaining variable (Rockafellar 1970, pp. 38±39). &
+
+Acknowledgements
+We are grateful to Carlos Testuri, who conducted numerical experiments for the
+example on comparison of the minimum CVaR and the minimum variance
+approaches for the portfolio optimization. We also want to thank the research
+group of Algorithmics Inc. for the fruitful discussions and providing data for
+conducting numerical experiments with the Nikkei portfolio of options.
+
+REFERENCES
+Andersson, F., and Uryasev, S. (1999). Credit risk optimization with conditional valueat-risk criterion. Research Report 99-9, ISE Department, University of Florida.
+Artzner, P., Delbaen F., Eber, J. M., and Heath, D. (1997). Thinking coherently. Risk,
+10(11), 68±71.
+Artzner, P., Delbaen F., Eber, J. M., and Heath, D. (1999). Coherent measures of risk.
+Mathematical Finance, 9, 203±228.
+Beder, T. S. (1995). VAR: Seductive but dangerous. Financial Analysts Journal, 51(5),
+12±24.
+Birge, J. R. (1995). Quasi±Monte Carlo methods approaches to option pricing. Technical
+Report 94-19, Department of Industrial and Operations Engineering, University of
+Michigan.
+Birge, J. R., and Louveaux, F. (1997). Introduction to Stochastic Programming. Springer.
+Boyle, P. P., Broadie, M., and Glasserman, P. (1997). Monte Carlo methods for security
+pricing. Journal of Economic Dynamics and Control, 21(8/9), 1267±1321.
+Bucay, N., and Rosen, D. (1999). Credit risk of an international bond portfolio: A case
+study. ALGO Research Quarterly, 2(1), 9±29.
+Volume 2/Number 3, Spring 2000
+
+39
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+40
+
+R. T. Rockafellar and S. Uryasev
+
+Dembo, R. S. (1995). Optimal portfolio replication. Algorithmics Technical Paper Series,
+95±01.
+Dembo, R. S. and King, A. J. (1992). Tracking models and the optimal regret
+distribution in asset allocation. Applied Stochastic Models and Data Analysis, 8,
+151±157.
+Due, D., and Pan, J. (1997). An overview of value-at-risk. Journal of Derivatives, 4,
+7±49.
+Embrechts, P., Kluppelberg, S., and Mikosch, T. (1997). Extremal Events in Finance and
+Insurance. Springer.
+Embrechts, P., Resnick, S. I., and Samorodnitsky, G. (1999). Extreme value theory as a
+risk management tool. North American Actuarial Journal, 3(2), 32±41.
+Ermoliev, Yu., and Wets, R. J.-B. (eds.) (1988). Numerical Techniques for Stochastic
+Optimization, Springer Series in Computational Mathematics, Vol. 10. Springer.
+Jorion, P. (1996). Value at Risk: A New Benchmark for Measuring Derivatives Risk. Irwin
+Professional Publishing.
+JP Morgan (1996). RiskMetrics Technical Manual, 4th edn. JP Morgan, New York.
+Kall, P., and Wallace, S.W. (1995). Stochastic Programming. Wiley.
+Kast, R., Luciano, E., and Peccati, L. (1998). VaR and Optimization, Proceedings of the
+2nd International Workshop on Preferences and Decisions, Trento, 1±3 July 1998.
+Kan, Y. S., and Kibzun, A. I. (1996). Stochastic Programming Problems with Probability
+and Quantile Functions. Wiley.
+Konno, H., and Yamazaki, H. (1991). Mean absolute deviation portfolio optimization
+model and its application to Tokyo Stock Market. Management Science, 37, 519±531.
+Kreinin, A., Merkoulovitch, L., Rosen, D., and Michael, Z. (1998). Measuring portfolio
+risk using quasi Monte Carlo methods. ALGO Research Quarterly, 1(1), 17±25.
+Litterman, R. (1997a). Hot spots and hedges, Part I. Risk. 10(3), 42±45.
+Litterman, R. (1997b). Hot spots and hedges, Part II. Risk, 10(5), 38±42.
+Lucas, A., and Klaassen, P. (1998). Extreme returns, downside risk, and optimal asset
+allocation. Journal of Portfolio Management, 25(1), 71±79.
+McKay, R., and Keefer, T. E. (1996). VaR is a dangerous technique. Corporate Finance,
+Searching for Systems Integration Supplement, September.
+Markowitz, H. M. (1952). Portfolio selection. Journal of Finance, 7(1), 77±91.
+Mausser, H., and Rosen, D. (1999). Beyond VaR: From measuring risk to managing
+risk. ALGO Research Quarterly, 1(2), 5±20.
+P¯ug, G. Ch. (1996). Optimization of Stochastic Models: The Interface Between
+Simulation and Optimization. Kluwer.
+P¯ug, G. Ch. (2000). Some remarks on the value-at-risk and the conditional value-atrisk. In: Probabilistic Constrained Optimization: Methodology and Applications (ed.
+S. Uryasev). Kluwer.
+Prekopa, A. (1995). Stochastic Programming. Kluwer.
+Journal of Risk
+
+Implemented in Portfolio Safeguard by AOrDa.com
+
+Optimization of conditional value-at-risk
+
+Press, W. H., Teukolsky, S. A, Vetterling, W. T., and Flannery, B. P. (1992). Numerical
+Recipes in C. Cambridge University Press.
+Pritsker, M. (1997). Evaluating value at risk methodologies. Journal of Financial Services
+Research, 12(2/3), 201±242.
+Rockafellar, R. T. (1970). Convex Analysis, Princeton Mathematics, Vol. 28. Princeton
+University Press.
+Shapiro, A. and Wardi, Y. (1994). Nondierentiability of the steady-state function in
+discrete event dynamic systems. IEEE Transactions on Automatic Control, 39,
+1707±1711.
+Shor, N. Z. (1985). Minimization Methods for Non-Dierentiable Functions. Springer.
+Simons, K. (1996). Value-at-risk new approaches to risk management. New England
+Economic Review, Sept/Oct, 3±13.
+Stambaugh, F. (1996). Risk and value-at-risk. European Management Journal, 14(6),
+612±621.
+Uryasev, S. (1991). New variable-metric algorithms for nondierential optimization
+problems. Journal of Optimization Theory and Applications, 71(2), 359±388.
+Uryasev, S. (1995). Derivatives of probability functions and some applications. Annals of
+Operations Research, 56, 287±311.
+Uryasev, S. (2000). Conditional value-at-risk: Optimization algorithms and applications.
+Financial Engineering News, 14, February, 1±5.
+Young, M.R. (1998). A minimax portfolio selection rule with linear programming
+solution. Management Science, 44(5), 673±683.
+Zenios, S. A. (ed.) (1996). Financial Optimization. Cambridge University Press.
+Ziemba, W. T., and Mulvey, J. M. (eds.) (1998). Worldwide Asset and Liability Modeling.
+Cambridge University Press.
+
+Volume 2/Number 3, Spring 2000
+
+41
+
+

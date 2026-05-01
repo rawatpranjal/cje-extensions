@@ -1,0 +1,575 @@
+## TAIL CONDITIONAL EXPECTATIONS FOR EXPONENTIAL DISPERSION MODELS
+
+BY
+
+## ZINOVIY LANDSMAN AND EMILIANO A. VALDEZ
+
+## ABSTRACT
+
+There is a growing interest in the use of the tail conditional expectation as a measure of risk. For an institution faced with a random loss, the tail conditional expectation represents the conditional average amount of loss that can be incurred in a fixed period, given that the loss exceeds a specified value. This value is typically based on the quantile of the loss distribution, the so-called value-at-risk. The tail conditional expectation can therefore provide a measure of the amount of capital needed due to exposure to loss. This paper examines this  risk  measure for 'exponential dispersion models', a wide and popular class of distributions to actuaries which, on one hand, generalizes the Normal and shares some of its many important properties, but on the other hand, contains many distributions of nonnegative random variables like the Gamma and the Inverse Gaussian.
+
+## KEYWORDS
+
+Tail value-at-risk, Tail conditional expectations, Exponential dispersion family.
+
+## 1. INTRODUCTION
+
+Insurance companies set aside amounts of capital from which it can draw from in the event that premium revenues become insufficient to pay out claims. Determining these amounts needed is not an obvious exercise. First, it must be able to determine with accuracy the probability distribution of the losses that it is facing. Next, it has to decide on the optimal risk measure that can be used to determine the amount of loss to cover with a high degree of confidence. This risk measure which may be denoted for instance by ‡ , is technically defined to be a mapping from the space of loss random variables L to the real line R . In effect, we have ‡ : L ∋ X → ‡ ( X ) ∈ R . Artzner, Delbean, Eber, and Heath (1999) developed the axiomatic treatment for a 'coherent' measure of risk and in that seminal paper, the authors claimed that a risk measure must share four axioms: subadditivity, monotonicity, positive homogeneity, and translation invariance. See their paper for definitions of these axioms. The tail conditional expectation of a continuous loss random variable X shares these axioms.
+
+ASTIN BULLETIN, Vol. 35, No. 1, 2005, pp. 189-209
+
+Assume for the moment that an insurance company faces the risk of losing an amount X for some fixed period of time. This generally refers to the total claims for the insurance company. We denote its distribution function by FX ( x ) = Prob( X ≤ x ) and its tail function by F ' X ( x ) = Prob( X &gt; x ). Note that although our setting applies to insurance companies, it is equally applicable for any institution confronted with any risky business. It may even refer to the loss faced by an investment portfolio. We define the tail conditional expectation of X as
+
+<!-- formula-not-decoded -->
+
+and we can interpret this risk measure as the mean of worse possible losses. It gives an average amount of the tail of the distribution. This tail is usually based on the q -th quantile, xq , of the loss distribution, which is defined for 0 &lt; q &lt;1 as
+
+<!-- formula-not-decoded -->
+
+For random variables with strictly monotonic distribution functions, it is uniquely defined as xq = FX -1 ( q ) and this happens, for example, for a random variable with continuous distribution function and nonnegative support. The formula used to evaluate this tail conditional expectation is
+
+<!-- formula-not-decoded -->
+
+provided that F ' X ( xq ) &gt; 0, where the integral is the Lebesgue-Stieltjes integral. Tail conditional expectations for the univariate and multivariate Normal family  have been well-developed in Panjer (2002). Landsman and Valdez (2003) extended these results for the class of elliptical distributions which contain the familiar Normal distributions. These results have been limited in scope because these authors considered only symmetric distributions. In this paper, we develop formulas for tail conditional expectations of loss random variables belonging to the class of exponential dispersion models. This class of distributions has served as 'error distributions' for generalized linear models in the sense developed by Nelder and Wedderburn (1972). This includes many well-known discrete distributions like Poisson and Binomial as well as continuous distributions like Normal, Gamma and Inverse Gaussian, which are, except for Normal, not symmetric. Several of these distributions have nonnegative support and provide excellent fit for modelling insurance claims or losses. It is not therefore surprising to find that they are becoming popular to actuaries. For example, credibility formulas for the class of exponential dispersion models preserve the property of a predictive mean; see Kaas, Dannenburg and Goovaerts (1997), Nelder and Verrall (1997), Landsman and Makov (1998) and Landsman (2002).
+
+The rest of this paper is organized as follows. Section 2 recalls definition and main properties of the class of exponential dispersion models. We consider here both the reproductive and the additive forms of exponential dispersion models. The distinction is necessary as there are exponential dispersion model distributions that can only be expressed in one of the two forms. In Section 3,
+
+we derive the main formula for computing tail conditional expectations for exponential dispersion models. In particular, we find that we can express the TCE in  terms of a so-called generalized hazard form later defined in Section 3. Section 4 considers some familiar absolutely continuous distributions belonging to this class, such as the Normal, Gamma, and the Inverse Gaussian. In Section 5, we show that the 'lack of memory' property of the Exponential distribution is equivalent to a characteristic property expressed in terms of the tail  conditional expectation. The resulting expression provides for a unique representation of the TCE for exponential distributions. Section 6 provides some familiar discrete distributions belonging to the exponential dispersion family, and derive TCE formulas for these distributions. Section 7 briefly describes the computation formula for either the sum or the weighted sum of random variables within the class. We conclude this paper in Section 8.
+
+## 2. DEFINITION AND PROPERTIES OF EXPONENTIAL DISPERSION MODELS
+
+The early development of exponential dispersion models is often attributed to Tweedie (1947) although a more thorough and systematic investigation of its statistical properties was done by Jorgensen (1986, 1987). This class of models together with their properties is extensively discussed in Jorgensen (1997). For the properties discussed below and for an in-depth investigation of these properties, we ask the reader to consult this excellent source of reference on dispersion models.
+
+Let Q ( x ) be some s -finite measure on the real line R . Define the log Laplace transformation of this measure by
+
+<!-- formula-not-decoded -->
+
+and define the parameter set
+
+<!-- formula-not-decoded -->
+
+The family of probability measures
+
+<!-- formula-not-decoded -->
+
+defines the Natural Exponential Family (NEF), where k ( q ) is called the cumulant. NEF, being a one-parameter model, generates two-parameter models in the following manner. Let L be a subset of R + = (0, ∞ ) such that
+
+<!-- formula-not-decoded -->
+
+for some measure Q l * . It is clear that L is not empty, because 1 ∈ L (when l = 1, Q l * = Q ). From (5) we get the family of probability measures
+
+<!-- formula-not-decoded -->
+
+which clearly contains two parameters: the parameter q which is named the canonical parameter, and the parameter l which is called the index parameter. This model is called the additive Exponential Dispersion family (EDF). The random variable Y is said to belong to the additive Exponential Dispersion family (EDF) if its probability measure can be represented in the form (6) and we write Y + ED * ( q , l ).
+
+The transformation X = Y / l reduces to the so-called reproductive EDF which has the form
+
+<!-- formula-not-decoded -->
+
+and we shall denote by X + ED ( q , l ). For further details, please see Jorgensen (1997).
+
+If the measure Q l in (7) is absolutely continuous with respect to a Lebesgue measure, then the density of X has the form
+
+<!-- formula-not-decoded -->
+
+The same can be said about the additive form of EDF, in which case, Y has density of the form
+
+<!-- formula-not-decoded -->
+
+We now briefly examine some basic and important properties of the class of exponential dispersion models.
+
+Consider the reproductive form of EDF. We note that its cumulant generating function can be derived as follows:
+
+<!-- formula-not-decoded -->
+
+It follows that its moment generating function can be written as
+
+<!-- formula-not-decoded -->
+
+From these generating functions, it becomes straightforward to derive the mean and the variance.
+
+By letting the index parameter l =1, we get a one-parameter family which reduces to the NEF, as already clearly described above. As pointed out, NEF
+
+generates EDF. An important subclass of NEF is called regular if the parameter set Q , defined in (4), is an open set [see Jorgensen (1997), Section 3.1]. The regular EDF has several interesting properties. In particular, the cumulant, k ( q ), is a differentiable function of q , and one can write that the mean is
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+Moreover, the function t ( q ) = k ′ ( q )  is  a  one-to-one and increasing mapping from Q → W , where W ⊂ R is the set containing all possible values of m , so that the function
+
+<!-- formula-not-decoded -->
+
+is clearly well-defined. Notice that the above-mentioned interesting properties for the mean and the variance hold even for a weaker condition on NEF which is
+
+<!-- formula-not-decoded -->
+
+where S is the support of the distribution and int( Q ) is the set of all internal points of Q . Such NEF satisfying this condition is said to be steep [see details in Brown (1986), Chapter 3].
+
+By defining the unit variance function
+
+<!-- formula-not-decoded -->
+
+the variance in (12) can be expressed as
+
+<!-- formula-not-decoded -->
+
+where s 2 = l -1 is called the dispersion parameter. This reparameterization leads us to write X + ED ( m , s 2 ) in terms of the mean and dispersion parameters.
+
+Suppose X has an additive form, i.e. dP * q , l = e [ q x -lk ( q )] dQ l * ( x ) as given in (6). Then
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+It immediately follows that for the additive version of the EDF , we have the mean
+
+<!-- formula-not-decoded -->
+
+and the variance is and
+
+and the variance with again
+
+where s 2 = 1/ l and
+
+<!-- formula-not-decoded -->
+
+where the unit variance function is given by
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+We will similarly write X + ED * ( m , s 2 ) whenever X is represented in the additive EDF form. Provided no confusion arises, we will sometimes write ED ( m , l ) or ED ( q , l )  or ED ( q , s 2 )  for  the  family  of reproductive exponential dispersion models. Similar notations can be used for the additive form, except that a superscript  * is used to emphasize the form.
+
+The EDF has been established as a rich model with wide potential applications. It extends the natural exponential family (NEF) and includes many standard continuous and discrete distribution models such as Normal, Gamma, Inverse Gaussian, Poisson, Binomial and the Negative Binomial. We consider these members of the EDF in a later section.
+
+## 3. TCE FORMULA FOR THE EXPONENTIAL DISPERSION FAMILY
+
+Consider the loss random variable X belonging to the family of exponential dispersion models in either the reproductive or the additive form. Let q be such that 0 &lt; q &lt;1 and let xq denote the q -th quantile of the distribution of X . To keep the notation simple, we denote the tail probability function as F ' (· | q , s 2 ) emphasizing the parameters q and s 2 .
+
+Theorem 1. Suppose that the NEF which generates the EDF is regular, or at least steep. Then we have the following results:
+
+- For X + ED ( m , l ) , the reproductive form of EDF, the tail conditional expectation of X is
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+- For X + ED * ( m , l ) , the additive form of EDF, the tail conditional expectation of X is
+
+<!-- formula-not-decoded -->
+
+Proof. To prove (17), first note that because EDF is regular or steep, the cumulant function k ( q ) is a differentiable function and one can therefore differentiate in q under the integral sign the tail function
+
+<!-- formula-not-decoded -->
+
+We can then write
+
+<!-- formula-not-decoded -->
+
+after noting that the mean is k ′ ( q ). After a re-arrangement of the terms, the result  should immediately follow. Suppose now X + ED * ( m , s 2 ), the additive case. It can similarly be proven that
+
+<!-- formula-not-decoded -->
+
+with m as defined in (15). A re-arrangement will lead us to the desired result.
+
+¬
+
+The only difference with (19) and (17) is the additional factor of s 2 or equivalently, 1/ l .
+
+Let us notice that the function
+
+<!-- formula-not-decoded -->
+
+can be considered as a generalization of the hazard rate. In fact, if q is a location parameter, i.e.
+
+<!-- formula-not-decoded -->
+
+for some distribution function F having the density f ( x ) (for example, Normal distribution), then
+
+<!-- formula-not-decoded -->
+
+is exactly hazard rate. Clearly, the constant h in (18) is the generalized hazard rate evaluated at xq , i.e. h = h ( xq ).
+
+## 4. EXAMPLES - ABSOLUTELY CONTINUOUS
+
+We now consider some examples of distributions belonging to the class of exponential dispersion models. In particular, we give as examples the familiar Normal (an example of a symmetric distribution), Gamma and Inverse Gaussian (examples of nonsymmetric distributions with nonnegative support), for the absolutely continuous case, and Poisson, Binomial, and Negative Binomial for the discrete case. For other examples, we suggest the reader to consult Jorgensen (1997).
+
+Example 4.1. Normal . Let X + N ( m , s 2 ) be Normal with mean m and variance s 2 . Then we can express its density as
+
+<!-- formula-not-decoded -->
+
+Thus, we see that it belongs to the reproductive ED family by choosing q = m , l = 1/ s 2 , k ( q ) = 2 1 q 2 and q l ( x ) = ( p s 2 ) -1 exp(x 2 / s 2 ). Hence, the unit variance function for Normal distribution is
+
+<!-- formula-not-decoded -->
+
+Now denoting by f ( z ) = ( p 2 ) -1 exp (2 1 z 2 ) and F ( z ) = 3 -f z # ( x ) dx , respectively, the density and distribution functions of a standard Normal, we see that
+
+<!-- formula-not-decoded -->
+
+Reparameterizing back to m and s 2 , we find from (17) that the TCE for the Normal distribution gives
+
+<!-- formula-not-decoded -->
+
+This gives the same formula as that derived in Panjer (2002) and Landsman and Valdez (2003).
+
+Example 4.2. Gamma. Let X + Ga ( 𝛂 , b ) be Gamma distributed with parameters 𝛂 and b . We express its density as follows:
+
+<!-- formula-not-decoded -->
+
+With re-arrangement of the terms we get
+
+<!-- formula-not-decoded -->
+
+Thus, we see that it belongs to the additive ED family by choosing q = -b , l = 𝛂 , k ( q ) = - log(q ) and q l ( x ) = x 𝛂 -1 ( G ( 𝛂 )) -1 . Because t ( q ) = k ′ ( q ) = -1/ q , the unit variance function for the Gamma distribution is
+
+<!-- formula-not-decoded -->
+
+Note that both the Exponential and the Chi-Square distributions are special cases of the Gamma distribution. By choosing 𝛂 = 1 in (23), we have the Exponential and by choosing 𝛂 = n /2 and b = 1/2, we end up with the Chi-Square distribution with n degrees of freedom. From the parameterization
+
+<!-- formula-not-decoded -->
+
+the Gamma density in (23) becomes
+
+<!-- formula-not-decoded -->
+
+here emphasizing the parameters q and l . Therefore, we have
+
+<!-- formula-not-decoded -->
+
+and
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+Since m = -l / q , we have the TCE formula for a Gamma distribution:
+
+<!-- formula-not-decoded -->
+
+after reparameterizing back to the original parameters. In the special case where 𝛂 = 1, we have the Exponential distribution and
+
+<!-- formula-not-decoded -->
+
+which interestingly represents the lack of memory, a property well-known about the Exponential distribution.
+
+Example 4.3. Inverse Gaussian . Let X + IG ( l , m ) be an Inverse Gaussian with parameters l and m . The density for an Inverse Gaussian is normally written as
+
+<!-- formula-not-decoded -->
+
+Clearly, we can write this density as
+
+<!-- formula-not-decoded -->
+
+See Jorgensen (1997) for this form of the density. Thus, we see that it belongs to the reproductive ED family by choosing q = -1/(2 m 2 ), k ( q ) = -1/ m = - (-2 q ) 1/2
+
+and q l ( x ) = x p l 2 3 exp (x l 2 ). Now observing that the m parameter can be expressed as
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+and so the variance function is then
+
+<!-- formula-not-decoded -->
+
+It can be shown for the Inverse Gaussian that its distribution function can be expressed as
+
+<!-- formula-not-decoded -->
+
+where F (·) denotes the cdf of a standard Normal. See, for example, Jorgensen (1997), p. 137 and Klugman, et al. (1998). Thus, we have
+
+<!-- formula-not-decoded -->
+
+Denoting by z * q = / x x l l q q m 1 -so that z * q - 2 / / x x x l l l q q q m 1 = --, we have
+
+<!-- formula-not-decoded -->
+
+Using the reproductive version of Theorem 1, we have
+
+<!-- formula-not-decoded -->
+
+Let us notice that from (21), (24) and (27), the Normal, Gamma, and the Inverse Gaussian distributions have unit variance function of the form
+
+<!-- formula-not-decoded -->
+
+for p =0,2,3, respectively. Members of the EDF with variance function of the form in (28), where p ∈ R , are sometimes called Tweedie models. In Figure 1, we compare the resulting tail conditional expectations of these three members of the Tweedie family. The parameters in each distribution have been selected so that they all have mean E ( X ) = 10 and variance Var ( X ) = 100. We can see from the graph that starting from some level q , larger p in the Tweedie model leads to larger TCE.
+
+## 5. A CHARACTERIZATION PROPERTY OF THE EXPONENTIAL DISTRIBUTION
+
+In the previous section, we have shown that for the exponential distribution, the tail conditional expectation can be expressed as
+
+<!-- formula-not-decoded -->
+
+FIGURE 1: Tail Conditional Expectations of Normal, Gamma, and Inverse Gaussian.
+
+<!-- image -->
+
+and we associated this with the 'lack of memory' property of the exponential distribution. In this section, we show that (29) is indeed equivalent to this 'lack of memory' property because (29) holds only for exponential distribution. See Kagan, Linnik, and Rao (1973) for the importance of characterization properties in Mathematical Statistics. To evaluate this characterization problem, we need the following lemma which gives a convenient representation of the TCE.
+
+Lemma 1. The existence of the expectation of X guarantees the following representation of the TCE:
+
+<!-- formula-not-decoded -->
+
+provided that F ' X ( xq ) &gt; 0.
+
+Proof. Because the expectation of X exists and assuming F ' X ( xq ) &gt; 0, we have
+
+<!-- formula-not-decoded -->
+
+Thus, the result follows.
+
+¬
+
+Theorem 2. Suppose FX ( x ) is a continuous distribution function in the internal points of its support (a,b) with either finite or infinite endpoints. Then the representation
+
+<!-- formula-not-decoded -->
+
+where 𝛂 ! 0 is some constant not depending on x q , holds if and only if X has a shifted exponential distribution and in which case, we have
+
+<!-- formula-not-decoded -->
+
+Proof. First notice that condition (31) automatically requires that b , the right end of support of distribution FX ( x ), should equal b = ∞ . In fact, if b &lt; ∞ , by the definition of quantile in (2), there exists 0 &lt; q 0 ≤ 1 such that
+
+<!-- formula-not-decoded -->
+
+Then, strictly speaking, TCEX ( xq ) is undefined for such q . Of course, one can always naturally extend the definition for q ≥ q 0 as
+
+<!-- formula-not-decoded -->
+
+if q 0 &lt;1. In that case we would have 𝛂 = 0. Thus, b = ∞ . Now define U ( z ) = X F z 3 # ( x ) dx . As F ' X ( x ) is continuous, U ( z ) is differentiable. We can then write, using Lemma 1, that for z ∈ ( a , ∞ ), we have
+
+<!-- formula-not-decoded -->
+
+Now using the representation in (31), we then have
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+for any z ∈ ( a , ∞ ). This simple differential equation leads to the only solution of the form
+
+<!-- formula-not-decoded -->
+
+for some constant k ! 0. Since
+
+<!-- formula-not-decoded -->
+
+it immediately follows that b &gt;0. Based on the restriction on the left end of the support, FX ( a - 0) = 0, and (33) follows that a &gt;-∞ , that is, a is finite and so we have
+
+<!-- formula-not-decoded -->
+
+<!-- formula-not-decoded -->
+
+which implies X has a shifted exponential distribution. Equation (32) automatically follows.
+
+Now to complete the proof, consider the case where q 0 = 1 and b &lt; ∞ . Then one defines
+
+<!-- formula-not-decoded -->
+
+or equivalently,
+
+This gives us
+
+and F ' X ( b ) = 0. This then contradicts with (33), which holds for z ∈ ( a , b ].
+
+¬
+
+Of course among nonnegative random variables with support (0, ∞ ), the only distribution applicable to the result in the theorem above is the canonical exponential distribution with
+
+<!-- formula-not-decoded -->
+
+## 6. EXAMPLES - DISCRETE
+
+In this section, we consider some examples of discrete distributions belonging to the class of exponential dispersion models.
+
+Example 6.1. Poisson . Let X + Poisson( m ) be Poisson distributed with mean parameter m . We express its probability function as follows:
+
+<!-- formula-not-decoded -->
+
+A re-arrangement of the terms gives us
+
+<!-- formula-not-decoded -->
+
+Thus, we see that it belongs to the additive ED family by choosing q = log m , l = 1, k ( q ) = e q and q l ( x ) = 1/ x !. Therefore, we have
+
+<!-- formula-not-decoded -->
+
+and
+
+<!-- formula-not-decoded -->
+
+Since m = e q , we have the TCE formula for a Poisson distribution:
+
+<!-- formula-not-decoded -->
+
+where F ' ( xq ) = F ' ( xq | q , 1). Notice also that for the Poisson distribution, m = Var ( X ), so we can also write
+
+<!-- formula-not-decoded -->
+
+In that sense, the Poisson distribution is analogue of Normal for a discrete case.
+
+Example 6.2. Binomial . Let X + binomial( p , n ) be binomial with parameters p and n . Then we can express its probability function as
+
+<!-- formula-not-decoded -->
+
+By defining q = log[ p / (1 p )], we can write this as
+
+<!-- formula-not-decoded -->
+
+for x = 0,1,..., n . Thus, we see that it belongs to the additive ED family with l = n , k ( q ) = log (1 + e q ) and q l ( x ) = n x c m . Notice that we can actually write q l ( x ) = ! n x n x x n G G 1 1 = + -+ c ] ] m g g . We therefore see that for xq &lt; n ,
+
+<!-- formula-not-decoded -->
+
+Noting that m = np for the binomial and reparameterizing back to m and s 2 , we find from (19) that the TCE for the binomial distribution gives
+
+<!-- formula-not-decoded -->
+
+Example 6.3. Negative Binomial. Let X + NB ( p , 𝛂 )  belong to the Negative Binomial family with parameters p and 𝛂 . Its probability function has the form
+
+<!-- formula-not-decoded -->
+
+A re-arrangement of the terms leads us to
+
+<!-- formula-not-decoded -->
+
+By choosing q = log(1 p ), l = 𝛂 , k ( q ) = - log(1 e q ) and q l ( x ) = ! 𝛂 𝛂 x x G G + ] ] g g , we see that it belongs to the additive ED family. We therefore see that
+
+<!-- formula-not-decoded -->
+
+Note that for a NB ( p , 𝛂 ) random variable, its mean is m = 𝛂 (1 p )/ p so that reparameterizing back to m and s 2 , we find from (19)
+
+<!-- formula-not-decoded -->
+
+Comparing the TCEX ( xq )  for  Negative  Binomial with Gamma as shown in (25), we may conclude that the Negative Binomial is the discrete analogue of Gamma.
+
+## 7. TAIL CONDITIONAL EXPECTATION FOR SUMS
+
+Consider the case where we have n independent random variables X 1 , X 2 , ..., Xn coming from the same EDF family having a common parameter q but different l ' s . Consider first the additive case, that is, Xk + ED * ( m k , l k ) for k =1,2,..., n . The density is thus
+
+<!-- formula-not-decoded -->
+
+Denote the sum by
+
+<!-- formula-not-decoded -->
+
+and denote by TCEX ( xq | m , l ) the tail conditional expectation of X belonging to the EDF family either in the reproductive or additive form with mean parameter m and index parameter l .
+
+Theorem 3. Suppose X 1 , X 2 , ..., Xn are n independent random variables from the additive family (38). Then the tail conditional expectation of the sum is
+
+<!-- formula-not-decoded -->
+
+where m S = k = 1 m k n ! , l S = k = 1 l k n ! , and s q is the q -th quantile of the distribution of S.
+
+Proof. By independence and using (14), the moment generating function of the sum can be expressed as
+
+<!-- formula-not-decoded -->
+
+where we have expressed l S = k = 1 l k n ! . Thus, we see that the sum also belongs to the additive Exponential Dispersion family with
+
+<!-- formula-not-decoded -->
+
+(This is similarly mentioned in Jorgensen (1997), Section 3.2, as a convolution formula.) It becomes straightforward from Theorem 1 to prove that the tail conditional expectation for the sum can be expressed as
+
+<!-- formula-not-decoded -->
+
+where the generalized hazard function , log h F s q q l q S 2 2 = \_ i and s q is the q -th quantile of the distribution of S . ¬
+
+To illustrate, consider the Gamma distribution case in Example (4.2). Let X 1 ,..., Xn be n independent random variables such that
+
+<!-- formula-not-decoded -->
+
+From (25) and Theorem 3, taking into account l k = 𝛂 k , we see that the TCE for the sum is of the form
+
+<!-- formula-not-decoded -->
+
+where 𝛂 S = k = 1 𝛂 k n ! .
+
+Next, we consider the reproductive form of the EDF family, that is, Xk + ED( m , l k ) for k =1,2,..., n . The density is thus
+
+<!-- formula-not-decoded -->
+
+Unfortunately, we can only derive explicit form of TCE for a weighted sum of Xi 's. As a matter of fact, we have the following result.
+
+Theorem 4. Suppose l S = k = 1 l k n ! and Yk = wkXk where Xk + ED ( m , l k ) and wk = l k / l S for k =1,2,..., n . Define the weighted sum
+
+<!-- formula-not-decoded -->
+
+Then its tail conditional expectation is given by
+
+<!-- formula-not-decoded -->
+
+where s q is the q-th quantile of the distribution of S .
+
+Proof. From (10), we have the moment generating function of Yk
+
+<!-- formula-not-decoded -->
+
+so that the moment generating function of S is given by
+
+<!-- formula-not-decoded -->
+
+Thus, by taking into account (10), we see S + ED( m , l S ). (See also Jorgensen (1997), Section 3.2, the reproductive form of the convolution formula.) Thus, the tail conditional expectation of S immediately follows from Theorem 1. ¬
+
+Notice that the usefulness of Theorems 3 and 4 immediately comes from the fact that the TCE of the sum S (in the additive form) or the weighted sum S (in the reproductive form) can be evaluated using the TCE of only one of the X ' s .
+
+To illustrate Theorem 4, consider the Normal distribution case in Example (4.1). Let X 1 , ..., Xn be n independent random variables such that
+
+<!-- formula-not-decoded -->
+
+From Theorem 4 and the first item of Theorem 1, we see that the TCE for the weighted sum S has the form
+
+<!-- formula-not-decoded -->
+
+where s 2 S = 1/ l S = 1/ k = 1 / s 1 k n 2 ! \_ i , the harmonic mean of the individual variances. Note that for Normal distribution, we can also derive result for the sum S since the Normal distribution N ( m k , s 2 k )  can  also  be  considered  as  a member of ED * ( m k , l k ) where l k = s 2 k . The well-known TCE formula for sum S (see for example, Panjer, 2002) given by
+
+<!-- formula-not-decoded -->
+
+immediately follows from Theorem 3.
+
+## 8. CONCLUDING REMARKS
+
+This paper examines tail conditional expectations for loss random variables that belong to the class of exponential dispersion models. This class of distributions has served as 'error distributions' for generalized linear models in the sense developed by Nelder and Wedderburn (1972). This class extends many of the properties and ideas developed for natural exponential families. It also includes several standard and well-known discrete distributions like Poisson and Binomial as well as continuous distributions like Normal and Gamma, and this paper develops tail conditional expectations for these members. We find an appealing way to express the tail conditional expectation for the class of Exponential Dispersion models; this TCE is equal to the expectation plus an additional term which is the partial derivative of the logarithm of the tail of the distribution with respect to the canonical parameter q . We observe that this partial derivative is a generalization of the hazard rate function. The results are further extended for sums or weighted sums of random variables belonging to the exponential dispersion family.
+
+## ACKNOWLEDGEMENT
+
+The first author wishes to acknowledge financial support provided by the School of Actuarial Studies, University of New South Wales, during his visit at the university. The second author wishes to acknowledge financial support provided
+
+by the Australian Research Council through the Discovery Grant DP0345036 and the UNSW Actuarial Foundations of the Institute of Actuaries of Australia.
+
+## REFERENCES
+
+- ARTZNER, P., DELBAEN, F., EBER, J.M., and HEATH, D. (1999) Coherent Measures of Risk. Mathematical Finance 9 , 203-228.
+- BARNDOFF-NIELSEN, O.E. (1978) Hyperbolic Distributions and Distributions on Hyperbolae. Scandinavian Journal of Statistics 5 , 151-157.
+- BOWERS, N.L., GERBER, H.U., HICKMAN, J.C., JONES, D.A., and NESBITT, C.J. (1997) Actuarial Mathematics 2nd edition. Society of Actuaries, Schaumburg, Illinois.
+- BROWN, L.D. (1987) Fundamentals of Statistical Exponential Families . IMS Lecture Notes Monograph Series: Vol. 9, Hayward, California.
+- Feller, W . (1971) An Introduction to Probability Theory and its Applications , Vol. 2. John Wiley, New York.
+- JOE, H. (1997) Multivariate Models and Dependence Concepts . Chapman &amp; Hall, London.
+- JORGENSEN, B. (1986) Some Properties of Exponential Dispersion Models. Scandinavian Journal of Statistics 13 , 187-198.
+- JORGENSEN, B. (1987) Exponential Dispersion Models (with discussion). Journal of the Royal Statistical Society , Series B, 49 , 127-162.
+- JORGENSEN, B. (1997) The Theory of Dispersion Models . Chapman &amp; Hall, London.
+- KAAS, R., DANNENBURG, D., GOOVAERTS, M. (1997) Exact Credibility for Weighted Observations. Astin Bulletin , 27 , 2, 287-295.
+- KAGAN, A.M., LINNIK, Y .V . and RAO, C.R. (1973) Characterization Problems in Mathematical Statistics . John Wiley, New York.
+- KLUGMAN, S., PANJER, H. and WILLMOT, G. (1998) Loss Models: From Data to Decisions . John Wiley, New York.
+- LANDSMAN, Z. (2002) Credibility Theory: A New View from the Theory of Second Order Optimal Statistics. Insurance: Mathematics &amp; Economics , 30 , 351-362.
+- LANDSMAN, Z. and MAKOV, U. (1998). Exponential Dispersion Models and Credibility. Scandinavian Actuarial Journal , 1 , 89-96
+- LANDSMAN, Z. and VALDEZ, E.A. (2003) Tail Conditional Expectations for Elliptical Distributions. North American Actuarial Journal , 7(4) , 55-71.
+- NELDER, J.A. and VERRALL, R.J. (1997) Credibility Theory and Generalized Linear Models. Astin Bulletin , 27 , 71-82.
+- NELDER, J.A. and WEDDERBURN, R.W.M. (1972) Generalized Linear Models. Journal of the Royal Statistical Society , Series A, 135 , 370-384.
+- PANJER, H.H. (2002) Measurement of Risk, Solvency Requirements, and Allocation of Capital within Financial Conglomerates. Institute of Insurance and Pension Research, University of Waterloo Research Report 01-15.
+- TWEEDIE, M.C.K. (1947) Functions of a Statistical Variate with Given Means, with Special Reference to Laplacian Distributions. Proceedings of the Cambridge Philosophical Society , 49 , 41-49.
+
+## ZINOVIY LANDSMAN
+
+Actuarial Research Center Department of Statistics - University of Haifa Mount Carmel, Haifa 31905, Israel. E-mail: landsman@stat.haifa.ac.il
+
+## EMILIANO A. VALDEZ
+
+School of Actuarial Studies
+
+Faculty of Commerce &amp; Economics - University of New South Wales
+
+Sydney, Australia 2052
+
+E-mail: e.valdez@unsw.edu.au

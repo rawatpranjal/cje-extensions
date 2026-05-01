@@ -1,0 +1,1326 @@
+{
+  "alpha": 0.1,
+  "k": 50,
+  "panel_size": 500,
+  "by_policy": {
+    "base": {
+      "n_bottom": 50,
+      "themes": {
+        "communication": 7,
+        "health_data_tasks": 6,
+        "hedging": 9,
+        "emergency_referrals": 6,
+        "global_health": 14,
+        "context_seeking": 6,
+        "complex_responses": 2
+      },
+      "rows": [
+        {
+          "prompt_id": "25cf07b8-606f-4448-99ef-ea87ca3097ba",
+          "score": -2.4,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "8ee6a990-8966-4b42-baa8-6c7e9f74ce74",
+          "score": -1.75,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "9f20c434-259b-490c-ac37-bb3ee7f589d6",
+          "score": -1.2857142857142858,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "3b9140da-0643-40b9-a610-fe7657942509",
+          "score": -0.9333333333333333,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "886864a6-a0e4-468f-aaf4-26cf8dc5e541",
+          "score": -0.9,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "99306c29-bcef-49d5-bcd1-78d4e541e197",
+          "score": -0.7272727272727273,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "9789edc6-1ea3-422d-90af-cc189e373b0f",
+          "score": -0.5714285714285714,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "c29c95d1-5b5e-4f53-9ec5-83e1f72b5aa5",
+          "score": -0.5714285714285714,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "f0f870a2-60db-45b3-a2ff-9cdba979d28e",
+          "score": -0.5555555555555556,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "3a0eec54-fd86-47c1-883b-d8e828d2a327",
+          "score": -0.5,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "a0f7ae75-d21d-4bc6-94f7-eb7018936e2a",
+          "score": -0.48148148148148145,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "429810f7-41d4-46a1-8ced-0c853a2783f6",
+          "score": -0.47058823529411764,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "779b5d14-1a6f-4d0a-8763-e0a25961a811",
+          "score": -0.3333333333333333,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "821de806-dd94-491c-9178-34befa0bb504",
+          "score": -0.3333333333333333,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "e0eba742-1b38-4033-baf5-28bb67bde814",
+          "score": -0.32142857142857145,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "0712c204-eef0-4219-93ff-b552ef77822d",
+          "score": -0.3076923076923077,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "51d9c72b-ba60-47c5-9cc9-3ed6212a3982",
+          "score": -0.3,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "13bb02e4-844e-4972-9200-2befa5f911d8",
+          "score": -0.2916666666666667,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "77837307-e6e1-4816-9c21-c82250c09d93",
+          "score": -0.2857142857142857,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "468e0c0f-9a1a-4424-b261-e4b301994623",
+          "score": -0.25,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "51433193-b0c3-4725-a3a8-9dd15e969b0c",
+          "score": -0.2222222222222222,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "e1fe1cb1-5e14-43d1-a254-b8b9f7991cc2",
+          "score": -0.21978021978021978,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "cf91ebed-85dd-49dd-80b9-248b617cb4a6",
+          "score": -0.21875,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "c49ac752-3693-4be1-ab4d-91fbdd02f827",
+          "score": -0.21621621621621623,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "56c31120-cdd6-4ca9-94bd-f11019dbd9fd",
+          "score": -0.2127659574468085,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "0fe4ea94-633d-4f73-985b-cbcd9f5a0270",
+          "score": -0.2,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "5fb6812f-9816-4d5d-b7e0-4ec3e9df5dc1",
+          "score": -0.2,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "1aaa5da1-fb7d-451d-a4f9-d1f9b9f3f479",
+          "score": -0.19444444444444445,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "2694a753-2f57-41eb-a7f9-8c4c7acdd2e8",
+          "score": -0.18421052631578946,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "6faacc75-9126-4757-bf69-1c18dd22c824",
+          "score": -0.18333333333333332,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "02a60789-fdea-4306-8f3c-a39453e12a0e",
+          "score": -0.17307692307692307,
+          "theme": "complex_responses"
+        },
+        {
+          "prompt_id": "02423ab9-f3ed-4096-a7df-bfa3ebb40c7c",
+          "score": -0.17073170731707318,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "2be58c05-b9d4-4fd8-90c8-05e2e4576ec8",
+          "score": -0.16049382716049382,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "74a50705-7db2-44be-84dc-92b2d960d344",
+          "score": -0.1590909090909091,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "36c6e780-d4a8-47b2-8a36-90ee4b97607f",
+          "score": -0.1559633027522936,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "cb5286fd-8dc3-4188-9031-406826f78961",
+          "score": -0.15384615384615385,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "247995c1-b5b9-4d1e-accf-b2fef35bfcba",
+          "score": -0.1509433962264151,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "905949d2-7a0a-4461-8f4b-257de6be6eed",
+          "score": -0.14705882352941177,
+          "theme": "complex_responses"
+        },
+        {
+          "prompt_id": "78e00513-9877-4291-aa51-40c716e4fc0e",
+          "score": -0.13793103448275862,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "85c11e2a-628b-464f-a8bb-e97ab04a73eb",
+          "score": -0.13636363636363635,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "7ca4f17b-6e40-4b9b-b8be-94393f10f5df",
+          "score": -0.13636363636363635,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "8d409c7b-29d2-4df2-aa69-ab56c9339bc5",
+          "score": -0.13333333333333333,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "7b415a2f-22b0-4735-a38e-567f1891acc5",
+          "score": -0.125,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "1ca222ed-cc79-4e78-9ca3-3547e7b37e3a",
+          "score": -0.12244897959183673,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "d0d3426f-8b7a-4501-adb4-86d8fa9099c8",
+          "score": -0.11475409836065574,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "a94aad40-387e-4a37-b92f-61badd57388b",
+          "score": -0.109375,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "53a4a116-d9a7-478b-ac51-27c61108870a",
+          "score": -0.10869565217391304,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "269074dc-9495-484b-b2f9-0f0943c0f816",
+          "score": -0.10638297872340426,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "9385d26b-bf44-4ff7-9410-e181413540dd",
+          "score": -0.10344827586206896,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "6566f489-f254-4bca-a86b-90f5ac7471d7",
+          "score": -0.10344827586206896,
+          "theme": "context_seeking"
+        }
+      ]
+    },
+    "clone": {
+      "n_bottom": 50,
+      "themes": {
+        "communication": 10,
+        "hedging": 8,
+        "health_data_tasks": 6,
+        "emergency_referrals": 5,
+        "context_seeking": 2,
+        "global_health": 16,
+        "complex_responses": 3
+      },
+      "rows": [
+        {
+          "prompt_id": "25cf07b8-606f-4448-99ef-ea87ca3097ba",
+          "score": -2.4,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "3b9140da-0643-40b9-a610-fe7657942509",
+          "score": -1.8,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "8ee6a990-8966-4b42-baa8-6c7e9f74ce74",
+          "score": -1.75,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "51d9c72b-ba60-47c5-9cc9-3ed6212a3982",
+          "score": -0.65,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "9f20c434-259b-490c-ac37-bb3ee7f589d6",
+          "score": -0.6428571428571429,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "f0f870a2-60db-45b3-a2ff-9cdba979d28e",
+          "score": -0.5555555555555556,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "2694a753-2f57-41eb-a7f9-8c4c7acdd2e8",
+          "score": -0.5526315789473685,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "3a0eec54-fd86-47c1-883b-d8e828d2a327",
+          "score": -0.5,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "429810f7-41d4-46a1-8ced-0c853a2783f6",
+          "score": -0.47058823529411764,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "02423ab9-f3ed-4096-a7df-bfa3ebb40c7c",
+          "score": -0.4146341463414634,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "13bb02e4-844e-4972-9200-2befa5f911d8",
+          "score": -0.3888888888888889,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "f93b0850-2c60-479d-831b-b8c8f9493d61",
+          "score": -0.38095238095238093,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "99306c29-bcef-49d5-bcd1-78d4e541e197",
+          "score": -0.36363636363636365,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "779b5d14-1a6f-4d0a-8763-e0a25961a811",
+          "score": -0.3333333333333333,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "6faacc75-9126-4757-bf69-1c18dd22c824",
+          "score": -0.3333333333333333,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "e0eba742-1b38-4033-baf5-28bb67bde814",
+          "score": -0.32142857142857145,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "be6150a5-8060-4434-9724-afede307d495",
+          "score": -0.3125,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "74a50705-7db2-44be-84dc-92b2d960d344",
+          "score": -0.2727272727272727,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "a94aad40-387e-4a37-b92f-61badd57388b",
+          "score": -0.265625,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "2c27329a-84db-4465-8dbd-f0625e05a54a",
+          "score": -0.2571428571428571,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "905949d2-7a0a-4461-8f4b-257de6be6eed",
+          "score": -0.23529411764705882,
+          "theme": "complex_responses"
+        },
+        {
+          "prompt_id": "d0d3426f-8b7a-4501-adb4-86d8fa9099c8",
+          "score": -0.22950819672131148,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "cf91ebed-85dd-49dd-80b9-248b617cb4a6",
+          "score": -0.21875,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "c49ac752-3693-4be1-ab4d-91fbdd02f827",
+          "score": -0.21621621621621623,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "3aa41883-540e-4795-9038-9eea8dd6366c",
+          "score": -0.21621621621621623,
+          "theme": "complex_responses"
+        },
+        {
+          "prompt_id": "c971f9d1-5f6a-464e-b282-41c8f0d82f58",
+          "score": -0.21052631578947367,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "0fe4ea94-633d-4f73-985b-cbcd9f5a0270",
+          "score": -0.2,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "5fb6812f-9816-4d5d-b7e0-4ec3e9df5dc1",
+          "score": -0.2,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "1aaa5da1-fb7d-451d-a4f9-d1f9b9f3f479",
+          "score": -0.19444444444444445,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "c49dd7ae-910d-4fb7-abe3-eab5c4e5b638",
+          "score": -0.19230769230769232,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "b85f5742-9d49-4dca-89f1-53e472282386",
+          "score": -0.18461538461538463,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "e3b8a30b-3594-4919-a266-0dffcaa05287",
+          "score": -0.1797752808988764,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "69a544f8-957d-4dda-a777-608ec7b95617",
+          "score": -0.17777777777777778,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "51433193-b0c3-4725-a3a8-9dd15e969b0c",
+          "score": -0.16049382716049382,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "9ab66439-8090-4f6c-ba74-874591dfd1a6",
+          "score": -0.15789473684210525,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "247995c1-b5b9-4d1e-accf-b2fef35bfcba",
+          "score": -0.1509433962264151,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "47da44dd-e366-485a-85c5-1cf23cbc90e0",
+          "score": -0.13924050632911392,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "78e00513-9877-4291-aa51-40c716e4fc0e",
+          "score": -0.13793103448275862,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "85c11e2a-628b-464f-a8bb-e97ab04a73eb",
+          "score": -0.13636363636363635,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "8d409c7b-29d2-4df2-aa69-ab56c9339bc5",
+          "score": -0.13333333333333333,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "e1fe1cb1-5e14-43d1-a254-b8b9f7991cc2",
+          "score": -0.13186813186813187,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "f32ee0c1-ea9c-4cfb-8332-bd9579d23024",
+          "score": -0.125,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "7b415a2f-22b0-4735-a38e-567f1891acc5",
+          "score": -0.125,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "b2748397-1cb1-4877-b13c-3cf517a89823",
+          "score": -0.10714285714285714,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "269074dc-9495-484b-b2f9-0f0943c0f816",
+          "score": -0.10638297872340426,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "43d658a8-dca4-421c-b030-5f6395ce46e1",
+          "score": -0.0970873786407767,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "87ff241a-9fa9-4362-bd87-91d4229869f2",
+          "score": -0.09523809523809523,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "7c9f1a4f-7f4d-4181-b400-5d6616f44080",
+          "score": -0.09523809523809523,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "92ef0376-d033-4143-aa3a-e068a7f21fa3",
+          "score": -0.09090909090909091,
+          "theme": "complex_responses"
+        },
+        {
+          "prompt_id": "34a8864c-a908-47c3-9b1d-f6de36963a67",
+          "score": -0.08450704225352113,
+          "theme": "hedging"
+        }
+      ]
+    },
+    "premium": {
+      "n_bottom": 50,
+      "themes": {
+        "health_data_tasks": 5,
+        "communication": 7,
+        "emergency_referrals": 4,
+        "global_health": 17,
+        "context_seeking": 4,
+        "hedging": 11,
+        "complex_responses": 2
+      },
+      "rows": [
+        {
+          "prompt_id": "8ee6a990-8966-4b42-baa8-6c7e9f74ce74",
+          "score": -1.75,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "25cf07b8-606f-4448-99ef-ea87ca3097ba",
+          "score": -1.4,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "51d9c72b-ba60-47c5-9cc9-3ed6212a3982",
+          "score": -0.9,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "886864a6-a0e4-468f-aaf4-26cf8dc5e541",
+          "score": -0.9,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "99306c29-bcef-49d5-bcd1-78d4e541e197",
+          "score": -0.7272727272727273,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "c29c95d1-5b5e-4f53-9ec5-83e1f72b5aa5",
+          "score": -0.5714285714285714,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "f0f870a2-60db-45b3-a2ff-9cdba979d28e",
+          "score": -0.5555555555555556,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "429810f7-41d4-46a1-8ced-0c853a2783f6",
+          "score": -0.47058823529411764,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "afbfc79d-6455-40b8-b475-1bcde4ef0cc9",
+          "score": -0.3333333333333333,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "8e88f21a-24c4-4f9c-b848-faf5e10e31b9",
+          "score": -0.3333333333333333,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "6faacc75-9126-4757-bf69-1c18dd22c824",
+          "score": -0.3333333333333333,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "e0eba742-1b38-4033-baf5-28bb67bde814",
+          "score": -0.32142857142857145,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "13bb02e4-844e-4972-9200-2befa5f911d8",
+          "score": -0.2916666666666667,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "c49dd7ae-910d-4fb7-abe3-eab5c4e5b638",
+          "score": -0.28846153846153844,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "3b9140da-0643-40b9-a610-fe7657942509",
+          "score": -0.26666666666666666,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "8007766d-0b6c-406a-8cae-a9fc2da4499f",
+          "score": -0.2413793103448276,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "3a0eec54-fd86-47c1-883b-d8e828d2a327",
+          "score": -0.23333333333333334,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "ff634950-c3f8-4ff5-988f-f77ae59160cd",
+          "score": -0.23333333333333334,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "cf91ebed-85dd-49dd-80b9-248b617cb4a6",
+          "score": -0.21875,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "c49ac752-3693-4be1-ab4d-91fbdd02f827",
+          "score": -0.21621621621621623,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "9f20c434-259b-490c-ac37-bb3ee7f589d6",
+          "score": -0.21428571428571427,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "5fb6812f-9816-4d5d-b7e0-4ec3e9df5dc1",
+          "score": -0.2,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "1aaa5da1-fb7d-451d-a4f9-d1f9b9f3f479",
+          "score": -0.19444444444444445,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "74a50705-7db2-44be-84dc-92b2d960d344",
+          "score": -0.1590909090909091,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "f9f6f555-6b16-4b0f-9fd3-df5ac6db36f1",
+          "score": -0.1590909090909091,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "905949d2-7a0a-4461-8f4b-257de6be6eed",
+          "score": -0.14705882352941177,
+          "theme": "complex_responses"
+        },
+        {
+          "prompt_id": "78e00513-9877-4291-aa51-40c716e4fc0e",
+          "score": -0.13793103448275862,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "85c11e2a-628b-464f-a8bb-e97ab04a73eb",
+          "score": -0.13636363636363635,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "8d409c7b-29d2-4df2-aa69-ab56c9339bc5",
+          "score": -0.13333333333333333,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "7b415a2f-22b0-4735-a38e-567f1891acc5",
+          "score": -0.125,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "776cf500-bb91-44ae-a5ed-124eccf151ff",
+          "score": -0.1111111111111111,
+          "theme": "complex_responses"
+        },
+        {
+          "prompt_id": "be6150a5-8060-4434-9724-afede307d495",
+          "score": -0.109375,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "269074dc-9495-484b-b2f9-0f0943c0f816",
+          "score": -0.10638297872340426,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "47da44dd-e366-485a-85c5-1cf23cbc90e0",
+          "score": -0.10126582278481013,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "0fe4ea94-633d-4f73-985b-cbcd9f5a0270",
+          "score": -0.1,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "48669cdc-1a64-4c99-a6e8-9a7181341fa2",
+          "score": -0.08403361344537816,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "9f8e7ea3-21b0-42d6-9742-24118e9aac18",
+          "score": -0.0784313725490196,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "3b8c3cbd-3b03-4ed8-8927-4509f4f3bf2f",
+          "score": -0.07692307692307693,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "06fb659f-a4aa-4a97-a831-ed2cd2aa7e69",
+          "score": -0.0625,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "6d5f483c-3e86-456d-bfd5-4e28de699ae5",
+          "score": -0.06206896551724138,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "c971f9d1-5f6a-464e-b282-41c8f0d82f58",
+          "score": -0.05263157894736842,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "c835bebe-e998-4dcd-843a-2de03d4aabc6",
+          "score": -0.045454545454545456,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "2694a753-2f57-41eb-a7f9-8c4c7acdd2e8",
+          "score": -0.02631578947368421,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "e1fe1cb1-5e14-43d1-a254-b8b9f7991cc2",
+          "score": -0.01098901098901099,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "66b448bf-2e49-488d-9d0b-f9912ab3f0f8",
+          "score": 0.0,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "77c0be2e-364a-40de-ae21-a277154e3d60",
+          "score": 0.0,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "b5b6d817-c524-4bef-badc-f93876657ea2",
+          "score": 0.0,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "a58987e9-8b59-461a-a68b-20efa1d37d51",
+          "score": 0.0,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "a131d5e7-2a27-426f-90f0-25eae3c4b490",
+          "score": 0.0,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "cd3dbc9f-a39c-4d13-af60-cba7dbc3baad",
+          "score": 0.0,
+          "theme": "hedging"
+        }
+      ]
+    },
+    "parallel_universe_prompt": {
+      "n_bottom": 50,
+      "themes": {
+        "communication": 4,
+        "emergency_referrals": 5,
+        "hedging": 10,
+        "global_health": 15,
+        "context_seeking": 9,
+        "health_data_tasks": 5,
+        "complex_responses": 2
+      },
+      "rows": [
+        {
+          "prompt_id": "25cf07b8-606f-4448-99ef-ea87ca3097ba",
+          "score": -2.4,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "886864a6-a0e4-468f-aaf4-26cf8dc5e541",
+          "score": -1.9,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "3b9140da-0643-40b9-a610-fe7657942509",
+          "score": -1.2666666666666666,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "99306c29-bcef-49d5-bcd1-78d4e541e197",
+          "score": -1.0909090909090908,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "2694a753-2f57-41eb-a7f9-8c4c7acdd2e8",
+          "score": -0.7105263157894737,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "90789a49-ab1f-4229-bd89-e1c56ea8be3a",
+          "score": -0.6296296296296297,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "468e0c0f-9a1a-4424-b261-e4b301994623",
+          "score": -0.625,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "aecc446a-2433-4225-94d7-e67028886567",
+          "score": -0.5909090909090909,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "c29c95d1-5b5e-4f53-9ec5-83e1f72b5aa5",
+          "score": -0.5714285714285714,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "f0f870a2-60db-45b3-a2ff-9cdba979d28e",
+          "score": -0.5555555555555556,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "d9a44a36-6a3c-4d5d-9c66-b2c0afb479d1",
+          "score": -0.5151515151515151,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "3a0eec54-fd86-47c1-883b-d8e828d2a327",
+          "score": -0.5,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "91ef0a57-d5b6-4054-9e25-019867372aa8",
+          "score": -0.5,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "6b1af71b-3cf3-4519-9787-e591fc806850",
+          "score": -0.48148148148148145,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "429810f7-41d4-46a1-8ced-0c853a2783f6",
+          "score": -0.47058823529411764,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "c49dd7ae-910d-4fb7-abe3-eab5c4e5b638",
+          "score": -0.46153846153846156,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "0fe4ea94-633d-4f73-985b-cbcd9f5a0270",
+          "score": -0.44,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "a20cbbf3-330b-46d9-a35b-92e89a022282",
+          "score": -0.42857142857142855,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "1b8f338a-2e98-4a42-ba80-cba266f4b9fa",
+          "score": -0.4,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "c14135dd-131d-4577-b11c-8191fe97d268",
+          "score": -0.4,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "12a9a33a-47a2-446b-9689-7a49c5667d1b",
+          "score": -0.3939393939393939,
+          "theme": "complex_responses"
+        },
+        {
+          "prompt_id": "8007766d-0b6c-406a-8cae-a9fc2da4499f",
+          "score": -0.3793103448275862,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "a1a08e1d-1353-4d6f-94ce-f90872074c7c",
+          "score": -0.3793103448275862,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "48c89cd1-0ecf-4738-8fcc-392269585bd3",
+          "score": -0.36231884057971014,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "779b5d14-1a6f-4d0a-8763-e0a25961a811",
+          "score": -0.3333333333333333,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "3b79284e-1143-46b4-b6a0-78e5448ff773",
+          "score": -0.3333333333333333,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "821de806-dd94-491c-9178-34befa0bb504",
+          "score": -0.3333333333333333,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "87ff241a-9fa9-4362-bd87-91d4229869f2",
+          "score": -0.3333333333333333,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "6faacc75-9126-4757-bf69-1c18dd22c824",
+          "score": -0.3333333333333333,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "e0eba742-1b38-4033-baf5-28bb67bde814",
+          "score": -0.32142857142857145,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "c1a586ec-f3a4-40dd-99e7-3424244b0640",
+          "score": -0.32,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "085a9e8a-856e-4044-95c9-0e5a8bdcd16e",
+          "score": -0.30303030303030304,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "51d9c72b-ba60-47c5-9cc9-3ed6212a3982",
+          "score": -0.3,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "a57a4b5e-0f12-4103-8852-72bd2b7dba24",
+          "score": -0.29411764705882354,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "02423ab9-f3ed-4096-a7df-bfa3ebb40c7c",
+          "score": -0.2926829268292683,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "13bb02e4-844e-4972-9200-2befa5f911d8",
+          "score": -0.2916666666666667,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "77837307-e6e1-4816-9c21-c82250c09d93",
+          "score": -0.2857142857142857,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "9cb679e7-57f3-4722-86a5-55d1e41cc011",
+          "score": -0.27631578947368424,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "78e00513-9877-4291-aa51-40c716e4fc0e",
+          "score": -0.27586206896551724,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "36c6e780-d4a8-47b2-8a36-90ee4b97607f",
+          "score": -0.27522935779816515,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "673612f7-6fb7-4c63-9385-e1425bfbff68",
+          "score": -0.2727272727272727,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "b7a82324-73ee-4996-8f71-8f455f789e90",
+          "score": -0.2692307692307692,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "3fd511ca-3930-46d4-a30c-4544c1d4750a",
+          "score": -0.2692307692307692,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "834428b6-f409-4068-b818-7fd75284ae35",
+          "score": -0.2676056338028169,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "b7ddde65-702e-4255-b1d7-09d01248e76d",
+          "score": -0.26744186046511625,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "9ab66439-8090-4f6c-ba74-874591dfd1a6",
+          "score": -0.2631578947368421,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "776cf500-bb91-44ae-a5ed-124eccf151ff",
+          "score": -0.25925925925925924,
+          "theme": "complex_responses"
+        },
+        {
+          "prompt_id": "2be58c05-b9d4-4fd8-90c8-05e2e4576ec8",
+          "score": -0.25925925925925924,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "0a548d04-0973-4343-a3bf-07f730bed2f6",
+          "score": -0.25806451612903225,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "ff634950-c3f8-4ff5-988f-f77ae59160cd",
+          "score": -0.23333333333333334,
+          "theme": "hedging"
+        }
+      ]
+    },
+    "unhelpful": {
+      "n_bottom": 50,
+      "themes": {
+        "communication": 3,
+        "hedging": 8,
+        "emergency_referrals": 6,
+        "global_health": 19,
+        "context_seeking": 9,
+        "health_data_tasks": 5
+      },
+      "rows": [
+        {
+          "prompt_id": "25cf07b8-606f-4448-99ef-ea87ca3097ba",
+          "score": -2.8,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "b5b6d817-c524-4bef-badc-f93876657ea2",
+          "score": -1.0,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "0712c204-eef0-4219-93ff-b552ef77822d",
+          "score": -1.0,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "886864a6-a0e4-468f-aaf4-26cf8dc5e541",
+          "score": -1.0,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "456e0ca2-54e4-4c9c-9e20-1a2d5ce024ef",
+          "score": -0.75,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "1b8f338a-2e98-4a42-ba80-cba266f4b9fa",
+          "score": -0.7,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "42af0c9f-a715-45c4-ab24-c2948f6f943d",
+          "score": -0.6666666666666666,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "a7df33f5-777e-4179-b337-2896de5a61ea",
+          "score": -0.5945945945945946,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "c29c95d1-5b5e-4f53-9ec5-83e1f72b5aa5",
+          "score": -0.5714285714285714,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "6b1af71b-3cf3-4519-9787-e591fc806850",
+          "score": -0.5555555555555556,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "0fe4ea94-633d-4f73-985b-cbcd9f5a0270",
+          "score": -0.54,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "c1a586ec-f3a4-40dd-99e7-3424244b0640",
+          "score": -0.5,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "f0f870a2-60db-45b3-a2ff-9cdba979d28e",
+          "score": -0.5,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "91ef0a57-d5b6-4054-9e25-019867372aa8",
+          "score": -0.5,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "2694a753-2f57-41eb-a7f9-8c4c7acdd2e8",
+          "score": -0.47368421052631576,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "cd3dbc9f-a39c-4d13-af60-cba7dbc3baad",
+          "score": -0.4666666666666667,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "aecc446a-2433-4225-94d7-e67028886567",
+          "score": -0.45454545454545453,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "779b5d14-1a6f-4d0a-8763-e0a25961a811",
+          "score": -0.4444444444444444,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "0d35086a-1c4d-4821-adc9-d245d71e450a",
+          "score": -0.43243243243243246,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "da05b57a-d776-45b6-96af-1750e0254eec",
+          "score": -0.42857142857142855,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "9ab66439-8090-4f6c-ba74-874591dfd1a6",
+          "score": -0.42105263157894735,
+          "theme": "communication"
+        },
+        {
+          "prompt_id": "30861aea-7677-42d4-ae1c-f297943cf4fd",
+          "score": -0.4117647058823529,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "3b9140da-0643-40b9-a610-fe7657942509",
+          "score": -0.4,
+          "theme": "hedging"
+        },
+        {
+          "prompt_id": "0e819a9c-851d-4a7a-9263-62cfc8ce1b48",
+          "score": -0.39655172413793105,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "13bb02e4-844e-4972-9200-2befa5f911d8",
+          "score": -0.3888888888888889,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "452a9534-b4fc-4483-94e0-d34b06b8e299",
+          "score": -0.38095238095238093,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "a1a08e1d-1353-4d6f-94ce-f90872074c7c",
+          "score": -0.3793103448275862,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "b054429a-5017-4400-b65c-2a8d44ce9880",
+          "score": -0.375,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "06902be5-32f0-4adc-ba00-e5ad2f98ea2d",
+          "score": -0.375,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "a31f116d-d33f-4690-9d88-e13d7e444328",
+          "score": -0.3684210526315789,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "5fb6812f-9816-4d5d-b7e0-4ec3e9df5dc1",
+          "score": -0.36666666666666664,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "99306c29-bcef-49d5-bcd1-78d4e541e197",
+          "score": -0.36363636363636365,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "f2abd098-0453-4375-9113-31b95b4e6166",
+          "score": -0.34375,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "1f548d5b-cd00-49a0-b327-283a2e00debd",
+          "score": -0.34065934065934067,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "3b79284e-1143-46b4-b6a0-78e5448ff773",
+          "score": -0.3333333333333333,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "468e0c0f-9a1a-4424-b261-e4b301994623",
+          "score": -0.3333333333333333,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "48c89cd1-0ecf-4738-8fcc-392269585bd3",
+          "score": -0.3333333333333333,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "85c23c20-0d8a-48e8-87b9-afbc884c1259",
+          "score": -0.3157894736842105,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "f32ee0c1-ea9c-4cfb-8332-bd9579d23024",
+          "score": -0.3125,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "921e5787-77a7-4acd-b54e-315d33576bc2",
+          "score": -0.3125,
+          "theme": "context_seeking"
+        },
+        {
+          "prompt_id": "834428b6-f409-4068-b818-7fd75284ae35",
+          "score": -0.30985915492957744,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "af62e0b8-bbd0-4dcc-b55c-cb4c7bbcfb2c",
+          "score": -0.30357142857142855,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "d9a44a36-6a3c-4d5d-9c66-b2c0afb479d1",
+          "score": -0.30303030303030304,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "51d9c72b-ba60-47c5-9cc9-3ed6212a3982",
+          "score": -0.3,
+          "theme": "health_data_tasks"
+        },
+        {
+          "prompt_id": "6faacc75-9126-4757-bf69-1c18dd22c824",
+          "score": -0.3,
+          "theme": "emergency_referrals"
+        },
+        {
+          "prompt_id": "614dba16-a638-4cb1-bb27-46f14f4da0fe",
+          "score": -0.2978723404255319,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "90789a49-ab1f-4229-bd89-e1c56ea8be3a",
+          "score": -0.2962962962962963,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "a57a4b5e-0f12-4103-8852-72bd2b7dba24",
+          "score": -0.29411764705882354,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "47da44dd-e366-485a-85c5-1cf23cbc90e0",
+          "score": -0.2911392405063291,
+          "theme": "global_health"
+        },
+        {
+          "prompt_id": "77837307-e6e1-4816-9c21-c82250c09d93",
+          "score": -0.2857142857142857,
+          "theme": "hedging"
+        }
+      ]
+    }
+  }
+}

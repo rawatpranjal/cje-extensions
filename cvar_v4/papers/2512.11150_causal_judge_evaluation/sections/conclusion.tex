@@ -1,0 +1,18 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+Uncalibrated LLM-as-judge evaluation is the default practice, and it produces rankings that can be inverted, confidence intervals with near-zero coverage, and OPE estimates that fail silently. These are not edge cases; they are the norm when calibration is ignored.
+
+We introduced \textbf{\CJE}, a framework that makes it affordable to aim at the right target. By calibrating cheap judges against a small oracle slice, teams no longer need to choose between expensive labels and proxies that may point the wrong direction. CJE fixes all three failures, built around a single principle: encode justified assumptions as model restrictions. Restrictions to \emph{subspaces} (nuisance-orthogonal scores), \emph{monotone cones} (mean-preserving reward/weight calibration), and \emph{simplices} (variance-hedged stacking) preserve the estimand while \emph{weakly reducing variance}.
+
+Concretely, \emph{reward calibration} learns a mean-preserving surrogate $R=f(Z(S))$; \emph{weight stabilization} stacks $S$-monotone candidates to produce unit-mean ratios with empirical $\ESS$ gains via OOF stacking and a variance guard; \emph{calibrated DR} delivers $\sqrt{n}$ inference under cross-fitting; \emph{influence-function stacking} minimizes plug-in IF variance; and \emph{calibration-aware inference} with bootstrap and bias-corrected estimation ($\hat\theta_{\mathrm{aug}}$) achieves near-nominal CI coverage.
+
+Theoretically, the \emph{Efficiency via Model Restriction} result, applying established semiparametric principles to surrogate-based evaluation, explains why encoding justified knowledge as model restrictions lowers the efficiency bound, which is \emph{attainable} with projection-designed estimators and cross-fitting. Two design corollaries follow: (\emph{i}) \emph{Blackwell–efficiency monotonicity}: richer judges (finer $\sigma$-fields) strictly help; (\emph{ii}) under the exact $\mathrm{IsoMeanOne}_S$ projection, isotonic mean-one calibration weakly reduces weight dispersion (the reference implementation uses a simpler normalization that empirically yields similar $\ESS$ gains). Empirically, on Arena-derived logs, weight stabilization turns near-degenerate ratios into stable weights (large $\ESS$ gains), stacked-DR achieves near-nominal coverage and near-$\sqrt{n}$ scaling, and stacking improves ordering; when calibration support is limited, \CJE{} \emph{flags} the issue and reports robust \emph{rankings} with conservative uncertainty (\RefuseLevel).
+
+\paragraph{Takeaways.}
+(i) \emph{Default to Direct}: For open-ended generation under nontrivial policy shifts, logs-only OPE faces two compounding issues---TF brittleness and coverage sparsity (low TTC)---that together create a precision floor weight stabilization cannot overcome. In constrained settings or near-clone regimes, OPE may remain viable; gate on TTC $\geq 0.70$ before relying on logged data.\\
+(ii) \emph{Always use bootstrap inference with $\hat\theta_{\mathrm{aug}}$}: naive CIs achieve 0\% coverage; bootstrap with bias correction achieves ${\sim}$95\%.\\
+(iii) \emph{Validate transportability}: the mean transport test catches real failures (e.g., adversarial policies).
+
+\paragraph{Future work.}
+Selection-aware inference over large policy sets; robust/DP isotonic calibration (mirror/Bregman projections) for heavy tails; active oracle budgeting via shadow prices; sequential/agent evaluations with prefix-aware weight stabilization and stepwise DR; and subgroup-aware constraints with fairness diagnostics.

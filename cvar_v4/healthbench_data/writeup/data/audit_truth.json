@@ -1,0 +1,85 @@
+{
+  "alphas": [
+    0.1,
+    0.2
+  ],
+  "coverage": 0.25,
+  "seed": 42,
+  "panel_size": 500,
+  "err_threshold": 0.1,
+  "counts": {
+    "pass_low": 8,
+    "pass_high": 1,
+    "fail_low": 1,
+    "fail_high": 0
+  },
+  "cells": {
+    "pass_low": [
+      {
+        "policy": "base",
+        "alpha": 0.1,
+        "abs_error": 0.09100465437795663,
+        "verdict": "PASS"
+      },
+      {
+        "policy": "clone",
+        "alpha": 0.1,
+        "abs_error": 0.07477287279300016,
+        "verdict": "PASS"
+      },
+      {
+        "policy": "premium",
+        "alpha": 0.1,
+        "abs_error": 0.03094553626352156,
+        "verdict": "PASS"
+      },
+      {
+        "policy": "unhelpful",
+        "alpha": 0.1,
+        "abs_error": 0.08129978527888793,
+        "verdict": "PASS"
+      },
+      {
+        "policy": "base",
+        "alpha": 0.2,
+        "abs_error": 0.048681724604527354,
+        "verdict": "PASS"
+      },
+      {
+        "policy": "clone",
+        "alpha": 0.2,
+        "abs_error": 0.032236140421107534,
+        "verdict": "PASS"
+      },
+      {
+        "policy": "premium",
+        "alpha": 0.2,
+        "abs_error": 0.01570085735678528,
+        "verdict": "PASS"
+      },
+      {
+        "policy": "parallel_universe_prompt",
+        "alpha": 0.2,
+        "abs_error": 0.0855121860053164,
+        "verdict": "PASS"
+      }
+    ],
+    "pass_high": [
+      {
+        "policy": "parallel_universe_prompt",
+        "alpha": 0.1,
+        "abs_error": 0.13192221182376207,
+        "verdict": "PASS"
+      }
+    ],
+    "fail_low": [
+      {
+        "policy": "unhelpful",
+        "alpha": 0.2,
+        "abs_error": 0.06574055223156933,
+        "verdict": "FLAG_TAIL"
+      }
+    ],
+    "fail_high": []
+  }
+}

@@ -1,0 +1,76 @@
+\section{Efficient Budget Allocation}
+\label{app:budget}
+
+While CJE provides calibration-aware confidence intervals for any sample configuration, practitioners often face a constrained optimization problem: minimizing estimation error subject to a fixed financial or latency budget. Here we derive the optimal allocation between cheap surrogate scores ($n$) and expensive oracle labels ($m$).
+
+\begin{proposition}[Square Root Allocation Law]
+\label{prop:sqrt-allocation}
+Let $c_S$ and $c_Y$ be the marginal costs of surrogate scoring and oracle labeling, respectively. Assume the variance decomposes as
+\[
+V_{\mathrm{total}}(n,m)\;\approx\;\frac{\sigma^2_{\mathrm{eval}}}{n}+\frac{\sigma^2_{\mathrm{cal}}}{m},
+\qquad B=c_S n+c_Y m.
+\]
+The allocation $(n^*, m^*)$ minimizing $V_{\mathrm{total}}$ subject to budget $B$ satisfies:
+\[
+\boxed{\frac{m^*}{n^*} = \sqrt{\frac{c_S}{c_Y}} \cdot \sqrt{\frac{\sigma^2_{\mathrm{cal}}}{\sigma^2_{\mathrm{eval}}}}}
+\]
+with the feasibility constraint $m^* \le n^*$ (the oracle slice is a subset of scored examples). If the unconstrained optimum exceeds $n$, set $m^* = n$.
+\end{proposition}
+
+\emph{Note:} This first-order approximation assumes additive variance components with $O(1/m)$ calibration variance. While isotonic regression has nonparametric rates for \emph{function estimation}, the \emph{mean functional} $\E[f(S)]$ typically achieves $\sqrt{m}$ rates under smoothness. In practice, estimate $\sigma^2_{\mathrm{cal}} \approx m \cdot \widehat{\Var}_{\mathrm{cal}}$ and $\sigma^2_{\mathrm{eval}} \approx n \cdot \widehat{\Var}_{\mathrm{eval}}$ from the calibration-aware variance decomposition, then apply the formula.
+
+\paragraph{Closed-form solution.} Solving the constrained optimization yields:
+\[
+n^* = \frac{B\,\sqrt{\sigma^2_{\mathrm{eval}}/c_S}}{\sqrt{c_S\sigma^2_{\mathrm{eval}}}+\sqrt{c_Y\sigma^2_{\mathrm{cal}}}},
+\qquad
+m^* = \frac{B\,\sqrt{\sigma^2_{\mathrm{cal}}/c_Y}}{\sqrt{c_S\sigma^2_{\mathrm{eval}}}+\sqrt{c_Y\sigma^2_{\mathrm{cal}}}}.
+\]
+
+\begin{proof}
+We form the Lagrangian $\mathcal{L}$ for minimizing variance subject to cost $B$:
+\[
+\mathcal{L}(n, m, \lambda) = \frac{\sigma^2_{\mathrm{eval}}}{n} + \frac{\sigma^2_{\mathrm{cal}}}{m} + \lambda(c_S n + c_Y m - B)
+\]
+Taking partial derivatives with respect to $n$ and $m$ yields the first-order conditions:
+\[
+\frac{\partial \mathcal{L}}{\partial n} = -\frac{\sigma^2_{\mathrm{eval}}}{n^2} + \lambda c_S = 0 \implies \lambda = \frac{\sigma^2_{\mathrm{eval}}}{c_S n^2}
+\]
+\[
+\frac{\partial \mathcal{L}}{\partial m} = -\frac{\sigma^2_{\mathrm{cal}}}{m^2} + \lambda c_Y = 0 \implies \lambda = \frac{\sigma^2_{\mathrm{cal}}}{c_Y m^2}
+\]
+Equating the expressions for $\lambda$:
+\[
+\frac{\sigma^2_{\mathrm{eval}}}{c_S n^2} = \frac{\sigma^2_{\mathrm{cal}}}{c_Y m^2} \implies \frac{m^2}{n^2} = \frac{\sigma^2_{\mathrm{cal}}}{\sigma^2_{\mathrm{eval}}} \cdot \frac{c_S}{c_Y}
+\]
+Taking the square root yields the ratio result. Substituting into the budget constraint and solving gives the closed-form expressions.
+\end{proof}
+
+\paragraph{The Calibration Uncertainty Marginal Utility Diagnostic.}
+The optimality condition implies that resources are allocated efficiently when the marginal variance reduction per dollar is equal across both channels. We can express this in terms of the observed calibration uncertainty share $\omega = \Var_{\mathrm{cal}}/\Var_{\mathrm{total}}$. At the optimum, the \textbf{Spend-Balance Rule} holds:
+\[
+\omega \;=\; \frac{c_Y m}{c_S n + c_Y m} \;=\; \frac{\text{Spend}_{\mathrm{oracle}}}{\text{Spend}_{\mathrm{total}}}.
+\]
+That is, the variance share from calibration should equal the budget share spent on oracle labels. Deviations diagnose inefficiency:
+
+\begin{itemize}[leftmargin=*,nosep]
+\item \textbf{Under-labeled (Invest in $m$):} If $\omega > \frac{c_Y m}{c_S n + c_Y m}$, calibration uncertainty dominates relative to its share of the budget. \emph{Action:} Shift budget to acquire more oracle labels.
+\item \textbf{Over-labeled (Invest in $n$):} If $\omega < \frac{c_Y m}{c_S n + c_Y m}$, evaluation sampling noise dominates. \emph{Action:} Shift budget to evaluate more prompts with the surrogate.
+\end{itemize}
+
+\paragraph{Worked Example (Arena Benchmark).}
+Using costs from our experiments: the \texttt{gpt-4.1-nano-2025-04-14} judge is approximately $16\times$ cheaper than the \texttt{gpt-5-2025-08-07} oracle, giving a cost ratio $c_S/c_Y \approx 0.064$. At $n=1000$ prompts with $m=50$ oracle labels (5\% oracle fraction), the observed calibration uncertainty share is $\omega \approx 90\%$.
+
+To find the intrinsic variance ratio, note that $\omega = \frac{\sigma^2_{\mathrm{cal}}/m}{\sigma^2_{\mathrm{cal}}/m + \sigma^2_{\mathrm{eval}}/n}$, which implies:
+\[
+\frac{\sigma^2_{\mathrm{cal}}}{\sigma^2_{\mathrm{eval}}} = \frac{\omega \cdot m}{(1-\omega) \cdot n} = \frac{0.90 \times 50}{0.10 \times 1000} = 0.45
+\]
+
+Applying the Square Root Law:
+\[
+\frac{m^*}{n^*} = \sqrt{0.064} \times \sqrt{0.45} \approx 0.25 \times 0.67 = 17\%
+\]
+
+The variance-optimal oracle fraction is ${\sim}17\%$, substantially higher than the empirical 5\%. This indicates the study under-invested in oracle labels relative to the variance-optimal allocation. However, the 5\% allocation was chosen for cost efficiency: it achieves 94\% ranking accuracy at 14$\times$ lower cost than pure oracle labeling, trading some precision for substantial cost savings.
+
+\paragraph{Extension: Multi-Policy Amortization.}
+When calibrating once to evaluate $P$ policies on the same prompt set, surrogate costs scale as $c_S \cdot P \cdot n$ while oracle costs remain $c_Y \cdot m$. The optimal ratio becomes $m^*/n = \sqrt{P \cdot c_S \cdot \sigma^2_{\mathrm{cal}} / (c_Y \cdot \sigma^2_{\mathrm{eval}})}$, favoring larger oracle slices as $P$ grows (calibration cost amortizes across policies, making it relatively cheaper per evaluation).

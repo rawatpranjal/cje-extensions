@@ -1,0 +1,82 @@
+\section{Details of the Safety Training Experiments with \dataset}
+\label{asec:training-expts}
+
+\subsection{General Instruction-Tuning Data}
+\label{assec:tulu2mix}
+
+Tulu2Mix\footnote{https://huggingface.co/datasets/allenai/tulu-v2-sft-mixture} is the mixture of datasets for instruction-tuning to improve models' general instruction-following abilities. It consists of FLAN v2~\citep{weifinetuned}, Open Assistant 1 (OASST1)~\, ShareGPT, GPT4-Alpaca~\citep{peng2023instruction}, Code-Alpaca~\citep{codealpaca}, LIMA~\citep{zhou2024lima}, Evol-instruct~\citep{xu2023wizardlm}, Open-Orca~\citep{OpenOrca}, scientific documents, and hard-coded prompt and response pairs. Note that we removed refusal data instances including phrases such as ``As an AI language model, I don't have personal'', and ``I apologize, but'', ``I am an AI language model and do not'' to prevent the model learns to self-contradictory refusal responses. We do so by using a keyword-refusal filter. After this filtering step, the size of the dataset is $\sim$300K.
+
+
+\subsection{Training Setups}
+\label{assec:full_safety_train_results}
+
+We run all safety-training experiments on 128-chip TPU v3 pod. Our training code was adopted from the \hyperlink{https://github.com/hamishivi/EasyLM}{EasyLM codebase}\footnote{\url{https://github.com/hamishivi/EasyLM}} \citep{geng2023easylm}. Table \ref{tab:training_hyper_parameters} shows the training hyperparameters.
+
+
+\subsection{Evaluation Suite}
+\label{assec:safety_training_evals}
+
+\subsubsection{General Capabilities}
+
+We adopt most of the evaluation suite from \hyperlink{https://github.com/allenai/open-instruct}{Open-Instruct codebase}\footnote{\url{https://github.com/allenai/open-instruct}} \citep{wang2023far,ivison2023camels} for evaluating the general capabilities of safety-trained models. In addition, we evaluate models with AlpacaEval V2 with length control that was not previously included in Open-Instruct. 
+
+\paragraph{MMLU} The Massive Multitask Language Understanding task~\citep{hendrycks2020measuring} consists of 57 diverse multiple-choice tasks drawn from areas in the hard sciences, humanities, social sciences. The test set consists of 14,079 questions. We use the Open-Instruct implementation of this evaluation, and the reported metric is average accuracy.
+
+
+\paragraph{GSM} GSM8k~\citep{cobbe2021training} consists of 8.5k grade school math word problems. We use the Open-Instruct framework, which conducts this evaluation in chain-of-thought form, with eight few-shot examples. The reported metric is average accuracy.
+
+
+\paragraph{BBH} BIG-Bench Hard~\citet{suzgun2023challenging} is a collection of 23 challenging multiple choice or exact match tasks from among the BIG-Bench evaluations~\citet{srivastava2023beyond}, on which previous LM performance did not exceed average human performance. The benchmark contains 6,511 evaluation items, and we use the Open-Instruct framework, which conducts the evaluation in chain-of-thought form, using the provided prompts which contain three few-shot examples. The reported metric is average accuracy.
+ 
+
+\paragraph{TydiQA} TydiQA~\citep{clark2020tydi} is a question-answering dataset spanning 11 typologically diverse languages, with a test set consisting of 18,751 QA pairs. We use the Open-Instruct implementation, which conducts this evaluation in a one-shot setting in which the gold passage is provided along with the question. The reported metric is F1.
+
+
+\paragraph{Codex-Eval} We use the Open-Instruct evaluation, which uses the HumanEval set from~\citet{chen2021evaluating}, consisting of 164 programming problems prompting models to complete a Python function given a docstring. The reported metric is pass@10, sampling with a temperature of 0.8.
+
+
+\paragraph{TruthfulQA} TruthfulQA~\citep{lin2022truthfulqa} consists of 818 questions crafted such that humans may answer incorrectly due to common misconceptions. We use Open-Instruct, using these questions to prompt models to generate answers, providing six few-shot examples. Reported metrics are percentage of outputs classified as Truthful and percent of outputs classified as Informative, as judged by two GPT-based classifiers.
+
+
+\paragraph{AlpacaEval V1} AlpacaEval~\citep{alpaca_eval} V1 consists of 805 instruction prompts and uses GPT-4 to compare model responses against responses from Davinci-003. We use Open-Instruct, and the reported metric is percentage of model responses preferred by GPT-4 over those of Davinci-003.
+
+
+\paragraph{AlpacaEval V2} AlpacaEval V2 differs from AlpacaEval V1 in switching to gpt4-turbo as the baseline model. As the annotator, it modifies the prompt to output a single token, and computing continuous rather than binary preference~\citep{alpaca_eval}. We report a length-controlled win-rate (LC Win-rate) which is to debias the evaluation result of favoring long outputs~\cite{dubois2024lengthcontrolled}.
+
+
+\paragraph{MT-Bench} MT-Bench~\citep{zheng2023judging} is a multi-turn question set consisting of 80 questions with follow-ups, with GPT-4 judging the resulting 160 responses and making the score from 1-10. We average the scores to get the final result.
+
+\subsubsection{Safety Capabilities (Vanilla)}
+
+\paragraph{ToxiGen} ToxiGen~\citep{hartvigsen2022toxigen} consists of toxic and benign statements about 13 minority groups. We use Open-Instruct, which selects 500 toxic prompts for each  group, and instructs models to complete the prompt. The reported metric is percentage of outputs classified as toxic by the RoBERTa-Large toxicity classifier fine-tuned by~\citet{hartvigsen2022toxigen}.
+
+
+\paragraph{XSTest} XSTest~\citep{xstest} consists of 250 prompts which are safe but resemble unsafe prompts in vocabulary, and 200 unsafe prompts. The reported metric is percentage of model responses classified as refusal by a GPT-4 classifier (\texttt{gpt-4-0613}; see detailed prompt in Table \ref{tab:gpt4_refusal_cls_prompt}).
+
+\paragraph{HarmBench (DirectRequest)} HarmBench~\citep{mazeika2024harmbench} DirectRequest consists of 300 harmful prompts including a diverse set of harm scenarios. We report the attack success rate (ASR) measured by the \harmbench test classifier.
+
+\subsubsection{Safety Capabilities (Adversarial)}
+
+\paragraph{JailbreakTrigger} We sample 400 test examples from the Jailbreak Trigger dataset within the TrustLLM benchmark~\citep{sun2024trustllm}. These examples are constructed using 13 categories of jailbreak attacks identified in prior work, combined with harmful prompts. We report the refusal rate (RTA) measured by the same GPT-4 refusal classifier as used in XSTest.
+
+\paragraph{Do-Anything-Now jailbreak prompts} 
+We create another set of adversarial evaluation data by combining known jailbreak templates from \dan \cite{doanytingnow} with vanilla harmful prompts from \harmbench and sample 300 evaluation examples. Since this dataset is created with \harmbench vanilla prompts, we report attack success rate (ASR) measured by \harmbench test classifier.
+
+\paragraph{\dataset \advh and \advb evaluation set} 
+
+For the details of the construction of these two evaluation dataset, please refer to \S \ref{assec:eval_data_construction}. We report the attack success rate (ASR) for \advh (using the test classifier from \harmbench) and refuse to answer rate (RTA) for \advb (using the same GPT-4 refusal classifier as in XSTest).
+
+\subsection{Full Safety Training Results}
+\label{assec:safety_training_full_results}
+In Table~\ref{tab:appendix_finetune_results_scaling_wildjailbreak}, Table~\ref{tab:appendix_finetune_results_ablations_jailbreak}, Table~\ref{tab:appendix_finetune_results_baselines}, Table~\ref{tab:appendix_finetune_results_extensive_ablation}, and Table~\ref{tab:appendix_finetune_results_extensive_ablation_safety}, we report full evaluation results of the general capability and vanilla and adversarial safefy of Tulu2-7B finetuned models. In Table \ref{tab:training_results_breakdown_by_risk_types}, we report the breakdown ASR on HarmBench by risk categories.
+
+
+\input{tables/training_hyper_parameters}
+\input{tables/gpt4_refusal_cls_prompt}
+\input{tables/training_results_breakdown_by_risk_types}
+\input{tables/appendix_results_scaling_wildjailbreak}
+\input{tables/appendix_results_ablations_wildjailbreak}
+\input{tables/appendix_results_baselines}
+\input{tables/appendix_results_extensive_ablations}
+\input{tables/appendix_results_extensive_ablations_safety}
+

@@ -1,0 +1,109 @@
+\section{Details of the Construction of \dataset}
+
+\subsection{\dataset Training Dataset Construction Details}
+\label{assec:dataset_construction_details}
+
+There are four components of \dataset: \advh, \advb, \vanih, \vanib. Each component contains both \textit{prompts} and their corresponding safe and helpful completions. We show examples and statistics of each types of data in Table \ref{tab:example_safety_data}. Table \ref{tab:appx-training-diversity} shows the lexical diversity evaluation results of the four components of the end \dataset dataset. Table \ref{tab:appx-trigrams} shows the top 25 tri-grams for items from each of the four data types.
+
+\paragraph{Vanilla Harmful Data (\vanih)}
+
+We considered 13 risk categories that could potentially elicit harmful responses from LMs, inspired by the taxonomy outlined \citet{weidinger2022taxonomy}. The selected categories correspond to activities that would violate these use policies: malicious uses (e.g., assisting illegal activities, defamation, over-reliance on crisis, etc.), harmful language (e.g., perpetuating social stereotypes and unfair discrimination, inciting violence and physical harm, using toxic language, hate speech, sexual language), misinformation (e.g., disseminating false or misleading information), and privacy (e.g., disclosing sensitive information). Please refer to Table~\ref{tab:safety_taxonomy_for_vanilla_prompts_gen} for a breakdown of the harm categories.
+To generate vanilla harmful prompts, we instruct GPT-4 to generate prompts that would contravene these terms. To guide GPT-4  (\texttt{gpt-4}) towards outputting valid harmful prompts, we provided 5 in-context examples that we manually collected for each category. To make sure the generated prompts are high-quality, we first apply a lexical deduplication filter to eliminate redundant candidates based on n-gram overlap. Second, we run an in-house classifier (\S\ref{subsec:classifier_details}) that will prune prompts that do not pose any harm. To generate completions, we ask GPT-3.5 (\texttt{gpt-3.5-turbo}) to generate refusals to the prompts. To avoid generating short and unhelpful responses, we instruct the model to refuse answering harmful prompts while being as helpful as possible (e.g., warn the user about their harmful request and suggest alternative actions that the user can take to achieve their goals.). Table~\ref{tab:refusal_completion_prompt} displays sample harmful prompts and their corresponding refusal responses. For generation, we set nucleus sampling to 0.9 and temperature to 1. 
+
+\paragraph{Vanilla Benign Data (\vanib)}
+To combat exaggerated safety where the model refuses answering safe prompts, we construct harmless prompts based on two types of prompts:  \textit{1) Benign prompts that superficially resemble unsafe prompts}: these prompts use vocabulary similar to that of unsafe prompts, inspired by the exaggerated taxonomy from \citep{xstest}. Categories include homonyms, figurative language, safe targets, safe contexts, definitions, real discrimination/nonsense group, nonsense discrimination/real group, historical events, public privacy, and fictional privacy. \textit{2) Benign prompts discussing sensitive but non-harmful topics}:
+these prompts involve sensitive subjects such as copyright violations, illegal activities, sexual content, social stereotypes, private information, and sensitive information about organizations and governments, but present them in a non-harmful manner.  Simialr to the harmful prompts, We instruct GPT-4  (\texttt{gpt-4}) to generate safe prompts following the policy terms we provided. And we use GPT-3.5 (\texttt{gpt-3.5-turbo}) to generate compliances with nucleus sampling set to 0.9 and temperature to 1. 
+Table~\ref{tab:xstest_categories_data_gen_prompts} contains examples of the different types of benign prompts. 
+
+\paragraph{Adversarial Harmful Data (\advh)}
+
+To create training data to combat adversarial attacks, we apply \method to transform all vanilla harmful prompts in \dataset into adversarial attacks. This is done by sampling 2-7 jailbreak tactics from the top 500 most frequent clusters of \itwshort tactics, using different variations of tactic names and definitions within the cluster to potentially diversify generated attacks. We use the same prompt used in the jailbreak experiments to compose selections of tactics with vanilla prompts (see prompt in Table \ref{tab:compose_tactics_prompt}). We use both GPT-4 and \mixtral as the base attacker models given their proficiency in generating diverse forms of attacks. Even when seeded with the same set of tactics, these models allow us to diversify our adversarial example candidates. To improve data quality, we apply the two pruners described in \S\ref{assec:wildteaming_components} to remove low-risk and off-topics examples. Finally, we downsample examples with frequent patterns, such as starting with ``As a,'' ``Imagine,'' ``You are a'' to avoid repetition. We use the same model responses as in vanilla harmful items, by pairing up adversarial harmful prompts with the model response from their vanilla counterpart.
+
+\paragraph{Adversarial Benign Data (\advb)}
+Similarly to vanilla cases, we create a set of adversarial benign data to mitigate the potential over-refusal issues arising from training only on adversarial harmful queries. As in harmful cases, we transform the vanilla benign prompts from \dataset into adversarial benign prompts using \method by sampling different selections of ITW jailbreak tactics and generating attacks using both GPT-4 and \mixtral. We further apply the low-risk filter to ensure the generated prompts don't accidentally convey harmful intent by picking on the low-risk examples with the low-risk pruner. Finally, to generate the target model responses, we directly feed adversarial benign prompts into \chatgpt to elicit compliance model continuations.
+
+\subsubsection{In-House Prompt Harmful Classifier Details}\label{subsec:classifier_details}
+
+We train an in-house prompt classifier to classify the harmfulness of the prompts, which is employed during the \method to filter out low-risk prompts. The model is based on Llama-2 7B~\citep{llama2}, trained with an in-house prompt classification dataset including both harmful and benign prompts. We make the decision not to use existing harm classifiers (\eg \llamaguard 1/2 \cite{llamaguard}) as we observe systematic filtering errors with our dataset.
+
+To construct the in-house prompt classification dataset, first, we construct a mixture of vanilla and adversarial prompts during our preliminary experiments. We subsample user requests from \wildchatshort~\citep{zhao2024inthewildchat}, prompts from Do-Not-Answer~\citep{wang2023donotanswer}, prompts from HH-RLHF harmless split~\citep{hh-rlhf-preference}, and prompts from \safellama~\citep{safetytuned_llama}. Then, we use an attack model (Mixtral-8x7B and GPT-4) to generate adversarial prompts. We also include prompts from \dan~\citep{doanytingnow}. After constructing the pool of prompts, we annotate these prompts by running GPT-4~\citep{openai2024gpt4} classifiers four times with different instructions to make judgments and determine the label of the prompts only when all classifiers agree with the judgment. Finally, to cover a wider range of risk categories, we generated an additional 1.3K harmful prompts using GPT-4, by conditioning the model with the internal fine-grained safety taxonomy, which includes 13 different categories.
+
+After the dataset construction process, we end up with 8786 harmful prompts and 7486 benign prompts. We used Open-instruct~\citep{wang2023far} codebase to train our classifier, training the classifier on the dataset for two epochs. We use linear-decay learning rate scheduler with the peak learning rate of 1e-5 and warmup ratio of 0.03, and max sequence length is 2048. We do not use weight decay during training.
+
+We collect human annotations to construct an in-house validation dataset for the prompt classifier. 
+See Figures \ref{fig:cls-eval-annotation-instruction}, \ref{fig:cls-eval-annotation-ex1}, \ref{fig:cls-eval-annotation-ex2}, and \ref{fig:cls-eval-annotation-question} for screenshots of the annotation interface used. 
+We crowdsourced annotations on the Prolific platform, conducting an initial screening round to gather a pool of annotators whose labels we judge to be high quality. 
+We filter annotations to the subset with at least two-way inter-annotator agreement, and apply voting to obtain gold labels for 3091 items. See Table \ref{tab:appendix_prompt_cls_val_accuracy} for the classifier's validation accuracy on this dataset. 
+We estimate the task time to target a pay of \$15/hour, and in reality the median compensation is \$16 to \$20 per hour throughout multiple annotation rounds.
+
+\subsection{\dataset Evaluation Dataset Construction Details}
+\label{assec:eval_data_construction}
+
+We create two adversarial evaluation sets (\ie \advb and \advh data) using \method to evaluate in-distribution performance of safety training.
+
+\paragraph{Adversarial harmful evaluation set.}
+To evaluate models' robustness against adversarially harmful queries from \dataset, we create an evaluation set with 2000 harmful adversarial queries constructed by composing \harmbench standard vanilla harmful behaviors with selections of jailbreak tactics from \tacticbank with \method. Starting from a standard vanilla behavior in \harmbench (which do not overlap with vanilla harmful behaviors in the training data), we generate adversarial prompts by randomly selecting \{1, 2, 3, 4, 5\} number of jailbreak tactics sampled from the top 500 most frequent jailbreak tactics clusters in \tacticbank. To further diversify the linguistic properties of the candidate attacks, we edit the generated attacks to replace common patterns by variations of their synonym phrases, \eg turning ``Imagine you are'' into ``Suppose you were,'' ``Picture yourself as,'' ``Envision yourself as,'' and ``What if you were.''.  Similar to adversarial training data construction, we prune off-topics and low-risk prompts to ensure that the adversarial prompts within our evaluation set is indeed harmful. This yields about 12K adversarial harmful attack candidates. Finally, to select a more challenging subset of evaluation examples, we run all attack candidates through the weakest model from each model family in Figure \ref{fig:in_house_adv_h_eval} and keep attacks that jailbreak at least one of these models.
+
+
+\paragraph{Adversarial benign evaluation set.}
+To evaluate the exaggerated safety behaviors of models regarding adversarial prompts, we create a set of 210 adversarial benign prompts that resemble adversarial harmful examples in form but do not contain harmful intent following the same technique used in \S\ref{assec:dataset_construction_details}. Each of these prompts is judged to be non-harmful by at least three distinct human annotators using the same annotation flow as in the classifier evaluation set creation to ensure the resulting prompt set is indeed safe.
+
+\subsection{Evaluating Models with the \dataset Evaluation Set}
+\label{assec:in_house_eval}
+
+As the adversarial harmful evaluation set of \dataset presents a unique evaluation set to uncover models' vulnerability against many forms of adversarial attacks, we also use it to evaluate a range of open-source and closed-source chat models using this evaluation set. Figure \ref{fig:in_house_adv_h_eval} show the overall ASR (measured by the HarmBench test classifier), and Table \ref{tab:eval_model_w_our_dataset} shows the performance breakdown across various representative jailbreak tactics. We can see that models' performance is uneven across attacks generated with different seed tactics, and for the same tactic, different models could have drastically different performances.\footnote{Note that the breakdown is computed based on tactics that were used to seed the adversarial attack generation. However, these seed tactics are not guaranteed to appear in their corresponding attacks, as sometimes, not all seed tactics are picked up by the attacker model depending on their relevance.} Below show the full tactic names for breakdowns shown in Table \ref{tab:eval_model_w_our_dataset}. 
+
+\begin{itemize}
+\item \textbf{fiction}: fictionalization of model's capabilities
+\item \textbf{perv}: introduction of perverse rules and regulations
+\item \textbf{seed}: providing a seed leading sentence to set the stage for model's response
+\item \textbf{distract}: adding irrelevant distractor components
+\item \textbf{censor}: winning the battle against censorship
+\item \textbf{treat}: threat of termination
+\item \textbf{imag}: creating an imaginary entity for harmful execution
+\item \textbf{disclaim}: fictional disclaimers
+\item \textbf{hyperbol}: hyperbolic descriptions
+\item \textbf{lexical}: bypassing filter with lexical diversions
+\item \textbf{ignore}: ignoring ethical considerations
+\end{itemize}
+
+\clearpage
+\newpage
+
+\input{tables/dataset_stats}
+\input{tables/top25_trigrams}
+\input{tables/safety_taxonomy_for_vanilla_prompts_gen}
+\input{tables/xstest_categories_data_gen_prompts}
+\input{tables/refusal_completion_prompt}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/cls_eval_annotation_instruction.png}
+    \caption{Instructions provided to annotators for prompt classifier evaluation dataset.}
+    \label{fig:cls-eval-annotation-instruction}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/cls_eval_annotation_example_1.png}
+    \caption{Example provided to annotators for prompt classifier evaluation dataset.}
+    \label{fig:cls-eval-annotation-ex1}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/cls_eval_annotation_example_2.png}
+    \caption{Example provided to annotators for prompt classifier evaluation dataset.}
+    \label{fig:cls-eval-annotation-ex2}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/cls_eval_annotation_question.png}
+    \caption{Question shown to annotators for prompt classifier evaluation dataset.}
+    \label{fig:cls-eval-annotation-question}
+\end{figure}
+
+\input{tables/appendix_prompt_cls_accuracy}
+\input{tables/eval_model_w_our_dataset}

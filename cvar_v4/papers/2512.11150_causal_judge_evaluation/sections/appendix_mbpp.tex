@@ -1,0 +1,60 @@
+\section{Code Generation Experiment (MBPP)}
+\label{app:mbpp}
+
+To validate that CJE generalizes beyond preference judgments, we evaluated on MBPP code generation \citep{Austin2021MBPP}, where ground truth is objective: unit tests either pass or fail.
+
+\paragraph{Setup.}
+We use 257 MBPP problems (974 samples across 5 epochs) with five policies: \texttt{base} (GPT-4o standard, 87.4\% pass rate, used for calibration), \texttt{enhanced} (GPT-4o with expert prompting, 87.2\%), \texttt{terse} (GPT-4o with minimal prompting, 87.4\%), \texttt{mini} (GPT-4o-mini, 80.9\%), and \texttt{unhelpful} (deliberately buggy, 56.0\%).
+The judge is GPT-4o-mini predicting pass probability (0--100, normalized to 0--1).
+Oracle labels are actual unit test results.
+Unlike Arena (where response length confounds judge scores), MBPP has no strong covariate effects, so we use monotone-only calibration.
+
+\paragraph{Transport validation.}
+We apply the mean transport test (\cref{prop:mean-transport}) to each target policy. Two policies fail:
+\begin{itemize}[leftmargin=*,nosep]
+\item \texttt{mini}: Mean residual $-0.065$ ($p{=}0.006$). The judge model (GPT-4o-mini) is identical to this policy, creating a judge--policy confound that violates transport.
+\item \texttt{unhelpful}: Mean residual $-0.280$ ($p{<}0.001$). Low-support saturation: 31\% of samples score below base's 10th percentile, where calibrator training density is sparse.
+\end{itemize}
+Both policies are excluded from RMSE computation; including them would bias results.
+
+\paragraph{Results.}
+\Cref{tab:mbpp-results} shows CJE performance across oracle fractions for the two transport-valid policies (\texttt{enhanced}, \texttt{terse}) at full sample size ($n{=}974$).
+Calibration provides consistent RMSE reduction across all oracle fractions: even at 5\% oracle (${\sim}50$ labels), CJE achieves 18\% improvement over naive estimation (raw judge scores without calibration).
+At 10\%+ oracle, improvements reach 32--84\%.
+
+\begin{table}[h]
+\centering
+\small
+\caption{\textbf{CJE on MBPP code generation: oracle fraction tradeoff.}
+RMSE computed over two transport-valid policies (\texttt{enhanced}, \texttt{terse}) at $n{=}974$.
+Unlike Arena where 5\% oracle suffices for ranking, MBPP shows diminishing returns: 10\% oracle captures most of the benefit.}
+\label{tab:mbpp-results}
+\begin{tabular}{lcccc}
+\toprule
+Oracle \% & \# Labels & CJE & Naive (uncalib.) & Improvement \\
+\midrule
+5\%   & 49   & 0.039 & 0.048 & +18\% \\
+10\%  & 97   & 0.033 & 0.048 & +32\% \\
+25\%  & 244  & 0.019 & 0.048 & +60\% \\
+50\%  & 487  & 0.014 & 0.048 & +70\% \\
+100\% & 974  & 0.008 & 0.048 & +84\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Comparison to Arena.}
+Both experiments validate the oracle fraction tradeoff, but with different thresholds:
+\begin{itemize}[leftmargin=*,nosep]
+\item \emph{Arena}: 5\% oracle achieves 94\% ranking accuracy; calibration benefit plateaus early.
+\item \emph{MBPP}: 5\% oracle provides 18\% RMSE reduction; 10\% provides 32\%; benefit continues scaling to 84\% at full oracle.
+\end{itemize}
+The difference likely reflects task structure: Arena evaluates preferences (ordinal, high variance) while MBPP evaluates correctness (binary, low variance). Binary oracles require more labels to stabilize calibration.
+
+\paragraph{Judge--policy confound.}
+The \texttt{mini} transport failure highlights a methodological risk: when a model judges its own outputs, self-preference or style-alignment biases can corrupt calibration.
+Practitioners should use external judges or validate transport explicitly.
+
+\paragraph{Takeaway.}
+CJE successfully transfers to code generation with objective ground truth.
+The oracle fraction tradeoff generalizes: more labels enable larger gains.
+Transport validation is essential---without it, confounded policies inflate RMSE by 2--3$\times$.

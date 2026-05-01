@@ -1,0 +1,65 @@
+\begin{thebibliography}{7}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Acerbi \& Tasche(2002)Acerbi and Tasche]{AcerbiTasche2002}
+Carlo Acerbi and Dirk Tasche.
+\newblock On the coherence of expected shortfall.
+\newblock \emph{Journal of Banking and Finance}, 26\penalty0 (7):\penalty0
+  1487--1503, 2002.
+
+\bibitem[Golodnikov et~al.(2019)Golodnikov, Kuzmenko, and
+  Uryasev]{GolodnikovKuzmenkoUryasev2019}
+Alex Golodnikov, Valentin Kuzmenko, and Stanislav Uryasev.
+\newblock {CVaR} regression based on the mixed-quantile quadrangle.
+\newblock \emph{Journal of Risk and Financial Management}, 12\penalty0
+  (3):\penalty0 107, 2019.
+\newblock \doi{10.3390/jrfm12030107}.
+\newblock URL
+  \url{https://uryasev.ams.stonybrook.edu/wp-content/uploads/2019/07/CVaR_Regression_Based_on_Mixed-Quantile_Quadrangle.pdf}.
+
+\bibitem[Homburg et~al.(2021)Homburg, Wei{\ss}, Alwan, Frahm, and
+  G{\"o}b]{HomburgWeissAlwanFrahmGob2021}
+Annika Homburg, Christian~H. Wei{\ss}, Layth~C. Alwan, Gabriel Frahm, and
+  Rainer G{\"o}b.
+\newblock Evaluating approximate risk forecasts for count processes.
+\newblock \emph{Journal of Risk and Financial Management}, 14\penalty0
+  (4):\penalty0 182, 2021.
+\newblock \doi{10.3390/jrfm14040182}.
+\newblock URL \url{https://www.mdpi.com/1911-8074/14/4/182}.
+
+\bibitem[Landsman \& Valdez(2005)Landsman and Valdez]{LandsmanValdez2005}
+Zinoviy~M. Landsman and Emiliano~A. Valdez.
+\newblock Tail conditional expectations for exponential dispersion models.
+\newblock \emph{ASTIN Bulletin}, 35\penalty0 (1):\penalty0 189--209, 2005.
+\newblock \doi{10.2143/AST.35.1.583169}.
+\newblock URL
+  \url{https://www.cambridge.org/core/journals/astin-bulletin-journal-of-the-iaa/article/tail-conditional-expectations-for-exponential-dispersion-models/9F818D814C6A0A64BCB1CD31F7853835}.
+
+\bibitem[Luxenberg et~al.(2025)Luxenberg, P{\'e}rez-Pi{\~n}eiro, Diamond, and
+  Boyd]{LuxenbergPerezPineiroDiamondBoyd2025}
+Eric Luxenberg, David P{\'e}rez-Pi{\~n}eiro, Steven Diamond, and Stephen Boyd.
+\newblock An operator splitting method for large-scale {CVaR}-constrained
+  quadratic programs, 2025.
+\newblock URL \url{https://arxiv.org/abs/2504.10814}.
+
+\bibitem[Rockafellar \& Uryasev(2000)Rockafellar and
+  Uryasev]{RockafellarUryasev2000}
+R.~Tyrrell Rockafellar and Stanislav Uryasev.
+\newblock Optimization of conditional value-at-risk.
+\newblock \emph{Journal of Risk}, 2\penalty0 (3):\penalty0 21--41, 2000.
+
+\bibitem[Rockafellar \& Uryasev(2002)Rockafellar and
+  Uryasev]{RockafellarUryasev2002}
+R.~Tyrrell Rockafellar and Stanislav Uryasev.
+\newblock Conditional value-at-risk for general loss distributions.
+\newblock \emph{Journal of Banking and Finance}, 26\penalty0 (7):\penalty0
+  1443--1471, 2002.
+\newblock \doi{10.1016/S0378-4266(02)00271-6}.
+\newblock URL
+  \url{https://sites.math.washington.edu/~rtr/papers/rtr187-CVaR2.pdf}.
+
+\end{thebibliography}

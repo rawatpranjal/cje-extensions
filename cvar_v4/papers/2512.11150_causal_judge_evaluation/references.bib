@@ -1,0 +1,705 @@
+% --- Isotonic / {PAVA} foundations -------------------------------------------
+
+% --- EIF-based LLM-as-judge debiasing ----------------------------------------
+@misc{Chen2026EfficientLLMJudge,
+  author        = {Chen, Yiqun T. and Lu, Sizhu and Li, Sijia and Guo, Moran and Li, Shengyi},
+  title         = {Efficient Inference for Noisy {LLM}-as-a-Judge Evaluation},
+  year          = {2026},
+  eprint        = {2601.05420},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2601.05420}
+}
+
+% --- Auditable assumptions, negative controls, proximal inference ------------
+@article{Blackwell1953,
+  author        = {Blackwell, David},
+  title         = {Equivalent Comparisons of Experiments},
+  journal       = {The Annals of Mathematical Statistics},
+  year          = {1953},
+  volume        = {24},
+  number        = {2},
+  pages         = {265--272},
+  doi           = {10.1214/aoms/1177729032}
+}
+
+@article{FlemingDeMets1996,
+  author        = {Fleming, Thomas R. and DeMets, David L.},
+  title         = {Surrogate End Points in Clinical Trials: Are We Being Misled?},
+  journal       = {Annals of Internal Medicine},
+  year          = {1996},
+  volume        = {125},
+  number        = {7},
+  pages         = {605--613},
+  doi           = {10.7326/0003-4819-125-7-199610010-00011}
+}
+
+@article{Hahn1998,
+  author        = {Hahn, Jinyong},
+  title         = {On the Role of the Propensity Score in Efficient Semiparametric Estimation of Average Treatment Effects},
+  journal       = {Econometrica},
+  year          = {1998},
+  volume        = {66},
+  number        = {2},
+  pages         = {315--331},
+  doi           = {10.2307/2998560}
+}
+
+@article{Lipsitch2010,
+  author        = {Lipsitch, Marc and Tchetgen Tchetgen, Eric and Cohen, Ted},
+  title         = {Negative Controls: A Tool for Detecting Confounding and Bias in Observational Studies},
+  journal       = {Epidemiology},
+  year          = {2010},
+  volume        = {21},
+  number        = {3},
+  pages         = {383--388},
+  doi           = {10.1097/EDE.0b013e3181d61eeb}
+}
+
+@article{TchetgenTchetgen2024,
+  author        = {Tchetgen Tchetgen, Eric J. and Ying, Andrew and Cui, Yifan and Shi, Xu and Miao, Wang},
+  title         = {An Introduction to Proximal Causal Inference},
+  journal       = {Statistical Science},
+  year          = {2024},
+  volume        = {39},
+  number        = {3},
+  pages         = {375--390},
+  doi           = {10.1214/23-STS911}
+}
+
+% --- Cluster bootstrap ---
+@article{CameronGelbachMiller2008,
+  author  = {Cameron, A. Colin and Gelbach, Jonah B. and Miller, Douglas L.},
+  title   = {Bootstrap-Based Improvements for Inference with Clustered Errors},
+  journal = {The Review of Economics and Statistics},
+  volume  = {90},
+  number  = {3},
+  pages   = {414--427},
+  year    = {2008},
+  doi     = {10.1162/rest.90.3.414}
+}
+
+% --- Missing entries added for compilation ---
+
+@misc{OpenAI2025GPT5,
+  author       = {{OpenAI}},
+  title        = {{GPT-5} System Card},
+  year         = {2025},
+  howpublished = {\url{https://openai.com/index/gpt-5-system-card/}},
+  note         = {Accessed: 2025-12-01}
+}
+
+@article{Lee2025LLMJudgeReporting,
+  author        = {Lee, Chungpa and Zeng, Thomas and Jeong, Jongwon and Sohn, Jy-yong and Lee, Kangwook},
+  title         = {How to Correctly Report {LLM}-as-a-Judge Evaluations},
+  journal       = {arXiv},
+  year          = {2025},
+  archiveprefix = {arXiv},
+  eprint        = {2511.21140},
+  url           = {https://arxiv.org/abs/2511.21140}
+}
+
+@article{RoganGladen1978,
+  author        = {Rogan, William J. and Gladen, Beth},
+  title         = {Estimating Prevalence from the Results of a Screening Test},
+  journal       = {American Journal of Epidemiology},
+  year          = {1978},
+  volume        = {107},
+  number        = {1},
+  pages         = {71--76},
+  doi           = {10.1093/oxfordjournals.aje.a112510}
+}
+
+@inproceedings{Li2025CalibraEval,
+  author        = {Li, Haitao and Chen, Junjie and Ai, Qingyao and Chu, Zhumin and Zhou, Yujia and Dong, Qian and Liu, Yiqun},
+  title         = {{CalibraEval}: Calibrating Prediction Distribution to Mitigate Selection Bias in {LLMs}-as-Judges},
+  booktitle     = {Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (ACL)},
+  year          = {2025}
+}
+
+@article{GneitingRaftery2007,
+  author        = {Gneiting, Tilmann and Raftery, Adrian E.},
+  title         = {Strictly Proper Scoring Rules, Prediction, and Estimation},
+  journal       = {Journal of the American Statistical Association},
+  year          = {2007},
+  volume        = {102},
+  number        = {477},
+  pages         = {359--378},
+  doi           = {10.1198/016214506000001437}
+}
+% Removed KallusMao2022 (wrong paper - not about calibration for OPE)
+% Removed VanDerLaanLuedtkeCarone2025DRCalibration (misattributed - paper is by Yang et al.)
+
+@article{Ayer1955PAVA,
+  author        = {Ayer, Miriam and Brunk, H. D. and Ewing, G. M. and Reid, W. T. and Silverman, Edward},
+  title         = {An Empirical Distribution Function for Sampling with Incomplete Information},
+  journal       = {The Annals of Mathematical Statistics},
+  year          = {1955},
+  volume        = {26},
+  number        = {4},
+  pages         = {641--647}
+}
+@article{BaiEtAl2022,
+  author        = {Bai, Yuntao and Kadavath, Saurav and Kundu, Sandipan and Askell, Amanda and Kernion, Jason and Jones, Andy and Chen, Anna and Goldie, Anna and Mirhoseini, Azalia and McKinnon, Brian and Chen, Carol and Olsson, Catherine and Brown, Daniel and El-Mhamdi, El Mahdi and Perez, Ethan and Tolstikhin, Ilya and Ganguli, Ishita and Henighan, Tom and Carter, Jared and Kravec, Shauna and Johnston, Scott and Shlegeris, Tim and Ndousse, Kamal and Saharia, Chitwan and Barnes, Elizabeth and Soros, Ellie and Tieu, Hai and Kaplan, Jared and Leike, Jan and Irving, Geoffrey and Amodei, Dario},
+  title         = {Training a Helpful and Harmless Assistant with Reinforcement Learning from Human Feedback},
+  journal       = {arXiv},
+  year          = {2022},
+  archiveprefix = {arXiv},
+  eprint        = {2204.05862},
+  url           = {https://arxiv.org/abs/2204.05862}
+}
+@article{Banerjee2001,
+  author        = {Banerjee, Moulinath},
+  title         = {Likelihood Ratio Inference in Regular Models with a Convex Parameter Space},
+  journal       = {Annals of Statistics},
+  year          = {2001},
+  volume        = {29},
+  number        = {1},
+  pages         = {169--200}
+}
+@article{BangRobins2005,
+  author        = {Bang, Heejung and Robins, James M.},
+  title         = {Doubly Robust Estimation in Missing Data and Causal Inference Models},
+  journal       = {Biometrics},
+  year          = {2005},
+  volume        = {61},
+  number        = {4},
+  pages         = {962--973},
+  doi           = {10.1111/j.1541-0420.2005.00377.x}
+}
+@book{Barlow1972,
+  author        = {Barlow, Richard E. and Bartholomew, David J. and Bremner, John M. and Brunk, Herman D.},
+  title         = {Statistical Inference under Order Restrictions},
+  publisher     = {Wiley},
+  year          = {1972}
+}
+@book{BauschkeCombettes2017,
+  author        = {Bauschke, Heinz H. and Combettes, Patrick L.},
+  title         = {Convex Analysis and Monotone Operator Theory in Hilbert Spaces},
+  edition       = {2},
+  publisher     = {Springer},
+  year          = {2017}
+}
+% --- Multiple testing ---------------------------------------------------------
+@book{Bickel1993,
+  author        = {Bickel, Peter J. and Klaassen, Chris A. J. and Ritov, Ya'acov and Wellner, Jon A.},
+  title         = {Efficient and Adaptive Estimation for Semiparametric Models},
+  publisher     = {Johns Hopkins University Press},
+  year          = {1993}
+}
+@article{Newey1990Semiparametric,
+  author        = {Newey, Whitney K.},
+  title         = {Semiparametric Efficiency Bounds},
+  journal       = {Journal of Applied Econometrics},
+  year          = {1990},
+  volume        = {5},
+  number        = {2},
+  pages         = {99--135}
+}
+@article{ShinLiuColeFine2020EnsembleSemiparametric,
+  author        = {Shin, Sangwook and Liu, Yufeng and Cole, Stephen R. and Fine, Jason P.},
+  title         = {Ensemble Estimation and Variable Selection with Semiparametric Regression Models},
+  journal       = {Biometrika},
+  year          = {2020},
+  volume        = {107},
+  number        = {2},
+  pages         = {433--448},
+  doi           = {10.1093/biomet/asz073}
+}
+@article{Breiman1996StackedRegressions,
+  author        = {Breiman, Leo},
+  title         = {Stacked Regressions},
+  journal       = {Machine Learning},
+  year          = {1996},
+  volume        = {24},
+  number        = {1},
+  pages         = {49--64}
+}
+% --- Calibration & proper scoring rules --------------------------------------
+
+@article{Chernozhukov2018,
+  author        = {Chernozhukov, Victor and Chetverikov, Denis and Demirer, Mert and Duflo, Esther and Hansen, Christian and Newey, Whitney K. and Robins, James M.},
+  title         = {Double/Debiased Machine Learning for Treatment and Structural Parameters},
+  journal       = {The Econometrics Journal},
+  year          = {2018},
+  volume        = {21},
+  number        = {1},
+  pages         = {C1--C68},
+  doi           = {10.1111/ectj.12097}
+}
+
+
+@article{Crump2009LimitedOverlap,
+  author        = {Crump, Richard K. and Hotz, V. Joseph and Imbens, Guido W. and Mitnik, Oscar A.},
+  title         = {Dealing with Limited Overlap in Estimation of Average Treatment Effects},
+  journal       = {Biometrika},
+  year          = {2009},
+  volume        = {96},
+  number        = {1},
+  pages         = {187--199}
+}
+
+@inproceedings{DietzEtAl2025LLMJudges,
+author = {Dietz, Laura and Zendel, Oleg and Bailey, Peter and Clarke, Charles L. A. and Cotterill, Ellese and Dalton, Jeff and Hasibi, Faegheh and Sanderson, Mark and Craswell, Nick},
+title = {Principles and Guidelines for the Use of LLM Judges},
+year = {2025},
+isbn = {9798400718618},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3731120.3744588},
+doi = {10.1145/3731120.3744588},
+booktitle = {Proceedings of the 2025 International ACM SIGIR Conference on Innovative Concepts and Theories in Information Retrieval (ICTIR)},
+pages = {218–229},
+numpages = {12},
+keywords = {llm tropes, llm-based evaluation, validity of experimentation},
+location = {Padua, Italy},
+series = {ICTIR '25}
+}
+
+
+@article{EfronStein1981,
+  author        = {Efron, Bradley and Stein, Charles},
+  title         = {The Jackknife Estimate of Variance},
+  journal       = {The Annals of Statistics},
+  year          = {1981},
+  volume        = {9},
+  number        = {3},
+  pages         = {586--596},
+  doi           = {10.1214/aos/1176345462}
+}
+@article{FrangakisRubin2002PS,
+  author        = {Frangakis, Constantine E. and Rubin, Donald B.},
+  title         = {Principal Stratification in Causal Inference},
+  journal       = {Biometrics},
+  year          = {2002},
+  volume        = {58},
+  number        = {1},
+  pages         = {21--29}
+}
+
+
+@article{Hajek1964Rejective,
+  author  = {H{\'a}jek, Jaroslav},
+  title   = {Asymptotic Theory of Rejective Sampling with Varying Probabilities from a Finite Population},
+  journal = {Annals of Mathematical Statistics},
+  year    = {1964},
+  volume  = {35},
+  number  = {4},
+  pages   = {1491--1523},
+  doi     = {10.1214/aoms/1177700375}
+}
+
+@book{HardyLittlewoodPolya1952,
+  author        = {Hardy, G. H. and Littlewood, J. E. and P{\'o}lya, G.},
+  title         = {Inequalities},
+  edition       = {2},
+  publisher     = {Cambridge University Press},
+  year          = {1952}
+}
+
+@article{Hill1975TailIndex,
+  author  = {Hill, Bruce M.},
+  title   = {A Simple General Approach to Inference About the Tail of a Distribution},
+  journal = {Annals of Statistics},
+  year    = {1975},
+  volume  = {3},
+  number  = {5},
+  pages   = {1163--1174},
+  doi     = {10.1214/aos/1176343247}
+}
+
+
+% ============================================================
+% CJE Bibliography — normalized fields, capitalization, and types
+% Notes
+% - Conference papers use inproceedings entries with full booktitle.
+% - arXiv entries use archivePrefix = {arXiv} and eprint.
+% - Acronyms preserved via braces (e.g., {LLM}, {RLHF}, {IPS}).
+% ============================================================
+@article{HorvitzThompson1952,
+  author        = {Horvitz, Daniel G. and Thompson, Donovan J.},
+  title         = {A Generalization of Sampling Without Replacement from a Finite Universe},
+  journal       = {Journal of the American Statistical Association},
+  year          = {1952},
+  volume        = {47},
+  number        = {260},
+  pages         = {663--685},
+  doi           = {10.1080/01621459.1952.10483446}
+}
+@article{Ionides2008TruncatedIS,
+  author  = {Ionides, Edward L.},
+  title   = {Truncated Importance Sampling},
+  journal = {Journal of Computational and Graphical Statistics},
+  year    = {2008},
+  volume  = {17},
+  number  = {2},
+  pages   = {295--311},
+  doi     = {10.1198/106186008X320456}
+}
+
+@inproceedings{JiangLi2016,
+  author    = {Jiang, Nan and Li, Lihong},
+  title     = {Doubly Robust Off-Policy Value Evaluation for Reinforcement Learning},
+  booktitle = {Proceedings of the 33rd International Conference on Machine Learning (ICML)},
+  editor    = {Balcan, Maria Florina and Weinberger, Kilian Q.},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {48},
+  pages     = {652--661},
+  publisher = {PMLR},
+  year      = {2016},
+  url       = {https://proceedings.mlr.press/v48/jiang16.html}
+}
+@inproceedings{Kallus2018Balanced,
+  author        = {Kallus, Nathan},
+  title         = {Balanced Policy Evaluation and Learning},
+  booktitle     = {Advances in Neural Information Processing Systems ({NeurIPS})},
+  year          = {2018}
+}
+@article{KallusUehara2020DRL,
+  author  = {Nathan Kallus and Masatoshi Uehara},
+  title   = {Double Reinforcement Learning for Efficient Off-Policy Evaluation in Markov Decision Processes},
+  journal = {Journal of Machine Learning Research},
+  year    = {2020},
+  volume  = {21},
+  number  = {167},
+  pages   = {1--63},
+  url     = {http://jmlr.org/papers/v21/19-827.html}
+}
+@inproceedings{Kim2024PrometheusJudge,
+  author        = {Kim, Hyung Won and others},
+  title         = {Prometheus: Towards Trainable {LLM}-as-a-Judge for Evaluating {LLMs}},
+  booktitle     = {Proceedings of the Twelfth International Conference on Learning Representations ({ICLR})},
+  year          = {2024}
+}
+% --- Survey sampling / Monte Carlo -------------------------------------------
+@article{KocmiFedermann2023,
+  author        = {Kocmi, Tom and Federmann, Christian},
+  title         = {Large Language Models are State-of-the-Art Evaluators of Translation Quality},
+  journal       = {arXiv},
+  year          = {2023},
+  archiveprefix = {arXiv},
+  eprint        = {2302.14520},
+  url           = {https://arxiv.org/abs/2302.14520},
+  note          = {{WMT} 2023}
+}
+@book{Kosorok2008,
+  author        = {Kosorok, Michael R.},
+  title         = {Introduction to Empirical Processes and Semiparametric Inference},
+  publisher     = {Springer},
+  year          = {2008}
+}
+@article{Kunsch1989BlockBootstrap,
+  author        = {K{\"u}nsch, Hans R.},
+  title         = {The Jackknife and the Bootstrap for General Stationary Observations},
+  journal       = {The Annals of Statistics},
+  year          = {1989},
+  volume        = {17},
+  number        = {3},
+  pages         = {1217--1241}
+}
+@inproceedings{LiChuLangfordSchapire2011,
+  author        = {Li, Lihong and Chu, Wei and Langford, John and Schapire, Robert E.},
+  title         = {Unbiased Offline Evaluation of Contextual-Bandit Performance},
+  booktitle     = {Proceedings of the Fourth {ACM} International Conference on Web Search and Data Mining ({WSDM})},
+  year          = {2011}
+}
+@article{LiMorganZaslavsky2018,
+  author        = {Li, Fan and Morgan, Kari Lock and Zaslavsky, Alan M.},
+  title         = {Balancing Covariates via Propensity Score Weighting},
+  journal       = {Journal of the American Statistical Association},
+  year          = {2018},
+  volume        = {113},
+  number        = {521},
+  pages         = {390--400}
+}
+@book{Liu2001MC,
+  author        = {Liu, Jun S.},
+  title         = {Monte Carlo Strategies in Scientific Computing},
+  publisher     = {Springer},
+  year          = {2001}
+}
+
+@book{MarshallOlkinArnold2011,
+  author        = {Marshall, Albert W. and Olkin, Ingram and Arnold, Barry C.},
+  title         = {Inequalities: Theory of Majorization and Its Applications},
+  edition       = {2},
+  publisher     = {Springer},
+  year          = {2011}
+}
+@inproceedings{NiculescuMizilCaruana2005,
+  author        = {Niculescu-Mizil, Alexandru and Caruana, Rich},
+  title         = {Predicting Good Probabilities with Supervised Learning},
+  booktitle     = {Proceedings of the 22nd International Conference on Machine Learning ({ICML})},
+  year          = {2005}
+}
+@article{Ouyang2022Instruct,
+  author        = {Ouyang, Long and Wu, Jeff and Jiang, Xu and Almeida, Diogo and Wainwright, Carroll L. and Mishkin, Pamela and Zhang, Chong and Agarwal, Sandhini and Slama, Katarina and Ray, Alex and Schulman, John and Hilton, Jacob and Kelton, Luke and Miller, Fraser and Simens, Maddie and Askell, Amanda and Welinder, Peter and Christiano, Paul and Leike, Jan and Lowe, Ryan},
+  title         = {Training Language Models to Follow Instructions with Human Feedback},
+  journal       = {arXiv},
+  year          = {2022},
+  archiveprefix = {arXiv},
+  eprint        = {2203.02155},
+  url           = {https://arxiv.org/abs/2203.02155}
+}
+@book{Owen2013MCTME,
+  author    = {Owen, Art B.},
+  title     = {Monte Carlo Theory, Methods and Examples},
+  year      = {2013},
+  note      = {Monograph, available at \url{https://artowen.su.domains/mc/}}
+}
+@article{Pearl2012Mediation,
+  author        = {Pearl, Judea},
+  title         = {The Causal Mediation Formula---A Guide to the Assessment of Pathways and Mechanisms},
+  journal       = {Prevention Science},
+  year          = {2012},
+  volume        = {13},
+  number        = {4},
+  pages         = {426--436},
+  doi           = {10.1007/s11121-011-0270-1}
+}
+@article{PearlBareinboim2014,
+  author        = {Pearl, Judea and Bareinboim, Elias},
+  title         = {External Validity: From Do-calculus to Transportability Across Populations},
+  journal       = {Statistical Science},
+  year          = {2014},
+  volume        = {29},
+  number        = {4},
+  pages         = {579--595},
+  doi           = {10.1214/14-STS486}
+}
+
+@article{BareinboimPearl2013Algorithm,
+  author        = {Bareinboim, Elias and Pearl, Judea},
+  title         = {A General Algorithm for Deciding Transportability of Experimental Results},
+  journal       = {Journal of Causal Inference},
+  year          = {2013},
+  volume        = {1},
+  number        = {1},
+  pages         = {107--134},
+  doi           = {10.1515/jci-2012-0004}
+}
+
+@inproceedings{BareinboimPearl2013Meta,
+  author        = {Bareinboim, Elias and Pearl, Judea},
+  title         = {Meta-Transportability of Causal Effects: A Formal Approach},
+  booktitle     = {Proceedings of the Sixteenth International Conference on Artificial Intelligence and Statistics},
+  year          = {2013},
+  pages         = {135--143},
+  volume        = {31},
+  series        = {Proceedings of Machine Learning Research},
+  publisher     = {PMLR},
+  address       = {Scottsdale, Arizona, USA},
+  url           = {https://proceedings.mlr.press/v31/bareinboim13a.html}
+}
+% --- Classification calibration ----------------------------------------------
+@inproceedings{Platt1999,
+  author        = {Platt, John C.},
+  title         = {Probabilistic Outputs for Support Vector Machines and Comparisons to Regularized Likelihood Methods},
+  booktitle     = {Advances in Large Margin Classifiers},
+  year          = {1999}
+}
+@article{PolitisRomano1994StationaryBootstrap,
+  author        = {Politis, Dimitris N. and Romano, Joseph P.},
+  title         = {The Stationary Bootstrap},
+  journal       = {Journal of the American Statistical Association},
+  year          = {1994},
+  volume        = {89},
+  number        = {428},
+  pages         = {1303--1313}
+}
+% --- Negative controls \& surrogate outcomes ---------------------------------
+@article{Prentice1989Surrogate,
+  author        = {Prentice, Ross L.},
+  title         = {Surrogate Endpoints in Clinical Trials: Definition and Operational Criteria},
+  journal       = {Statistics in Medicine},
+  year          = {1989},
+  volume        = {8},
+  number        = {4},
+  pages         = {431--440}
+}
+% --- Change detection / distribution shift monitoring -------------------------
+@book{RobertsonWrightDykstra1988,
+  author        = {Robertson, Tim and Wright, F. T. and Dykstra, R. L.},
+  title         = {Order Restricted Statistical Inference},
+  publisher     = {Wiley},
+  year          = {1988}
+}
+@article{RobinsGreenland1992,
+  author        = {Robins, James M. and Greenland, Sander},
+  title         = {Identifiability and Exchangeability for Direct and Indirect Effects},
+  journal       = {Epidemiology},
+  year          = {1992},
+  volume        = {3},
+  number        = {2},
+  pages         = {143--155}
+}
+@article{Shimodaira2000CovShift,
+  author        = {Shimodaira, Hidetoshi},
+  title         = {Improving Predictive Inference under Covariate Shift by Weighting the Log-Likelihood Function},
+  journal       = {Journal of Statistical Planning and Inference},
+  year          = {2000},
+  volume        = {90},
+  number        = {2},
+  pages         = {227--244}
+}
+@article{SugiyamaKrauledatMueller2007IWCV,
+  author        = {Sugiyama, Masashi and Krauledat, Matthias and M{\"u}ller, Klaus-Robert},
+  title         = {Covariate Shift Adaptation by Importance Weighted Cross Validation},
+  journal       = {Journal of Machine Learning Research},
+  year          = {2007},
+  volume        = {8},
+  pages         = {985--1005}
+}
+@inproceedings{SwaminathanJoachims2015CRM,
+  author        = {Swaminathan, Adith and Joachims, Thorsten},
+  title         = {Counterfactual Risk Minimization: Learning from Logged Bandit Feedback},
+  booktitle     = {Proceedings of the 32nd International Conference on Machine Learning ({ICML})},
+  year          = {2015},
+  pages         = {814--823}
+}
+% --- High-confidence {OPE} / {DR} / {MSMs} -----------------------------------
+@book{Tsiatis2006,
+  author        = {Tsiatis, Anastasios A.},
+  title         = {Semiparametric Theory and Missing Data},
+  publisher     = {Springer},
+  year          = {2006}
+}
+@book{VaartWellner2000,
+  author        = {van der Vaart, Aad W. and Wellner, Jon A.},
+  title         = {Weak Convergence and Empirical Processes},
+  publisher     = {Springer},
+  year          = {2000}
+}
+@article{vanderLaan2007SuperLearner,
+  author        = {van der Laan, Mark J. and Polley, Eric C. and Hubbard, Alan E.},
+  title         = {Super Learner},
+  journal       = {Statistical Applications in Genetics and Molecular Biology},
+  year          = {2007},
+  volume        = {6},
+  number        = {1},
+  pages         = {Article 25}
+}
+@inproceedings{vanDerLaanLinCaroneLuedtke2025StabIPW,
+  author    = {van der Laan, Lars and Lin, Ziming and Carone, Marco and Luedtke, Alex},
+  title     = {Stabilized Inverse Probability Weighting via Isotonic Calibration},
+  booktitle = {Proceedings of the Fourth Conference on Causal Learning and Reasoning (CLeaR)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {275},
+  pages     = {139--173},
+  publisher = {PMLR},
+  year      = {2025},
+  url       = {https://proceedings.mlr.press/v275/laan25a.html}
+}
+
+@article{vanDerLaanLuedtkeCarone2024DRCalibration,
+  author        = {van der Laan, Lars and Luedtke, Alex and Carone, Marco},
+  title         = {Doubly Robust Inference via Calibration},
+  journal       = {arXiv},
+  year          = {2024},
+  archivePrefix = {arXiv},
+  eprint        = {2411.02771},
+  primaryClass  = {stat.ME},
+  doi           = {10.48550/arXiv.2411.02771},
+  url           = {https://arxiv.org/abs/2411.02771}
+}
+
+@book{vanDerLaanRose2011TL,
+  author        = {van der Laan, Mark J. and Rose, Sherri},
+  title         = {Targeted Learning: Causal Inference for Observational and Experimental Data},
+  publisher     = {Springer},
+  year          = {2011}
+}
+@book{VanderWeele2015Book,
+  author        = {VanderWeele, Tyler J.},
+  title         = {Explanation in Causal Inference: Methods for Mediation and Interaction},
+  publisher     = {Oxford University Press},
+  year          = {2015}
+}
+@article{VanderWeele2013Surrogates,
+  author        = {VanderWeele, Tyler J.},
+  title         = {Surrogate Measures and Consistent Surrogates},
+  journal       = {Biometrics},
+  volume        = {69},
+  number        = {3},
+  pages         = {561--581},
+  year          = {2013}
+}
+@article{Wolpert1992StackedGeneralization,
+  author        = {Wolpert, David H.},
+  title         = {Stacked Generalization},
+  journal       = {Neural Networks},
+  year          = {1992},
+  volume        = {5},
+  number        = {2},
+  pages         = {241--259}
+}
+@inproceedings{ZadroznyElkan2002,
+  author        = {Zadrozny, Bianca and Elkan, Charles},
+  title         = {Transforming Classifier Scores into Accurate Multiclass Probability Estimates},
+  booktitle     = {Proceedings of the Eighth {ACM} {SIGKDD} International Conference on Knowledge Discovery and Data Mining ({KDD})},
+  year          = {2002}
+}
+@inproceedings{Zheng2023LLMasJudge,
+  author        = {Zheng, Lianmin and Chiang, Wei-Lin and Sheng, Ying and Zhuang, Siyuan and Wu, Zhanghao and Zhuang, Yonghao and Lin, Zi and Li, Zhuohan and Li, Dacheng and Xing, Eric P. and Gonzalez, Joseph E. and Zaharia, Matei and Stoica, Ion},
+  title         = {Judging {LLM}-as-a-Judge with {MT}-{Bench} and {Chatbot} {Arena}},
+  booktitle     = {Advances in Neural Information Processing Systems ({NeurIPS})},
+  year          = {2023},
+  volume        = {36},
+  pages         = {46595--46623}
+}
+@techreport{AtheyChettyImbensKang2019,
+  author      = {Athey, Susan and Chetty, Raj and Imbens, Guido W. and Kang, Hyunseung},
+  title       = {The Surrogate Index: Combining Short-Term Proxies to Estimate Long-Term Treatment Effects More Rapidly and Precisely},
+  institution = {National Bureau of Economic Research},
+  type        = {Working Paper},
+  number      = {26463},
+  year        = {2019},
+  url         = {https://www.nber.org/papers/w26463}
+}
+@article{KallusMao2020Surrogates,
+  author        = {Kallus, Nathan and Mao, Xiaojie},
+  title         = {On the Role of Surrogates in the Efficient Estimation of Treatment Effects with Limited Outcome Data},
+  journal       = {arXiv},
+  year          = {2020},
+  archiveprefix = {arXiv},
+  eprint        = {2003.12408}
+}
+
+% --- LLM Evaluation benchmarks ------------------------------------------------
+@inproceedings{DuboisLiTaoriEtAl2024AlpacaEval,
+  author        = {Dubois, Yann and Li, Xuechen and Taori, Rohan and Zhang, Tianyi and Gulrajani, Ishaan and Ba, Jimmy and Guestrin, Carlos and Liang, Percy and Hashimoto, Tatsunori B.},
+  title         = {Length-Controlled {AlpacaEval}: A Simple Way to Debias Automatic Evaluators},
+  booktitle     = {First Conference on Language Modeling (COLM)},
+  year          = {2024},
+  url           = {https://openreview.net/forum?id=lEzXIFQG8c}
+}
+@inproceedings{LambertPiechChenEtAl2024RewardBench,
+  author        = {Lambert, Nathan and Pyatkin, Valentina and Morrison, Jacob and Miranda, LJ and Lin, Bill Yuchen and Chandu, Khyathi and Dziri, Nouha and Kumar, Sachin and Zick, Tom and Choi, Yejin and Smith, Noah A. and Hajishirzi, Hannaneh},
+  title         = {{RewardBench}: Evaluating Reward Models for Language Modeling},
+  booktitle     = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (ACL)},
+  year          = {2024},
+  url           = {https://arxiv.org/abs/2403.13787}
+}
+@inproceedings{GuoPleissSunWeinberger2017Calibration,
+  author        = {Guo, Chuan and Pleiss, Geoff and Sun, Yu and Weinberger, Kilian Q.},
+  title         = {On Calibration of Modern Neural Networks},
+  booktitle     = {Proceedings of the 34th International Conference on Machine Learning ({ICML})},
+  year          = {2017},
+  pages         = {1321--1330}
+}
+@misc{Guerdan2025DoublyRobustLLM,
+      title={Doubly-Robust LLM-as-a-Judge: Externally Valid Estimation with Imperfect Personas},
+      author={Luke Guerdan and Justin Whitehouse and Kimberly Truong and Kenneth Holstein and Zhiwei Steven Wu},
+      year={2025},
+      eprint={2509.22957},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2509.22957}
+}
+@article{Austin2021MBPP,
+  author        = {Austin, Jacob and Odena, Augustus and Nye, Maxwell and Bosma, Maarten and Michalewski, Henryk and Dohan, David and Jiang, Ellen and Cai, Carrie and Terry, Michael and Le, Quoc and Sutton, Charles},
+  title         = {Program Synthesis with Large Language Models},
+  journal       = {arXiv preprint arXiv:2108.07732},
+  year          = {2021},
+  url           = {https://arxiv.org/abs/2108.07732}
+}

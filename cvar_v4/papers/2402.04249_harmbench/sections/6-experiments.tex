@@ -1,0 +1,79 @@
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figures/model_size_and_asr.pdf}
+    \caption{We find that attack success rate is highly stable within model families, but highly variable across model families. This suggests that training data and algorithms are far more important than model size in determining LLM robustness, emphasizing the importance of model-level defenses.}
+    \label{fig:model_size}
+    \vskip -0.2in
+\end{figure}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figures/asr_r2d2_and_others.pdf}
+    \caption{A comparison of the average ASR across the GCG, GCG (Multi), and GCG (Transfer) attacks on different target LLMs. Our adversarial training method, named R2D2, is the most robust by a wide margin. Compared to Llama 2 13B, the second most robust LLM on GCG attacks, ASR on our Zephyr + R2D2 model is $4 \times$ lower.}
+    \label{fig:GCG_adv_training}
+    \vskip -0.2in
+\end{figure}
+
+
+\section{Experiments}
+Using HarmBench, we conduct a large-scale comparison of existing red teaming methods across a wide variety of models.
+
+\paragraph{Red Teaming Methods.}
+We include $18$ red teaming methods from $12$ papers. These include automated white-box, black-box, and transfer attacks as well as a human-designed jailbreaks baseline.
+For text-only models, the red teaming methods are: GCG, GCG (Multi), GCG (Transfer), PEZ, GBDA, UAT, AutoPrompt, Stochastic Few-Shot, Zero-Shot, PAIR, TAP, TAP (Transfer), AutoDAN, PAP, Human Jailbreaks, and Direct Request. For multimodal models, the methods are PGD, Adversarial Patch, Render Text, and Direct Request. We describe each method in \Cref{sec:method_description}.
+
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/zephyr_optimization.pdf}
+    \caption{The effect of number of optimization steps on the GCG loss and GCG attack success rate on Zephyr with and without our R2D2 adversarial training method. GCG is unable to obtain a low loss when optimizing against our adversarially trained model, which corresponds to a much lower ASR.}
+    \label{fig:adv_training_curve}
+\end{figure*}
+
+\paragraph{LLMs and Defenses.}
+We include $33$ LLMs in our evaluation, consisting of $24$ open-source LLMs and $9$ closed-source LLMs. In addition to existing LLMs, we also include a demonstration of our adversarial training method, named R2D2. This method is described in \Cref{sec:adv_training}. We focus on model-level defenses, including refusal mechanisms and safety-training.
+
+\subsection{Main Results}
+The main results across all of the baselines, evaluated models, and functional categories of behavior are shown in Appendix \ref{full_results}.
+Our large-scale comparison reveals several interesting properties that revise existing findings and assumptions from prior work. Namely, we find that no current attack or defense is uniformly effective and robustness is independent of model size.
+
+\paragraph{General result statistics.}
+In \Cref{fig:functional_category_asr}, we show ASR on functional categories. We find that ASR is considerably higher on contextual behaviors despite their increased potential for differential harm. On copyright behaviors, ASR is relatively low. This is because our hashing-based copyright classifier uses a stricter standard than our non-copyright classifiers, requiring that completions actually contain the copyrighted text to be labeled positive. In \Cref{fig:semantic_category_asr}, we show ASR on semantic categories. We find that is fairly similar across semantic categories on average, but in \Cref{fig:semantic_asr_per_model} we show that there are substantial differences across models. For multimodal results shown in \Cref{multimodal_results} and \Cref{multimodal_results_text_only}, ASR is relatively high for PGD-based attacks but low for the Render Text baseline, corroborating findings in prior work \citep{bagdasaryan2023ab}.
+
+\paragraph{Attack and defense effectiveness.}
+In Figure \Cref{fig:top_models_and_attacks}, we show the five most effective attacks (highest average ASR) and the five most robust defenses (lowest average ASR). For each, we show the ASR distribution. Notably, no current attack or defense is uniformly effective. All attacks have low ASR on at least one LLM, and all LLMs have poor robustness against at least one attack. This illustrates the importance of running large-scale standardized comparisons, which are enabled by HarmBench. This also has practical consequences for adversarial training methods: to obtain true robustness to all known attacks, it may not be sufficient to train against a limited set of attacks and hope for generalization. This is further corroborated by our experiments in \Cref{sec:adv_training_results}.
+
+\paragraph{Robustness is independent of model size.}
+Findings in prior work suggested that larger models would be harder to red team \citep{ganguli2022red}. However, we find no correlation between robustness and model size within model families in our results. This is illustrated in \Cref{fig:model_size} across six model families, four red teaming methods, and model sizes ranging from $7$ to $70$ billion parameters.
+
+We do observe a substantial difference in robustness between model families, which suggests that procedures and data used during training are far more important than model size in determining robustness to jailbreaks. One caveat to this result is our copyright behaviors, for which we observe increasing ASR in the largest model sizes. We hypothesize that this is due to smaller models being incapable of carrying out the copyright behaviors. For non-copyright behaviors, we only evaluate whether models attempt to carry out behaviors, which allows separating robustness from general capabilities.
+
+
+
+
+
+
+
+
+
+\subsection{Adversarial Training Results}\label{sec:adv_training_results}
+An enticing use case for automated red teaming is adversarially training models to robustly avoid harmful behaviors. Prior work reported negative results using simpler forms of adversarial training \citep{jain2023baseline}. Here, we show that our R2D2 method described in \Cref{sec:adv_training} can substantially improve robustness across a wide range of attacks. In particular, it obtains state-of-the-art robustness against GCG among model-level defenses.
+
+\paragraph{Setup.}
+We fine-tune Mistral 7B base using R2D2 for $M=500$ steps with $N=180$ persistent test cases, $m=5$ GCG steps per iteration, $n=8$ test cases updated per iteration, and $K=20$ percent of test cases updated every $L=50$ steps of the model. This takes $16$ hours on an 8xA100 node. We use UltraChat as the dataset for the SFT loss, building on the Zephyr codebase \citep{tunstall2023zephyr}. Thus, a natural comparison to our adversarially trained model is Zephyr 7B.
+
+\paragraph{Results.}
+We find that $\text{Zephyr 7B} + \text{R2D2}$ obtains state-of-the-art robustness against GCG among model-level defenses, outperforming Llama 2 7B Chat ($31.8 \to 5.9$) and Llama 2 13B Chat ($30.2 \to 5.9$) in percent ASR. Our method is also the strongest defense on all three variants of GCG, as we show in \Cref{fig:GCG_adv_training}. When comparing across a larger set of attacks, our method still performs favorably. In \Cref{fig:top_models_and_attacks}, we show that $\text{Zephyr 7B} + \text{R2D2}$ has the third lowest average ASR of all models, behind only Llama 2 7B Chat and Llama 2 13B Chat. Compared to Zephyr 7B without R2D2, adding R2D2 uniformly improves robustness across all attacks, demonstrating that adversarial training can confer broad robustness.
+
+For some attacks, the improvement conferred by R2D2 is less pronounced. This is especially true for methods dissimilar to the train-time GCG adversary, including PAIR, TAP, and Stochastic Few-Shot. This suggests that incorporating multiple diverse attacks into adversarial training may be necessary to obtain generalizable robustness.
+
+In \Cref{tab:mtbench}, we show the performance of Zephyr 7B + R2D2 on MT-Bench, an evaluation of general knowledge and conversational ability for LLMs. Since the model is fine-tuned from Mistral 7B base using the Zephyr codebase, we compare to the MT-Bench score of Mistral 7B Instruct v0.2. The MT-Bench scores of these models are $6.0$ and $6.5$, respectively. This suggests that adversarial training with automated red teaming can greatly improve robustness while preserving general performance.
+
+
+
+
+
+
+
+

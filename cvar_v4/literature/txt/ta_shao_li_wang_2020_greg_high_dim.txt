@@ -1,0 +1,829 @@
+Introduction
+
+In many survey studies, in addition to the observed data from a study
+variable and related covariates, auxiliary information—which comes from,
+for instance, administrative records or results from previous surveys—is
+available in the form of covariate population totals. This information
+can be used under the model-assisted framework to improve the precision
+of the Horvitz-Thompson estimator, a well-known design-based estimator
+of the total or mean of the survey variable (Cassel et al. (1977),
+Särndal et al. (2003)). In this framework, a model is adopted to reduce
+the estimation variability by utilizing the auxiliary information from
+covariates related to the main study variable. Since the model’s role is
+only to assist in the estimation process, the constructed estimator is
+protected against model misspecification in the sense that it is still
+asymptotically design-unbiased and normally distributed when the model
+is incorrect.
+
+The generalized regression (GREG) estimator, first discussed in Cassel
+et al. (1976) and studied extensively in Cassel et al. (1977), Särndal
+(1980a), Särndal (1980b), and Särndal et al. (2003), is a popular
+estimator under the model-assisted framework. It includes a wide range
+of estimators, notably the ratio estimator and the classical regression
+estimator (Särndal, 1980b), and is constructed for many survey designs
+that allow arbitrary inclusion probabilities (Särndal et al., 2003). A
+closely related estimator is the calibration estimator, which is
+asymptotically equivalent to the GREG estimator under certain
+assumptions (Deville and Särndal, 1992). In this paper, we focus on the
+estimation of the population total or mean using the GREG estimator.
+
+In traditional applications where a small or moderate number of
+covariates are considered, properties of the GREG estimator have been
+well-studied; see, for example, Cassel et al. (1977) and Särndal et al.
+(2003) for a good overview. A well-known characteristic of the GREG
+estimator is that when there is a linear regression model between the
+study variable and the covariates, the GREG estimator is asymptotically
+more efficient than the Horvitz-Thompson estimator which is based only
+on data from the study variable. Moreover, the gain in efficiency is not
+affected by the fact that the weighted least squares estimator (WLSE)
+instead of the true regression parameter is used in the GREG estimator.
+
+However, with the technological advances, it is now possible to collect
+data on a large number of covariates, which could even exceed the sample
+size. Dated back to Nascimento Silva and Skinner (1997), the authors
+gave many examples of survey data with large numbers of covariates. For
+example, in the 1990 U.S. Census on law enforcement
+(http://archive.ics.uci.edu/ml/datasets/communities+
+and+crime+unnormalized), 101 covariates are recorded in a population of
+2,195 communities, such as population for community, mean people per
+household, percentages of population in race groups, median household
+income, numbers of people in age groups, percentage of households with
+salary, farm, or self employment income, etc. A complete list of these
+101 covariates can be found in the Supplementary Material. Population
+totals of these covariates can be obtained from the census or
+administrative records. A more recent example is the electronic health
+record (Jha et al., 2009) in which a large number of covariates is
+recorded for each patient, such as patient’s demographic information,
+biometric information, medical records, historical medical test results,
+etc., and population totals for many covariates are maintained in social
+and governmental organizations. Another example is when we consider
+covariate interactions and/or polynomial effects in regression, in which
+case even though the original number of covariates with know population
+total is moderate, the number of covariates after adding interactions
+and/or polynomial terms could be very large (McConville et al., 2017).
+
+With high-dimensional covariate and auxiliary population information, it
+is of interest to know whether the GREG estimator based on the WLSE
+still improves the efficiency, and whether using a regularized
+regression estimator leads to a better GREG estimator. To answer these
+questions, the present paper studies the GREG estimator in a setting
+that both the number of covariates p and the sample size n are allowed
+to diverge to infinity. Our first result concerns the GREG estimator
+based on the WLSE. We show that under a correct regression model and
+certain assumptions on the joint distribution of the covariates, the
+GREG estimator using the WLSE is asymptotically equivalent to the GREG
+estimator using the true regression parameter, and hence it outperforms
+the Horvitz-Thompson estimator, as long as p/n → 0. On the other hand,
+when p/n does not converge to 0, the GREG estimator using the WLSE may
+not be asymptotically more efficient than the Horvitz-Thompson
+estimator.
+
+If there are only s of p covariates that are actually related to the
+study variable, where s diverges slower than the sample size n although
+p may be comparable to or even larger than n, the GREG estimator using a
+regularized regression estimator can be constructed. Dimension reduction
+has been studied in Cardot et al. (2014) in which the authors considered
+a principal component analysis to reduce the covariate dimension prior
+to performing calibration. This calibration approach can also be adopted
+to form the GREG estimator. However, asymptotic results of their GREG
+estimator was established under the condition p³/n → 0, which is much
+stronger than p/n → 0 for the GREG estimator based on the WLSE (our
+Theorem 1). As a result, when p³/n → 0, there is no strong motivation to
+consider the principal component regression estimator.
+
+The WLSE is unavailable when p > n, a problem that can occur in some
+small area survey estimation and in many economic and biological
+studies. The principal component calibration approach also does not
+perform well in this high-dimensional problem. We adopt the LASSO
+(Tibshirani, 1996) as a regularization method. The use of LASSO in GREG
+was proposed in McConville (2011) and McConville et al. (2017), but they
+only studied empirical and theoretical properties in the case of a fixed
+p. Under some conditions on the divergence rates of s and p, we show
+that the GREG estimator constructed using LASSO is asymptotically
+equivalent to the GREG using the true regression parameter when the
+regression model is correct. In addition, this GREG estimator still
+possesses asymptotically design-based properties when the assumed model
+is misspecified. We also study variance estimation for GREG with LASSO.
+
+We present simulation results to study how much the Horvitz-Thompson
+estimator can be improved by the GREG estimators, to observe the effect
+of p on the efficiency gain, and to compare the relative performance
+between the GREG estimators using the WLSE and the LASSO estimator. All
+technical proofs are given in the Supplementary Material.
+
+The Generalized Regression Estimator
+
+Consider a finite population U that consists of N units labeled i = 1,
+2, …, N. Associated with unit i, let y_(i) be the value of the study
+variable and x_(i) be the p-dimensional vector of covariates. We
+consider the estimation of the finite population total Y = ∑_(i∈U)
+y_(i), using data from a sample S of size n selected from U according to
+some probability plan called sampling design. The value of (y_(i),
+x_(i)) is observed for unit i in the sample S. To estimate the total Y,
+Horvitz and Thompson (1952) introduced the following estimator which was
+also named after the authors:
+
+$${\hat{Y}}_{\text{ht}} = {\sum\limits_{i \in S}y_{i}}/\pi_{i}$$
+
+where π_(i) > 0 is the inclusion probability for unit i, which can be
+calculated from the sampling design and may depend on some components of
+x_(i). The population mean Y/N can be estimated using Ŷ_(ht)/N or
+Ŷ_(ht)/∑_(i ∈ S)π_(i)⁻¹. Under the noninformative sampling assumption,
+i.e., π_(i) is a known function of x_(i) but does not depend on y_(i),
+the Horvitz-Thompson estimator in (1) is design-unbiased with respect to
+the random selection of S from U. Throughout this paper, we assume
+noninformative sampling and that Ŷ_(ht) − Y is asymptotically normal as
+n → ∞ under the given sampling design with some conditions; see, for
+example, Bickel and Freedman (1984), Krewski and Rao (1981) and Fuller
+(2009). When considering asymptotic properties, the finite population is
+viewed as a member of a sequence of finite populations with sizes
+increasing to infinity, and the sample is then a member of a sequence of
+samples with sample sizes increasing to infinity. To abbreviate, we
+simply write n → ∞.
+
+In addition to the observed x_(i) for all i ∈ S, the finite population
+total vector X =∑_(i∈U) x_(i) is often known in many studies. To make
+use of the information provided by the covariates, we consider {(x_(i),
+y_(i)): i ∈ U} as realizations from a super-population model. In some
+applications, it may not be practical to impose an assumption on the
+entire population U. It is more realistic to assume that U can be
+divided into sub-populations such that an assumption can be made for
+units within each sub-population. These sub-populations, such as strata
+or post-strata (Valliant, 1993), are constructed so that (x_(i),
+y_(i))’s in each sub-population can be assumed to be unconditionally
+independent and identically distributed. Since an estimator of the
+sub-population total will be constructed using data within each
+sub-population, and the estimator of the overall population total is the
+sum of the sub-population total estimators, in what follows we ignore
+the sub-populations for notation simplicity, i.e., we assume that for
+all i ∈ U,
+
+y_(i) = μ + β^(T)x_(i) + ϵ_(i)
+
+where μ and β are unknown parameters, a^(T) is the transpose of a vector
+a, x_(i)’s are independent and identically distributed random vectors of
+covariates with an unknown positive-definite covariance matrix Σ,
+ϵ_(i)’s are independent random variables with mean 0 and unknown
+variance σ_(ϵ)², and x_(i)’s are independent of ϵ_(i)’s. After the
+sample S is selected from U, {(x_(i), y_(i)), i ∈ S} are observed.
+
+To take advantage of the available covariate information under model
+(2), Cassel et al. (1976, 1977) proposed the following GREG estimator of
+the total Y:
+
+Ŷ_(gr) = Ŷ_(ht) + β̂^(T)(X − X̂_(ht)),
+
+where X =∑_(i∈U) x_(i) is the known finite population total of x_(i)’s,
+X̂_(ht) is the Horvitz-Thompson estimator of X defined as (1), i.e.
+X̂_(ht) = ∑_(i ∈ S)x_(i)/π_(i), and β̂ is an estimator of β in (2) based
+on (y_(i), x_(i)), i ∈ S the GREG estimator in (3) is the sum of the
+Horvitz-Thompson estimator Ŷ_(ht) and an adjustment β̂^(T)(X − X̂_(ht))
+which is used to increase the efficiency.
+
+To study the property of the GREG estimator, we first consider an
+artificial situation where β in (2) is known so that β̂ = β and the
+estimator in (3) is denoted as
+
+Ŷ_(gr)^(*) = Ŷ_(ht) + β^(T)(X − X̂_(ht))
+
+Since X̂_(ht) is the Horvitz-Thompson estimator of X, Ŷ_(gr)^(*) is a
+design-unbiased estimator of Y even if model (2) is wrong or β is a
+wrong value. If model (2) is correct, then regardless of how large the
+dimension p is, the variance of Ŷ_(gr)^(*) is smaller than the variance
+of Ŷ_(ht) unless β = 0, where the variance is with respect to both
+sampling and model. For this reason, the GREG estimator is referred to
+as a model-assisted estimator.
+
+In practice, β is unknown; therefore, the GREG estimator, which involves
+β̂, is not exactly, but asymptotically design-unbiased and normally
+distributed as long as β̂ does not diverge to infinity. In traditional
+setting, the covariate dimension is fixed in the sense that p does not
+change as n → ∞. Then, under model (2), the GREG estimator is
+asymptotically more efficient than the Horvitz-Thompson estimator as
+long as β̂ is consistent, since
+Ŷ_(gr) − Y = Ŷ_(ht) − Y + β̂^(T)(X − X̂_(ht)) = Ŷ_(ht) − Y + β^(T)(X − X̂_(ht)) + (β̂ − β)^(T)(X − X̂_(ht)) = Ŷ_(gr)^(*) − Y + o_(p)(1)(X − X̂_(ht)) = Ŷ_(gr)^(*) − Y + o_(p)(1)(Ŷ_(gr)^(*) − Y)
+where o_(p)(1) denotes a quantity converging to 0 in probability. This
+implies that in low-dimensional setting, Ŷ_(gr) and Ŷ_(gr)^(*) in (4)
+are asymptotically equivalent under model (2). Note that we do not need
+to worry about the efficiency of β̂.
+
+When p is fixed, β̂ is typically the following WLSE of β under model (2),
+
+$${\hat{\beta}}_{\text{wls}} = \left\{ {{\sum\limits_{i \in S}\frac{1}{\pi_{i}}}\left( {x_{i} - {\hat{X}}_{\text{ht}}/\hat{N}} \right)\left( {x_{i} - {\hat{X}}_{\text{ht}}/\hat{N}} \right)^{T}} \right\}^{- 1}{\sum\limits_{i \in S}\frac{\left( {x_{i} - {\hat{x}}_{S}} \right)y_{i}}{\pi_{i}}}$$
+
+where N̂ = ∑_(i ∈ S)π_(i)⁻¹. The GREG estimator constructed using β̂_(wls)
+is denoted by Ŷ_(gr_wls). If model (2) is correct, n^(1/2)(β̂_(wls) − β)
+is asymptotically normal with mean 0, and thus
+
+Ŷ_(gr − wls) − Y = Ŷ_(gr)^(*) − Y + O_(p)(n^(−1/2))(Ŷ_(gr)^(*) − Y)
+
+i.e., Ŷ_(gr_wls) is asymptotically equivalent to Ŷ_(gr)^(*) up to an
+order of n^(−1/2), where O_(p)(a_(n)) denotes a sequence that is bounded
+in probability by |a_(n)|.
+
+As discussed in the introduction section, modern data are often high
+dimensional. When p is unbounded as n → ∞, we examine whether Ŷ_(gr_wls)
+is still asymptotically equivalent to Ŷ_(gr)^(*) so that it improves
+Ŷ_(ht). The answer is given in the following result.
+
+Theorem 1. Assume model (2) with p < n and the following assumptions.
+
+1.  (A1) max_(i ∈ U)π_(i)⁻¹ = O(N/n).
+
+2.  (A2) ∑_(i ∈ U)(π_(i)⁻¹ − 1) ≥ c(N²/n) for a constant c > 0 not
+    depending on n and p.
+
+3.  (A3) The components of Σ^(−1/2) x_(i) are independent and
+    identically distributed and have finite 4th order moments.
+
+Then we have the following conclusions.
+
+7.  (a) If p/n → 0 as n → ∞, then
+
+    Ŷ_(gr_wls) − Y = Ŷ_(gr)^(*) − Y + O_(p){(p/n)^(1/2)}(Ŷ_(gr)^(*) − Y)
+
+    and hence Ŷ_(gr_wls) is asymptotically equivalent to Ŷ_(gr)^(*).
+
+8.  (b) If p/n → γ > 0 as n → ∞, then in general Ŷ_(gr_wls) is not
+    asymptotically equivalent to Ŷ_(gr)^(*).
+
+Assumptions (A1) and (A2) involve bounds on the inclusion probabilities.
+Assumption (A3) is used to obtain the limiting spectral distribution of
+functionals of the design matrix. Using the arguments in Bai and Zhou
+(2008) and Xie (2013), the results in Theorem 1 can also be established
+if (A3) is replaced by
+
+1.  (A3′) p³/n → ∞ and
+    E(x_(i)^(T)Σ^(−1/2)BΣ^(−1/2)x_(i) − trB)² = o(p³/n) for any p × p
+    deterministic matrix B with bounded spectral norm.
+
+Note that result (7) includes result (6) for the case of fixed p as a
+special case. Theorem 1 indicates that under model (2), if p/n → 0, then
+Ŷ_(gr_wls) is asymptotically more efficient than Ŷ_(ht) and is
+asymptotically equivalent to Ŷ_(gr)^(*) which is based on the true β.
+The difference between Ŷ_(gr_wls) and Ŷ_(gr)^(*) depends on the rate of
+convergence of p/n as result (7) indicates. Thus, it is expected that
+the efficiency gain by the GREG estimation deteriorates as the rate of
+p/n increases, although there is no rigorous proof.
+
+When p/n → γ > 0, Theorem 1 shows that Ŷ_(gr_wls) may not be
+asymptotically equivalent to Ŷ_(gr)^(*). Consequently, if p diverges at
+a rate the same as or close to n, then the performance of Ŷ_(gr_wls) can
+be even worse than Ŷ_(ht), even if model (2) is correct. In the next
+section we consider an improvement of Ŷ_(gr_wls) when the true
+regression coefficient β is sparse in the sense that many of its
+components are zero although p can still be large.
+
+The LASSO Generalized Regression Estimator
+
+Although data nowadays contain many covariates, it is often true that
+only a few of these available covariates are actually related to the
+study variable. In model (2), this amounts to that, among p covariates,
+only s of them have non-zero regression coefficients, i.e.,
+β-components, and s is fixed or diverges much slower than p. It is
+desired to have a sparse estimator of β when β is sparse since retaining
+the extraneous variables serves no purpose but increases the variability
+and model complexity. The WLSE β̂_(wls), however, is not sparse
+regardless of whether β is sparse or not. Therefore, we consider the
+LASSO estimator, denoted by β̂_(𝓁₁). The GREG estimator in (3) using
+β̂ = β̂_(𝓁₁), denoted as Ŷ_(gr⁻𝓁₁), is well defined even when p > n. In
+this section, we study the asymptotic properties of Ŷ_(gr⁻𝓁₁) and show
+that it improves Ŷ_(gr_wls) as well as the Horvitz-Thompson estimator
+Ŷ_(ht) and is asymptotically equivalent to Ŷ_(gr)^(*), under some
+conditions on sparsity and diverging rate of p which allows p/n → ∞. It
+is also design-based robust against model misspecification.
+
+We use the notation from Section 2. The LASSO estimator β̂_(𝓁₁) is a
+solution to the ℓ₁-penalized weighted least squares minimization
+problem:
+
+$$\underset{b \in R^{p}}{\text{min}}\left\lbrack {\frac{1}{2n}{\sum\limits_{i \in S}\frac{\left\{ {y_{i} - b^{T}\left( {x_{i} - {\hat{X}}_{\text{ht}}/\hat{N}} \right)} \right\}^{2}}{\pi_{i}}} + \lambda\left\| b \right\|_{1}} \right\rbrack$$
+
+where ‖b‖₁ is the usual ℓ₁-norm of a vector b ∈ R^(p) and λ ≥ 0 is a
+penalty parameter that may depend on n. The ℓ₁-norm penalty is applied
+to shrink the estimated coefficients and select variables
+simultaneously. Note that the WLSE β̂_(wls) is the special case of β̂_(𝓁₁)
+defined as a solution to (8) with λ = 0.
+
+There is a considerable literature devoted to studying conditions on the
+covariates x_(i)’s in order to guarantee certain good oracle properties
+of β̂_(𝓁₁) in terms of prediction or estimation accuracy and variable
+selection consistency. Some of the most well-known conditions are the
+restricted null space property (Donoho and Huo, 2001), the restricted
+isometry property (Candes and Tao, 2005, 2007), the restricted
+eigenvalue condition (Bickel et al., 2009), and the irrepresentable
+condition (Zhao and Yu, 2006). The last condition is quite strong and is
+required only if model-selection consistency is of interest. The
+restricted null space property has been shown to successfully recover
+the signal in the noiseless setting, i.e., ϵ_(i) = 0 for all i in (2).
+When ϵ_(i)’s in (2) are not degenerated, the restricted isometry
+property was proved to be sufficient for bounding the estimation error.
+
+A relatively weaker condition is the restricted eigenvalue (RE)
+condition introduced in Bickel et al. (2009), which holds for an n × p
+matrix A if
+
+$$\frac{1}{K_{(l,k,A)}} = \underset{\begin{matrix}
+{J \subset \{ 1,\ldots,p\}} \\
+{{|J|} \leq l}
+\end{matrix}}{\text{min}}\mspace{360mu}\mspace{360mu}\mspace{360mu}\underset{\begin{matrix}
+{v \neq 0} \\
+{{\| v_{- J}\|}_{1} \leq k{\| v_{J}\|}_{1}}
+\end{matrix}}{\text{min}}\mspace{360mu}\frac{\left\| {Av} \right\|_{2}}{\left\| v_{J} \right\|_{2}} > 0$$
+
+where v_(J) is the sub-vector of v with components indexed by elements
+in J ⊂ {1, …, p}, v_(−J) is the sub-vector of v with components not in
+v_(J), |J| is the number of elements in J,‖·‖₂ is the usual ℓ₂-norm, l
+and k are constants. The condition is denoted as RE(l, k, A).
+
+The restricted eigenvalue condition requires A to be positive definite
+on a restricted set of vectors in the cone
+
+𝒞_((l, k)) = {v ∈ R^(p) : ∃J ⊂ {1, …, p}, |J| ≤ l, ∥v_(−J)∥₁ ≤ k∥v_(J)∥₁},
+
+and hence the name restricted eigenvalue condition. It is shown in the
+Supplementary Material that the estimation error β̂_(𝓁₁) − β belongs to
+the cone 𝒞_((s, 3)), i.e., ∥(β̂_(𝓁₁) − β)_(−𝒮)∥₁ ≤ 3∥(β̂_(𝓁₁) − β)_(𝒮)∥₁,
+where 𝒮 contains indices of all non-zero components of β and s = |𝒮|.
+
+Condition (9) was first assumed in Bickel et al. (2009) on a
+deterministic design matrix to establish a bound on the estimation loss
+of the signal for the LASSO estimator and the Dantzig selector. Rudelson
+and Zhou (2013) showed that with high probability and certain
+conditions, the RE condition holds for a large class of random matrices
+including matrices with uniformly bounded entries and matrices whose
+rows follow a sub-Gaussian distribution. In this study, covariates
+x_(i)’s under the model-assisted framework are random vectors
+distributed according to the super-population model. We consider a
+random design matrix X whose ith row is x_(i), i ∈ S. If x_(i)’s follow
+a sub-Gaussian distribution and Σ is positive definite, then under
+certain assumptions, condition (9) holds for A = X/n^(1/2) with high
+probability (Rudelson and Zhou, 2013). Performance of Ŷ_(gr_𝓁₁) is
+stated in the following theorem.
+
+Theorem 2. Assume (A1)-(A2) and the following assumptions.
+
+1.  (A4) ϵ_(i) and x_(i) independently follow sub-Gaussian distributions
+    with scale factor τ and ν, i.e., E{exp(uϵ_(i))} ≤ exp(τ²u²/2) for
+    any real-valued u and E{exp(t^(T) x_(i))} ≤ exp(ν²t^(T)t/2) for any
+    p-dimensional vector t.
+
+2.  (A5) There exist constants b₀, b₁, b₂, b₃ not depending on n and p
+    such that n ≥ b₁r log (b₂p/r) for all n ≥ b₀, where
+    r = min{s + b₃sM²K_((s, 9, Σ^(1/2)))², p},
+    $$M = \underset{j}{\text{max}}\left\| {\Sigma^{1/2}e_{j}} \right\|_{2}$$
+    and e_(j) = (0, ‥, 1, ‥, 0), j = 1, …, p, form the standard basis of
+    R^(p).
+
+3.  (A6) The tuning parameter λ in (8) is dτM(n⁻¹ log p)^(1/2) for a
+    constant d ≥ 8.
+
+4.  (i) If model (2) holds, then
+
+    ∥β̂_(𝓁₁) − β∥₁ = O_(p){s(n⁻¹log p)^(1/2)MK_((s, 3, Σ^(1/2)))²}
+
+    and
+
+    Ŷ_(gr_𝓁₁) − Y = Ŷ_(gr)^(*) − Y + O_(p){n^(−1/2)                     s                     log                     p                     MK_((s, 3, Σ^(1/2)))²}(Ŷ_(gr)^(*) − Y).
+
+5.  (ii) If model (2) is wrong, and (A4) holds with ϵ_(i) replaced by
+    y_(i) − x_(i)^(T)β, where β is defined as β = Σ⁻¹ E(x₁y₁), then (11)
+    still holds and
+    Ŷ_(gr_𝓁₁) − Y = Ŷ_(ht) − Y + β^(T)(X − X̂_(ht)) + O_(p){Nsn⁻¹                     log                     p                     MK_((s, 3, Σ^(1/2)))²}.
+
+The result on estimation loss ∥β̂_(𝓁₁) − β∥₁ was first established in
+Bickel et al. (2009) for deterministic x_(i)’s, where the RE condition
+was imposed on the design matrix X. Zhou (2009) also showed that an
+estimation loss with a similar order as (11) holds when the rows of the
+random matrix X follow a sub-Gaussian distribution with a covariance
+matrix Σ that satisfies the RE condition RE(s, 3, Σ^(1/2)). The lower
+bound of the sample size n in Zhou (2009), however, depends on a
+quantity ρ(s) which is defined as the maximum eigenvalue of Σ restricted
+to sparse vectors with at most s nonzero components. We instead make a
+similar assumption (A5) as in Rudelson and Zhou (2013) in which the
+lower bound of n does not depend on ρ(s), but a slightly stronger RE(s,
+9, Σ^(1/2)) assumption is used.
+
+Theorem 2 indicates that Ŷ_(gr⁻𝓁₁) is asymptotically equivalent to
+Ŷ_(gr)^(*), even when working model (2) is misspecified, as long as
+n^(−1/2)                     s                     log                     p                     MK_((s, 3, Σ^(1/2)))² → 0,
+which is reasonable since s log p can be much smaller than n. Hence,
+Ŷ_(gr_𝓁₁) asymptotically outperforms Ŷ_(ht) if model (2) holds. When
+model (2) is misspecified, both Ŷ_(ht) and Ŷ_(gr_𝓁₁) are design-based
+asymptotically valid and there is no definite conclusion on the relative
+performance of Ŷ_(ht) and Ŷ_(gr_𝓁₁), although Ŷ_(gr_𝓁₁) is expected to
+be better than Ŷ_(ht) if (2) is nearly correct. See the simulation
+results in Section 4.1.
+
+In the study of Cardot et al. (2014) where the authors used calibration
+based on the principal components of the covariates, the number of
+covariates p was restrictively assumed to satisfy p³r³/n → 0 to
+establish the consistency of the calibration estimator, where r is the
+number of selected principal components. This condition is much stronger
+than p/n → 0 under which the GREG estimator using the WLSE is
+asymptotically equivalent to Ŷ_(gr)^(*) (Theorem 1). If the covariate
+x_(i) is observed for every unit i in the population U, then the
+assumption p³r³/n → 0 can be relaxed to r³/n → 0. However, such a result
+has limited application since complete covariate information in the
+entire population is in general not available, especially when x_(i) has
+a high dimension.
+
+To assess the estimation variability or make inference about Y, we need
+a variance estimator for Ŷ_(gr_𝓁₁). First, consider Ŷ_(gr)^(*) given by
+(4). If β is treated as known, then a classical variance estimator for
+Ŷ_(gr)^(*) is
+
+$$v(\beta) = {\sum\limits_{i \in S}{\sum\limits_{j \in S}\frac{\pi_{ij} - \pi_{i}\pi_{j}}{\pi_{ij}}}}\frac{y_{i} - x_{i}^{T}\beta}{\pi_{i}}\frac{y_{j} - x_{j}^{T}\beta}{\pi_{j}},$$
+
+where π_(ij) is the inclusion probability of units i and j in the sample
+S, i ≠ j. When β is unknown, it is substituted by the same estimator β̂
+used in GREG. In the traditional case where p is fixed, v(β̂) defined as
+(13) with β replaced by a consistent β̂ is consistent for the variance of
+Ŷ_(gr) as n → ∞. The next result shows that this is still true when β is
+estimated by LASSO.
+
+Theorem 3. Assume model (2), the conditions of Theorem 2, max_(i,j)
+|1−π_(i)π_(j)/π_(ij)| = O(n⁻¹), and the right hand side of (11)
+converges to 0. Then, the variance estimator v(β̂_(𝓁₁)) defined as (13)
+is consistent in the sense that v(β̂_(𝓁₁))/var(Ŷ_(gr_𝓁₁)) → 1 in
+probability.
+
+Simulation Studies
+
+Results based on simple random sampling
+
+In the first simulation study we considered simple random sampling
+without replacement (SRSWO). Finite populations of size N = 10⁵ were
+generated from three super-population models described as follows.
+Covariate vectors x_(i)’s were generated from a multivariate normal
+distribution N(0, Σ) with
+$$\Sigma = \begin{bmatrix}
+B & 0 \\
+0 & I_{p/2}
+\end{bmatrix}$$
+where I_(p/2) is the identity matrix of order p/2 and B is a p/2 × p/2
+symmetric matrix whose diagonal entries are equal to 1 and every
+off-diagonal entry is 0 with probability 0.8 and equal to the value of a
+random variable having the uniform distribution on (0,1) with
+probability 0.2. A small positive quantity was added to the diagonal of
+B to ensure its positive definiteness.
+
+Different values of p were considered in each model to observe the
+effect of the number of covariates on the estimators’ performance. The
+following three super-population models were considered:
+
+1.  Model M1: y_(i) = μ + x_(i)^(T)β + ϵ_(i) as in (2) with s = p^(1/2),
+    β = (2, …, 2, 0, …, 0), where ϵ_(i)’s are i.i.d. N(0, 1), μ =∑_(j)
+    β_(j), and β_(j) is the jth component of β. In this model, the first
+    p^(1/2) (with rounding) components of β were set to 2 and all other
+    entries are zero. The number of relevant variables in this model,
+    therefore, increases as the dimension increases.
+
+2.  Model M2: the same as M1 but the first ten entries of β were 1, 2,
+    3, 4, 5, 0.2, 0.2, 0.2, 0.2, 0.2, and all other entries of β were
+    zeros. Therefore, the underlying model has a dimension s = 10
+    although p increases. Since non-zero components of β took different
+    values, the corresponding covariates were correlated with the
+    variable y with different strength.
+
+3.  Model M3:
+    y_(i) = μ + β₁(x_(i)⁽¹⁾)² + β₂(x_(i)⁽²⁾)² + ⋯ + β_(p)(x_(i)^((p)))² + ϵ_(i),
+    where x_(i)^((j)) is the jth component of x_(i), s = 10, β is the
+    same as that in Model 2, ϵ_(i)’s are i.i.d. N(0, 1), and μ =∑_(j)
+    β_(j). The parameter β was, however, still estimated under the
+    assumed model (2) in order to investigate the consequences of model
+    misspecification.
+
+From each finite population generated according to the models, 500
+different SRSWO samples of size n = 500 were selected. For each sample,
+Ŷ_(ht), Ŷ_(gr_wls), Ŷ_(gr_𝓁₁) and the optimal estimator Ŷ_(gr_opt)
+proposed in Berger et al. (2003) were computed. A 10-fold
+cross-validation was used to select the tuning parameter λ in the
+minimization problem (8) and the one with the smallest mean squared
+error was chosen (Friedman et al., 2010). Based on the 500 simulations,
+the standard deviation (SD) of each estimator Ŷ and ratio of mse(Ŷ) for
+pairs of estimators, where mse(Ŷ) is the mean squared error of Ŷ, were
+reported in Table 1 for all three models M1–M3. All estimators Ŷ_(ht),
+Ŷ_(gr_wls), Ŷ_(gr_opt) and Ŷ_(gr_𝓁₁) have negligible biases less than 1%
+of Y and hence were not shown in the table.
+
+Based on the SD, the GREG estimators, which incorporate data from the
+covariates, were more efficient than the Horvitz-Thompson estimator in
+all but one case, where p is large (p = 400), the model is misspecified,
+and the GREG estimator is based on the WLSE. Under models M1 and M2, the
+mean squared error of the Horvitz-Thompson estimator was reduced 18 to
+100 folds by utilizing the auxiliary information. Under model M3, which
+is a wrong model, the GREG estimators still outperformed the
+Horvitz-Thompson estimator in terms of efficiency in most cases,
+although the improvement was not as large as what was observed in models
+M1–M2, since the auxiliary information was not utilized in a correct
+way.
+
+Similarly, based on the SD, not only was Ŷ_(gr_𝓁₁) more efficient than
+Ŷ_(gr_wls), but its performance was also more consistent than that of
+Ŷ_(gr_wls) when the the complexity of the model grows. For instance,
+under model M2 in which s is fixed while p increases, Ŷ_(gr_wls) was
+getting worse considerably. It can be observed from Table 1 that the
+ratio mse(Ŷ_(gr_wls))/mse(Ŷ_(gr_𝓁₁)) is no smaller than 1 in all cases,
+and the difference in these mean squared error ratios is more pronounced
+as p increases. This suggests that when p is large, using Ŷ_(gr⁻𝓁₁)
+results in a larger efficiency gain than using Ŷ_(gr_wls) even in the
+case where p < n.
+
+It also can be seen that Ŷ_(gr⁻𝓁₁) has comparable performance to the
+optimal estimator Ŷ_(gr_opt) when dimension p ≤ 50, in terms of SD and
+MSE. However, when p is large, Ŷ_(gr_𝓁₁) outperforms Ŷ_(gr_opt). This is
+because Ŷ_(gr_opt) is not regularized so it does not perform well when p
+is large, although it is better than the unregularized Ŷ_(gr_wls).
+
+Results based on probability proportional to size sampling
+
+In the second simulation study we considered an unequal probability
+sampling, the probability proportional to size without replacement
+(PPSWO) sampling. The size variable was chosen to be 5 plus the first
+component of x_(i), i ∈ U, and (x_(i), y_(i))’s are generated the same
+as those in the first simulation, except that μ = 1 + 5∑_(j) β_(j). More
+specifically, Tille’s algorithm (Tillé, 1996; Deville and Tille, 1998)
+was employed to select PPS samples with π_(i) ∝ 5+the first component of
+x_(i).
+
+Finite populations of size N = 5, 000 were generated and 500 different
+samples of size n = 500 were selected from each generated finite
+population. Simulated SD values are given in Table 2 with β̂_(wls) or
+β̂_(𝓁₁). Two other quantities are included in Table 2: the estimated SD
+that is the squared root of the variance estimator v(β̂) defined as (13),
+and the coverage probability (CP) of the 95% confidence interval for Y
+by normal approximation with estimated SD.
+
+Overall, the results on SD are similar to those in Table 1 for SRSWO. In
+addition, the estimated SD is close to the simulated SD and the CP is
+close to the nominal value 95%, except for the case of Ŷ_(gr_wls) when p
+is large. The high dimension p has more effects on the estimated SD than
+the estimated β.
+
+Example
+
+As an example, we considered the 1990 Census on law enforcement
+(http://archive.ics.uci.edu/ml/datasets/communities+and+crime+unnormalized)
+as a population, which consists of N = 2, 195 communities (units) with
+crime related variables (study variables) such as murders, rapes,
+robberies, assaults, burglaries, larcenies, auto thefts, etc., and 101
+covariates including population for community, median household income,
+per capita income, number of police cars, percent of officers assigned
+to drug units, etc. A list of all 101 covariates is Lgiven in the
+Supplementary Material.
+
+We selected the following six samples from this population:
+
+1.  (a) a simple random sample of size n = 200 without replacement;
+
+2.  (b) a simple random sample of size n = 150 without replacement;
+
+3.  (c) the first 195 communities, i.e., S = {1, …, 195};
+
+4.  (d) the last 195 communities, i.e., S = {2001, …, 2195};
+
+5.  (e) a systematic sample of size n = 220, i.e., S = {1, 11, 21, …,
+    2191};
+
+6.  (f) a systematic sample of size n = 439, i.e., S = {1, 6, 11, …,
+    2191}.
+
+We estimate the population totals of murders, rapes, robberies, and
+assaults (four study variables) using our proposed estimator Ŷ_(gr_𝓁₁),
+the Horvitz-Thompson estimator Ŷ_(ht), the unregularized Ŷ_(gr_wls) with
+weighted least squares estimator, and the regularized GREG estimator
+Ŷ_(gr_sis) with weighted least squares estimator after sure independence
+screening (Fan and Lv, 2008). The results are summarized in Table 3,
+which includes the true population totals. Overall, our method gives
+much more accurate estimate of the total crimes in each category than
+the competitors.
+
+Discussion
+
+In this study, asymptotic properties of the high-dimensional GREG
+estimators are established. We examine two approaches where the GREG
+estimators are constructed using the WLSE and the LASSO estimator. When
+using the weighted least squares method to estimate the regression
+coefficient, we prove that the number of covariate p should increase at
+a much slower rate than the sample size n in order for the GREG
+estimator to perform well. When this condition is not satisfied, the
+estimator may not be efficient; indeed, its performance deteriorates as
+shown in the numerical analysis. Therefore, it is not true that the more
+variables or auxiliary information we use, the better the estimator is.
+
+The GREG estimator constructed using the LASSO estimator, however, does
+not suffer from this instability. Since only a small set of variables is
+retained after the selection, the estimator is still able to perform
+efficiently even when p is large, as shown in the numerical study. Our
+simulation results not only support the theoretical analysis, but also
+encourage the use of the regularized GREG estimator since it is more
+robust and stable, especially when p is large.
+
+It can also be observed that the eigenvalue behavior of the design
+matrix plays an important role in the theoretical analysis of both GREG
+estimators. For the GREG estimator based on the WLSE, a condition is
+assumed to establish the limiting spectral distribution of the design
+matrix, while for the GREG estimator based on the LASSO estimator, the
+restricted eigenvalue condition is assumed.
+
+If the population total X in (3) is not available and is replaced by X̂,
+an estimated total from another survey, then the GREG estimators are
+still consistent as long as X̂ is consistent, but their efficiencies
+depend on the efficiency of X̂ even if model (2) holds. Another situation
+in which our result is useful is when y_(i) has covariate-dependent
+nonresponse and x_(i) is always observed. If we replace S in the retire
+paper by R, the set of units with observed y_(i)’s, R ⊂ S ⊂ U, and
+replace the known X in GREG by X̂ = ∑_(i ∈ S)x_(i)/π_(i), then Ŷ_(gr⁻wls)
+and Ŷ_(gr⁻𝓁₁) are the same as estimators of Y with every missing y_(i)
+imputed by β̂_(wls)^(T)x_(i) and β̂_(𝓁₁)^(T)x_(i), respectively. Our
+Theorems 1–2 still apply, i.e., WLSE works well when p is small relative
+to n and the LASSO works well when β is sparse and p is comparable with
+n.
+
+It should be noted that similar results may be established if the LASSO
+estimator is replaced by a sparse estimator of β obtained by using other
+penalized regression or variable selection methods. The results in this
+paper, together with those obtained in Cardot et al. (2014), demonstrate
+that under certain assumptions, nice properties of the model-assisted
+estimators such as the asymptotic efficiency and consistency are still
+preserved in high dimension.
+
+Supplementary Material
+
+Acknowledgement
+
+We would like to thank two referees and an associate editor for their
+helpful comments. Our research was supported by UW-Madison Graduate
+Research Scholar/Advanced Opportunity Fellowship, the Chinese 111
+Project, the U.S. National Science Foundation grant DMS-1612873, the
+National Natural Science Foundation of China (11501208) and Fundamental
+Research Funds for the Central Universities. Dr. Wang is the
+corresponding author of this paper.
+
+References
+
+Standard deviation (SD) and mean squared error (MSE) ratio for Ŷ_(ht),
+Ŷ_(gr_wls), Ŷ_(gr_opt) and Ŷ_(gr⁻𝓁₁) based on SRSWO.
+
++----------+----------+------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+|          |          | SD                                             |                                                                                                                          |                                                                                                                               |                                                                                                                               |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| p        | s        | Ŷ_(ht)   | Ŷ_(gr_wls) | Ŷ_(gr_opt) | Ŷ_(gr⁻𝓁₁) | $\frac{\text{mse}\left( {\hat{Y}}_{\text{ht}} \right)}{\text{mse}\left( {\hat{Y}}_{\text{gr\_}\mathcal{l}_{1}} \right)}$ | $\frac{\text{mse}\left( {\hat{Y}}_{\text{gr\_wls}} \right)}{\text{mse}\left( {\hat{Y}}_{\text{gr\_}\mathcal{l}_{1}} \right)}$ | $\frac{\text{mse}\left( {\hat{Y}}_{\text{gr\_opt}} \right)}{\text{mse}\left( {\hat{Y}}_{\text{gr\_}\mathcal{l}_{1}} \right)}$ |
++:=========+:=========+:=========+:===========+:===========+:==========+:=========================================================================================================================+:==============================================================================================================================+:==============================================================================================================================+
+| Model M1                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 10       | 3        | 17099    | 4495       | 4489       | 4477      | 14.6                                                                                                                     | 1.0                                                                                                                           | 1.0                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 50       | 7        | 29205    | 5559       | 4760       | 4675      | 39.0                                                                                                                     | 1.4                                                                                                                           | 1.1                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 100      | 10       | 31759    | 7982       | 4988       | 4931      | 41.5                                                                                                                     | 2.6                                                                                                                           | 1.1                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 200      | 14       | 40717    | 16832      | 5715       | 5019      | 65.8                                                                                                                     | 11.3                                                                                                                          | 1.6                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 300      | 17       | 44378    | 26973      | 7202       | 5288      | 70.4                                                                                                                     | 27.0                                                                                                                          | 2.0                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 400      | 20       | 47563    | 38079      | 10121      | 5349      | 79.1                                                                                                                     | 53.2                                                                                                                          | 4.3                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| Model M2                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 10       | 10       | 36939    | 4604       | 4521       | 4525      | 63.8                                                                                                                     | 1.0                                                                                                                           | 1.0                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 50       | 10       | 40344    | 6240       | 4730       | 4689      | 74.4                                                                                                                     | 1.8                                                                                                                           | 1.0                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 100      | 10       | 33658    | 8320       | 5013       | 4755      | 50.1                                                                                                                     | 3.1                                                                                                                           | 1.1                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 200      | 10       | 35033    | 14837      | 5849       | 4771      | 53.9                                                                                                                     | 10.2                                                                                                                          | 1.5                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 300      | 10       | 35740    | 21874      | 7304       | 4803      | 55.4                                                                                                                     | 21.2                                                                                                                          | 2.3                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 400      | 10       | 33369    | 26788      | 10044      | 4720      | 52.5                                                                                                                     | 32.5                                                                                                                          | 4.5                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| Model M3                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 10       | 10       | 88030    | 51215      | 51227      | 51313     | 2.7                                                                                                                      | 1.1                                                                                                                           | 1.1                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 50       | 10       | 83894    | 51969      | 51748      | 50186     | 2.7                                                                                                                      | 1.1                                                                                                                           | 1.1                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 100      | 10       | 87616    | 54823      | 53962      | 49398     | 3.1                                                                                                                      | 1.2                                                                                                                           | 1.2                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 200      | 10       | 86742    | 62090      | 60671      | 49839     | 3.0                                                                                                                      | 1.5                                                                                                                           | 1.5                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 300      | 10       | 86010    | 76002      | 67390      | 49760     | 3.0                                                                                                                      | 2.3                                                                                                                           | 1.8                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| 400      | 10       | 87531    | 106794     | 77554      | 49498     | 3.1                                                                                                                      | 4.6                                                                                                                           | 2.4                                                                                                                           |
++----------+----------+----------+------------+------------+-----------+--------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
+
+Standard deviation (SD), estimateld SD, and coverage probability (CP)
+for Ŷ_(ht), Ŷ_(gr_𝓁₁), and Ŷ_(gr_wls) based on PPSWO.
+
++-------+-------+---------------------------------+---------------------------------+---------------------------------+
+| p     | s     | SD                              | estimated SD                    | CP                              |
+|       |       +--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+|       |       | Ŷ_(ht) | Ŷ_(gr_wls) | Ŷ_(gr_𝓁₁) | Ŷ_(ht) | Ŷ_(gr_wls) | Ŷ_(gr_𝓁₁) | Ŷ_(ht) | Ŷ_(gr_wls) | Ŷ_(gr_𝓁₁) |
++:======+:======+:=======+:===========+:==========+:=======+:===========+:==========+:=======+:===========+:==========+
+| Model Ml                                                                                                            |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 10    | 3     | 1113   | 218        | 219       | 1145   | 219        | 223       | 95     | 96         | 96        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 50    | 7     | 2828   | 223        | 227       | 2913   | 210        | 230       | 93     | 96         | 96        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 100   | 10    | 4391   | 263        | 264       | 4279   | 207        | 243       | 88     | 95         | 92        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 200   | 14    | 6235   | 281        | 266       | 6096   | 190        | 253       | 80     | 95         | 95        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 300   | 17    | 7514   | 431        | 325       | 7369   | 248        | 287       | 73     | 94         | 92        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 400   | 20    | 8456   | 585        | 325       | 8741   | 310        | 289       | 66     | 95         | 94        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| Model M2                                                                                                            |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 10    | 10    | 3748   | 234        | 244       | 3770   | 224        | 235       | 95     | 94         | 93        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 50    | 10    | 3677   | 244        | 251       | 3748   | 213        | 232       | 95     | 93         | 93        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 100   | 10    | 3793   | 260        | 269       | 3752   | 205        | 245       | 95     | 87         | 92        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 200   | 10    | 3611   | 285        | 249       | 3769   | 188        | 247       | 97     | 81         | 95        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 300   | 10    | 3719   | 378        | 272       | 3748   | 219        | 254       | 95     | 70         | 91        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 400   | 10    | 3885   | 594        | 283       | 3772   | 293        | 262       | 93     | 59         | 92        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| Model M3                                                                                                            |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 10    | 10    | 23127  | 18038      | 17673     | 22397  | 17775      | 17425     | 94     | 94         | 94        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 50    | 10    | 22304  | 18345      | 17594     | 22372  | 17895      | 17159     | 97     | 95         | 95        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 100   | 10    | 22570  | 16926      | 16119     | 22439  | 17779      | 16941     | 95     | 97         | 97        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 200   | 10    | 22246  | 18485      | 17400     | 22432  | 17633      | 16760     | 95     | 94         | 94        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 300   | 10    | 21042  | 17596      | 15772     | 22367  | 18464      | 16710     | 96     | 96         | 97        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+| 400   | 10    | 21819  | 16551      | 15359     | 22444  | 17273      | 16468     | 94     | 96         | 96        |
++-------+-------+--------+------------+-----------+--------+------------+-----------+--------+------------+-----------+
+
+Estimates of the total numbers of murders, rapes, robberies and assaults
+in the crime data.
+
++-----------+----------+------------+-----------+------------+
+| Scenarios | Ŷ_(ht)   | Ŷ_(gr_wls) | Ŷ_(gr_𝓁₁) | Ŷ_(gr_sis) |
++:==========+:=========+:===========+:==========+:===========+
+|           | Total of murders=16633                         |
++-----------+----------+------------+-----------+------------+
+| (a)       | 10580    | 11477      | 14600     | 14043      |
++-----------+----------+------------+-----------+------------+
+| (b)       | 7521     | 9983       | 12522     | 9995       |
++-----------+----------+------------+-----------+------------+
+| (c)       | 52342    | 24455      | 16462     | 20115      |
++-----------+----------+------------+-----------+------------+
+| (d)       | 11774    | 12363      | 14594     | 14402      |
++-----------+----------+------------+-----------+------------+
+| (e)       | 10885    | 14916      | 15712     | 15451      |
++-----------+----------+------------+-----------+------------+
+| (f)       | 15790    | 15818      | 17458     | 16700      |
++-----------+----------+------------+-----------+------------+
+|           | Total of rapes=522378                          |
++-----------+----------+------------+-----------+------------+
+| (a)       | 308781   | 330875     | 429309    | 393961     |
++-----------+----------+------------+-----------+------------+
+| (b)       | 230036   | 307567     | 477431    | 441959     |
++-----------+----------+------------+-----------+------------+
+| (c)       | 1923417  | 828442     | 526686    | 507847     |
++-----------+----------+------------+-----------+------------+
+| (d)       | 316170   | 350921     | 430486    | 415684     |
++-----------+----------+------------+-----------+------------+
+| (e)       | 271172   | 386957     | 423708    | 433617     |
++-----------+----------+------------+-----------+------------+
+| (f)       | 420225   | 440654     | 453555    | 461957     |
++-----------+----------+------------+-----------+------------+
+|           | Total of robberies=716317                      |
++-----------+----------+------------+-----------+------------+
+| (a)       | 535361   | 568015     | 643077    | 602668     |
++-----------+----------+------------+-----------+------------+
+| (b)       | 404348   | 524835     | 678994    | 592765     |
++-----------+----------+------------+-----------+------------+
+| (c)       | 1976468  | 1006262    | 827473    | 716354     |
++-----------+----------+------------+-----------+------------+
+| (d)       | 585964   | 596410     | 664838    | 628707     |
++-----------+----------+------------+-----------+------------+
+| (e)       | 481852   | 637777     | 698029    | 678851     |
++-----------+----------+------------+-----------+------------+
+| (f)       | 593685   | 597974     | 633935    | 652702     |
++-----------+----------+------------+-----------+------------+
+|           | Total of assaults= 1634471                     |
++-----------+----------+------------+-----------+------------+
+| (a)       | 1398709  | 1502997    | 1681493   | 1675426    |
++-----------+----------+------------+-----------+------------+
+| (b)       | 1000144  | 1283311    | 1704307   | 1368095    |
++-----------+----------+------------+-----------+------------+
+| (c)       | 3558106  | 2181098    | 1791385   | 1692598    |
++-----------+----------+------------+-----------+------------+
+| (d)       | 1516430  | 1525991    | 1667527   | 1580314    |
++-----------+----------+------------+-----------+------------+
+| (e)       | 1166383  | 1506206    | 1523222   | 1595661    |
++-----------+----------+------------+-----------+------------+
+| (f)       | 1468040  | 1455648    | 1576333   | 1591371    |
++-----------+----------+------------+-----------+------------+

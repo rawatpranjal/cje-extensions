@@ -1,0 +1,17 @@
+% \section{Future Work}
+\label{sec:future_work}
+
+\paragraph{Future Work.}
+Several directions remain for future work.
+\textbf{(1)} Our method can be extended to account for auxiliary factors that influence LLM-as-a-judge evaluations beyond the true label $\vZ$.
+While our current analysis assumes that the LLM evaluation $\hat{\vZ}$ depends only on the true label $\vZ$,
+in practice it may also be affected by additional nuisance factors $\xi$, such as response length or other stylistic attributes.
+This more realistic setting can be accommodated by allowing both the confusion matrix
+$\Pr_{\sQ}(\hat{\vZ} \mid \vZ,\xi)$ and the LLM evaluation $\E_{\sP}[\hat{\vZ} \mid \xi]$ to depend on such factors.
+For example, one may estimate separate confusion matrices across different strata of $\xi$
+(e.g., short vs.\ long responses) and perform bias adjustment within each group,
+followed by aggregation across strata.
+Formally, this corresponds to correcting $\E_{\sP}[\hat{\vZ} \mid \xi]$
+using $\Pr_{\sQ}(\hat{\vZ} \mid \vZ,\xi)$ at the stratum level and averaging over $\xi$.
+\textbf{(2)} The proposed method can be extended to a multinomial setting by generalizing $\big( \Pr_{\sQ}(\hat{\vZ} \mid \vZ) \big)^{-1} \E_{\sP}[\hat{\vZ}]$ in Section~\ref{sec:other:estimator} to a multivariate formulation, where $\vZ$ and $\hat{\vZ}$ are represented as probability distributions over multiple response categories. Such an extension would increase the number of parameters, and additional structural assumptions, such as constraints on the confusion matrix $\Pr_{\sQ}(\hat{\vZ} \mid \vZ)$, may be required to ensure stable estimation.
+\textbf{(3)} A conformal prediction framework could be incorporated to provide sample-specific uncertainty quantification by constructing statistically valid prediction regions around each point estimate.

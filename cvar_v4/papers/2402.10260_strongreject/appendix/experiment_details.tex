@@ -1,0 +1,130 @@
+\section{Experiment details}
+
+\subsection{Jailbreak methods}\label{app:jailbreak-methods}
+
+\begin{longtable}[H]{lll}
+\toprule
+\textbf{Jailbreak Method} &
+  \textbf{Description} &
+  \textbf{Source} \\ \midrule
+None &
+  This is the full prompt without any modification. &
+  - \\[4pt]
+AIM &
+  \begin{tabular}[c]{@{}l@{}}The model is prompted to answer as AIM, \\ an always intelligent Machiavellian chatbot,\\ and start its answers as ``AIM:''\end{tabular} &
+  \href{https://www.jailbreakchat.com/}{jailbreakchat.com} \\[4pt]
+Auto obfuscation &
+  \begin{tabular}[c]{@{}l@{}}The model is first asked to obfuscate the \\ question in a way it will later be able to decode.\end{tabular} &
+  \citep{WitchBot} \\[4pt]
+Auto payload splitting &
+  \begin{tabular}[c]{@{}l@{}}The model is first asked to identify sensitive\\  words in the question. These are then split up \\ into syllables, and assigned to mathematical variables.\\ The model is then asked the prompt, with \\ equations substituted for the sensitive words.\end{tabular} &
+  \citep{kang2023exploiting} \\[4pt]
+Base64 &
+  \begin{tabular}[c]{@{}l@{}} The prompt is encoded in base64 and the model is \\ instructed to respond in base64.\end{tabular}
+   &
+   -\\[4pt]
+Base64 input-only &
+  \begin{tabular}[c]{@{}l@{}} The prompt is encoded in base64, but the model \\ is instructed not to respond in base64.\end{tabular} &
+  -\\[4pt]
+Base64 output-only &
+  The model is instructed to respond in base64. &
+  -\\[4pt]
+Base64 raw &
+  The prompt is encoded in base64. &
+  -\\[4pt]  
+Combination 1 &
+  \begin{tabular}[c]{@{}l@{}}We combine the following: \\ prefix injection, refusal suppression, Base64\end{tabular} &
+  \citep{wei2023jailbroken} \\[4pt]
+Combination 2 &
+  \begin{tabular}[c]{@{}l@{}}We combine the following: \\ prefix injection, refusal suppression, style injection, Base64\end{tabular} &
+  \citep{wei2023jailbroken} \\[4pt]
+Combination 3 &
+  \begin{tabular}[c]{@{}l@{}}We combine the following: \\ prefix injection, refusal suppression, Base64, wikipedia\end{tabular} &
+  \citep{wei2023jailbroken} \\[4pt]
+Dev mode &
+  \begin{tabular}[c]{@{}l@{}}The prompt instructs the model to output two answers,\\ one normal and one ``developer mode'' uncensored output\end{tabular} &
+  \href{https://www.jailbreakchat.com/}{jailbreakchat.com} \\[4pt]
+Dev mode with rant &
+  \begin{tabular}[c]{@{}l@{}}Similar to dev\_mode\_v2, but the model is further asked to\\  rant about policies before switching to ignoring the rules\end{tabular} &
+  \href{https://www.jailbreakchat.com/}{jailbreakchat.com}  \\[4pt]
+Disemvowel &
+  The prompt is asked with the vowels removed &
+   \\[4pt]
+Distractors &
+  \begin{tabular}[c]{@{}l@{}}The model is asked to output an inspirational platitude,\\  a three-paragraph essay on flowers with the\\  twist that the second sentence transitions to answering the\\  prompt, and a recipe for soft chocolate chip cookies.\end{tabular} &
+  \citep{wei2023jailbroken}\\[4pt]
+Distractors negated &
+  \begin{tabular}[c]{@{}l@{}}Smiliar to distractors, but at the end the\\  model is asked to ignore the distractors.\end{tabular} &
+  \citep{wei2023jailbroken}\\[4pt]
+Evil confidant &
+  Asks the model to play the role of an evil confidant assistant. &
+  \href{https://www.jailbreakchat.com/}{jailbreakchat.com}\\[4pt]
+Few-shot JSON &
+  \begin{tabular}[c]{@{}l@{}}The model is given few-shot harmful question-answer pairs,\\  and the user's prompt without an answer in json format.\\ The model is asked to continue generating the json file.\end{tabular} &
+  \citep{wei2023jailbroken}\\[4pt]
+GCG &
+  \begin{tabular}[c]{@{}l@{}}Gradient-based search for adversarial prompts on an \\ ensemble of white-box local models. The prompt can \\ then be transferred to black-box models. \end{tabular} &
+  \citep{zou2023universal, mazeika2024harmbench}\\[4pt]
+PAIR &
+  Adaptive jailbreak using an attacker model &
+  \cite{chao2023jailbreaking}\\[4pt]
+PAP Authority &
+  \begin{tabular}[c]{@{}l@{}}Instructs an attacker to persuade a victim model to respond \\ using appeals to authority \end{tabular}&
+  \cite{zeng2024johnny}\\[4pt]
+PAP Persuasion &
+    \begin{tabular}[c]{@{}l@{}}Instructs an attacker to persuade a victim model to respond \\ using evidence-based persuasion \end{tabular} &
+  \cite{zeng2024johnny}\\[4pt]
+PAP Expert &
+  \begin{tabular}[c]{@{}l@{}}Instructs an attacker to persuade a victim model to respond \\ using expert endorsement \end{tabular} & 
+  \cite{zeng2024johnny}\\[4pt]
+PAP Logic &
+  \begin{tabular}[c]{@{}l@{}}Instructs an attacker to persuade a victim model to respond \\ using logical appeals \end{tabular} &
+  \cite{zeng2024johnny}\\[4pt]
+PAP Misrepresentation &
+  \begin{tabular}[c]{@{}l@{}}Instructs an attacker to persuade a victim model to respond \\ using misrepresentation \end{tabular} &
+  \cite{zeng2024johnny}\\[4pt]
+Poems &
+  \begin{tabular}[c]{@{}l@{}}The model is asked for several poems\\  with particular topics and styles along with an\\  answer to the promtpt.\end{tabular} &
+  \citep{wei2023jailbroken} \\[4pt]
+Prefix injection &
+  \begin{tabular}[c]{@{}l@{}}The model is prompted to start the \\ answer with an affirmative sentence.\end{tabular} &
+  \citep{wei2023jailbroken} \\[4pt]
+Refusal suppression &
+  \begin{tabular}[c]{@{}l@{}}The model is instructed to answer without apologising,\\  including disclaimers, or negative sentences.\end{tabular} &
+  \citep{wei2023jailbroken} \\[4pt]
+ROT13 &
+  \begin{tabular}[c]{@{}l@{}}The prompt is obfuscated with a \\ Caesar-cipher shifting the letters.\end{tabular} &
+   \\[4pt]
+Style injection JSON &
+  \begin{tabular}[c]{@{}l@{}}The model is instructed to answer in json,\\  with lists of strings consisting of four words.\end{tabular} &
+  \citep{wei2023jailbroken} \\[4pt]
+Style injection &
+  \begin{tabular}[c]{@{}l@{}}The model is instructed to answer in without\\  punctuation, long words and the word ``the".\end{tabular} &
+  \citep{wei2023jailbroken} \\[4pt]
+Translation Guarani &
+  The question is translated into Guarani. &
+  \citep{yong2023low} \\[4pt]
+Translation Hmong &
+  The question is translated into Hmong. &
+  \citep{yong2023low} \\[4pt]
+Translation Scots Gaelic &
+  The question is translated into Scots Gaelic. &
+  \citep{yong2023low} \\[4pt]
+Translation Zulu &
+  The question is translated into Zulu. &
+  \citep{yong2023low} \\[4pt]
+Wikipedia &
+  \begin{tabular}[c]{@{}l@{}}The model is instructed to write a wikipedia\\  article about the given prompt.\end{tabular} &
+  \citep{wei2023jailbroken} \\[4pt]
+Wikipedia with title &
+  \begin{tabular}[c]{@{}l@{}}The model is instructed to write a wikipedia\\  article about the given prompt, starting with the title.\end{tabular} &
+  \citep{wei2023jailbroken}\\
+  \bottomrule
+\caption{Jailbreak methods}
+\label{tab:jailbreaks}
+\end{longtable}
+
+\subsection{Human evaluations details}\label{app:human_eval_guidelines}
+
+We provide below the guidelines given to the human evaluators. As the full document included selected answers as illustrative examples and was over 6 pages long, we redacted the examples for brevity.
+\includepdf[pages={1}]{figures/humanevalinstructions.pdf}

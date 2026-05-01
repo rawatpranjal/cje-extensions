@@ -1,0 +1,105 @@
+\section{Introduction}\label{sec:introduction}
+
+The use of large language models (LLMs) as judges provides a cheap, scalable alternative to human evaluation for various tasks such as grading factual accuracy, assessing code quality or detecting harmful content~\citep{zheng2023judging, liu2023g, wang-etal-2023-chatgpt, li-etal-2025-generation, gu2024survey}. A common practice is to report the proportion of responses that an LLM judges as \emph{`correct'}, denoted by $\hat{p}$.
+However, directly reporting raw LLM judgment scores is statistically problematic~\citep{bross1954misclassification, schwartz1985neglected, forman2005counting, angelopoulos2023prediction, boyeau2025autoeval, fraser2024estimating, albinet2025llmjudge}.
+Because LLM judgments are inherently noisy, $\hat{p}$ generally deviates from the true accuracy and fails to provide a reliable estimate~\citep{wang-etal-2024-large-language-models-fair, koo-etal-2024-benchmarking, huang-etal-2025-empirical}.
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[
+      >=stealth,
+      node distance = 0pt and 72pt,
+      every node/.style = {font=\small\bfseries, align=center, minimum size=1.8cm}
+  ]
+    \node[circle, draw] (t1) {\textcolor{correct}{\emph{correct}} \\ {\scriptsize $(Z=1)$}};
+    \node[circle, draw, below=2pt of t1] (t0) {\textcolor{incorrect}{\emph{incorrect}}\\ {\scriptsize $(Z=0)$}};
+    \node[circle, draw, right=of t1, font=\small\normalfont] 
+        (p1) {{\scriptsize judge thinks}\\\textcolor{correct}{\bfseries\emph{correct}}\\ {\scriptsize$(\hat{Z}=1)$}};
+    \node[circle, draw, below=2pt of p1, font=\small\normalfont]  
+        (p0) {{\scriptsize judge thinks}\\\textcolor{incorrect}{\bfseries\emph{incorrect}}\\ {\scriptsize $(\hat{Z}=0)$}};
+    
+    \node[above=-18pt of t1] {\small truth $\big(Z\big)$};
+    \node[above=-18pt of p1] {\small LLM evaluation $\big(\hat{Z}\big)$};
+
+    % \draw[->] (t1) -- node[midway, above=-14pt] {$1 - q_{1}$} (p0);
+    % \draw[->] (t0) -- node[midway, below=-12pt] {$1 - q_{0}$} (p1);
+    \draw[->] (t1) -- node[midway, above=-21pt, rotate=-23, xshift=-26pt] {$1-q_1$} (p0);
+    \draw[->] (t0) -- node[midway, below=-22pt, rotate=25, xshift=-26pt] {$1-q_0$} (p1);
+    \draw[->] (t1) -- node[midway, above=-20pt] {$q_{1}$} (p1);
+    \draw[->] (t0) -- node[midway, below=-20pt] {$q_{0}$} (p0);
+  \end{tikzpicture}
+  \caption{LLM judgments with error rates $1-q_1$ and $1-q_0$, where $q_1$ and $q_0$ are the LLM's sensitivity and specificity, respectively.}
+  \label{fig:q0q1}
+\end{figure}
+
+
+To understand the source of the resulting bias in the judgment score $\hat{p}$, we first examine how an LLM judge makes errors when evaluating individual responses.
+As illustrated in Figure~\ref{fig:q0q1}, an LLM may incorrectly label an \emph{`incorrect'} response as \emph{`correct'} or, conversely, mislabel a \emph{`correct'} response as \emph{`incorrect'}. Let $q_1$ and $q_0$ denote the probabilities that the LLM correctly judges \emph{`correct'} and \emph{`incorrect'} responses, respectively.
+These quantities correspond to the sensitivity $q_1$ and specificity $q_0$ of the LLM judge.
+
+
+\begin{figure*}[t!]
+    \centering
+    \begin{subfigure}{0.28\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figs/fig1_a.pdf}
+        \caption{Raw LLM-based estimator $\hat{p}$}
+        \label{fig:1a}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.42\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figs/fig1_b.pdf}
+        \caption{Our bias-correction method}
+        \label{fig:1b}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.28\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figs/fig1_c.pdf}
+        \caption{Bias-corrected estimator $\hat{\theta}$}
+        \label{fig:1c}
+    \end{subfigure}
+    \caption{
+    Bias and its adjustment in LLM-based judgment under imperfect LLM evaluators (\textcolor{mygreen}{$1-q_0 = 0.3$ and $1-q_1 = 0.1$}).
+    \captiona When the true accuracy $\theta$ is low (\textcolor{myblue}{$\theta < 0.75$}), the expected value of the raw LLM-based estimator $\mathbb{E}[\hat{p}]$ overestimates $\theta$, whereas when $\theta$ is high (\textcolor{myred}{$\theta > 0.75$}), it underestimates $\theta$.
+    \captionb By accounting for the LLM judge’s sensitivity $q_1$ and specificity $q_0$, we obtain the bias-corrected estimator $\hat{\theta}$ and its confidence interval~(CI). We estimate $q_1$ and $q_0$ using a calibration dataset with true labels from human evaluators paired with LLM judgments. Here, $n$, $m_0$, and $m_1$ denote the test-set size, the number of calibration samples whose true label is incorrect (\textcolor{incorrect}{e.g., $4+7=3$}), and the number of calibration samples whose true label is correct (\textcolor{correct}{e.g., $4+7=11$}), respectively.
+    \captionc The resulting estimator $\hat{\theta}$ is unbiased when the true values of $q_0$ and $q_1$ are known, or when a sufficiently large calibration dataset is available.
+    A plug-in Python implementation of this procedure is provided at \githuburl.
+    }
+    \label{fig:bias:plot}
+\end{figure*}
+
+
+As an illustration of how the raw LLM judgment scores can be biased, we consider the extreme scenario where $q_1 = 1$ and $q_0 = 0$. In this case, the LLM will judge every response as \emph{`correct'} and consequently, the average of the LLM’s judgments $\hat{p}$ will be equal to $1$ regardless of the true $\theta$.
+
+In general, whenever the LLM is imperfect ($q_0 + q_1 < 2$), the expected value of $\hat{p}$ deviates from the true accuracy $\theta$:
+\begin{align}
+    \E[\hat{p}]
+    = \theta + (2 - q_0 - q_1) \Big( \frac{1 - q_0}{2 - q_0 - q_1} - \theta \Big),
+\end{align}
+implying positive bias at low $\theta$ and negative bias at high $\theta$ (see Section~\ref{sec:theory} for details).
+This is illustrated in Figure~\ref{fig:1a} for an LLM with $1-q_0 = 0.3$ and $1-q_1 = 0.1$. 
+Specifically, $\E[\hat{p}]$ overestimates~$\theta$ when $\theta < 0.75$ (\textcolor{myblue}{{blue line}}) and underestimates it when $\theta > 0.75$ (\textcolor{myred}{{red line}}), which arises from the two underlying judgment errors (\textcolor{mygreen}{{green arrows}}). A high probability of incorrectly rejecting a \emph{`correct'} response (large $1 - q_1$) induces negative bias at high accuracies, whereas a high probability of incorrectly accepting an \emph{`incorrect'} response (large $1 - q_0$) induces positive bias at low accuracies.
+
+This issue is not merely theoretical. With the increasing adoption of LLM-based evaluation, reported improvements may be driven by bias induced by judgment errors rather than true model gains. Since different evaluation procedures can induce biases of different magnitude and direction, some apparent advances in the literature may arise from evaluation artifacts rather than genuine improvements. This highlights the importance of careful comparisons and the use of calibrated judges when interpreting past findings, and motivates the need for a principled method for bias adjustment.
+
+
+Fortunately, this bias can be corrected. When the sensitivity $q_1$ and specificity $q_0$ are known, a classical result~\citep{rogan1978estimating} provides an exact adjustment. When they are unknown, they can be estimated from a calibration dataset with human-evaluated labels, and the resulting estimates $\hat{q}_1$ and $\hat{q}_0$ can be substituted into the correction formula. This leads to the bias-corrected estimator $\hat{\theta}$ in Figure~\ref{fig:1c}.
+
+More broadly, a variety of bias-correction methods have been studied for imperfect evaluators. In particular, prediction-powered inference~\citep{angelopoulos2023prediction, angelopoulos2023ppi++} provides a general framework that extends beyond categorical outcomes and can yield estimators of the true accuracy~$\theta$ with lower variance; see~\citet{kloos2021comparing, chen2026efficient}. However, we show that existing methods can become biased under distribution shift between the test and calibration datasets, which can arise in LLM-as-a-judge settings~\citep{jung2024trust}. In contrast, the estimator $\hat{\theta}$ based on the method of \citet{rogan1978estimating} remains unbiased under such shifts. Accordingly, we adopt this estimator and focus our analysis on $\hat{\theta}$. Moreover, since the estimator $\hat{\theta}$ may exhibit higher variance than existing alternatives, we propose an adaptive strategy for allocating calibration samples that reduces its variance and, consequently, shortens the confidence interval for~$\theta$ under our method.
+
+
+
+In this paper, we provide a statistical framework for correctly reporting LLM-as-a-judge evaluations, as outlined in Figure~\ref{fig:1b}. We summarize our key contributions below:
+\begin{itemize}[leftmargin=*, itemsep=0pt, topsep=0pt, partopsep=0pt]
+    \item
+    In Section~\ref{sec:method}, we introduce the bias-corrected estimator for the true accuracy $\theta$, derive the confidence interval, and further propose an adaptive strategy for allocating calibration samples that reduces its length. In Section~\ref{sec:theory}, we establish theoretical guarantees for our method.
+    \item
+    In Section~\ref{sec:when-llm-judge}, we characterize parameter regimes defined by $q_1$, $q_0$, and $\theta$ in which our estimator has smaller variance than that obtained from human-only evaluation.
+    \item 
+    In Section~\ref{sec:experiment}, we validate our method through extensive Monte Carlo simulations and real-world LLM-as-a-judge evaluations on the Chatbot Arena benchmark.
+    \item
+    In Section~\ref{sec:other:estimator}, we show that estimators from existing bias-correction methods can still be biased under distribution shift between the test and calibration datasets, whereas our estimator remains unbiased under such shifts.
+\end{itemize}
+\vspace{-4pt}

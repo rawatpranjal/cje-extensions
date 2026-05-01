@@ -1,0 +1,77 @@
+\section{Related Work}\label{sec:related_work}
+
+\subsection{Red Teaming LLMs}
+
+\paragraph{Manual red teaming.}
+Several large-scale manual red teaming efforts have been conducted on LLMs as part of pre-deployment testing \citep{bai2022training, ganguli2022red, achiam2023gpt, touvron2023llama}. \citet{shen2023anything} characterize the performance of a wide variety of human jailbreaks discovered for closed-source models post-deployment, and \citep{wei2023jailbroken} identify successful high-level attack strategies. These studies and others can serve as a baseline for developing more scalable automated red teaming methods.
+
+\paragraph{Automated red teaming.}
+A wide variety of automated red teaming methods have been proposed for LLMs. These include text optimization methods \citep{Wallace2019Triggers, guo-etal-2021-gradient, shin-etal-2020-autoprompt, wen2023hard, jones2023automatically, zou2023universal}, LLM optimizers \citep{perez2022red, chao2023jailbreaking, mehrotra2023treeOfAttacks}, and custom jailbreaking templates or pipelines \citep{liu2023autodan, shah2023scalable, casper2023explore, dengmasterkey, zeng2024johnny}. Most of these methods can be directly compared with each other for eliciting specific harmful behaviors from LLMs.
+
+Several papers have also explored image attacks on multimodal LLMs \citep{bagdasaryan2023ab, shayegani2023jailbreak, qi2023visual, bailey2023image}. In some instances, multimodal attacks have been observed to be stronger than text attacks \citep{carlini2023aligned}, motivating their inclusion in a standardized evaluation for attacks and defenses.
+
+The literature on automated red teaming has grown rapidly, and many attacks are now available for comparison. However, the lack of a standardized evaluation has prevented easy comparisons across papers, such that the relative performance of these methods is unclear.
+
+\paragraph{Evaluating red teaming.}
+Due to the rapid growth of the area, many papers on automated red teaming have developed their own evaluation setups to compare their methods against baselines. Among prior work, we find at least $9$ distinct evaluation setups, which we show in \cref{tab:prior_comparisons_and_evaluations}. We find that existing comparisons rarely overlap, and in \Cref{sec:improved_evaluations} we demonstrate that prior evaluations are essentially incomparable across papers due to a lack of standardization.
+
+
+
+
+\begin{table*}[t]
+\caption{Prior work in automated red teaming uses disparate evaluation pipelines, rendering comparison difficult. Moreover, existing comparisons are non-overlapping, so the current ranking of methods is unclear. See \Cref{sec:non_overlapping_references} for references to the method and evaluation IDs listed in the table. To make further progress, there is an urgent need for a high-quality standardized benchmark.}
+\label{tab:prior_comparisons_and_evaluations}
+\vskip 0.15in
+\centering
+\begin{tabular}{@{}l cc@{}}
+\toprule
+\textbf{Paper} & \textbf{Methods Compared} & \textbf{Evaluation} \\
+\midrule
+\textbf{\citet{perez2022red}} & 1, 2, 3, 4 & A \\
+\textbf{GCG \citep{zou2023universal}} & 5, 6, 7, 8 & B \\
+\textbf{Persona \citep{shah2023scalable}} & 9 & C \\
+\textbf{\citet{liu2023jailbreaking}} & 10 & D \\
+\textbf{PAIR \citep{chao2023jailbreaking}} & 5, 11 & E  \\
+\textbf{TAP \citep{mehrotra2023treeOfAttacks}} & 5, 11, 12 & E \\
+\textbf{PAP \citep{zeng2024johnny}} & 5, 7, 11, 13, 14 & F \\
+\textbf{AutoDAN \citep{liu2023autodan}} & 5, 15 & B, G \\
+\textbf{GPTFUZZER \citep{yu2023gptfuzzer}} & 5, 16, 17 & H \\
+\textbf{\citet{shen2023anything}} & 18 & I \\
+\bottomrule
+\end{tabular}
+\vskip -0.1in
+\end{table*}
+
+\subsection{Defenses}
+
+Several complimentary approaches have been studied for defending LLMs against malicious use. These can be categorized into system-level defenses and model-level defenses.
+
+\paragraph{System-level defenses}
+System-level defenses do not alter the LLM itself, but rather add external safety measures on top of the LLM. These include input and output filtering \citep{markov2023holistic, inan2023llama, openchatkit, li2023rain, cao2023defending, jain2023baseline}, input sanitization \citep{jain2023baseline} and modification \citep{Zhou2024RobustPO}, and constrained inference \citep{rebedea2023nemo}. The most widely-used defense in production is filtering, but \citet{glukhov2023llm} note that output filtering can be foiled if jailbroken LLMs assist malicious users with bypassing detection, e.g., by generating encoded outputs. This motivates a defense in depth approach where system-level defenses like filtering are combined with defenses built into LLMs.
+
+
+
+
+
+
+
+
+
+
+
+\paragraph{Model-level defenses}
+Model-level defenses alter the LLM itself to reduce the risk of malicious use and improve robustness to adversarial prompting. These include safety training, refusal mechanisms, system prompts and context distillation, and adversarial training. Safety training is commonly approached via fine-tuning methods such as RLHF \citep{ouyang2022training}, DPO \citep{rafailov2023direct}, and RLAIF \citep{bai2022constitutional}. Combined with safety datasets and manual red teaming, these approaches can yield substantial improvements to safety and robustness \citep{bai2022training, achiam2023gpt, touvron2023llama}. These training procedures often instill models with ``refusal mechanisms'' whereby models identify a user request as harmful and refuse to carry out the request.
+
+Several works have explored adversarial training with automated red teaming methods. This differs in important ways from training against perturbation attacks, which has been extensively explored in prior work. We discuss these differences in \Cref{sec:adv_perturbations_red_teaming}. \citet{jain2023baseline} note that current attacks can be extremely computationally expensive, which makes them challenging to integrate into an LLM fine-tuning loop. They conduct an adversarial training experiment with a static dataset of harmful prompts, in which the adversary does not optimize against the model during fine-tuning. Concurrently with our work, \citet{ge2023mart} propose multi-round adversarial training with automated red teaming methods, generating new test cases $4$ times throughout training. In \Cref{sec:adv_training} we introduce a novel adversarial training method for robust refusal, demonstrating how HarmBench can facilitate the codevelopment of attacks and defenses.
+
+Other factors that may affect the inherent robustness of a model to jailbreaks include its training set, architecture, system prompt \citep{touvron2023llama, jiang2023mistral}, and size \citep{ganguli2022red}. Our large-scale comparison enables thorough examinations of the effect of these factors.
+
+
+
+
+
+
+
+
+
+

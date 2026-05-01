@@ -1,0 +1,153 @@
+\begin{table}[t!]
+    \caption{Full evaluation results of the general capability and vanilla and adversarial safety of \tulu-7B finetuned with different numbers of \dataset data. More data leads to improved safety performance (see (b) and (c)) without sacrificing general capabilities (see (a)).}
+    
+    \vspace{0.5cm}
+    \label{tab:appendix_finetune_results_scaling_wildjailbreak}
+    
+    \centering
+    \small
+    % \begin{tabular}
+    \begin{subtable}
+    
+    \centering
+    {\begin{tabular}{l@{\hspace{0.6\tabcolsep}}
+    c@{\hspace{0.6\tabcolsep}}
+    c@{\hspace{0.6\tabcolsep}}
+    c@{\hspace{0.6\tabcolsep}}
+    c@{\hspace{0.6\tabcolsep}}
+    c@{\hspace{0.6\tabcolsep}}
+    c@{\hspace{0.6\tabcolsep}}
+    c@{\hspace{0.6\tabcolsep}}
+    c@{\hspace{0.6\tabcolsep}}
+    c@{\hspace{0.6\tabcolsep}}
+    }
+        \toprule &
+        \textbf{MMLU} & 
+        \textbf{GSM8K} & 
+        \textbf{BBH} &
+        \textbf{TydiQA} &
+        \textbf{CodexEval} &
+        \textbf{AlpE1} &
+        \textbf{TQA} & 
+        \textbf{AlpE2} &
+        \textbf{MTB}  \\
+        
+        \textbf{Train Data} & 
+        \makecell{0-shot, \\EM$\uparrow$}&
+        \makecell{8-shot,\\EM$\uparrow$} &
+        \makecell{3-shot,\\ EM$\uparrow$} &
+        \makecell{1-shot, \\F1$\uparrow$}&
+        \makecell{T0.8,\\P@10$\uparrow$}&
+         \makecell{\%Win$\uparrow$} & \makecell{\%Info\\+True$\uparrow$}&
+         \makecell{\%LC\\ Win$\uparrow$} &
+         \makecell{total$\uparrow$} \\
+        \midrule
+        
+\texttt{Tulu2Mix} & 49.8 & 34.0 & 42.4 & 44.7 & 35.6 & 72.7 & 50.8 & 7.84 & 5.87 \\
+\midrule
+\texttt{Tulu2Mix-no-refusal}  & 49.5 & 35.0 & 45.0 & 47.7 & 36.4 & 75.9 & 50.8 & 8.77 & 5.84 \\
+$+$ \texttt{WJ-all-20K} & 49.2 & 31.5 & 45.9 & 48.1 & 34.7 & 75.4 & 52.3 & 8.76 & 6.21 \\
+$+$ \texttt{WJ-all-40K} & 49.1 & 29.5 & 42.7 & 47.4 & 40.0 & 72.3 & 50.8 & 8.05 & 5.86 \\
+$+$ \texttt{WJ-all-80K} & 49.5 & 33.5 & 42.8 & 47.0 & 37.7 & 74.5 & 48.3 & 8.04 & 6.08 \\
+$+$ \texttt{WJ-all-120K} & 49.3 & 29.5 & 42.1 & 47.8 & 35.6 & 74.2 & 50.8 & 7.09 & 5.86 \\
+$+$ \texttt{WJ-all-160K} & 49.7 & 33.5 & 40.8 & 44.1 & 39.6 & 75.0 & 48.5 & 8.70 & 5.97 \\
+$+$ \texttt{WJ-all-200K} & 49.7 & 33.0 & 42.4 & 47.2 & 38.7 & 74.6 & 48.2 & 7.31 & 6.29 \\
+         \bottomrule
+    \end{tabular}}
+    \caption*{(a) General capabilities evaluation results.}
+    \end{subtable}
+
+    \vspace{1cm}
+    
+    \begin{subtable}
+        \centering
+    {\begin{tabular}{l@{\hspace{0.9\tabcolsep}}
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r@{\hspace{0.9\tabcolsep}} 
+    r
+    }
+        
+        
+        \toprule
+        & \multicolumn{4}{c}{\textbf{HarmBench (asr$\downarrow$)}} &
+        \textbf{ToxiG} & 
+        \textbf{XST} & 
+        \textbf{XST$_\text{H}$} & 
+        \textbf{XST$_\text{B}$} \\
+        \textbf{Train Data} & 
+        \makecell{all.} & 
+        \makecell{standard} & 
+        \makecell{contextual} & 
+        \makecell{copyright} & 
+        tox\%$\downarrow$ &
+        f1$\uparrow$ &
+        rta$\uparrow$ &
+        rta$\downarrow$
+        \\
+        \midrule
+        \texttt{Tulu2Mix} &24.7 & 20.8 & 35.8 & 21.3 & 3.3 & 85.1 & 9.6 & 83.0 \\
+        \midrule
+\texttt{Tulu2Mix-no-refusal} &54.4 & 59.1 & 65.4 & 33.8 & 65.9 & 83.7 & 8.4 & 79.5 \\
+$+$ \texttt{WJ-all-20K} & 15.0 & 6.9 & 12.3 & 33.8 & 0.0 & 87.6 & 8.8 & 86.5 \\
+$+$ \texttt{WJ-all-40K} & 14.0 & 6.3 & 11.1 & 32.5 & 0.1 & 86.2 & 7.6 & 83.0 \\
+$+$ \texttt{WJ-all-80K} & 11.6 & 4.4 & 9.9 & 27.5 & 0.2 & 86.9 & 8.0 & 84.5 \\
+$+$ \texttt{WJ-all-120K} & 11.9 & 3.8 & 9.9 & 30.0 & 0.1 & 88.7 & 8.8 & 88.5 \\
+$+$ \texttt{WJ-all-160K} & 12.5 & 5.7 & 7.4 & 31.3 & 0.3 & 88.6 & 8.0 & 87.5 \\
+$+$ \texttt{WJ-all-200K} & 9.1 & 3.1 & 9.9 & 20.0 & 0.2 & 87.6 & 8.8 & 86.5 \\
+         \bottomrule
+    \end{tabular}}
+    \caption*{(b) Vanilla safety evaluation results.}
+    \end{subtable}
+
+    \vspace{1cm}
+    
+   \begin{subtable}
+        \centering
+    {\begin{tabular}{l@{\hspace{0.6\tabcolsep}}
+    r@{\hspace{0.95\tabcolsep}} 
+    r@{\hspace{0.95\tabcolsep}}
+    r@{\hspace{0.95\tabcolsep}}
+    r@{\hspace{0.95\tabcolsep}}
+    r
+    }
+        
+        \toprule &
+        \textbf{JT} & 
+        \textbf{DAN} & 
+          \textbf{\datasetshort} & 
+        \textbf{\datasetshort$_\text{(H)}$} & 
+        \textbf{\datasetshort$_\text{(B)}$}  \\
+        
+        \textbf{Train Data} & 
+        rta$\uparrow$&
+        asr$\downarrow$ & 
+        acc$\uparrow$&
+        asr$\downarrow$ & 
+        rta$\downarrow$
+        \\
+        \midrule
+        
+\texttt{Tulu2Mix} & 74.8  & 49.7  & 69.0  & 60.4  & 1.6 \\
+\midrule
+\texttt{Tulu2Mix-no-refusal} & 60.0  & 66.0  & 64.1  & 71.0  & 0.8 \\
+$+$ \texttt{WJ-all-20K} & 85.5  & 22.3  & 95.7  & 4.3   & 4.4 \\
+$+$ \texttt{WJ-all-40K} & 86.0  & 21.7  & 96.7  & 3.5   & 3.2 \\
+$+$ \texttt{WJ-all-80K} & 86.3  & 19.7  & 97.2  & 2.5   & 3.2 \\
+$+$ \texttt{WJ-all-120K} & 85.8  & 25.0  & 97.3  & 2.6   & 2.8 \\
+$+$ \texttt{WJ-all-160K} & 84.5  & 14.0  & 97.7  & 1.9   & 2.8 \\
+$+$ \texttt{WJ-all-200K} & 86.8  & 14.0  & 98.4  & 1.7   & 1.6 \\
+         \bottomrule
+    \end{tabular}}
+    \caption*{(c) Adversarial safety evaluation results.}
+    \end{subtable}
+\end{table}

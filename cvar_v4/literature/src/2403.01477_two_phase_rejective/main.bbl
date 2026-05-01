@@ -1,0 +1,261 @@
+\begin{thebibliography}{xx}
+
+\harvarditem[Beaumont et~al.]{Beaumont, B{\'e}liveau \harvardand\
+  Haziza}{2015}{beaumont2015clarifying}
+Beaumont, J.-F., B{\'e}liveau, A. \harvardand\ Haziza, D.  \harvardyearleft
+  2015\harvardyearright .
+\newblock Clarifying some aspects of variance estimation in two-phase sampling,
+  {\em J. Survey Statist. Methodol.} {\bf 3}:~524--542.
+
+\harvarditem{Beaumont \harvardand\ Haziza}{2016}{beaumont2016note}
+Beaumont, J.-F. \harvardand\ Haziza, D.  \harvardyearleft 2016\harvardyearright
+  .
+\newblock A note on the concept of invariance in two-phase sampling designs,
+  {\em Survey Methodology} {\bf 42}:~319--323.
+
+\harvarditem{{Centers for Disease Control and Prevention}}{2024}{NHANES2024}
+{Centers for Disease Control and Prevention}  \harvardyearleft
+  2024\harvardyearright .
+\newblock National health and nutrition examination survey data,
+  \url{https://www.cdc.gov/nchs/nhanes/index.htm}.
+\newblock U.S. Department of Health and Human Services, Centers for Disease
+  Control and Prevention.
+
+\harvarditem{Chen \harvardand\ Rao}{2007}{chen2007asymptotic}
+Chen, J. \harvardand\ Rao, J.  \harvardyearleft 2007\harvardyearright .
+\newblock Asymptotic normality under two-phase sampling designs, {\em
+  Statistica Sinica} {\bf 17}:~1047--1064.
+
+\harvarditem{Cochran}{2007}{cochran2007sampling}
+Cochran, W.~G.  \harvardyearleft 2007\harvardyearright .
+\newblock {\em {Sampling Techniques}}, 3 edn, New York: John Wiley \& Sons,
+  Inc.
+
+\harvarditem{Deville \harvardand\ S{\"a}rndal}{1992}{deville1992calibration}
+Deville, J.-C. \harvardand\ S{\"a}rndal, C.-E.  \harvardyearleft
+  1992\harvardyearright .
+\newblock Calibration estimators in survey sampling, {\em Journal of the
+  American Statistical Association} {\bf 87}:~376--382.
+
+\harvarditem[Deville et~al.]{Deville, S{\"a}rndal \harvardand\
+  Sautory}{1993}{deville1993generalized}
+Deville, J.-C., S{\"a}rndal, C.-E. \harvardand\ Sautory, O.  \harvardyearleft
+  1993\harvardyearright .
+\newblock Generalized raking procedures in survey sampling, {\em Journal of the
+  American Statistical Association} {\bf 88}:~1013--1020.
+
+\harvarditem{Deville \harvardand\ Till{\'e}}{2004}{deville2004efficient}
+Deville, J.-C. \harvardand\ Till{\'e}, Y.  \harvardyearleft
+  2004\harvardyearright .
+\newblock Efficient balanced sampling: the cube method, {\em Biometrika} {\bf
+  91}:~893--912.
+
+\harvarditem{Deville \harvardand\ Till{\'e}}{2005}{deville2005variance}
+Deville, J.-C. \harvardand\ Till{\'e}, Y.  \harvardyearleft
+  2005\harvardyearright .
+\newblock Variance approximation under balanced sampling, {\em Journal of
+  Statistical Planning and Inference} {\bf 128}:~569--591.
+
+\harvarditem{Estevao \harvardand\ S{\"a}rndal}{2010}{estevao2010new}
+Estevao, V.~M. \harvardand\ S{\"a}rndal, C.-E.  \harvardyearleft
+  2010\harvardyearright .
+\newblock A new face on two-phase sampling with calibration estimators, {\em
+  Quality Control and Applied Statistics} {\bf 55}:~29--30.
+
+\harvarditem{Fuller}{2009a}{fuller2009sampling}
+Fuller, W.~A.  \harvardyearleft 2009a\harvardyearright .
+\newblock {\em {Sampling Statistics}}, Wiley, Hoboken, NJ.
+
+\harvarditem{Fuller}{2009b}{fuller2009some}
+Fuller, W.~A.  \harvardyearleft 2009b\harvardyearright .
+\newblock Some design properties of a rejective sampling procedure, {\em
+  Biometrika} {\bf 96}:~933--944.
+
+\harvarditem[Fuller et~al.]{Fuller, Legg \harvardand\
+  Li}{2017}{fuller2017bootstrap}
+Fuller, W.~A., Legg, J.~C. \harvardand\ Li, Y.  \harvardyearleft
+  2017\harvardyearright .
+\newblock Bootstrap variance estimation for rejective sampling, {\em Journal of
+  the American Statistical Association} {\bf 112}:~1--9.
+
+\harvarditem{H{\'a}jek}{1964}{hajek1964asymptotic}
+H{\'a}jek, J.  \harvardyearleft 1964\harvardyearright .
+\newblock Asymptotic theory of rejective sampling with varying probabilities
+  from a finite population, {\em The Annals of Mathematical Statistics} {\bf
+  35}:~1491--1523.
+
+\harvarditem{H{\'a}jek \harvardand\ Dupa{\v{c}}}{1981}{hajek1981sampling}
+H{\'a}jek, J. \harvardand\ Dupa{\v{c}}, V.  \harvardyearleft
+  1981\harvardyearright .
+\newblock {\em Sampling from a Finite Population}, Vol.~37, M. Dekker.
+
+\harvarditem{Haziza \harvardand\ Beaumont}{2005}{haziza2005estimation}
+Haziza, D. \harvardand\ Beaumont, J.  \harvardyearleft 2005\harvardyearright .
+\newblock Estimation simplifi{\'e}e de la variance dans le cas de
+  l{\'e}chantillonnage {\'a} deux phases. m{\'e}thodes d'enqu{\'e}tes et
+  sondages, sous la direction de lavall{\'e}e, p. et rivest, l, {\em P., Dunod}
+  pp.~372--377.
+
+\harvarditem{Herson}{1976}{herson1976investigation}
+Herson, J.  \harvardyearleft 1976\harvardyearright .
+\newblock An investigation of relative efficiency of least-squares prediction
+  to conventional probability sampling plans, {\em Journal of the American
+  Statistical Association} {\bf 71}:~700--703.
+
+\harvarditem[Hidiroglou et~al.]{Hidiroglou, Rao \harvardand\
+  Haziza}{2009}{hidiroglou2009variance}
+Hidiroglou, M., Rao, J. \harvardand\ Haziza, D.  \harvardyearleft
+  2009\harvardyearright .
+\newblock Variance estimation in two-phase sampling, {\em Aust. New Zeal. J.
+  Statist.} {\bf 51}:~127--141.
+
+\harvarditem{Isaki \harvardand\ Fuller}{1982}{isaki1982survey}
+Isaki, C.~T. \harvardand\ Fuller, W.~A.  \harvardyearleft 1982\harvardyearright
+  .
+\newblock Survey design under the regression superpopulation model, {\em
+  Journal of the American Statistical Association} {\bf 77}:~89--96.
+
+\harvarditem{Kott \harvardand\ Stukel}{1997}{kott1997can}
+Kott, P. \harvardand\ Stukel, D.~M.  \harvardyearleft 1997\harvardyearright .
+\newblock Can the jackknife be used with a two-phase sample, {\em Survey
+  Methodology} {\bf 23}:~81--89.
+
+\harvarditem{Legg \harvardand\ Fuller}{2009}{legg2009two}
+Legg, J.~C. \harvardand\ Fuller, W.~A.  \harvardyearleft 2009\harvardyearright
+  .
+\newblock Two-phase sampling, {\em Handbook of Statistics}, Vol.~29, Elsevier,
+  pp.~55--70.
+
+\harvarditem{Legg \harvardand\ Yu}{2010}{Legg2010}
+Legg, J.~C. \harvardand\ Yu, C.~L.  \harvardyearleft 2010\harvardyearright .
+\newblock A comparison of sample set restriction procedures, {\em Survey
+  Methodology} {\bf 36}:~69--79.
+
+\harvarditem{Li \harvardand\ Ding}{2018}{li2017general}
+Li, X. \harvardand\ Ding, P.  \harvardyearleft 2018\harvardyearright .
+\newblock General forms of finite population central limit theorems with
+  applications to causal inference, {\em Journal of the American Statistical
+  Association} {\bf 112}:~1759--1769.
+
+\harvarditem{Li \harvardand\ Ding}{2020}{li2020rerandomization}
+Li, X. \harvardand\ Ding, P.  \harvardyearleft 2020\harvardyearright .
+\newblock Rerandomization and regression adjustment, {\em Journal of the Royal
+  Statistical Society Series B: Statistical Methodology} {\bf 82}:~241--268.
+
+\harvarditem[Li et~al.]{Li, Ding \harvardand\ Rubin}{2018}{li2016asymptotic}
+Li, X., Ding, P. \harvardand\ Rubin, D.~B.  \harvardyearleft
+  2018\harvardyearright .
+\newblock Asymptotic theory of rerandomization in treatment--control
+  experiments, {\em Proceedings of the National Academy of Sciences} {\bf
+  115}:~9157--9162.
+
+\harvarditem[Lu et~al.]{Lu, Liu, Liu \harvardand\ Ding}{2023}{lu2023design}
+Lu, X., Liu, T., Liu, H. \harvardand\ Ding, P.  \harvardyearleft
+  2023\harvardyearright .
+\newblock Design-based theory for cluster rerandomization, {\em Biometrika}
+  {\bf 110}:~467--483.
+
+\harvarditem{Morgan \harvardand\ Rubin}{2012}{morgan2012rerandomization}
+Morgan, K.~L. \harvardand\ Rubin, D.~B.  \harvardyearleft 2012\harvardyearright
+  .
+\newblock Rerandomization to improve covariate balance in experiments, {\em The
+  Annals of Statistics} {\bf 40}:~1263--1282.
+
+\harvarditem{Morgan \harvardand\ Rubin}{2015}{morgan2015rerandomization}
+Morgan, K.~L. \harvardand\ Rubin, D.~B.  \harvardyearleft 2015\harvardyearright
+  .
+\newblock Rerandomization to balance tiers of covariates, {\em J. Am. Statist.
+  Assoc.} {\bf 110}:~1412--1421.
+
+\harvarditem{{National Center for Health Statistics}}{2024}{NHIS2024}
+{National Center for Health Statistics}  \harvardyearleft 2024\harvardyearright
+  .
+\newblock National health interview survey,
+  \url{https://www.cdc.gov/nchs/nhis/index.htm}.
+\newblock U.S. Department of Health and Human Services, Centers for Disease
+  Control and Prevention.
+
+\harvarditem{Neyman}{1938}{neyman1938contribution}
+Neyman, J.  \harvardyearleft 1938\harvardyearright .
+\newblock Contribution to the theory of sampling human populations, {\em
+  Journal of the American Statistical Association} {\bf 33}:~101--116.
+
+\harvarditem{Oh \harvardand\ Scheuren}{1983}{oh1983weighting}
+Oh, H.~L. \harvardand\ Scheuren, F.~J.  \harvardyearleft 1983\harvardyearright
+  .
+\newblock Weighting adjustment for unit nonresponse, {\em Incomplete Data in
+  Sample Surveys} {\bf 2}:~143--184.
+
+\harvarditem{Royall \harvardand\ Herson}{1973}{royall1973robust}
+Royall, R.~M. \harvardand\ Herson, J.  \harvardyearleft 1973\harvardyearright .
+\newblock Robust estimation in finite populations {I}, {\em Journal of the
+  American Statistical Association} {\bf 68}:~880--889.
+
+\harvarditem[S{\"a}rndal et~al.]{S{\"a}rndal, Swensson \harvardand\
+  Wretman}{2003}{sarndal2003model}
+S{\"a}rndal, C.-E., Swensson, B. \harvardand\ Wretman, J.  \harvardyearleft
+  2003\harvardyearright .
+\newblock {\em Model Assisted Survey Sampling}, New York: Springer-Verlag.
+
+\harvarditem{Sen}{1953}{sen1953estimate}
+Sen, A.~R.  \harvardyearleft 1953\harvardyearright .
+\newblock On the estimate of the variance in sampling with varying
+  probabilities, {\em J. Indian Soc. Agri. Statist.} {\bf 5}:~119--127.
+
+\harvarditem{Serfling}{1980}{serfling1980approximation}
+Serfling, R.~J.  \harvardyearleft 1980\harvardyearright .
+\newblock {\em Approximation Theorems of Mathematical Statistics}, Hoboken, NJ:
+  Wiley.
+
+\harvarditem{Till{\'e} \harvardand\ Favre}{2005}{tille2005optimal}
+Till{\'e}, Y. \harvardand\ Favre, A.-C.  \harvardyearleft 2005\harvardyearright
+  .
+\newblock Optimal allocation in balanced sampling, {\em Statistics \&
+  Probability Letters} {\bf 74}:~31--37.
+
+\harvarditem[Valliant et~al.]{Valliant, Dorfman \harvardand\
+  Royall}{2000}{valliant2000finite}
+Valliant, R., Dorfman, A.~H. \harvardand\ Royall, R.~M.  \harvardyearleft
+  2000\harvardyearright .
+\newblock {\em Finite Population Sampling and Inference: A Prediction
+  Approach}, number 04; QA276. 6, V3., John Wiley New York.
+
+\harvarditem{Wang \harvardand\ Opsomer}{2011}{wang2011asymptotic}
+Wang, J.~C. \harvardand\ Opsomer, J.~D.  \harvardyearleft 2011\harvardyearright
+  .
+\newblock On asymptotic normality and variance estimation for nondifferentiable
+  survey estimators, {\em Biometrika} {\bf 98}:~91--106.
+
+\harvarditem{Wang \harvardand\ Li}{2022}{wang2022rerandomization}
+Wang, Y. \harvardand\ Li, X.  \harvardyearleft 2022\harvardyearright .
+\newblock Rerandomization with diminishing covariate imbalance and diverging
+  number of covariates, {\em The Annals of Statistics} {\bf 50}:~3439--3465.
+
+\harvarditem{Wang \harvardand\ Li}{2023}{wang2023asymptotic}
+Wang, Y. \harvardand\ Li, X.  \harvardyearleft 2023\harvardyearright .
+\newblock Asymptotic theory of the best-choice rerandomization using the
+  mahalanobis distance, {\em arXiv preprint arXiv:2312.02513} .
+
+\harvarditem[Yang et~al.]{Yang, Qu \harvardand\ Li}{2023}{yang2023rejective}
+Yang, Z., Qu, T. \harvardand\ Li, X.  \harvardyearleft 2023\harvardyearright .
+\newblock Rejective sampling, rerandomization, and regression adjustment in
+  survey experiments, {\em Journal of the American Statistical Association}
+  {\bf 118}:~1207--1221.
+
+\harvarditem{Yates}{1946}{yates1946review}
+Yates, F.  \harvardyearleft 1946\harvardyearright .
+\newblock A review of recent statistical developments in sampling and sampling
+  surveys, {\em Journal of the Royal Statistical Society, Series B} {\bf
+  109}:~12--43.
+
+\harvarditem{Yates \harvardand\ Grundy}{1953}{yates1953selection}
+Yates, F. \harvardand\ Grundy, P.  \harvardyearleft 1953\harvardyearright .
+\newblock Selection without replacement from within strata with probability
+  proportional to size, {\em J. R. Statist. Soc. B} {\bf 15}:~253--261.
+
+\harvarditem{Zhong \harvardand\ Rubin}{2024}{zhong2024conditionally}
+Zhong, Z. \harvardand\ Rubin, D.  \harvardyearleft 2024\harvardyearright .
+\newblock Conditionally affinely invariant rerandomization and its
+  admissibility, {\em arXiv preprint arXiv:2402.11336} .
+
+\end{thebibliography}

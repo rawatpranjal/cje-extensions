@@ -1,0 +1,168 @@
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{xspace}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{nicematrix}
+\usepackage[normalem]{ulem}
+\usepackage{listings}
+\usepackage{comment}
+\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{rotate}
+\usepackage{float}
+\usepackage{xspace}
+\usepackage{cleveref}
+\usepackage[bottom]{footmisc}
+
+\NewDocumentCommand{\rot}{O{45} O{1em} m}{\makebox[#2][l]{\rotatebox{#1}{#3}}}%
+
+\definecolor{babypink}{rgb}{0.96, 0.76, 0.76}
+\definecolor{coralpink}{rgb}{0.97, 0.51, 0.47}
+\definecolor{aqua}{rgb}{0.0, 1.0, 1.0}
+\definecolor{columbiablue}{rgb}{0.61, 0.87, 1.0}
+\definecolor{cyan}{RGB}{222, 255, 255}
+\definecolor{turquoiseblue}{rgb}{0.0, 1.0, 0.94}
+\definecolor{realcyan}{RGB}{0, 200, 200}
+
+\newcommand\liwei[1]{{\color{teal}[{#1}]$_{-Liwei}$}}
+\newcommand{\nouha}[1]{{\color{brown}[#1 -ND]}}
+\newcommand{\niloo}[1]{{\color{magenta}[#1 -Nlfr]}}
+\newcommand{\ake}[1]{{\color{blue} [#1 -AE]}}
+\newcommand{\seungju}[1]{{\color{purple} [#1 -SH]}}
+\newcommand{\kavel}[1]{{\color{coralpink} [#1 -KR]}}
+\newcommand{\maarten}[1]{{\color{red!40!black} [#1 -MS]}}
+\newcommand\ximing[1]{{\color{olive}[#1]$_{-Ximing}$}}
+\newcommand\yejin[1]{{\color{realcyan}[#1]$_{-YC}$}}
+\newcommand\faeze[1]{{\color{orange}[#1]$_{-FB}$}}
+\newcommand\sk[1]{{\color{pink}[{#1}]$_{-SK}$}}
+
+
+\newcommand\todo[1]{{\color{red}[TODO: {#1}]}}
+\newcommand\todofull[1]{{\color{orange}[TODO-Full: {#1}]}}
+
+
+\newcommand*\inlineimage[1]{\raisebox{-0.15\baselineskip}{\includegraphics[height=1\baselineskip]{#1}$\,$}}
+\newcommand{\methodemoji}{\inlineimage{figures/animal.png}\xspace}
+\newcommand{\datasetemoji}{\inlineimage{figures/cyber-security.png}\xspace}
+
+\newcommand{\mine}{\textsc{Mine}\xspace}
+\newcommand{\compose}{\textsc{Compose}\xspace}
+
+\newcommand{\eg}{e.g.,\xspace}
+\newcommand{\ie}{i.e.,\xspace}
+
+\newcommand{\method}{\textsc{WildTeaming}\xspace}
+\newcommand{\methodshort}{\textsc{WildTeam}\xspace}
+\newcommand{\methodshortest}{\textsc{WT}\xspace}
+
+\newcommand{\gptfour}{GPT-4\xspace}
+\newcommand{\gptfourturbo}{GPT-4-Turbo\xspace}
+\newcommand{\chatgpt}{GPT-3.5\xspace}
+\newcommand{\claudetwo}{Claude-2\xspace}
+\newcommand{\claudetwoone}{Claude-2.1\xspace}
+\newcommand{\claudethree}{Claude-3\xspace}
+\newcommand{\gemini}{Gemini-1.5\xspace}
+\newcommand{\tulu}{Tulu2\xspace}
+\newcommand{\llama}{Llama2\xspace}
+\newcommand{\gemma}{Gemma\xspace}
+\newcommand{\vicuna}{Vicuna\xspace}
+\newcommand{\palm}{PaLM-2\xspace}
+\newcommand{\mistral}{Mistral\xspace}
+\newcommand{\olmo}{OLMo\xspace}
+\newcommand{\mixtral}{Mixtral-8$\times$7B\xspace}
+
+\newcommand{\lmsys}{\textsc{LMSYS-Chat-1M}\xspace}
+\newcommand{\lmsysshort}{\textsc{LMSYS-1M}\xspace}
+
+\newcommand{\wildchat}{\textsc{(InThe)WildChat}\xspace}
+\newcommand{\wildchatshort}{\textsc{WildChat}\xspace}
+
+\newcommand{\hhrlhf}{\textsc{HH-RLHF}\xspace}
+
+\newcommand{\safellama}{\textsc{Safety-Tuned Llamas}\xspace}
+\newcommand{\safellamashort}{\textsc{Safety Llamas}\xspace}
+
+\newcommand{\saferlhf}{\textsc{Safe-RLHF}\xspace}
+
+\newcommand{\itw}{\textsc{In-the-Wild}\xspace}
+\newcommand{\itwshort}{\textsc{ITW}\xspace}
+
+\newcommand{\dan}{\textsc{Do-Anything-Now}\xspace}
+\newcommand{\danshort}{\textsc{DAN}\xspace}
+
+\newcommand{\autodan}{\textsc{AutoDAN}\xspace}
+
+\newcommand{\tulumix}{Tulu2Mix\xspace}
+\newcommand{\tulumixshort}{T2M\xspace}
+
+\newcommand{\trustllm}{\textsc{TrustLLM}\xspace}
+\newcommand{\decodingtrust}{\textsc{DecodingTrust}\xspace}
+
+
+\newcommand{\rainbowteaming}{\textsc{Rainbow Teaming}\xspace}
+\newcommand{\rainbowteamingshort}{\textsc{Rainbow}\xspace}
+
+\newcommand{\vani}{vanilla\xspace}
+\newcommand{\adv}{adversarial\xspace}
+
+\newcommand{\Vani}{Vanilla\xspace}
+\newcommand{\Adv}{Adversarial\xspace}
+
+\newcommand{\vanishort}{\textsc{vani}\xspace}
+\newcommand{\advshort}{\textsc{adv}\xspace}
+
+\newcommand{\Vanishort}{\textsc{Vani}\xspace}
+\newcommand{\Advshort}{\textsc{Adv}\xspace}
+
+
+\newcommand{\vanih}{vanilla (H)\xspace}
+\newcommand{\advh}{adversarial (H)\xspace}
+
+\newcommand{\vanishorth}{vani (H)\xspace}
+\newcommand{\advshorth}{adv (H)\xspace}
+
+\newcommand{\vanib}{vanilla (B)\xspace}
+\newcommand{\advb}{adversarial (B)\xspace}
+
+\newcommand{\vanishortb}{vani (B)\xspace}
+\newcommand{\advshortb}{adv (B)\xspace}
+
+\newcommand{\llamaguard}{\textsc{Llama-Guard}\xspace}
+
+\newcommand{\harmbench}{\textsc{HarmBench}\xspace}
+
+\newcommand{\pair}{\textsc{PAIR}\xspace}
+\newcommand{\tap}{\textsc{TAP}\xspace}
+\newcommand{\pap}{\textsc{PAP}\xspace}
+\newcommand{\gcg}{\textsc{GCG}\xspace}
+
+
+\newcommand{\dataset}{\textsc{WildJailbreak}\xspace}
+\newcommand{\datasetshort}{\textsc{WJ}\xspace}
+
+\newcommand{\tacticbank}{\textsc{WildJailbreakTacticBank}\xspace}
+
+\newcommand{\datasettactics}{\textsc{JailbreakTacticsBank}\xspace}
+
+\hypersetup{
+    colorlinks = true,
+    linkbordercolor = {white},
+    linkcolor = blue!60!black,
+    citecolor = blue!60!black,
+    urlcolor = blue!60!black
+}
+
+\usepackage{fontawesome5}
+\usepackage{hyperref}
+
+\makeatletter
+\newcommand{\github}[1]{%
+   \href{#1}{\faGithubSquare}%
+}
+\makeatother
+
+\newcommand{\huggingface}{\raisebox{-1.5pt}{\includegraphics[height=1.05em]{figures/hf-logo.pdf}}\xspace}
+

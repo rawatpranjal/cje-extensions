@@ -1,0 +1,114 @@
+Overview
+
+Authors:
+
+    - Carl-Erik Särndal ,
+    - Bengt Swensson ,
+    - Jan Wretman
+
+1.  Carl-Erik Särndal
+    View author publications
+
+    Search author on: PubMed   Google Scholar
+2.  Bengt Swensson
+    View author publications
+
+    Search author on: PubMed   Google Scholar
+3.  Jan Wretman
+    View author publications
+
+    Search author on: PubMed   Google Scholar
+
+[]
+
+Part of the book series: Springer Series in Statistics (SSS)
+
+Buy print copy
+
+[] Softcover Book USD 189.00
+
+Price excludes VAT (USA)
+
+- Compact, lightweight edition
+- Dispatched in 3 to 5 business days
+- Free shipping worldwide - see info
+
+Buy Softcover Book []
+
+Tax calculation will be finalised at checkout
+
+Licence this eBook for your library []
+
+Learn about institutional subscriptions []
+
+About this book
+
+Now available in paperback. This book provides a comprehensive account
+of survey sampling theory and methodology which will be suitable for
+students and researchers across a variety of disciplines. A central
+theme is to show how statistical modeling is a vital component of the
+sampling process and in the choice of estimation technique. Statistical
+modeling has strongly influenced sampling theory in recent years and has
+clarified many issues related to the uses of auxiliary information in
+surveys. This is the first textbook that systematically extends
+traditional sampling theory with the aid of a modern model assisted
+outlook. The central ideas of sampling theory are developed from the
+unifying perspective of unequal probability sampling. The book covers
+classical topics as well as areas where significant new developments
+have taken place notably domain estimation, variance estimation, methods
+for handling nonresponse, models for measurement error, and the analysis
+of survey data. The authors have taken care to presuppose nothing more
+on the part of the reader than a first course in statistical inference
+and regression analysis. Throughout, the emphasis is on statistical
+ideas rather than advanced mathematics. Each chapter concludes with a
+range of exercises incorporating the analysis of data from actual finite
+populations. As a result, all those concerned with survey methodology or
+engaged in survey sampling will find this an invaluable and up-to-date
+coverage of the subject.
+
+Explore related subjects
+
+Discover the latest articles, books and news in related subjects.
+
+- Statistical Theory and Methods
+
+Reviews
+
+"I would recommend that this book be in the office of every survey
+methodologist."
+(Journal of Official Statistics)
+
+Accessibility Information
+
+Accessibility information for this book is coming soon. We're working to
+make it available as quickly as possible. Thank you for your patience.
+
+Bibliographic Information
+
+- Book Title: Model Assisted Survey Sampling
+
+- Authors: Carl-Erik Särndal, Bengt Swensson, Jan Wretman
+
+- Series Title: Springer Series in Statistics
+
+- Publisher: Springer New York, NY
+
+- eBook Packages: Springer Book Archive
+
+- Copyright Information: Springer-Verlag New York, Inc. 1992
+
+- Softcover ISBN: 978-0-387-40620-6Published: 31 October 2003
+
+- Series ISSN: 0172-7397
+
+- Series E-ISSN: 2197-568X
+
+- Edition Number: 1
+
+- Number of Pages: XV, 695
+
+Publish with us
+
+Policies and ethics []
+
+Back to top []
