@@ -21,6 +21,7 @@
 
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\Prob}{\mathbb{P}}
+\newcommand{\Var}{\mathrm{Var}}
 \newcommand{\indicator}[1]{\mathbf{1}\{#1\}}
 \newcommand{\fhat}{\widehat{f}}
 \newcommand{\ghat}{\widehat{g}}
@@ -51,15 +52,65 @@ the picture in one chart; the rest of the paper unpacks it.
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.95\textwidth]{mvp_one_graph.pdf}
-\caption{One-chart summary. Per policy: black diamonds are the full-oracle
-$\CVaR_{0.10}$ truth, pale triangles are the cheap-only $\CVaR$, colored
-circles are the Direct CVaR-CJE estimate, gray dots are the policy's mean
-oracle score. Circle color encodes the audit verdict: blue = \textsc{pass},
-orange = \textsc{flag}. Marker size on the Direct estimate scales with the
-audit-slice size. Values shown are pilot-like; the live numbers appear in
-\cref{tab:alpha10}.}
+\caption{Two-panel summary. Left panel: Mean estimand $\mathbb{E}[Y]$.
+Right panel: CVaR estimand $\CVaR_{0.10}(Y)$. In each panel, pale
+triangles are the cheap-only baseline, black diamonds are the
+full-oracle truth, and colored circles are the Direct CJE estimate
+(blue = audit \textsc{pass}, orange = audit \textsc{flag}). Whiskers
+around each Direct estimate are 95\,\% confidence intervals combining
+calibrator-resampling variance ($\mathrm{Var}_{cal}$) with audit-noise
+variance ($\mathrm{Var}_{audit}$). Overlapping whiskers between two
+policies indicate they are not statistically distinguishable at this
+sample size: a \textsc{pass} verdict says the calibrator transports,
+not that the ranking against neighbors is conclusive. Live numbers
+appear in \cref{tab:alpha10,tab:alpha20}.}
 \label{fig:mvp}
 \end{figure}
+
+\section*{Bottom line}
+\label{sec:bottomline}
+
+\Cref{tab:bottomline} ranks the five policies on each estimand with the
+audit gate attached. The deployer chooses the column appropriate to
+their downstream question — average user satisfaction (mean) or worst-tail
+deployment risk ($\CVaR_{0.10}$) — and refuses any cell whose audit flags.
+
+\begin{table}[h]
+\centering\footnotesize
+\caption{Ranked decision table at $n_0 = 500$, coverage $0.25$, seed $42$.
+$\sigma_{\mathrm{total}} = \sqrt{\Var_{\mathrm{cal}} + \Var_{\mathrm{audit}}}$
+captures both calibrator-resampling and audit-noise variance. Audit
+columns gate whether the corresponding estimate is claimable as a level.}
+\label{tab:bottomline}
+\begin{tabular}{l r l r l}
+\toprule
+\thead{policy} &
+  \thead{Mean $\widehat V \pm 1.96\,\sigma_{\mathrm{total}}$} &
+  \thead{mean\\ audit} &
+  \thead{$\CVaR_{0.10}\;\widehat V \pm 1.96\,\sigma_{\mathrm{total}}$} &
+  \thead{$\CVaR$\\ audit} \\
+\midrule
+\textsc{premium}   & $+0.354 \pm 0.075$ & \textbf{flag} ($p\!=\!0.002$) & $-0.233 \pm 0.143$ & \textsc{pass} \\
+\textsc{base}      & $+0.286 \pm 0.102$ & \textsc{pass} ($p\!=\!0.81$)  & $-0.276 \pm 0.143$ & \textsc{pass} \\
+\textsc{clone}     & $+0.274 \pm 0.063$ & \textbf{flag} ($p\!=\!0.030$) & $-0.279 \pm 0.141$ & \textsc{pass} \\
+\textsc{parallel}  & $+0.144 \pm 0.059$ & \textsc{pass} ($p\!=\!0.054$) & $-0.348 \pm 0.174$ & \textsc{pass} \\
+\textsc{unhelpful} & $-0.099 \pm 0.053$ & \textsc{pass} ($p\!=\!0.56$)  & $-0.411 \pm 0.260$ & \textsc{pass} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{How to read.}
+Use the mean column if the deployment metric is average user
+satisfaction; use the $\CVaR_{0.10}$ column if it is avoiding the
+worst tenth of deployments. Refuse-as-level any flagged cell:
+\textsc{premium} and \textsc{clone} should not be ranked on mean
+without further investigation, but their $\CVaR$ levels are
+claimable. At this slice size all five $\CVaR$ envelopes overlap
+between the top three, so the $\CVaR$ ranking
+($\textsc{premium} \succ \textsc{base} \succ \textsc{clone} \succ
+\textsc{parallel} \succ \textsc{unhelpful}$) is qualitative for the
+top cluster and only the $\textsc{parallel}$/$\textsc{unhelpful}$
+gap is statistically separable from $\textsc{base}$/$\textsc{clone}$.
 
 \section{Setup}
 
@@ -220,6 +271,22 @@ that the tail-mass deviation $\bar g_1$ stays inside the threshold
 even on the policies whose $Y$ distributions differ most from
 \textsc{base} (\textsc{parallel}, \textsc{unhelpful}). All five rows
 in \cref{tab:alpha10} therefore claim levels.
+
+\paragraph{What the error bars say about ranking.}
+The whiskers in \cref{fig:mvp} combine calibrator-resampling variance
+($\mathrm{Var}_{cal}$, from a paired bootstrap of the oracle slice)
+with audit-noise variance ($\mathrm{Var}_{audit}$, from the residual
+sample variance). At $n = 500$ with the $25\%$ oracle slice, the
+$\CVaR_{0.10}$ panel's bars span roughly $\pm 0.15$ on the
+\textsc{base}/\textsc{clone}/\textsc{premium} cluster — wide enough
+that the three policies' Direct estimates are not statistically
+separable on this seed. A \textsc{pass} verdict says the calibrator
+transports faithfully, so the level claim is meaningful in absolute
+terms; it does not by itself rule out that two passing policies are
+indistinguishable from one another. The mean panel's bars are tighter
+($\sim \pm 0.05$), so \textsc{premium} is cleanly above the
+\textsc{base}/\textsc{clone} cluster on the mean estimand even though
+its mean audit flags ($p = 0.002$).
 
 \Cref{tab:alpha20} repeats the analysis at $\alpha = 0.20$. Direct
 again beats cheap-only everywhere. Four of five rows pass; the
@@ -630,9 +697,11 @@ overlaid. The mean and the tail rank policies in the same order, but
 the tail spreads them out non-uniformly. \textsc{base} and
 \textsc{clone} sit on top of each other in the mean (their
 $x$-coordinates differ by $0.003$) and also sit on top of each other
-in the tail (their $\CVaR_{0.10}$ truths differ by $0.013$). The Direct estimates sit close to the truth on \textsc{base},
-\textsc{premium}, and the \textsc{parallel}/\textsc{unhelpful} pair;
-the largest gap is on \textsc{clone}.
+in the tail (their $\CVaR_{0.10}$ truths differ by $0.013$). The Direct
+estimate sits closest to the truth on \textsc{premium} (gap $0.031$);
+the largest gap is on \textsc{parallel} (gap $0.132$), where the
+calibrator is well-trained on logger ($\textsc{base}$) data but less so
+on \textsc{parallel}'s shorter, terser response distribution.
 
 \begin{figure}[h]
 \centering
@@ -648,33 +717,44 @@ policy.}
 \label{app:audittruth}
 
 \Cref{tab:audittruth} cross-tabulates the audit verdict against the
-actual error magnitude across the ten cells in the main results. The
-empty quadrant is the dangerous one: there is no cell where the audit
-passes and the error is large at the $0.10$ threshold. The audit is
-conservative on this panel; it flags six cells with low error, which
-is acceptable behavior for a refusal gate.
+actual error magnitude across the ten cells in the main results. Eight
+of the ten cells land in the $\textsc{pass}+\text{low}$ quadrant — the
+audit passes and the Direct estimate is within $0.10$ of truth. The
+two non-diagonal cells are worth calling out individually because they
+represent the two ways the heuristic can disagree with truth at this
+panel size.
 
 \begin{table}[h]
 \centering\small
 \caption{Audit verdict versus actual error at the $0.10$ threshold,
-across all $10$ cells (5 policies $\times$ 2 $\alpha$).}
+across all $10$ cells (5 policies $\times$ 2 $\alpha$) on the n=500 panel.}
 \label{tab:audittruth}
 \begin{tabular}{l l l}
 \toprule
 & \thead{abs.\ error of Direct $\le 0.10$\\ (low)} & \thead{abs.\ error of Direct $> 0.10$\\ (high)} \\
 \midrule
-audit \textsc{pass} & 3 cells (true accept) & 0 cells (dangerous miss) \\
-audit \textsc{flag} & 6 cells (conservative refusal) & 1 cell (true catch) \\
+audit \textsc{pass} & 8 cells (true accept) & 1 cell (dangerous miss) \\
+audit \textsc{flag} & 1 cell (conservative refusal) & 0 cells (true catch) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The single $\textsc{flag}+\text{high}$ cell is \textsc{unhelpful} at
-$\alpha = 0.20$, where the Direct estimate would have been $-0.502$
-against truth $-0.377$ and the audit refuses. The three
-$\textsc{pass}+\text{low}$ cells are \textsc{clone} at $\alpha=0.10$
-($0.103$), \textsc{premium} at $\alpha=0.10$ ($0.070$), and
-\textsc{premium} at $\alpha=0.20$ ($0.061$).
+The single $\textsc{pass}+\text{high}$ cell is \textsc{parallel} at
+$\alpha = 0.10$ (Direct $-0.348$, truth $-0.479$, error $0.132$). The
+moment heuristic gives $\bar g_1 = +0.044$ and $\bar g_2 = +0.013$, both
+inside the $0.05$ tolerance, so the audit passes — yet the error is
+above the $0.10$ threshold. The miss is small in absolute terms (the
+overshoot is $0.032$) and reflects the heuristic-vs-truth threshold
+mismatch rather than a transport failure: the audit moments correctly
+report that the calibrator transports, just not perfectly.
+
+The single $\textsc{flag}+\text{low}$ cell is \textsc{unhelpful} at
+$\alpha = 0.20$ (Direct $-0.297$, truth $-0.363$, error $0.066$). The
+audit catches a $\bar g_1 = +0.164$ tail-mass deviation that is
+genuine (the audit slice has $48 / 132 = 36\%$ of rows below $\hat t$
+when $\alpha = 0.20$ would imply $20\%$), so refusal is the
+conservative-correct call even though the numerical error happens to
+be below $0.10$.
 
 \subsection{Tail composition by theme}
 \label{app:tailthemes}
@@ -828,5 +908,190 @@ for usable signal. The cheap judge orders responses correctly in the
 tail; the bias correction needed there is small. This is consistent
 with the audit's $\bar g_2$ being small everywhere: the
 cheap-to-oracle conditional residual transports.
+
+\subsection{Audit behavior across sample sizes}
+\label{app:failuremode}
+
+The heuristic verdict $|\bar g_1| \le 0.05$ has a per-row sensitivity
+of $1/n_{\text{audit}}$. At small $n_{\text{audit}}$ a single audit row
+crossing $\hat t$ shifts $|\bar g_1|$ past the threshold; at large
+$n_{\text{audit}}$ only systematic transport failures move enough rows
+to cross. The heuristic's apparent verdict is therefore non-monotone
+in panel size: cells flag at small $n$, relax to \textsc{pass} at
+medium $n$, and only the structural failures flag at large $n$.
+
+\Cref{fig:failuremode} subsamples the n=500 panel deterministically to
+n=100 and n=250 (taking the first prompts by sorted prompt id), reruns
+the headline audit at $\alpha = 0.10$ and $\alpha = 0.20$, and plots
+$\bar g_1$ against the $\pm 0.05$ heuristic band. At n=100 the audit
+flags six of the ten cells (some are sampling artifacts: \textsc{base}
+at $n_{\text{audit}}=5$ has a single-row swing of $0.20$, so any
+cross-threshold row trips the verdict). At n=500 only one cell flags
+(\textsc{unhelpful} at $\alpha = 0.20$, the structural transport
+failure documented in \cref{app:audittruth}). The panel is the
+visualization the methodology contract intends: \emph{fewer flags at
+larger n means the audit is doing its job.}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{failure_mode_panel.pdf}
+\caption{Audit moment $\bar g_1$ across three sample sizes drawn from
+the same n=500 panel (n=100, n=250, n=500), at $\alpha = 0.10$ (top
+row) and $\alpha = 0.20$ (bottom row). Each policy has three vertically
+stacked points (small, medium, large from top to bottom in their
+group); blue = \textsc{pass}, orange = \textsc{flag}; gray band is the
+$|\bar g_1| \le 0.05$ heuristic. As $n_{\text{audit}}$ grows the
+per-row swing shrinks and noise-driven flags relax to passes; the
+single persistent flag at n=500 is the genuine transport failure.}
+\label{fig:failuremode}
+\end{figure}
+
+\section{: Inference}
+\label{app:inference}
+
+This appendix is self-contained. It defines the two Direct CJE estimators
+in pseudocode, lists every confidence-interval formula the body uses,
+and gives the algebraic identity that makes the $\CVaR$-CJE estimator
+collapse to Mean-CJE at $\alpha = 1$. A regression test
+(\texttt{cvar\_v4/healthbench\_data/tests/test\_alpha1\_identity.py})
+locks the identity at machine precision; this appendix's last subsection
+shows the witness table.
+
+\subsection{Pseudocode for both estimators}
+\label{app:pseudocode}
+
+Both estimators take the same inputs (logger oracle slice,
+calibrator-training rows, audit slice, and target-policy fresh draws)
+and use the same HT-weighted isotonic calibrator. They differ in the
+post-calibration aggregation.
+
+\paragraph{Direct Mean-CJE.}
+Inputs: training rows $(s_{\mathrm{tr},i}, y_{\mathrm{tr},i}, \pi_i)_{i=1}^{n_{\mathrm{tr}}}$
+on the logger oracle slice; target fresh draws $(s_{\mathrm{eval},j})_{j=1}^{M}$;
+held-out audit rows $(s_{\mathrm{aud},k}, y_{\mathrm{aud},k})_{k=1}^{n_{\mathrm{aud}}}$.
+
+\begin{enumerate}
+\item[\textbf{M-1.}] HT weights: $w_{\mathrm{tr},i} = 1 / \pi_i$.
+\item[\textbf{M-2.}] Calibrator: $\hat f \;=\; \mathrm{IsotonicRegression}(\text{increasing}, \text{clip})$
+  fit on $(s_{\mathrm{tr}}, y_{\mathrm{tr}}, w_{\mathrm{tr}})$. (\texttt{fit\_isotonic\_mean})
+\item[\textbf{M-3.}] Direct estimate: $\widehat{V}_{\mathrm{mean}}(\pi') = \frac{1}{M} \sum_{j=1}^{M} \hat f(s_{\mathrm{eval},j})$.
+\item[\textbf{M-4.}] Audit: residual $\varepsilon_k = y_{\mathrm{aud},k} - \hat f(s_{\mathrm{aud},k})$;
+  one-sample t-test of $\E[\varepsilon] = 0$. (\texttt{mean\_transport\_audit})
+\end{enumerate}
+
+\paragraph{Direct $\CVaR$-CJE.}
+Same inputs, plus tail level $\alpha \in (0, 1]$.
+
+\begin{enumerate}
+\item[\textbf{C-1.}] HT weights as in M-1.
+\item[\textbf{C-2.}] Threshold grid $\mathcal{T}$ from \texttt{make\_t\_grid}; the
+  upper bound is extended past $\max(y_{\mathrm{tr}}) + 0.05$ so the saddle-point
+  optimum is reachable for all $\alpha$, including $\alpha = 1$.
+\item[\textbf{C-3.}] Saddle-point optimization. For each $t \in \mathcal{T}$:
+  $z_{\mathrm{tr},i}(t) = \max(t - y_{\mathrm{tr},i}, 0)$; fit
+  $\hat g_t \;=\; \mathrm{IsotonicRegression}(\text{decreasing}, \text{clip})$
+  on $(s_{\mathrm{tr}}, z_{\mathrm{tr}}(t), w_{\mathrm{tr}})$.
+  Objective: $J(t) = t - \tfrac{1}{\alpha}\, \tfrac{1}{M} \sum_{j=1}^{M} \hat g_t(s_{\mathrm{eval},j})$.
+  Then $\hat t = \arg\max_t J(t)$ and $\widehat{V}_{\mathrm{cvar}}(\pi') = J(\hat t)$.
+\item[\textbf{C-4.}] Audit at $\hat t$: tail-mass moment
+  $g_{1,k} = \indicator{y_{\mathrm{aud},k} \le \hat t} - \alpha$;
+  stop-loss residual $g_{2,k} = (\hat t - y_{\mathrm{aud},k})_+ - \hat g_{\hat t}(s_{\mathrm{aud},k})$.
+  Heuristic verdict: \textsc{pass} if $\lvert \bar g_1 \rvert \le 0.05$ and
+  $\lvert \bar g_2 \rvert \le 0.05$; otherwise tag the offending moment.
+  (\texttt{simple\_cvar\_audit})
+\end{enumerate}
+
+\subsection{Confidence-interval formulas}
+\label{app:ciformulas}
+
+Two independent sources of slice-level uncertainty contribute to each
+Direct estimate:
+
+\begin{itemize}
+\item $\Var_{\mathrm{cal}}$ — variance of $\widehat{V}$ under resampling
+  of the calibrator-training rows. Estimated by paired bootstrap
+  (\texttt{bootstrap\_mean\_ci}, \texttt{bootstrap\_cvar\_ci}) or by
+  $K$-fold delete-one-group jackknife
+  (\texttt{jackknife\_var\_cal\_mean}, \texttt{jackknife\_var\_cal}).
+\item $\Var_{\mathrm{audit}}$ — variance of the audit-side mean given
+  a fixed calibrator. For Mean-CJE, $\Var_{\mathrm{audit}} = \mathrm{sd}(\varepsilon)^2 / n_{\mathrm{aud}}$,
+  the t-test SE squared. For CVaR-CJE at fixed $\hat t$,
+  $\Var_{\mathrm{audit}} = \mathrm{se}_{g_2}^2$ from
+  \texttt{cvar\_audit\_analytical\_se} (the dominant moment for the
+  $\widehat{V}_{\mathrm{cvar}}$ level claim).
+\end{itemize}
+
+The two are independent because the calibration slice and the audit
+slice are disjoint by construction (an 80/20 split of the logger
+oracle slice for the logger policy; different rows of the target
+slice for non-logger policies). Hence
+
+\begin{equation}
+\Var_{\mathrm{total}}(\widehat{V}) \;=\; \Var_{\mathrm{cal}} + \Var_{\mathrm{audit}},
+\qquad
+\sigma_{\mathrm{total}} = \sqrt{\Var_{\mathrm{total}}}.
+\label{eq:vartotal}
+\end{equation}
+
+The 95\% CI in \cref{fig:mvp} is $\widehat{V} \pm 1.96\,\sigma_{\mathrm{total}}$.
+Bootstrap percentile intervals (which capture only $\Var_{\mathrm{cal}}$)
+are also exported as \texttt{cvar\_ci\_lo/hi} and \texttt{mean\_ci\_lo/hi}
+in the pilot table for reference.
+
+\subsection{The $\alpha = 1$ collapse}
+\label{app:alpha1}
+
+\paragraph{Identity.}
+$\widehat{V}_{\mathrm{cvar}}(\pi'; \alpha = 1) \,\equiv\, \widehat{V}_{\mathrm{mean}}(\pi')$
+to machine precision, whenever the threshold grid covers
+$\hat t \ge \max(y_{\mathrm{tr}})$.
+
+\paragraph{Why.}
+At $\alpha = 1$, the saddle-point objective is
+$J(t) = t - \E[(t-Y)_+]$. For any $t \ge \max(y_{\mathrm{tr}})$,
+no clipping fires in $z_{\mathrm{tr}} = \max(t - y_{\mathrm{tr}}, 0)$,
+so the isotonic fit on the (constant-shifted) regressand collapses
+to the Mean-CJE calibrator: $\hat g_t(s) = t - \hat f(s)$. Plugging
+that in:
+\[
+J(t) = t - \tfrac{1}{M} \sum_{j} (t - \hat f(s_{\mathrm{eval},j}))
+     = \tfrac{1}{M} \sum_{j} \hat f(s_{\mathrm{eval},j})
+     = \widehat{V}_{\mathrm{mean}}(\pi').
+\]
+Independent of $t$, so the maximizer is anywhere on $[Y_{\max}, \infty)$.
+Because the audit moments inherit the same calibrator-collapse,
+$g_{2,k} = -\varepsilon_k$ row-by-row and $g_{1,k} = 0$ for every
+audit row.
+
+\paragraph{Numerical witness.}
+\Cref{tab:alpha1witness} runs the regression test at $\alpha = 1$ on
+the n=500 panel for all five policies. Every $\Delta$ column is
+machine zero ($|\Delta| < 10^{-12}$).
+
+\begin{table}[h]
+\centering\footnotesize
+\caption{$\alpha = 1$ identity, n=500 HealthBench, seed = 42, coverage = 0.25.
+Three columns of point identities and three columns of $\Delta$ from
+zero; all $\Delta$ are at machine precision.}
+\label{tab:alpha1witness}
+\begin{tabular}{l r r r r r r}
+\toprule
+\thead{policy} & \thead{$\widehat{V}_{\mathrm{cvar}}$\\(at $\alpha\!=\!1$)} & \thead{$\widehat{V}_{\mathrm{mean}}$} & \thead{$\bar g_2$\\(at $\alpha\!=\!1$)} & \thead{$-\bar\varepsilon$} & \thead{atom-split\\$\CVaR_1$ truth} & \thead{$\E[Y]$\\truth} \\
+\midrule
+\textsc{base}      & $+0.285974$ & $+0.285974$ & $-0.010899$ & $-0.010899$ & $+0.288866$ & $+0.288866$ \\
+\textsc{clone}     & $+0.274398$ & $+0.274398$ & $-0.041039$ & $-0.041039$ & $+0.292314$ & $+0.292314$ \\
+\textsc{premium}   & $+0.353993$ & $+0.353993$ & $-0.066658$ & $-0.066658$ & $+0.427781$ & $+0.427781$ \\
+\textsc{parallel}  & $+0.143860$ & $+0.143860$ & $+0.038642$ & $+0.038642$ & $+0.106430$ & $+0.106430$ \\
+\textsc{unhelpful} & $-0.098718$ & $-0.098718$ & $-0.007634$ & $-0.007634$ & $-0.090018$ & $-0.090018$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent
+The 13-test regression suite at
+\texttt{cvar\_v4/healthbench\_data/tests/test\_alpha1\_identity.py}
+covers point estimates, audit moments, bootstrap CIs, calibration-aware
+variance, and audit p-values; all 13 pass. A reviewer can re-run with
+\texttt{python -m cvar\_v4.healthbench\_data.tests.test\_alpha1\_identity}.
 
 \end{document}

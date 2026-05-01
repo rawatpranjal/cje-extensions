@@ -31,6 +31,7 @@ try:
         AUDIT_VARIANTS,
         bootstrap_cvar_ci,
         bootstrap_mean_ci,
+        cvar_audit_analytical_se,
         jackknife_var_cal,
         mean_transport_audit,
         simple_cvar_audit,
@@ -464,12 +465,15 @@ def step5_oracle_calibrated_uniform(
     alpha: float = 0.10,
     seed: int = 42,
     verbose: bool = True,
+    n_max: int | None = None,
 ) -> list[dict]:
     """Uniform oracle slice. Atom-split CVaR truth. Single transport audit
     (mean_g1, mean_g2) at t̂ from the FULL target distribution.
 
-    No design comparison, no CIs, no variance decomposition, no audit
-    variants. The minimum reportable CVaR-CJE pilot result.
+    `n_max` (optional): if set, truncate the panel to the first n_max
+    prompts (sorted by prompt_id, deterministic) before running the
+    estimator. Used by the failure-mode panel to compare audit behavior
+    at small / medium / large sample sizes against the same data source.
 
     Returns one row per policy with columns:
       policy, alpha, seed, coverage, n_total, n_slice,
@@ -489,6 +493,17 @@ def step5_oracle_calibrated_uniform(
 
     logger = logger_policy()
     log_pids = sorted(set(_load_judge_scores(logger.name, "cheap")) & set(_load_judge_scores(logger.name, "oracle")))
+
+    # If n_max is set, truncate to the first n_max prompts for both the
+    # logger panel and (consistently) every target panel later. We keep
+    # the prompt_ids set so target panels can be filtered to match.
+    keep_pids: set[str] | None = None
+    if n_max is not None and n_max < len(log_pids):
+        keep_pids = set(log_pids[:n_max])
+        keep_idx = [i for i, pid in enumerate(log_pids) if pid in keep_pids]
+        log_pids = [log_pids[i] for i in keep_idx]
+        s_log_full = s_log_full[keep_idx]
+        y_log_full = y_log_full[keep_idx]
     log_rows = [
         {"prompt_id": pid, "policy": logger.name, "cheap_score": float(s_log_full[i]),
          "oracle_score": float(y_log_full[i])}
@@ -537,6 +552,13 @@ def step5_oracle_calibrated_uniform(
         if panel is None:
             continue
         pids, s_target, y_target_full = panel
+        # Mirror the n_max truncation on each target panel so logger and
+        # target use the same prompt_id set.
+        if keep_pids is not None:
+            mask_idx = [i for i, pid in enumerate(pids) if pid in keep_pids]
+            pids = [pids[i] for i in mask_idx]
+            s_target = s_target[mask_idx]
+            y_target_full = y_target_full[mask_idx]
         target_rows = [
             {"prompt_id": pid, "policy": p.name, "cheap_score": float(s_target[i]),
              "oracle_score": float(y_target_full[i])}
@@ -610,6 +632,42 @@ def step5_oracle_calibrated_uniform(
             sample_weight_train=w_train, B=200, seed=seed + 7,
         )
 
+        # Var_total = Var_cal + Var_audit. Two independent contributions to
+        # the slice-level uncertainty around V̂:
+        #   Var_cal   = "if the 25% oracle slice had been a different draw,
+        #                how much would V̂ move?" (from the bootstrap above)
+        #   Var_audit = "given a fixed calibrator, how noisy is the audit-
+        #                residual mean we observed?" (audit-noise variance)
+        # The two are orthogonal because the calibration slice (s_train,
+        # y_train) and the audit slice (s_audit, y_audit) are disjoint by
+        # construction (80/20 split of the logger oracle slice for base;
+        # different rows of the target slice for non-base).
+        #
+        # We use:
+        #   - Var_audit_mean = (sd(ε)/√n_audit)²  via inline residuals, since
+        #     mean_transport_audit doesn't return the SE directly
+        #   - Var_audit_cvar = se_g2²  via cvar_audit_analytical_se at
+        #     the production t̂ (g2 dominates audit-side uncertainty for V̂_cvar)
+        f_hat_audit = fit_isotonic_mean(
+            s_train, y_train, s_audit, sample_weight=w_train,
+        )
+        eps_audit = y_audit - np.asarray(f_hat_audit)
+        if len(eps_audit) >= 2:
+            mean_var_audit = float(eps_audit.std(ddof=1) ** 2 / len(eps_audit))
+        else:
+            mean_var_audit = float("nan")
+        cvar_audit_se = cvar_audit_analytical_se(
+            s_train, y_train, s_audit, y_audit,
+            t0=float(audit["t_hat"]), alpha=alpha,
+            sample_weight_train=w_train,
+        )
+        cvar_var_audit = float(cvar_audit_se["se_g2"] ** 2) if cvar_audit_se["se_g2"] == cvar_audit_se["se_g2"] else float("nan")  # NaN-safe
+
+        mean_var_cal = float(mean_ci["var_eval"])
+        cvar_var_cal = float(cvar_ci["var_eval"])
+        mean_se_total = (mean_var_cal + mean_var_audit) ** 0.5 if mean_var_audit == mean_var_audit else float("nan")
+        cvar_se_total = (cvar_var_cal + cvar_var_audit) ** 0.5 if cvar_var_audit == cvar_var_audit else float("nan")
+
         if verbose:
             print(f"  {p.name:28} {n_audit_eff:>8} "
                   f"{audit['cvar_est']:>+10.3f} {full_truth:>+10.3f} "
@@ -632,13 +690,21 @@ def step5_oracle_calibrated_uniform(
             "mean_audit_p": float(m_audit["p_value"]),
             "mean_audit_reject": bool(m_audit["reject"]),
             "mean_verdict": mean_verdict,
-            # Bootstrap 95% CIs for figure error bars
+            # Bootstrap 95% CIs for figure error bars (Var_cal only — narrower)
             "cvar_ci_lo": float(cvar_ci["ci_lo"]),
             "cvar_ci_hi": float(cvar_ci["ci_hi"]),
             "cvar_se_boot": float(cvar_ci["var_eval"]) ** 0.5,
             "mean_ci_lo": float(mean_ci["ci_lo"]),
             "mean_ci_hi": float(mean_ci["ci_hi"]),
             "mean_se_boot": float(mean_ci["var_eval"]) ** 0.5,
+            # Var_total = Var_cal + Var_audit. Honest envelope for the figure;
+            # 95% CI = estimate ± 1.96 · se_total.
+            "cvar_var_cal": cvar_var_cal,
+            "cvar_var_audit": cvar_var_audit,
+            "cvar_se_total": cvar_se_total,
+            "mean_var_cal": mean_var_cal,
+            "mean_var_audit": mean_var_audit,
+            "mean_se_total": mean_se_total,
         })
     if verbose:
         print()

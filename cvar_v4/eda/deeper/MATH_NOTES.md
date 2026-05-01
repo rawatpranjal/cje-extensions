@@ -162,6 +162,21 @@ by ~18 % relative to the fixed-t̂ analytical SE; at α=1 the inflation is
 ~74 % (because the saddle-point objective is flat over a larger region
 when α=1, so t̂_b can wander further).
 
+### Combined Var_total = Var_cal + Var_audit
+
+The MVP figure's whiskers are 95% intervals built from $\sigma_{\text{total}} = \sqrt{\mathrm{Var}_{\text{cal}} + \mathrm{Var}_{\text{audit}}}$, where:
+
+- $\mathrm{Var}_{\text{cal}}$ is `var_eval` from `bootstrap_*_ci` (paired bootstrap of the calibrator-training rows)
+- $\mathrm{Var}_{\text{audit}}$ is the audit-noise variance:
+  - **Mean**: $(\mathrm{sd}(\varepsilon)/\sqrt{n_{\text{audit}}})^2$ where $\varepsilon = Y - \hat f(S)$ on the audit slice
+  - **CVaR**: $\mathrm{se}_{g_2}^2$ from `cvar_audit_analytical_se` at the production $\hat t$
+
+The **independence** assumption $\mathrm{Var}_{\text{cal}} \perp \mathrm{Var}_{\text{audit}}$ holds **by construction** in our pipeline: the calibration-training rows and audit-slice rows are disjoint (80/20 split of the logger oracle slice for `base`; different rows of the target slice for non-`base` policies). So adding the variances is honest, not pessimistic.
+
+Empirically on the n=500 panel: the **mean** estimator's `Var_audit` is comparable in magnitude to its `Var_cal`, so $\sigma_{\text{total}}$ is roughly $\sqrt{2}\times \sigma_{\text{cal}}$ — the figure bars on the mean panel are visibly wider than what bootstrap-only would show. The **CVaR** estimator has `Var_cal` dominating (calibrator + argmax), so $\sigma_{\text{total}} \approx \sigma_{\text{cal}}$ and the figure bars barely move.
+
+The pilot table now exports `cvar_se_total`, `mean_se_total` (in addition to the bootstrap-only `cvar_se_boot`, `mean_se_boot`) per row.
+
 ### Why we report bootstrap CIs on the figure, not the t-test SE
 
 A figure CI should answer "where would V̂ land under a different slice?"

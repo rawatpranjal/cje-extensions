@@ -38,6 +38,14 @@ def load_rows() -> list[dict]:
         if not line.strip():
             continue
         r = json.loads(line)
+        # Prefer SE_total (Var_cal + Var_audit) for honest CI envelopes;
+        # fall back to bootstrap percentile if SE_total isn't in the row.
+        mean_se_t = r.get("mean_se_total")
+        cvar_se_t = r.get("cvar_se_total")
+        mean_ci_lo = (r["mean_cje_est"] - 1.96 * mean_se_t) if mean_se_t is not None else r.get("mean_ci_lo")
+        mean_ci_hi = (r["mean_cje_est"] + 1.96 * mean_se_t) if mean_se_t is not None else r.get("mean_ci_hi")
+        cvar_ci_lo = (r["cvar_est"] - 1.96 * cvar_se_t) if cvar_se_t is not None else r.get("cvar_ci_lo")
+        cvar_ci_hi = (r["cvar_est"] + 1.96 * cvar_se_t) if cvar_se_t is not None else r.get("cvar_ci_hi")
         out.append({
             "policy": LABELS.get(r["policy"], r["policy"]),
             # Mean panel
@@ -47,15 +55,15 @@ def load_rows() -> list[dict]:
             "mean_gate": "pass" if r["mean_verdict"] == "PASS" else "flag",
             "mean_p": r["mean_audit_p"],
             "mean_resid": r["mean_audit_residual"],
-            "mean_ci_lo": r.get("mean_ci_lo"),
-            "mean_ci_hi": r.get("mean_ci_hi"),
+            "mean_ci_lo": mean_ci_lo,
+            "mean_ci_hi": mean_ci_hi,
             # CVaR panel
             "cvar_cheap": r["cheap_only_cvar"],
             "cvar_direct": r["cvar_est"],
             "cvar_truth": r["full_oracle_truth"],
             "cvar_gate": "pass" if r["verdict"] == "PASS" else "flag",
-            "cvar_ci_lo": r.get("cvar_ci_lo"),
-            "cvar_ci_hi": r.get("cvar_ci_hi"),
+            "cvar_ci_lo": cvar_ci_lo,
+            "cvar_ci_hi": cvar_ci_hi,
             "g1": r["mean_g1"],
             "audit_n": r["n_slice"],
             "n_total": r.get("n_total", 0),
@@ -213,10 +221,13 @@ def main() -> None:
         Line2D([0], [0], marker="D", color="none", markerfacecolor="black",
                markeredgecolor="white", markersize=8,
                label="full-oracle truth"),
+        Line2D([0], [0], marker="|", color=PASS_COLOR, lw=1.4, alpha=0.55,
+               markeredgecolor=PASS_COLOR, markersize=10,
+               label="95% CI (Var$_{cal}$+Var$_{audit}$)"),
     ]
     fig.legend(
         handles=legend_items, loc="lower center",
-        bbox_to_anchor=(0.5, 0.02), ncols=4, frameon=True,
+        bbox_to_anchor=(0.5, 0.02), ncols=5, frameon=True,
         facecolor="white", edgecolor="#d6d6d6", fontsize=10,
     )
 
