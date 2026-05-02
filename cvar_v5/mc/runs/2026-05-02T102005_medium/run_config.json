@@ -1,0 +1,37 @@
+{
+  "timestamp_iso": "2026-05-02T10:20:05",
+  "mode": "medium",
+  "n_workers": 4,
+  "seed_base": 0,
+  "git_sha": "677e63a",
+  "git_dirty": true,
+  "config": {
+    "alpha": 0.1,
+    "K": 5,
+    "grid_size": 61,
+    "grid_lo": 0.0,
+    "grid_hi": 1.0,
+    "audit_B": 500,
+    "omega_estimator": "boot_remax_ridge",
+    "audit_eta": 0.05,
+    "seed": 0,
+    "bootstrap_ci": false,
+    "jackknife_var_cal": false,
+    "plugin_variants": false,
+    "two_stage_calibrator": false
+  },
+  "mode_params": {
+    "n_oracle": 600,
+    "n_eval": 1000,
+    "audit_B": 500,
+    "R": 60,
+    "alphas": [
+      0.1,
+      0.2,
+      1.0
+    ],
+    "deltas": [
+      0.0
+    ]
+  }
+}

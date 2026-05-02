@@ -1,0 +1,19 @@
+[project]
+name = "cvar_v5"
+version = "0.1.0"
+description = "Paper-canonical Direct CVaR-CJE — MVP reference implementation"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.24",
+    "polars>=0.20",
+    "scikit-learn>=1.3",
+    "scipy>=1.11",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7.4"]
+
+# This file documents dependencies. The repository runs against system Python;
+# there is no installed package or build step. Run modules with:
+#   python -m cvar_v5.mc.runner --smoke
+# from the repo root.
