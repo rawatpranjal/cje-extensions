@@ -84,3 +84,34 @@ def test_aipw_returns_finite() -> None:
     s_eval = np.random.default_rng(2).normal(size=300)
     val = aipw_one_step(s_eval, s, y, cal)
     assert np.isfinite(val)
+
+
+from mean_cje.lib.variance import (
+    var_eval_if, var_cal_jackknife, wald_ci,
+)
+
+
+def test_var_eval_if_positive_and_scales_with_n_inv() -> None:
+    s_eval = np.random.default_rng(0).normal(size=500)
+    s, y = _toy()
+    cal = Calibrator().fit(s, y, K=5)
+    v = var_eval_if(s_eval, cal)
+    assert v > 0
+    # Doubling n should roughly halve V̂_main.
+    s_big = np.random.default_rng(0).normal(size=1000)
+    v_big = var_eval_if(s_big, cal)
+    assert v_big < v
+
+
+def test_var_cal_jackknife_is_nonnegative() -> None:
+    s, y = _toy()
+    cal = Calibrator().fit(s, y, K=5)
+    s_eval = np.random.default_rng(0).normal(size=500)
+    v_cal = var_cal_jackknife(s_eval, s, y, cal, estimator="plug_in")
+    assert v_cal >= 0
+
+
+def test_wald_ci_widens_with_variance() -> None:
+    lo1, hi1 = wald_ci(0.5, 0.001)
+    lo2, hi2 = wald_ci(0.5, 0.01)
+    assert (hi2 - lo2) > (hi1 - lo1)
