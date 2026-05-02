@@ -1,2 +1,0 @@
-2026-05-02T09:38:04 [cvar_v5.mc] INFO: wrote /Users/pranjal/Code/cvar-cje/cvar_v5/mc/runs/2026-05-02T093648_omega_sweep/mc_validation.md
-2026-05-02T09:38:04 [cvar_v5.mc] INFO: G1 max error: nan

@@ -1,2 +1,0 @@
-2026-05-02T08:29:09 [cvar_v5.mc] INFO: wrote /Users/pranjal/Code/cvar-cje/cvar_v5/mc/runs/2026-05-02T082908_smoke/mc_validation.md
-2026-05-02T08:29:09 [cvar_v5.mc] INFO: G1 max error: 2.831e-15
