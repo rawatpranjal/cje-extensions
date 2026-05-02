@@ -121,22 +121,29 @@ def bootstrap_ci_plugin(
     level: float = 0.95,
 ) -> tuple[float, float]:
     """
-    Cluster bootstrap on the plug-in V̂. Each rep:
-        - resample oracle rows with replacement (size n_oracle)
+    Full-pipeline bootstrap on the plug-in V̂ (paper appendix_d_bootstrap.tex).
+    Each rep:
+        - resample ORACLE rows with replacement (size n_oracle)
+        - resample EVAL rows with replacement  (size n_eval)
         - refit calibrator on bootstrap oracle
-        - V̂^(b) = (1/n_eval) Σ f̂^(b)(s_eval_i)        (eval slice fixed)
+        - V̂^(b) = (1/n_eval) Σ f̂^(b)(s_eval_b_i)
 
-    Returns percentile interval of the {V̂^(b)}.
+    Resampling EVAL captures eval-side variance; resampling ORACLE
+    captures calibrator-fit variance. Holding EVAL fixed (as we did
+    initially) captures only Var_cal and undercovers at large n_oracle.
     """
     rng = np.random.default_rng(seed)
-    n = len(s_oracle)
+    n_o = len(s_oracle)
+    n_e = len(s_eval)
     samples = np.empty(B, dtype=np.float64)
     for b in range(B):
-        idx = rng.integers(0, n, size=n)
-        s_b = s_oracle[idx]
-        y_b = y_oracle[idx]
+        idx_o = rng.integers(0, n_o, size=n_o)
+        idx_e = rng.integers(0, n_e, size=n_e)
+        s_b = s_oracle[idx_o]
+        y_b = y_oracle[idx_o]
+        s_eval_b = s_eval[idx_e]
         cal_b = Calibrator().fit(s_b, y_b, K=K, seed=seed + b)
-        samples[b] = plug_in_mean(s_eval, cal_b)
+        samples[b] = plug_in_mean(s_eval_b, cal_b)
     lo = float(np.percentile(samples, 100 * (1 - level) / 2))
     hi = float(np.percentile(samples, 100 * (1 - (1 - level) / 2)))
     return lo, hi
@@ -152,16 +159,24 @@ def bootstrap_ci_aipw(
     seed: int,
     level: float = 0.95,
 ) -> tuple[float, float]:
-    """As above, but compute θ̂_aug per replicate."""
+    """
+    Full-pipeline bootstrap on θ̂_aug. Resamples both ORACLE and EVAL.
+
+    Per replicate, θ̂_aug uses the fresh oracle (for the residual term)
+    and the fresh eval (for the plug-in term).
+    """
     rng = np.random.default_rng(seed)
-    n = len(s_oracle)
+    n_o = len(s_oracle)
+    n_e = len(s_eval)
     samples = np.empty(B, dtype=np.float64)
     for b in range(B):
-        idx = rng.integers(0, n, size=n)
-        s_b = s_oracle[idx]
-        y_b = y_oracle[idx]
+        idx_o = rng.integers(0, n_o, size=n_o)
+        idx_e = rng.integers(0, n_e, size=n_e)
+        s_b = s_oracle[idx_o]
+        y_b = y_oracle[idx_o]
+        s_eval_b = s_eval[idx_e]
         cal_b = Calibrator().fit(s_b, y_b, K=K, seed=seed + b)
-        samples[b] = aipw_one_step(s_eval, s_b, y_b, cal_b)
+        samples[b] = aipw_one_step(s_eval_b, s_b, y_b, cal_b)
     lo = float(np.percentile(samples, 100 * (1 - level) / 2))
     hi = float(np.percentile(samples, 100 * (1 - (1 - level) / 2)))
     return lo, hi
