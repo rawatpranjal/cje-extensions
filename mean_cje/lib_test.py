@@ -47,3 +47,40 @@ def test_predict_oof_differs_from_pooled() -> None:
     pooled = cal.predict(s)
     oof = cal.predict_oof(s)
     assert (np.abs(pooled - oof) > 0).mean() > 0.5
+
+
+from mean_cje.lib.estimators import plug_in_mean, aipw_one_step
+
+
+def test_plug_in_mean_equals_eval_average_of_calibrator() -> None:
+    s, y = _toy()
+    cal = Calibrator().fit(s, y, K=5)
+    s_eval = np.random.default_rng(1).normal(size=300)
+    plug = plug_in_mean(s_eval, cal)
+    assert abs(plug - cal.predict(s_eval).mean()) <= 1e-12
+
+
+def test_aipw_residual_term_zero_when_oof_equals_y() -> None:
+    """If OOF predictions exactly equal y, AIPW reduces to plug-in."""
+    s, y = _toy(n=100)
+    cal = Calibrator().fit(s, y, K=5)
+    s_eval = np.random.default_rng(1).normal(size=200)
+
+    # Build a fake calibrator whose predict_oof returns y exactly.
+    class _ExactOof(Calibrator):
+        def predict_oof(self, s_oracle):
+            return y.copy()
+
+    fake = _ExactOof().fit(s, y, K=5)
+    plug = plug_in_mean(s_eval, cal)
+    aipw = aipw_one_step(s_eval, s, y, fake, calibrator_pooled=cal)
+    # residual term mean(y - y) = 0 ⇒ aipw == plug
+    assert abs(aipw - plug) <= 1e-12
+
+
+def test_aipw_returns_finite() -> None:
+    s, y = _toy()
+    cal = Calibrator().fit(s, y, K=5)
+    s_eval = np.random.default_rng(2).normal(size=300)
+    val = aipw_one_step(s_eval, s, y, cal)
+    assert np.isfinite(val)
