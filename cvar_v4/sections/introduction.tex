@@ -1,22 +1,173 @@
 \section{Introduction}
 \label{sec:intro}
 
-LLM evaluation pipelines increasingly use a cheap judge to compare prompts, models, tools, or safety interventions. The standard report is a mean: average judge score, average calibrated score, or pairwise win rate. For many deployment decisions, the mean is not the operational risk. A medical assistant, customer-support bot, or content-moderation system can look acceptable on average while failing badly on the small fraction of cases that matter most.
+LLM evaluation pipelines increasingly use a cheap LLM-as-judge to rank
+candidate models, compare system prompts, and grade individual responses.
+On pairwise comparisons of chatbot responses (MT-Bench), GPT-4 agrees
+with human experts $85\%$ of the time \citep{Zheng2023Judging}. That
+headline number is reassuring, but it hides a problem. LLM judges are
+noisy, and their errors aren't random. They reliably prefer longer
+answers, the response shown first, and answers from their own model
+family. They also shy away from the extremes,
+so a raw judge average can drift above or below the true accuracy
+depending on where the truth lies
+\citep{Lee2025LLMJudgeReporting,Chen2026EfficientLLMJudge}. Cheaper,
+smaller judges have it worse. Under a length-padding attack on MT-Bench,
+the strongest judge in the pool fell for the padded response only
+$9\%$ of the time, while the cheaper judges fell for it $91\%$ of the
+time. The practical cost shows up in three
+places. Reported A/B or leaderboard improvements can reflect judge bias
+rather than real model gains. Rankings
+between two policies (a different model, prompt, or sampling
+configuration) can flip entirely once the cheap judge is swapped for
+an oracle label \citep{LandesbergNarayan2026CJE}. And
+naive $95\%$ confidence intervals on uncalibrated judge scores captured
+the true value in zero of $50$ seeds in one Chatbot Arena benchmark.
 
-Causal Judge Evaluation (CJE) addresses one central problem with LLM-as-judge evaluation: a cheap judge score is a surrogate, not the oracle outcome \citep{LandesbergNarayan2026CJE}. CJE calibrates the judge against a small oracle slice, evaluates target policies at scale, and audits whether calibration transports to each target policy. This paper extends that logic from means to tails.
+Once the cheap judge is calibrated, the standard report is still a
+mean: the average calibrated score across the evaluation set.
+However, for many deployments the mean is not the right summary. A
+medical-assistant LLM that gives perfect advice $90\%$ of the time and
+recommends really unsafe doses on the remaining $10\%$ has an
+acceptable average but catastrophic tail risk. HealthBench, the
+benchmark we use, makes this concrete: it reports a \emph{worst-at-k}
+score alongside the mean. A frontier model that scores $60\%$ on
+average drops by roughly a third on its worst trial out of $16$. The
+reason is simple: in a safety-critical domain like health, one bad
+model response can outweigh many good ones
+\citep{OpenAI2025HealthBench}. The pattern goes beyond medicine.
+Standard LLM safety evaluations are routinely orders of magnitude
+smaller than deployment, and rare failures (jailbreaks,
+dangerous-information disclosures, power-seeking actions) that do not
+surface during evaluation or beta testing can still appear at scale
+\citep{Jones2025RareLLMBehaviors}. The natural summary for the worst
+$\alpha$ fraction of cases is Conditional Value at Risk (CVaR), or
+expected shortfall. CVaR is the standard coherent risk measure in
+finance and insurance
+\citep{AcerbiTasche2002}, and is now also a
+standard risk-sensitive criterion in machine learning, used in
+risk-sensitive reinforcement learning for autonomous driving, clinical
+treatment planning, and robotics \citep{Du2023IteratedCVaR}.
+Tail-risk evaluation of LLM judges, however, is rare, and this paper
+aims to fill that gap.
 
-\paragraph{Why CVaR?}
-The $\alpha$-quantile says where the worst $\alpha$ fraction begins. CVaR says how bad outcomes are inside that fraction. If a policy has a rare but severe failure mode, the quantile can hide severity beyond the cutoff, while CVaR integrates it. We therefore treat quantiles and CVaR as complementary summaries: the quantile localizes the tail, CVaR measures severity inside it.
+There are several ways to calibrate the mean. One treats the cheap judge as
+a noisy classifier and corrects its bias from a small labeled set
+\citep{Lee2025LLMJudgeReporting}. Another learns the judge's typical
+error directly and subtracts it \citep{Chen2026EfficientLLMJudge}. We
+follow Causal Judge Evaluation (CJE) \citep{LandesbergNarayan2026CJE}.
+The recipe has four steps. First,
+set aside a small oracle slice (typically $5$--$25\%$ of the responses
+you evaluate) and fit a curve from cheap judge score to expected
+oracle label. Second, average that curve's predictions over every
+response to get a policy estimate. Third, for each target policy,
+draw a fresh oracle sample and check whether the average gap between
+oracle and prediction is zero; if not, refuse to report a calibrated
+number for that policy rather than report one you cannot trust.
+Fourth, when reporting a confidence interval, account for two sources
+of noise: the usual sampling noise on the responses you evaluated,
+plus the noise in the calibration curve itself, which is large when
+the oracle slice is small. A bootstrap that refits the curve inside
+every replicate captures both; ignoring the second source produces
+intervals that drastically undercover, because at small oracle slices
+the calibration noise can account for more than half the total
+variance.
 
-\paragraph{The audit is the headline.}
-Tail estimation adds a new failure mode. The mean audit asks whether a calibrated prediction of $Y$ is unbiased under the target policy. CVaR-CJE must also ask whether the estimated threshold really identifies the target tail. We use a two-moment audit: one moment checks tail coverage, and one checks shortfall transport. If the audit rejects, the method refuses the level claim for that policy. This is not a nuisance; it is the safety feature.
+CJE handles the mean. But the tail of a mean-calibrated predictor is
+generally not the conditional mean of the tail
+\citep{Allen2024TailCalibration}, so we cannot reuse mean-CJE directly
+for tail-risk evaluation. We extend the recipe to tails. The
+contribution is \textbf{CVaR-CJE}, an audit-gated tail-risk estimator
+with three pieces:
 
-\paragraph{Contributions.}
 \begin{enumerate}[leftmargin=*,nosep]
-\item We define CVaR-CJE, an audit-gated extension of CJE for lower-tail policy evaluation.
-\item We give a stop-loss direct estimator that reuses the CJE surrogate-calibration idea for the CVaR variational objective.
-\item We introduce a two-moment audit for threshold validity and shortfall transport, and show that $\alpha=1$ recovers the original mean audit.
-\item We specify Arena-Tail, a benchmark design for tail-risk evaluation with continuous oracle labels, controlled policies, and audit-positive shifts.
-\item We outline the Monte Carlo and appendix contract needed for a 10-page arXiv paper with a deeper online appendix.
+\item A \textbf{stop-loss calibrator.} Mean-CJE fits one calibration
+curve from cheap judge score to expected oracle label. The naive
+extension to CVaR is to take the tail of those calibrated predictions.
+This is not consistent: even at the population level (with the
+calibration curve exactly equal to the conditional mean), the
+estimator is biased. A conditional mean smooths variability: the
+calibrated prediction is less variable than the outcome it calibrates,
+so its tail is compressed toward the center, and CVaR picks up exactly
+that lost variability. Our fix is to change the calibration target.
+We fit a \emph{family} of curves, one per candidate threshold on a
+small grid, where each curve predicts the \emph{shortfall} below its
+threshold (how far below the threshold the oracle outcome falls, in
+expectation). The expected shortfall conditional on the cheap score
+is a genuinely different function at each threshold, so no single
+curve can stand in for the family. We then average each curve's
+predicted shortfall over the policy's responses and pick the
+threshold that maximizes the standard CVaR objective
+\citep{RockafellarUryasev2000}. The order matters: we calibrate
+first, then optimize the threshold.
+
+\item A \textbf{two-moment transport audit.} On a held-out slice of
+oracle labels for the target policy (when the target equals the
+logger, we $80/20$-split the oracle rows so the calibrator never sees
+the audit data), we check two things at the chosen threshold: did we
+find the right \emph{fraction} of bad responses, and are the
+calibrator's predictions of \emph{how bad} they are accurate on the
+audit slice? A standard joint test refuses to report the calibrated
+CVaR for any policy where either check fails. Reading which check
+failed tells us which knob to turn: a fraction-mismatch points at the
+threshold, a prediction-mismatch points at the calibrator. The
+variance for the test reuses the same bootstrap as the CI, so the
+noise from refitting the calibrators and re-picking the threshold is
+baked in automatically. At the boundary case where we ask for the
+whole distribution (the worst $100\%$ of responses), the audit
+collapses to the standard mean-CJE residual test, so the same
+machinery handles both estimands.
+
+\item \textbf{Confidence intervals via a full-pipeline bootstrap.} To
+get a CI, we resample whole prompts with replacement many times and,
+inside each resample, redo the entire pipeline: refit the family of
+calibrators, re-pick the best threshold, and recompute CVaR. The
+spread of those estimates is the CI. Two design choices matter. We
+resample at the prompt level rather than the response level, because
+responses to the same prompt across different policies are
+correlated; resampling responses individually would shrink the CI
+artificially. We also re-pick the threshold inside every replicate,
+because the threshold itself is a noisy quantity. Fixing it at the
+point-estimate value would ignore that source of variability and
+produce intervals that are too narrow.
 \end{enumerate}
 
+\paragraph{Empirical results.}
+We evaluate on HealthBench \citep{OpenAI2025HealthBench}, a
+rubric-graded medical-assistant benchmark from OpenAI. Each prompt
+comes with a list of expert-written rubric criteria, each carrying a
+signed point value, and a response's oracle score is the sum of
+points it earns from satisfied criteria, normalized by the total
+positive-points weight. About $93\%$ of prompts have at least one
+criterion that \emph{deducts} points, so the score directly reflects
+safety-relevant failures rather than only correctness. We take the
+first $500$ prompts from the open-source evaluation subset. The cheap
+judge is gpt-4o-mini and the oracle (treated as ground truth in our
+experiments) is gpt-4.1. We compare five policies on the same prompt
+set: a \textsc{base} gpt-4o-mini policy with a standard
+medical-assistant system prompt; a \textsc{clone} that uses the same
+model and prompt with a different sampling seed and serves as a
+statistical control; a \textsc{premium} variant that swaps the model
+to gpt-4.1; a \textsc{parallel} variant that keeps gpt-4o-mini but
+uses a shorter, terser clinical system prompt; and an
+\textsc{unhelpful} variant whose system prompt is deliberately
+off-topic, serving as an adversarial probe of the safety claim. We
+label a uniform $25\%$ of the responses with the oracle judge,
+leaving roughly $130$ oracle-labeled rows per non-base policy for
+the audit. The headline tail level is the worst $10\%$ of responses;
+we also stress-test at the worst $20\%$.
+
+On the worst $10\%$ of responses, CVaR-CJE cuts the mean absolute
+error against the full-oracle ground truth from $0.20$ (the CVaR of
+the raw cheap-judge scores, no calibration) to $0.08$, a roughly
+$60\%$ reduction, and beats this cheap-only baseline on every one of
+the five policies. The audit passes for every policy at the worst
+$10\%$, and correctly flags the one transport failure on the panel
+when we tighten the test to the worst $20\%$: the \textsc{unhelpful}
+policy, where the calibrator's chosen threshold is hit by $36\%$ of
+responses rather than the intended $20\%$ (binomial $p$-value below
+one in a thousand). At small budgets like this one, where pure-oracle
+CVaR estimation on roughly $130$ labels is visibly noisy, the
+calibrator buys roughly four-fold variance reduction over the
+oracle-only baseline. The whole pipeline runs in under $30$ seconds
+per policy on a laptop.

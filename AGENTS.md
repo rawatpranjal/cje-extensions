@@ -31,6 +31,35 @@ curl -L https://arxiv.org/src/<paper-id> -o source.tar.gz && tar -xzf source.tar
 
 Never use docling on the PDF. Never read the PDF directly for content. Use the `.tex` source — it has exact math, tables, and figures. The `.md` file in this repo has `<!-- formula-not-decoded -->` placeholders throughout; prefer `arxiv_source/` for any paper content.
 
+### Repo-local paper library
+
+Most cited LLM-judge and CJE-adjacent works are already in `cvar_v4/papers/<arxiv-id>_<slug>/` as full LaTeX source (Zheng 2023 MT-Bench, Lee 2025, Chen 2026, the original CJE paper, G-Eval, HealthBench, Chatbot Arena, RewardBench, CalibraEval, etc.). Before downloading anything from arXiv or reading abstract HTML, `ls cvar_v4/papers/` and check.
+
+When the paper IS in the repo, grep broadly to get a rich picture, not a brittle snippet:
+- Across all `*.tex` files in the paper directory, not just `intro.tex` or `main.tex`. Tables, appendices, and experiment sections often hold the actual numbers.
+- Across multiple synonyms — for "agreement": also `agree`, `kappa`, `inter-rater`; for "bias": also `verbosity`, `position`, `self-enhancement`, `length`, `leniency`; for "calibrate": also `oracle`, `surrogate`, `prediction-powered`.
+- Read the surrounding paragraph plus any table/figure referenced from the matching line. A number means little without its setup (which model, which dataset, which split, which metric, which annotators). Note caveats the paper itself flags ("this only holds when…", "we did not test…") so we don't overclaim from the cite.
+
+When the paper is NOT in `cvar_v4/papers/`, download per the arXiv rule above AND copy the extracted source into `cvar_v4/papers/<arxiv-id>_<slug>/` so the next session doesn't re-download.
+
+### Citations and quotes — hard evidence required
+
+The user does not trust me by default for citations or quoted passages from papers. Past sessions have surfaced paraphrases attributed to sources that did not contain them, polarity inversions in quoted statistics, and agent-relayed quotes that turned out to be hallucinated. The discipline below is non-negotiable.
+
+Every time I propose a citation or quote a paper, I must show:
+- The verbatim text from the primary source, in quotes.
+- The exact file path and line number of that text in the local paper library (or, if the paper is not yet in the repo, the path of the freshly-downloaded source).
+- A side-by-side mapping from the verbatim quote to the claim I am making in the prose, so the user can verify the claim is supported and not paraphrased into a stronger statement than the source allows.
+
+Subagent reports (Explore, general-purpose, and any web-search tooling) are leads, not evidence. If a subagent gives me a quote, I must independently grep the file myself and confirm the quote exists verbatim before relaying it. If I cannot find the quote in the source, I drop the cite and tell the user the agent's quote was unverified.
+
+If I have only read the abstract or a search-result snippet of a paper, I say so explicitly and either read more of the source before proposing the cite, or do not propose the cite at all. "Reading the abstract" is not the same as "reading the paper."
+
+When I am wrong about a citation, the user catches it and trust degrades. The cost of one bad cite is much higher than the cost of multiple verification passes. Default to over-verifying.
+
+### Investigation discipline
+When the user asks to investigate a claim, a paper, a number, or a piece of evidence: read the FULL primary source, not just the abstract or a search-result snippet. Get exact paragraphs and exact quotes. Cite the verbatim text and the location (section, page, table) so the user can verify. Do not paraphrase the source; do not infer numbers that the source did not state; do not let a search-engine summary stand in for the paper. If the source is an arXiv paper, download the LaTeX source per the rule above. If the source is a webpage, fetch the full HTML, not just the abstract URL. If a fact is not supported by the primary source you actually read, say so before proposing it as a citation.
+
 ## Domain Concepts
 
 - **CJE**: Causal Judge Evaluation — calibrated surrogate estimation for LLM policy ranking

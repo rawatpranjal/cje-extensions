@@ -4,6 +4,16 @@ Cross-tabulates the audit verdict (PASS / FLAG_*) with the absolute error of
 the Direct estimate against full-oracle truth, at a configurable error
 threshold.
 
+Why err_threshold = 0.10 (default):
+    The pilot reports CVaR values in roughly [-0.5, +0.4] and the
+    cheap-only baseline misses by 0.20-0.40 on most policies. A
+    "Direct succeeded" cell is one where Direct's error is well below
+    the cheap-only failure mode — 0.10 is half a typical cheap miss
+    and brings Direct's error down to roughly the inter-policy
+    discrimination scale. This isn't a hypothesis test; it's a
+    quadrant-cutoff for the 4-cell sanity table (audit pass vs
+    high error). Set --err-threshold to retune.
+
 Outputs:
     writeup/data/audit_truth.json
 """

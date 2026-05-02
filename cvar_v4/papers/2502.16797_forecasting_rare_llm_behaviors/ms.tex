@@ -1,0 +1,176 @@
+%%%%%%%% ICML 2025 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
+\documentclass{article}
+
+% Recommended, but optional, packages for figures and better typesetting:
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{booktabs} % for professional tables
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2025} with \usepackage[nohyperref]{icml2025} above.
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{xurl}
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}} 
+%\usepackage{icml2025}
+\usepackage[accepted]{icml2025}
+
+\usepackage[position=top]{subcaption}
+\usepackage{alltt}
+\usepackage{multirow}
+
+% For theorems and such
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{comment}
+
+
+% helping with enumerate space saving 
+\usepackage{enumitem}
+% if you use cleveref..
+\usepackage[capitalize,noabbrev]{cleveref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THEOREMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\usepackage{bbm}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows, calc, fit, shapes.geometric, shapes.misc, shadows,
+                decorations.pathmorphing, decorations.pathreplacing, backgrounds}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% colors for figures
+\definecolor{SafeRed}{RGB}{180, 0, 0}
+\definecolor{SafeGreen}{RGB}{0, 100, 0}
+\definecolor{customblue}{HTML}{6BAED6}
+
+% verbatim-style boxes
+\usepackage{tcolorbox}
+\newtcolorbox{verbatimbox}{
+    colback=gray!10, % Background color
+    colframe=gray!50, % Border color
+    boxrule=0.5pt, % Border thickness
+    arc=0pt, % Sharp corners
+    fontupper=\ttfamily, % Use \texttt for the content
+    % breakable, % Allow automatic line breaks
+    before upper={\parindent0pt}, % Remove paragraph indentation
+}
+
+% Todonotes is useful during development; simply uncomment the next line
+%    and comment out the line below the next line to turn off comments
+%\usepackage[disable,textsize=tiny]{todonotes}
+%\usepackage[textsize=tiny]{todonotes}
+\input{macros}
+\input{std_macros}
+
+%\icmltitlerunning{Forecasting Rare LLM Behaviors}
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{Forecasting Rare LLM Behaviors}
+
+\begin{document}
+\twocolumn[
+\icmltitle{Forecasting Rare Language Model Behaviors}
+
+% It is OKAY to include author information, even for blind
+% submissions: the style file will automatically remove it for you
+% unless you've provided the [accepted] option to the icml2025
+% package.
+
+% List of affiliations: The first argument should be a (short)
+% identifier you will use later to specify author affiliations
+% Academic affiliations should list Department, University, City, Region, Country
+% Industry affiliations should list Company, City, Region, Country
+
+% You can specify symbols, otherwise they are numbered in order.
+% Ideally, you should not use this facility. Affiliations will be numbered
+% in order of appearance and this is the preferred way.
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Erik Jones}{equal,ant}
+\icmlauthor{Meg Tong}{equal,ant}
+\icmlauthor{Jesse Mu}{ant}
+\icmlauthor{Mohammed Mahfoud}{mila}
+\icmlauthor{Jan Leike}{ant}
+\icmlauthor{Roger Grosse}{ant}\\
+\icmlauthor{Jared Kaplan}{ant}
+\icmlauthor{William Fithian}{ber}
+\icmlauthor{Ethan Perez}{ant}
+\icmlauthor{Mrinank Sharma}{ant}
+\end{icmlauthorlist}
+
+\icmlaffiliation{ant}{Anthropic}
+\icmlaffiliation{mila}{Mila -- Qu\'ebec AI Institute}
+\icmlaffiliation{ber}{UC Berkeley}
+
+\icmlcorrespondingauthor{Erik Jones}{erikjones@anthropic.com}
+\icmlcorrespondingauthor{Mrinank Sharma}{mrinank@anthropic.com}
+
+\icmlkeywords{Machine Learning, ICML}
+\vskip 0.3in
+]
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column
+% listing the affiliations and the copyright notice.
+% The command takes one argument, which is text to display at the start of the footnote.
+% The \icmlContribution command is standard text for equal contribution.
+% Remove it (just {}) if you do not need this facility.
+
+\printAffiliationsAndNotice{\icmlEqualContribution}  % leave blank if no need to mention equal contribution
+%\printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
+
+\begin{abstract}
+\input{sections/0_abstract}
+\end{abstract}
+\input{sections/1_introduction}
+\input{sections/2_related_work}
+\input{sections/3_methods}
+\input{sections/4_empirical_results}
+\input{sections/5_misalignment}
+\input{sections/6_applications}
+\input{sections/7_discussion}
+
+\section*{Acknowledgements}
+We'd like to thank Cem Anil, Fabien Roger, Joe Benton, Misha Wagner, Peter Hase, Ryan Greenblatt, Sam Bowman, Vlad Mikulik, Yanda Chen, and Zac Hatfield-Dodds for helpful feedback on this work. 
+
+\bibliography{ms}
+\bibliographystyle{icml2025}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% APPENDIX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\appendix
+\onecolumn
+\input{appendices/2_related_work}
+\input{appendices/3_additional_methods}
+\input{appendices/4_forecasting_details}
+\end{document}

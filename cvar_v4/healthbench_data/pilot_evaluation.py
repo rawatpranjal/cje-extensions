@@ -21,7 +21,7 @@ D = Path(__file__).parent
 RESP_DIR = D / "data" / "responses"
 JUDGE_DIR = D / "judge_outputs"
 
-POLICIES = ["base", "clone", "premium", "parallel_universe_prompt", "unhelpful"]
+POLICIES = ["base", "clone", "premium", "parallel_universe_prompt", "unhelpful", "risky"]
 
 
 @dataclass

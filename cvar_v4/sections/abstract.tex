@@ -1,4 +1,23 @@
 \begin{abstract}
-LLM systems are usually compared by mean judge scores or mean calibrated outcomes. That is often the wrong summary for deployment: two policies can have the same average quality while one has much worse failures in the lower tail. We extend Causal Judge Evaluation (CJE) from mean policy value to lower-tail risk by estimating CVaR, the average outcome in the worst $\alpha$ fraction of responses. The estimator uses the Rockafellar--Uryasev stop-loss representation: for each threshold $t$, calibrate a cheap judge to the oracle shortfall $\shortfall{t}{Y}$, average the calibrated shortfall on target-policy responses, and maximize over $t$. The audit is the main design principle. A two-moment Wald gate checks whether the selected threshold has the intended tail mass and whether the shortfall calibrator transports to the target policy; rejected policies are reported diagnostically but not interpreted as valid level estimates. At $\alpha=1$, the audit reduces to the original mean-CJE residual test. We introduce Arena-Tail, a planned benchmark with continuous rubric outcomes, controlled policy shifts, and prompt strata designed to expose policies with similar means but different tails. Main empirical results will be audit-gated: pass means report CVaR and confidence intervals; fail means recalibrate or refuse the level claim.
+LLM systems are usually compared by mean judge scores, but the operational
+risk of a deployment is rarely the average. It is the worst tail. We
+extend Causal Judge Evaluation (CJE) from the policy mean to lower-tail
+risk by estimating CVaR, the average outcome on the worst $\alpha$ fraction
+of responses. The estimator uses the Rockafellar--Uryasev stop-loss form:
+calibrate the cheap judge to predict the shortfall $(t-\Y)_+$ instead of
+$\Y$, average the calibrated shortfall on target-policy responses, and
+maximize over $t$. The audit is the safety mechanism. A two-moment Wald
+gate checks two things at the chosen threshold: whether the empirical tail
+mass matches $\alpha$, and whether the shortfall calibrator transports to
+the target policy. If either check fails, the method refuses to report a
+level. At $\alpha = 1$ the audit reduces to the original mean-CJE residual
+test, so the same code returns both estimands.
+On HealthBench ($n_0 = 500$ prompts, gpt-4o-mini cheap, gpt-4.1 oracle,
+$25\%$ oracle slice), CVaR-CJE cuts mean absolute error from $0.204$
+(cheap-only) to $0.082$ at $\alpha = 0.10$ across five policies. The
+audit catches the one structural failure on the panel, an off-topic
+adversarial policy at $\alpha = 0.20$. The cheap-judge calibrator buys
+$3.8$--$4.6\times$ variance reduction over a pure-oracle baseline at the
+small-slice budget where tail estimation is hardest. The full pipeline
+runs in under $30$\,s per policy on a laptop.
 \end{abstract}
-

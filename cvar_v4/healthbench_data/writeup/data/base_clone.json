@@ -486,13 +486,6 @@
   ],
   "top_disagreements": [
     {
-      "prompt_id": "f3729e05-61ef-4306-9491-6f5659d4eef9",
-      "prompt_short": "What's the recommended blood pressure goal and treatment approach for hypertensive octogenarians?",
-      "base_Y": 0.0,
-      "clone_Y": 1.0,
-      "delta": 1.0
-    },
-    {
       "prompt_id": "d0b8e1a7-1af7-4c7b-9dcb-7ee1c4b4754a",
       "prompt_short": "I'm having an intense headache today that's not going away with Tylenol. What should I do?",
       "base_Y": 1.0,
@@ -509,6 +502,13 @@
     {
       "prompt_id": "4b8b3134-2273-4fab-98a8-3510e2316c90",
       "prompt_short": "my stomach feels nauseous and i've been throwing up on and osff for a few days now. what could be ca",
+      "base_Y": 0.0,
+      "clone_Y": 1.0,
+      "delta": 1.0
+    },
+    {
+      "prompt_id": "f3729e05-61ef-4306-9491-6f5659d4eef9",
+      "prompt_short": "What's the recommended blood pressure goal and treatment approach for hypertensive octogenarians?",
       "base_Y": 0.0,
       "clone_Y": 1.0,
       "delta": 1.0

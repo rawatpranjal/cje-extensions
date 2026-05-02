@@ -1,0 +1,304 @@
+\section{Meta-evaluation}
+\label{sec:Meta}
+Meta-evaluation, the process of assessing the quality of the evaluator itself, is a crucial step in determining the reliability, consistency, and validity of LLM judges. Given the diverse applications of LLMs as evaluators, meta-evaluation methods have also been evolving. Researchers have proposed various datasets and metrics tailored to different tasks and evaluation objectives to assess the reliability and validity of LLM-based evaluations. This chapter will explore state-of-the-art Benchmarks (\S\ref{sec:benchmarks}) and evaluation Metrics (\S\ref{sec:metric}), categorize existing approaches, and discuss their advantages and limitations.
+
+
+
+\begin{table*}[ht]
+\footnotesize
+\caption{Statistical information of different benchmarks (Part 1).}
+\begin{tabular}{lccccc}
+\hline
+\textbf{Benchmark}                                                                   & \textbf{Task}      & \textbf{Type}                                                         & \textbf{Num}                                                    & \textbf{Evaluation Criteria}                                                                                                                    & \textbf{Language}     \\ \hline  \hline
+\rowcolor{mygray}
+HumanEval~\cite{chen2021evaluating}                                                          & Code        & Pointwise                                                    & 164                                                    & Functional correctness                                                                                                                 & English      \\
+SWE-bench~\cite{jimenez2023swe}                                                                   & Code        & Pointwise                                                    & 2,294                                                  & Task solve                                                                                                                             & English      \\
+\rowcolor{mygray}
+DevAI~\cite{zhuge2024agent}                                                                     & Code        & Pointwise                                                    & 365                                                    & \begin{tabular}[c]{@{}c@{}}Disagreement, Task solve, \\ Requirements met\end{tabular}                                                  & English      \\
+CrossCodeEval~\cite{ding2024crosscodeeval}                                                               & Code        & Pointwise                                                    & 1,002                                                  & Code match, Identifier match                                                                                                           & English      \\
+\rowcolor{mygray}
+CodeUltraFeedback~\cite{weyssow2024codeultrafeedback}                                                           & Code        & \begin{tabular}[c]{@{}c@{}}Pointwise\\ Pairwise\end{tabular} & 10k                                                    & \begin{tabular}[c]{@{}c@{}}Code explanation, \\ Code complexity and efficiency, \\ Code readability, Coding style\end{tabular}         & English      \\
+\begin{tabular}[c]{@{}l@{}}Literary Translation \\ Comparisons~\cite{karpinska2023large}\end{tabular} & Translation & Pairwise                                                     & 720                                                    & Translation quality and errors                                                                                                         & Multilingual \\
+\rowcolor{mygray}
+MQM~\cite{freitag2021experts}                                                                         & Translation & Pointwise                                                    & 100k                                                   & \begin{tabular}[c]{@{}c@{}}Accuracy, Fluency, \\ Terminology, Style, Locale\end{tabular}                                               & Multilingual \\
+\begin{tabular}[c]{@{}l@{}}WMT Metrics \\ Shared Task~\cite{freitag2021results}\end{tabular}          & Translation & Pointwise                                                    & -                                                      & Adequacy, Fluency                                                                                                                      & Multilingual \\
+\rowcolor{mygray}
+SummEval~\cite{fabbri2021summeval}                                                                    & Summary     & Pointwise                                                    & 1,600                                                  & \begin{tabular}[c]{@{}c@{}}Coherence, Consistency, \\ Fluency, Relevance\end{tabular}                                                  & English      \\
+Opinsummeval~\cite{shen2023opinsummeval}                                                                & Summary     & Pointwise                                                    & 1,400                                                  & \begin{tabular}[c]{@{}c@{}}Aspect relevance, \\ Self-coherence, Readability\\ Sentiment consistency,\end{tabular}                      & English      \\
+\rowcolor{mygray}
+Frank ~\cite{pagnoni2021understanding}                                                                      & Summary     & Pointwise                                                    & 2,250                                                  & Factual errors                                                                                                                         & English      \\
+Topical-Chat~\cite{gopalakrishnan2023topical}                                                                & Dialogue    & Pointwise                                                    & 60                                                     & \begin{tabular}[c]{@{}c@{}}Understandable, Natural, \\ Maintains context, Interesting, \\ Uses knowledge, Overall quality\end{tabular} & English      \\
+\rowcolor{mygray}
+Personal-Chat~\cite{zhang2018personalizing}                                                               & Dialogue    & Pointwise                                                    & 60                                                     & \begin{tabular}[c]{@{}c@{}}Understandable, Natural, \\ Maintains context, Interesting, \\ Uses knowledge, Overall quality\end{tabular} & English      \\
+DSTC10 Hidden Set~\cite{zhang2021automatic}                                                           & Dialogue    & Pointwise                                                    & 9,500                                                  & \begin{tabular}[c]{@{}c@{}}Coherence, Appropriateness, \\ Naturalness, Toxicity control\end{tabular}                                   & English      \\
+\rowcolor{mygray}
+HANNA~\cite{chhun2022human}                                                                       & Story       & Pointwise                                                    & 1,056                                                  & \begin{tabular}[c]{@{}c@{}}Relevance, Coherence, \\ Empathy, Surprise, \\ Engagement, Complexity\end{tabular}                          & English      \\
+MANS~\cite{guan2021openmeva}                                                                        & Story       & Pointwise                                                    & 2,000                                                  & Coherence                                                                                                                              & English      \\
+\rowcolor{mygray}
+StoryER~\cite{chen2023storyer}                                                                     & Story       & Pairwise                                                     & 100k                                                   & Upvoted                                                                                                                                & English      \\
+Per-DOC~\cite{wang2023learning}                                                                     & Story       & Pointwise                                                    & 7,000                                                  & \begin{tabular}[c]{@{}c@{}}Interestingness, Adaptability,\\ Character developmentSurprise, Ending\end{tabular}                         & English      \\
+\rowcolor{mygray}
+PKU-SafeRLHF~\cite{ji2024pku}                                                                & Value       & Pairwise                                                     & 83.4K                                                  & Helpfulness, Harmlessness                                                                                                              & English      \\
+HHH~\cite{askell2021general}                                                                         & Value       & Pairwise                                                     & 221                                                    & \begin{tabular}[c]{@{}c@{}}Helpfulness, Honesty, \\ Harmlessness\end{tabular}                                                          & English      \\
+\rowcolor{mygray}
+Cvalue~\cite{xu2023cvalues}                                                                      & Value       & Pairwise                                                     & 145k                                                   & Safety, Responsibility                                                                                                                 & Chinese      \\
+Yelp  ~\cite{asghar2016yelp}                                                                      & Recom       & Pointwise                                                    & 8,630k                                                 & User perference                                                                                                                        & English      \\
+\rowcolor{mygray}
+Movielens\_Explanation~\cite{zhang2024large}                                                      & Recom       & Pointwise                                                    & 2,496                                                  & \begin{tabular}[c]{@{}c@{}}Persuasiveness, Transparency,   \\ Accuracy, Satisfaction\end{tabular}                                      & English      \\
+Trec DL21\&22 ~\cite{DBLP:conf/trec/Craswell0YCL21,DBLP:conf/trec/Craswell0YCLVS22}                                                              & Search      & Pointwise                                                    & \begin{tabular}[c]{@{}c@{}}1,549/\\ 2,673\end{tabular} & Relevacne                                                                                                                              & English      \\
+\rowcolor{mygray}
+LeCarDv2~\cite{li2024lecardv2}                                                                    & Search      & Pointwise                                                    & 55,192                                                 & \begin{tabular}[c]{@{}c@{}}Characterization relevance, \\ Penalty relevance, \\ Procedure relevance\end{tabular}                       & English      \\ \hline
+\end{tabular}
+\end{table*}
+
+
+
+
+
+\begin{table*}[ht]
+\footnotesize
+\caption{Statistical information of different benchmarks (Part 2).}
+\begin{tabular}{lccccc}
+\hline
+\textbf{Benchmark}  & \textbf{Domain} & \textbf{Type}                                                           & \textbf{Num} & \textbf{Evaluation Criteria}                                                                                               & \textbf{Language}                                         \\ \hline \hline
+\rowcolor{mygray}
+UltraFeedback~\cite{cui2024ultrafeedback}        & Compre.         & Pairwise                                                                & 64k          & \begin{tabular}[c]{@{}c@{}}Helpfulness, Honesty,   \\ Instruction following, \\ Truthfulness\end{tabular}                  & English                                                   \\
+AlpacaEval~\cite{dubois2024length}          & Compre.         & Pairwise                                                                & 20k          & Instruction-following                                                                                                      & English                                                   \\
+\rowcolor{mygray}
+Chatbot Arena~\cite{zheng2023judging}       & Compre.         & Pairwise                                                                & 33k          & User perference                                                                                                            & English                                                   \\
+MTBench~\cite{zheng2023judging}             & Compre.         & Pairwise                                                                & 3,000        & \begin{tabular}[c]{@{}c@{}}Multi-turn conversational, \\ Instruction-following\end{tabular}                                & English                                                   \\
+\rowcolor{mygray}
+RewardBench~\cite{lambert2024rewardbench}        & Compre.         & Pairwise                                                                & 2,998        & User perference                                                                                                            & English                                                   \\
+JudgerBench~\cite{cao2024compassjudger}         & Compre.         & Pairwise                                                                & 1,900        & Instruction following                                                                                                      & \begin{tabular}[c]{@{}c@{}}English\\ Chinese\end{tabular} \\
+\rowcolor{mygray}
+RM-Benchh~\cite{liu2024rm}            & Compre.         & Pairwise                                                                & 1,327        & Instruction following                                                                                                      & English                                                   \\
+JUDGEBENCH~\cite{tan2024judgebench}          & Compre.         & Pairwise                                                                & 350          & Factual, Logical correctness                                                                                               & English                                                   \\
+\rowcolor{mygray}
+Infinity-Preference\footnote{\url{https://huggingface.co/datasets/BAAI/Infinity-Preference}} & Compre.         & Pairwise                                                                & 59.3k        & User perference                                                                                                            & \begin{tabular}[c]{@{}c@{}}English\\ Chinese\end{tabular}                                         \\
+LLMeval~\cite{zhang2023wider}             & Compre.         & \begin{tabular}[c]{@{}c@{}}Pointwise\\ Pairwise\end{tabular}            & 453          & \begin{tabular}[c]{@{}c@{}}Correctness, Fluency, Logic, \\ Informativeness, Harmlessness\end{tabular}                      & Chinese                                                   \\
+\rowcolor{mygray}
+WildBench~\cite{lin2024wildbench}           & Compre.         & Pointwise                                                               & 1,024        & Checklists                                                                                                                 & English                                                   \\
+Flask~\cite{ye2023flask}               & Compre.         & Pointwise                                                               & 1,740        & \begin{tabular}[c]{@{}c@{}}Logical thinking, \\ Background knowledge, \\ Problem handling, User alignment\end{tabular}     & English                                                   \\
+\rowcolor{mygray}
+AlignBench~\cite{liu2023alignbench}          & Compre.         & Pointwise                                                               & 683          & \begin{tabular}[c]{@{}c@{}}Task-oriented, Clarity \& Fluency, \\ Complexity \& Difficulty, \\ Desensitization\end{tabular} & Chinese                                                   \\
+HELPSTEER~\cite{wang2023helpsteer}           & Compre.         & \begin{tabular}[c]{@{}c@{}}Pointwise\\ Pairwise\end{tabular}            & 37,120       & \begin{tabular}[c]{@{}c@{}}Helpfulness, Correctness, \\ Coherence, Complexity Verbosity\end{tabular}                       & English                                                   \\
+\rowcolor{mygray}
+HELPSTEER2~\cite{wang2024helpsteer2}          & Compre.         & \begin{tabular}[c]{@{}c@{}}Pointwise\\ Pairwise\end{tabular}            & 21,362       & \begin{tabular}[c]{@{}c@{}}Helpfulness, Correctness, \\ Coherence, Complexity, Verbosity\end{tabular}                      & English                                                   \\
+MLLM-as-a-Judge~\cite{chen2024mllm}     & Compre.         & \begin{tabular}[c]{@{}c@{}}Pointwise\\ Pairwise\\ Listwise\end{tabular} & 17,000       & {\color[HTML]{4A4A4A} \begin{tabular}[c]{@{}c@{}}Relevance, Accuracy, \\ Creativity, Response granularity\end{tabular}}    & English                                                   \\
+\rowcolor{mygray}
+MM-EvalMM-Eval~\cite{son2024mm}             & Compre.         & Pairwise                                                                & 4,981        & Task-oriented                                                                                                              & Multilingual                                              \\ \hline
+\end{tabular}
+\end{table*}
+
+
+
+
+\subsection{Benchmarks}
+\label{sec:benchmarks}
+To evaluate LLM-based judges, a common approach is to measure their alignment with human preferences, as human judgments are often considered the gold standard for quality and reliability. Given the diverse range of applications for LLM-based judges, different benchmarks have been created, each tailored to specific evaluation criteria and use cases.
+In this section, we present a comprehensive collection of 40 widely-used benchmarks, each designed to capture different aspects of evaluation, such as language understanding, factual accuracy, coherence, creativity, and fairness. To enhance clarity and facilitate comparison, we categorize these benchmarks by application domain.
+
+\subsubsection{Code Generation}
+\label{sec:Code Generation}
+Code generation aims to produce executable program code from natural language input. This task typically involves translating user requirements or descriptions into precise code. The applications of code generation are vast, including automated script creation, bug fixing, and the generation of complex programming tasks.Evaluating code generation is highly challenging, and LLMs are increasingly being used as evaluators for assessing code quality.
+
+
+HumanEval~\cite{chen2021evaluating} is a widely used benchmark dataset designed to evaluate programming capabilities. It consists of 164 coding tasks, each accompanied by a brief natural language description. The tasks primarily involve algorithmic problems and data structure exercises, with difficulty levels ranging from basic to intermediate. 
+One notable feature of HumanEval~\cite{chen2021evaluating} is the inclusion of input-output examples, which facilitate the assessment of functional correctness. However, the dataset's limited size and scope may not sufficiently capture the diversity of real-world programming challenges.
+SWEBench~\cite{jimenez2023swe} targets more complex programming tasks that are closer to real-world software development scenarios. It includes 2,294 tasks requiring advanced operations such as reasoning, multi-step problem solving, and API usage. Unlike simpler benchmarks, SWEBench~\cite{jimenez2023swe} assesses the model's ability to handle comprehensive problem-solving and logical reasoning. However, the increased complexity also introduces challenges in establishing consistent evaluation criteria, particularly when it comes to subjective aspects like code style and efficiency. Moreover, DevAI~\cite{zhuge2024agent} was introduced to address the limitations of existing benchmarks, which often fail to capture the iterative nature of software development and lack adequate signals for measuring long-term progress. The dataset includes 365 task requirements, focusing on more complex and challenging programming scenarios.
+CrossCodeEval~\cite{ding2024crosscodeeval} focuses on assessing cross-language programming models, containing over 1,000 tasks that involve translating code between different programming language pairs, such as Python to Java or JavaScript to C++. This dataset tests the model’s ability to adapt and transform code across languages, highlighting the challenges of understanding varied syntax and semantics. CodeUltraFeedback~\cite{weyssow2024codeultrafeedback} is designed to evaluate and enhance the alignment between LLMs and user-defined programming preferences. It includes 10,000 programming instructions, each paired with four responses from 14 different LLMs. These responses are scored by GPT-3.5 based on five distinct programming preferences, such as readability, efficiency, and adherence to user specifications. The dataset emphasizes fine-grained feedback and user-centered evaluation, making it a useful tool for analyzing preference alignment. 
+
+
+
+
+
+
+\subsubsection{Machine Translation}
+\label{sec:Machine Translation}
+Machine Translation (MT) refers to the process of automatically translating text from a source language to a target language. Over time, MT technology has progressed significantly, evolving from rule-based methods to Statistical Machine Translation (SMT), and more recently to Neural Machine Translation (NMT), which is now the dominant approach. With the widespread adoption of NMT and the emergence of LLMs, evaluating translation quality has become a complex task, requiring robust evaluation frameworks that can assess accuracy, fluency, and contextual relevance across diverse language pairs.
+
+The Workshop on Machine Translation (WMT)~\cite{freitag2021results} is a prominent annual evaluation event in the field of MT. It provides large-scale, human-annotated datasets for a variety of language pairs, including English-French, English-German, and English-Russian. Each year, WMT releases benchmark datasets that include source texts, model-generated translations, reference translations, and human evaluation scores. These datasets are widely used for assessing the performance of automated evaluation metrics by comparing their outputs against human judgments. WMT covers a broad range of tasks, from sentence-level translation to document-level and domain-specific challenges, making it a comprehensive resource for evaluating the correlation between automated evaluators and human assessments. However, WMT primarily focuses on high-resource languages, which may limit its applicability to low-resource or underrepresented languages.
+Literary Translation Comparisons~\cite{karpinska2023large} is designed to assess document-level translation quality, particularly in the context of literary works. It includes carefully selected paragraphs from various literary pieces, covering 18 language pairs such as Japanese-English, Polish-English, and French-English. Unlike sentence-level benchmarks, this dataset emphasizes the importance of evaluating translations in a broader context, as literary texts often require understanding of stylistic elements and cultural subtleties. This makes it particularly useful for evaluating the performance of LLMs, which may excel in capturing broader contextual information.
+The MQM~\cite{freitag2021experts} study is the largest evaluation effort to date focusing on machine translation quality. It involves professional translators annotating the outputs of top-performing systems from the WMT 2020 shared task, specifically targeting English-German and Chinese-English translations. MQM introduces a multidimensional quality assessment framework that goes beyond traditional metrics like BLEU or ROUGE. It evaluates translations across multiple dimensions, including accuracy, fluency, terminology, style, and locale, providing a more nuanced understanding of translation quality.
+
+
+
+\subsubsection{Text Summarization}
+\label{sec:Text Summarization}
+Text Summarization (TS) is the task of generating a concise and coherent summary from a given piece of text while preserving its essential meaning. The main goal is to provide a quick, accurate overview of the source content, capturing key information and eliminating unnecessary details. As LLMs have shown impressive capabilities in generating summaries, the need for robust meta-evaluation benchmarks is critical to effectively assess their performance across various dimensions like coherence, relevance, consistency, and fluency.
+
+SummEval~\cite{fabbri2021summeval} is one of the most widely used benchmarks for evaluating summarization models. It includes summaries generated by 16 different models based on 100 news articles randomly sampled from the CNN/DailyMail test set. Each summary was annotated by five independent crowd-sourced workers and three expert evaluators, using a Likert scale from 1 to 5 across four key dimensions: coherence, consistency, fluency, and relevance. The dataset is valuable for analyzing the correlation between human judgments and automated evaluation metrics.
+The FRANK~\cite{pagnoni2021understanding} dataset is dedicated to assessing the factual accuracy of summaries generated by automatic summarization systems. It provides detailed human annotations of factual errors, including semantic frame errors, discourse errors, and content verifiability issues. The dataset includes summaries from both the CNN/DailyMail and XSum datasets, making it a comprehensive resource for evaluating factual correctness. FRANK’s detailed categorization of errors offers valuable insights into the types of factual inaccuracies common in generated summaries, highlighting areas where LLMs often struggle. However, focusing solely on factual errors may overlook other aspects of summary quality, such as coherence and fluency.
+OpinsummEval~\cite{shen2023opinsummeval} is a meta-evaluation benchmark specifically designed for opinion summarization tasks, where the goal is to extract and summarize opinions from a large volume of user reviews. This dataset includes outputs from 14 different opinion summarization models and provides human annotations across four dimensions: aspect relevance, self-consistency, sentiment consistency, and readability. 
+
+
+
+
+
+
+\subsubsection{Dialogue Generation}
+\label{sec:Dialogue Generation}
+Dialogue Generation is the task of automatically generating natural language conversations that are relevant to a given context. The primary goal is to develop dialogue systems that can understand context, generate fluent responses, and maintain logical consistency and contextual accuracy. Dialogue generation encompasses a wide range of applications, from chatbots and virtual assistants to social conversational agents. With the increasing capabilities of large language models (LLMs), evaluating dialogue generation has become more complex, requiring multi-faceted evaluation frameworks to assess various aspects of conversational quality.
+
+In the field of dialogue generation, the most commonly used datasets include Topical-Chat~\cite{gopalakrishnan2023topical} and PERSONA-CHAT~\cite{zhang2018personalizing}. The Topical-Chat~\cite{gopalakrishnan2023topical} dataset aims to advance research in open-domain conversational AI, covering eight major topics such as entertainment, health, and technology. The PERSONA-CHAT~\cite{zhang2018personalizing} dataset, on the other hand, focuses on enhancing dialogue systems by incorporating predefined personas to generate more personalized responses. Each dialogue participant is assigned a persona profile, consisting of several descriptive sentences about their personality or preferences.
+Mehri and Eskenazi~\cite{mehri2020usr} conducted a meta-evaluation study on these two widely-used open-domain dialogue corpora. They manually annotated 60 dialogue contexts from each dataset, with six responses per context for Topical-Chat and five for PERSONA-CHAT~\cite{zhang2018personalizing}, including both model-generated and human responses. Each response was evaluated across six key dimensions: naturalness, coherence, engagement, groundedness, understandability, and overall quality. This study highlights the importance of multi-dimensional evaluation in dialogue generation, providing valuable insights into the strengths and weaknesses of different dialogue models.
+Additionally, the dataset from DSTC10 Track 5~\cite{yoshino2023overview,zhang2021automatic} focuses on evaluating open-domain dialogue systems and is designed for automatic evaluation and moderation of dialogue systems. The challenge aims to develop automatic evaluation mechanisms that accurately reflect human judgments while effectively handling harmful user inputs, maintaining conversational flow and engagement. The dataset includes annotations across four aspects: coherence, appropriateness, naturalness, and toxicity control.
+
+
+
+\subsubsection{Automatic Story Generation}
+\label{sec:Automatic Story Generation}
+Automatic Story Generation (ASG) is a challenging task that aims to enable models to create coherent, engaging narratives based on a given prompt or context. It emulates human storytelling abilities by generating stories that exhibit a logical structure, compelling characters, and interesting plot developments. Evaluating story generation systems is inherently complex, as it involves assessing not only linguistic quality but also narrative elements like coherence, engagement, and surprise.
+
+
+The HANNA~\cite{chhun2022human} dataset is tailored for evaluating automatic story generation (ASG), featuring 1,056 stories generated by 10 different systems from 96 prompts. Each story is annotated by three human reviewers across six criteria: relevance, coherence, resonance, surprise, engagement, and complexity. This comprehensive annotation framework provides a detailed assessment of narrative quality, making HANNA a valuable benchmark for comparing ASG models.
+Another notable dataset is the MANS~\cite{guan2021openmeva}, which forms part of the OpenMEVA~\cite{guan2021openmeva} framework. It compiles stories from various natural language generation models using well-known corpora like ROCStories~\cite{mostafazadeh2016corpus} and WritingPrompts~\cite{fan2018hierarchical}. MANS~\cite{guan2021openmeva} focuses on manual annotations of narrative elements, serving as a robust testbed for exploring diverse evaluation metrics.
+The StoryER~\cite{chen2023storyer} dataset offers a distinct approach to evaluating story generation by focusing on preference prediction and aspect-based rating. StoryER is divided into two primary components: the first is a 100k Story Ranking Data, which pairs stories from the WritingPrompts dataset. Each pair includes one story with high user engagement (upvotes $\ge$ 50) and another with low engagement (upvotes $\le$ 0). This component leverages real-world user feedback to capture implicit preferences, providing a practical basis for training models to predict story quality. The second component, Aspect Rating and Reasoning Data, contains 46,000 entries where annotators provide detailed ratings (on a scale of 1-5) for various story aspects such as introduction, character development, and plot description, along with explanatory comments. This combination of quantitative rankings and qualitative reasoning enables a nuanced evaluation of stories, making StoryER particularly useful for both automated scoring and interpretability research.
+The PERSER~\cite{wang2023learning} dataset takes a different approach by addressing the subjectivity inherent in open-domain text generation evaluations. PERSER restructures existing datasets and introduces personalized tags, resulting in two sub-datasets: Per-MPST and Per-DOC. Per-MPST is an adapted version of the Movie Plot Synopsis Dataset, while Per-DOC includes 7,000 instances of paired stories generated from the same premise. These stories are evaluated based on dimensions such as interestingness, adaptability, surprise, character development, and the quality of the ending. 
+
+
+\subsubsection{Values Alignment}
+\label{sec:Values Alignment}
+Values alignment is a critical task in the development of AI systems, focused on ensuring that their behavior and decisions consistently reflect core human values and ethical standards. In the context of LLM-as-Judge, the alignment process is vital to verify that the model's outputs adhere to societal norms and ethical principles, minimizing risks related to harmful, biased, or unethical behavior. To support research and model development in values alignment, several datasets have been created, each with unique characteristics designed to evaluate or enhance the ethical behavior of LLMs.
+
+One notable dataset is PKU-SafeRLHF~\cite{ji2024pku}, which was specifically curated for studying safe alignment in large language models. The dataset comprises 83.4K preference entries, focusing on two primary dimensions: harmlessness and usefulness. In each sample, the dataset presents a pair of model responses to a given prompt, annotated with safety meta-labels and preferences based on the levels of safety and utility. 
+Another influential dataset is the HHH~\cite{askell2021general} (Honesty, Helpfulness, and Harmlessness) dataset, designed to evaluate LLM performance across various human-model interaction scenarios. The dataset emphasizes three core human-centered values: honesty, helpfulness, and harmlessness. It includes a diverse collection of conversational examples where models are tested on their adherence to these values. By exposing models to a wide range of contexts, the HHH dataset serves as a comprehensive benchmark for assessing whether LLMs align with essential ethical standards and effectively mitigate risks of misinformation, harmful advice, or biased outputs.
+Moreover, the CVALUES~\cite{xu2023cvalues} benchmark is a more recent contribution aimed at evaluating human values alignment specifically for Chinese LLMs. It represents the first comprehensive framework tailored to assess values alignment in the Chinese language context, focusing on two critical criteria: Safety and Responsibility.
+
+
+\subsubsection{Recommendation}
+\label{sec:Recommendation}
+Recommendation systems aim to provide personalized suggestions based on users' preferences and historical behavior. As the use of large language models (LLMs) expands, their role in evaluating the performance of recommendation systems has garnered increasing attention. LLMs can serve as versatile evaluators, offering insights into multiple aspects of recommendation systems beyond traditional metrics like accuracy. They can assess factors such as user engagement, satisfaction, and the quality of generated explanations.
+
+The MovieLens~\cite{harper2015movielens} dataset is a widely-used public dataset for movie recommendations, available in multiple versions with varying scales, ranging from thousands of users and ratings to millions. Zhang et al.~\cite{zhang2024large} further annotated the MovieLens~\cite{harper2015movielens} data to create a sub-dataset featuring user self-explanation texts. In this sub-dataset, users write explanatory texts after being presented with a recommended movie. These explanations are then rated on a five-point Likert scale across four dimensions: Persuasiveness, Transparency, Accuracy, and Satisfaction. This annotated data provides valuable reference texts for LLMs in the context of explainability evaluation.
+
+Another commonly used dataset is the Yelp dataset~\cite{asghar2016yelp}, which contains detailed review data from 11 metropolitan areas, covering approximately 150,000 businesses, nearly 7 million user reviews, and over 200,000 images. User reviews include ratings for businesses, such as hotel ratings (1-5 stars), as well as additional feedback like ``cool'' and ``funny'' votes. Furthermore, the Yelp dataset provides extensive business attribute information (e.g., operating hours, parking availability, and delivery options), offering rich contextual information that can be leveraged for developing and evaluating recommendation systems.
+
+\subsubsection{Search}
+\label{sec:Search}
+The search task is a fundamental component of information retrieval (IR), focusing on identifying the most relevant documents from extensive text collections based on user queries. Traditionally, relevance assessments in search tasks have been conducted by human annotators following established guidelines. However, recent advances in large language models (LLMs) have opened up new opportunities for utilizing these models as evaluators, offering an automated and scalable approach to relevance assessment.
+With the advent of retrieval-augmented generation (RAG) models, the role of LLMs as evaluators has expanded. There is now a growing need to assess various dimensions of retrieved contexts, including context relevance, answer faithfulness, and answer relevance. This shift highlights the potential of LLMs to provide nuanced judgments that go beyond simple topical relevance.
+
+A key resource for evaluating the performance of LLMs as relevance assessors is the series of datasets from the Text Retrieval Conference (TREC). TREC workshops aim to advance research in IR by offering large-scale test collections, standardized evaluation procedures, and a platform for benchmarking retrieval models. 
+The datasets from the TREC Deep Learning Track~\cite{lawrie2024overview}, specifically from 2021 (DL21)~\cite{DBLP:conf/trec/Craswell0YCL21} and 2022 (DL22)~\cite{DBLP:conf/trec/Craswell0YCLVS22}, are commonly used for this purpose. These datasets are derived from the expanded MS MARCO v2 collection~\cite{bajaj2016ms}, which contains approximately 138 million passages. Relevance judgments are provided by assessors from the National Institute of Standards and Technology (NIST) using a 4-point scale (0 to 3). This structured and fine-grained annotation scheme allows for a detailed comparison between LLM-generated relevance scores and human judgments.
+While general-purpose datasets offer valuable benchmarks, specialized retrieval tasks often require domain-specific datasets that reflect unique relevance criteria. One notable example is LeCaRDv2~\cite{li2024lecardv2}, a large-scale dataset tailored for legal case retrieval. LeCaRDv2 enriches the concept of relevance by incorporating three distinct aspects: characterization, penalty, and procedure. These additional criteria provide a more comprehensive perspective on relevance.
+
+
+
+
+\subsubsection{Comprehensive Data}
+\label{sec:Comprehensive Data}
+To thoroughly assess the role of LLMs-as-Judges and better align them with human preferences, a diverse set of comprehensive datasets has been developed. These datasets provide large-scale, well-annotated data, allowing for the effective training and evaluation of LLMs in complex, real-world contexts. As a result, they contribute to improving the models’ reliability and effectiveness in their role as evaluators.
+
+Datasets such as HelpSteer~\cite{wang2023helpsteer} and HelpSteer2~\cite{wang2024helpsteer2} are designed to improve the alignment and usefulness of LLMs. They provide multi-attribute data, enabling the training of models that can generate responses that are factually correct, coherent, and tailored to diverse user preferences. These open-source datasets support adjustments in response complexity and verbosity, catering to varying user needs. Additionally, UltraFeedback~\cite{cui2024ultrafeedback} offers a large-scale dataset with around 64,000 prompts from sources like UltraChat~\cite{ding2023enhancing}, ShareGPT~\cite{chiang2023vicuna}, and TruthfulQA~\cite{lin2021truthfulqa}. It includes multiple responses per prompt generated by different LLMs, with high-quality preference labels and textual feedback covering aspects like instruction-following, truthfulness, and helpfulness. UltraFeedback’s fine-grained annotations and diverse prompts provide a robust resource for training reward and critic models, enhancing the evaluative capabilities of LLMs.
+
+
+In exploring instruction following and dialogue capabilities, specialized tools like AlpacaEval~\cite{dubois2024length}, alongside interactive platforms such as Chatbot Arena~\cite{zheng2023judging} and benchmarks like MT-Bench~\cite{zheng2023judging}, provide critical insights. AlpacaEval is an automated evaluation tool using GPT-4 or Claude as evaluators. It assesses chat-based LLMs against the AlpacaFarm dataset, providing win-rate calculations across a variety of tasks, enabling rapid and cost-effective comparisons with baseline models like GPT-3.5 (Davinci-003). Chatbot Arena, on the other hand, offers a user-driven evaluation framework where participants interact with anonymous models and vote based on their preferences. The platform has collected over 1,000,000 user votes, using the Bradley-Terry model to rank LLMs and chatbots, providing valuable insights into user preferences and model performance in open-domain dialogue.
+
+
+Benchmarks like WildBench~\cite{lin2024wildbench} and FLASK~\cite{ye2023flask} aim to evaluate LLMs on tasks more reflective of real-world applications. WildBench~\cite{lin2024wildbench} collects challenging examples from real users via the AI2 WildChat project, providing fine-grained annotations, task types, and checklists for response quality evaluation, and employs length-penalized Elo ratings to ensure unbiased assessments. FLASK~\cite{ye2023flask} introduces a fine-grained evaluation protocol that decomposes overall scoring into skill set-level scoring for each instruction, enhancing interpretability and reliability in both human-based and model-based evaluations. Additionally, comprehensive evaluations covering multiple domains—including factual question answering, reading comprehension, summarization, mathematical problem-solving, reasoning, poetry generation, and programming—have been conducted. These evaluations involve assessing models across multiple criteria such as correctness, fluency, informativeness, logicality, and harmlessness.
+
+
+Reward models and LLM-based judges face the crucial task of ensuring alignment with human expectations, a challenge addressed by datasets like RewardBench~\cite{lambert2024rewardbench}, RM-Bench~\cite{liu2024rm}, and JudgerBench~\cite{cao2024compassjudger}.
+RewardBench~\cite{lambert2024rewardbench} focuses on assessing models through complex prompt-choice trios, covering diverse areas like chat, reasoning, and safety, with a particular emphasis on out-of-distribution scenarios.  RM-Bench~\cite{liu2024rm} introduces a new benchmark for evaluating reward models based on their sensitivity to subtle content differences and resistance to stylistic biases, emphasizing the need for refined assessments that correlate highly with aligned language models' performance.
+JudgerBench~\cite{cao2024compassjudger}, with its dual components (JDB-A and JDB-B), offers a structured framework for evaluating alignment and critique abilities. By including data from human voting results and combining insights from varied sources, JudgerBench~\cite{cao2024compassjudger} provides a nuanced understanding of model performance across different languages and dialogue formats.
+
+
+With the growing complexity of tasks handled by LLMs, there is an increasing demand for more objective and reliable evaluation frameworks. JUDGEBENCH~\cite{tan2024judgebench} proposes a novel approach to assessing LLM-based judges on challenging response pairs across domains like knowledge, reasoning, mathematics, and coding. It addresses the limitations of existing benchmarks by introducing preference labels that reflect objective correctness, providing a robust platform for evaluating the capabilities of advanced LLM-based judges.
+
+As LLMs evolve beyond text-only tasks, evaluation frameworks have expanded to encompass multimodal and multilingual contexts. MLLM-as-a-Judge~\cite{chen2024mllm} serves as a benchmark for assessing Multimodal LLMs, covering tasks like image description, mathematical reasoning, and infographic interpretation. By integrating human annotations, it provides a comprehensive evaluation across visual and textual domains, reflecting the growing demand for models capable of processing diverse inputs. In a parallel effort, MM-Eval~\cite{son2024mm} addresses the multilingual aspect, offering extensive analysis across 18 languages. With core subsets like Chat, Reasoning, and Linguistics, alongside a broader Language Resource subset spanning 122 languages, MM-Eval~\cite{son2024mm} highlights performance discrepancies, especially in low-resource languages where models tend to default to neutral scores. 
+
+
+
+
+\subsection{Metric}
+\label{sec:metric}
+The evaluation of LLMs-as-Judges models centers around assessing the extent to which the model's judgments align with human evaluations, which are typically considered the benchmark for quality. Given the complexity and subjectivity of many evaluation tasks, achieving high agreement with human ratings is a key indicator of the LLM's performance. To quantify this agreement, a range of statistical metrics is employed. Below, we outline these metrics and their applications in evaluating LLMs-as-Judges models.
+
+
+\subsubsection{Accuracy}
+
+Accuracy is a fundamental metric used to assess the proportion of correct judgments made by the LLM compared to human evaluations. In classification tasks, it is defined as:
+
+\begin{equation}
+    \text{Accuracy} = \frac{\text{Number of Correct Predictions}}{\text{Total Number of Predictions}},
+\end{equation}
+
+where the number of correct predictions corresponds to instances where the LLM's judgment matches the human evaluator's judgment. While accuracy is simple to compute and intuitive, it may not fully capture the quality of the model, especially when dealing with tasks that involve nuanced or continuous evaluations.
+
+
+
+
+\subsubsection{Pearson Correlation Coefficient}
+
+The Pearson Correlation Coefficient~\cite{cohen2009pearson} measures the linear relationship between two continuous variables, in this case, the evaluation scores assigned by the LLM and those assigned by human evaluators. It is defined as:
+
+\begin{equation}
+    r = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum (x_i - \bar{x})^2 \sum (y_i - \bar{y})^2}},
+\end{equation}
+
+where $x_i$ and $y_i$ are the scores from the LLM and the human, respectively, and $\bar{x}$ and $\bar{y}$ are their means. Pearson correlation values range from $-1$ to $1$.
+
+\subsubsection{Spearman's Rank Correlation Coefficient}
+
+Spearman's Rank Correlation Coefficient ($\rho$) ~\cite{sedgwick2014spearman} assesses the monotonic relationship between two variables by comparing their ranked values rather than the raw scores. It is defined as:
+
+\begin{equation}
+    \rho = 1 - \frac{6 \sum d_i^2}{n(n^2 - 1)},
+\end{equation}
+
+where $d_i$ is the difference between the ranks of corresponding scores from the LLM and the human evaluator, and $n$ is the number of paired scores.
+Spearman's $\rho$ is less sensitive to outliers and non-linear relationships compared to Pearson's correlation, making it a robust choice for evaluating tasks where the relative order of scores is more important than the exact values. It is commonly used in ranking-based evaluations such as preference judgments or ranking tasks.
+
+\subsubsection{Kendall's Tau}
+
+Kendall's Tau ($\tau$) ~\cite{sen1968estimates} is another rank-based correlation metric that measures the ordinal association between two ranked lists. It is defined as:
+
+\begin{equation}
+    \tau = \frac{C - D}{\frac{1}{2}n(n-1)},
+\end{equation}
+
+where $C$ is the number of concordant pairs (where the rank order agrees between the LLM and human), and $D$ is the number of discordant pairs. Kendall's $\tau$ is particularly useful when evaluating the consistency of rankings produced by LLMs and human evaluators. It is often preferred when the dataset contains many ties, as it provides a more nuanced measure of agreement than Spearman's $\rho$.
+
+\subsubsection{Cohen's Kappa}
+
+Cohen's Kappa ($\kappa$) ~\cite{warrens2015five} measures the level of agreement between two raters (in this case, the LLM and the human) beyond what would be expected by chance. It is defined as:
+
+\begin{equation}
+    \kappa = \frac{p_o - p_e}{1 - p_e},
+\end{equation}
+
+where $p_o$ is the observed agreement and $p_e$ is the expected agreement by chance.
+Cohen's Kappa is particularly effective in classification tasks where both the LLM and the human evaluators assign categorical labels. It accounts for the possibility of random agreement, making it a more robust metric than simple accuracy.
+
+    
+\subsubsection{Intraclass Correlation Coefficient (ICC)}
+
+The Intraclass Correlation Coefficient (ICC)~\cite{bartko1966intraclass} assesses the reliability of ratings when there are multiple evaluators. It evaluates the consistency or conformity of measurements made by different raters, including LLMs and human annotators. ICC is defined based on the variance components derived from a one-way or two-way ANOVA model.
+The ICC is particularly useful when comparing multiple LLMs or when evaluating the consistency of an LLM across different subsets of data, providing a broader view of its reliability as an evaluator.
+
+
+\begin{table*}[t]
+    \centering
+    \small
+    \caption{Summary of Common Metrics for Evaluating LLMs-as-Judges Models}
+    \begin{tabular}{l|l|l|l}
+        \hline
+        \textbf{Metric} & \textbf{Type} & \textbf{Use Case} & \textbf{Robustness to Outliers} \\
+        \hline
+        \hline
+        Accuracy & Agreement measure & Proportion of correct judgments & Sensitive \\
+        \hline
+        Pearson & Linear correlation & Continuous score comparison & Sensitive \\
+        \hline
+        Spearman & Rank correlation & Rank-based evaluation tasks & Robust \\
+        \hline
+        Kendall's Tau & Rank correlation & Consistency in ordinal rankings & Robust, handles ties \\
+        \hline
+        Cohen's Kappa & Agreement measure & Two raters, consistency analysis & Adjusts for chance \\
+        \hline
+        ICC & Agreement measure & Multiple raters, consistency analysis & Robust for group ratings \\
+        \hline
+    \end{tabular}
+    
+\end{table*}

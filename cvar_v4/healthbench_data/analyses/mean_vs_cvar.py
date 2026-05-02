@@ -1,5 +1,18 @@
 """Mean versus CVaR scatter: per-policy (mean Y, CVaR_α) with Direct overlay.
 
+Why this diagnostic exists:
+    The headline value-add of CVaR-CJE over Mean-CJE is the
+    "same-mean / different-tail" pattern: two policies with
+    overlapping mean CIs that cleanly separate on CVaR (or vice
+    versa). A scatter of (mean Y, CVaR_α) per policy makes that
+    pattern visible at a glance. Solid markers are full-oracle truth;
+    open markers are Direct estimates; vertical line segments connect
+    truth to estimate, so the reader can also read off the Direct
+    estimator's per-policy bias visually. If the line segments are
+    short and the cluster spread on the y-axis exceeds the spread on
+    the x-axis, the CVaR estimand is buying ranking signal that the
+    mean isn't.
+
 Outputs:
     writeup/data/mean_vs_cvar.json
     writeup/mean_vs_cvar.pdf

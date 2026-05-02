@@ -1,0 +1,33 @@
+\newpage
+
+\section{Rationale behind scaling behavior}
+\subsection{Why might we expect this scaling to be in the basin of attraction of a gumbel?} 
+\label{sec:why-gumbel}
+In this section, we provide intuition for why we might expect the quantiles of $-\log (-\log p_i)$, i.e., the negative log of the negative log of the elicitation probabilities, to have extreme values that behave like those of a Gumbel distribution. To do so, we draw inspiration from pretraining-based scaling laws for LLMs \citep{kaplan2020scaling}. Pretraining based scaling laws empirically find that the log of the average log-loss on validation data scales in the amount of optimization; this could be either the log compute or log number of tokens used during training. We also implicitly optimize in our setting; the worst-query risk is the highest elicitation probability over $n$ samples, so increasing $n$ in expectation is like adding optimization steps. This suggests one possible relationship:
+\begin{align}
+    -\log -\log \max_{i \in [n]} \pbehave(x_i) &\approx a \log n + b,
+    \label{eqn:scaling-assumption}
+\end{align}
+for constants $a$ and $b$ where the second log comes from the fact that the LLM's validation loss is the log of the probability of generating the desired text. 
+
+If this relationship holds, then the maximum over the random variable $\psi_i = -\log (-\log p_i)$ will tend to a Gumbel distribution for large $n$, and the extreme quantiles will also behave like a Gumbel. However, modeling the max as a Gumbel distribution is a much more general assumption; the Fisher-Tippett-Gnedenko theorem says that maxima of many different distributions will converge to a Gumbel distribution (or one of two other extreme value distributions) under fairly general conditions.
+
+\subsection{Argument that the tail of the survival function is linear.}
+\label{sec:survival-linear}
+In order to make forecasts, we rely on the fact that the survival function of a Gumbel random variable decays exponentially, or equivalently that the log survival function scales linearly. 
+
+To show this, we use the fact that the CDF of a gumbel distribution with location parameter $\mu$ and scale parameter $\beta$ is $F(x; \mu, \beta) = e^{-e^{-(x - \mu) / \beta}}$, which means the survival function $S$ and log survival function can be defined as:
+\begin{align}
+    S(x; \mu, \beta) &= 1 - e^{-e^{-(x - \mu) / \beta}} \\ 
+    \log S(x; \mu, \beta) &= \log (1 - e^{-e^{-(x - \mu) / \beta}}). 
+\end{align}
+Now define $\epsilon = e^{-(x - \mu) / \beta}$. We want to show that the log survival function is linear in the tail, which corresponds to large values of $x$. When $x$ is sufficiently large, $\epsilon$ is very small, which gives us the following approximation:
+\begin{align}
+    \log S(x; \mu, \beta) &= \log (1 - e^{-\epsilon})\\
+    &\approx \log (1 - (1 - \epsilon))\\
+    &= \log (e^{-(x - \mu) / \beta}\\)
+    &= -x / \beta + \mu / \beta,
+\end{align}
+where in the second line we use the fact that $\epsilon$ is small, so all second order terms in the Taylor expansion are negligible. 
+
+This result holds even if the distribution of scores is not itself Gumbel, so long as the max tends towards a Gumbel distribution. This is because if the max of $n$ samples roughly follows a Gumbel distribution, the survival function of $mn$ samples from the original distribution is the survival function of $m$ samples of the max (which is Gumbel), so it inherits the Gumbel's survival function. 

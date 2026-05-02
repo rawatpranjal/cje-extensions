@@ -1,0 +1,285 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Allen, Bhend, Martius, and Ziegel}{Allen
+  et~al.}{2023}]{AllenEtAl2023}
+Allen, S., J.~Bhend, O.~Martius, and J.~Ziegel (2023).
+\newblock Weighted verification tools to evaluate univariate and multivariate
+  probabilistic forecasts for high-impact weather events.
+\newblock {\em Weather and Forecasting\/}~{\em 38}, 499--516.
+
+\bibitem[\protect\citeauthoryear{Allen, Ginsbourger, and Ziegel}{Allen
+  et~al.}{2023}]{AllenEtAl2023b}
+Allen, S., D.~Ginsbourger, and J.~Ziegel (2023).
+\newblock Evaluating forecasts for high-impact events using transformed kernel
+  scores.
+\newblock {\em SIAM/ASA Journal on Uncertainty Quantification\/}~{\em 11},
+  906--940.
+
+\bibitem[\protect\citeauthoryear{Allen, Ziegel, and Ginsbourger}{Allen
+  et~al.}{2024}]{AllenEtAl2023c}
+Allen, S., J.~Ziegel, and D.~Ginsbourger (2024).
+\newblock Assessing the calibration of multivariate probabilistic forecasts.
+\newblock {\em Quarterly Journal of the Royal Meteorological Society\/}~{\em
+  150}, 1315--1335.
+
+\bibitem[\protect\citeauthoryear{Arnold, Henzi, and Ziegel}{Arnold
+  et~al.}{2023}]{ArnoldHenziETAL2023}
+Arnold, S., A.~Henzi, and J.~F. Ziegel (2023).
+\newblock Sequentially valid tests for forecast calibration.
+\newblock {\em Annals of Applied Statistics\/}~{\em 17}, 1909--1935.
+
+\bibitem[\protect\citeauthoryear{Balkema and de~Haan}{Balkema and
+  de~Haan}{1974}]{Balkema.deHaan.1974}
+Balkema, A.~A. and L.~de~Haan (1974).
+\newblock Residual life time at great age.
+\newblock {\em The Annals of Probability\/}~{\em 2}, 792--804.
+
+\bibitem[\protect\citeauthoryear{Bashaykh}{Bashaykh}{2022}]{Bashaykh2022}
+Bashaykh, H. (2022).
+\newblock {\em Statistical Assessment of Forecast Calibration}.
+\newblock Ph.\ D. thesis, University of Exeter.
+
+\bibitem[\protect\citeauthoryear{Bellier, Zin, and Bontron}{Bellier
+  et~al.}{2017}]{BellierEtAl2017}
+Bellier, J., I.~Zin, and G.~Bontron (2017).
+\newblock Sample stratification in verification of ensemble forecasts of
+  continuous scalar variables: Potential benefits and pitfalls.
+\newblock {\em Monthly Weather Review\/}~{\em 145}, 3529--3544.
+
+\bibitem[\protect\citeauthoryear{Brehmer and Strokorb}{Brehmer and
+  Strokorb}{2019}]{BrehmerStrokorb2019}
+Brehmer, J.~R. and K.~Strokorb (2019).
+\newblock Why scoring functions cannot assess tail properties.
+\newblock {\em Electronic Journal of Statistics\/}~{\em 13}, 4015--4034.
+
+\bibitem[\protect\citeauthoryear{Davison and Smith}{Davison and
+  Smith}{1990}]{Davison-Smith.1990}
+Davison, A.~C. and R.~L. Smith (1990).
+\newblock Models for exceedances over high thresholds.
+\newblock {\em Journal of the Royal Statistical Society. Series B
+  (Methodological)\/}~{\em 52}, 393--442.
+
+\bibitem[\protect\citeauthoryear{Demaeyer, Bhend, Lerch, Primo,
+  Van~Schaeybroeck, Atencia, Ben~Bouall{\`e}gue, Chen, Dabernig, Evans,
+  et~al.}{Demaeyer et~al.}{2023}]{DemaeyerEtAl2023}
+Demaeyer, J., J.~Bhend, S.~Lerch, C.~Primo, B.~Van~Schaeybroeck, A.~Atencia,
+  Z.~Ben~Bouall{\`e}gue, J.~Chen, M.~Dabernig, G.~Evans, et~al. (2023).
+\newblock The {EUPPBench} postprocessing benchmark dataset v1.0.
+\newblock {\em Earth System Science Data\/}~{\em 15}, 2635--2653.
+
+\bibitem[\protect\citeauthoryear{Diebold, Gunther, and Tay}{Diebold
+  et~al.}{1998}]{DieboldEtAl1998}
+Diebold, F.~X., T.~A. Gunther, and A.~S. Tay (1998).
+\newblock Evaluating density forecasts with applications to financial risk
+  management.
+\newblock {\em International Economic Review\/}~{\em 39}, 863--883.
+
+\bibitem[\protect\citeauthoryear{Diks, Panchenko, and Van~Dijk}{Diks
+  et~al.}{2011}]{DiksEtAl2011}
+Diks, C., V.~Panchenko, and D.~Van~Dijk (2011).
+\newblock Likelihood-based scoring rules for comparing density forecasts in
+  tails.
+\newblock {\em Journal of Econometrics\/}~{\em 163}, 215--230.
+
+\bibitem[\protect\citeauthoryear{Giacomini and White}{Giacomini and
+  White}{2006}]{GiacominiWhite2006}
+Giacomini, R. and H.~White (2006).
+\newblock Tests of conditional predictive ability.
+\newblock {\em Econometrica\/}~{\em 74}, 1545--1578.
+
+\bibitem[\protect\citeauthoryear{Gneiting, Balabdaoui, and Raftery}{Gneiting
+  et~al.}{2007}]{GneitingEtAl2007}
+Gneiting, T., F.~Balabdaoui, and A.~E. Raftery (2007).
+\newblock Probabilistic forecasts, calibration and sharpness.
+\newblock {\em Journal of the Royal Statistical Society Series B: Statistical
+  Methodology\/}~{\em 69}, 243--268.
+
+\bibitem[\protect\citeauthoryear{Gneiting and Katzfuss}{Gneiting and
+  Katzfuss}{2014}]{GneitingKatzfuss2014}
+Gneiting, T. and M.~Katzfuss (2014).
+\newblock Probabilistic forecasting.
+\newblock {\em Annual Review of Statistics and Its Application\/}~{\em 1},
+  125--151.
+
+\bibitem[\protect\citeauthoryear{Gneiting and Raftery}{Gneiting and
+  Raftery}{2007}]{GneitingRaftery2007}
+Gneiting, T. and A.~E. Raftery (2007).
+\newblock Strictly proper scoring rules, prediction, and estimation.
+\newblock {\em Journal of the American statistical Association\/}~{\em 102},
+  359--378.
+
+\bibitem[\protect\citeauthoryear{Gneiting, Raftery, Westveld, and
+  Goldman}{Gneiting et~al.}{2005}]{GneitingEtAl2005}
+Gneiting, T., A.~E. Raftery, A.~H. Westveld, and T.~Goldman (2005).
+\newblock Calibrated probabilistic forecasting using ensemble model output
+  statistics and minimum {CRPS} estimation.
+\newblock {\em Monthly Weather Review\/}~{\em 133}, 1098--1118.
+
+\bibitem[\protect\citeauthoryear{Gneiting and Ranjan}{Gneiting and
+  Ranjan}{2011}]{GneitingRanjan2011}
+Gneiting, T. and R.~Ranjan (2011).
+\newblock Comparing density forecasts using threshold-and quantile-weighted
+  scoring rules.
+\newblock {\em Journal of Business \& Economic Statistics\/}~{\em 29},
+  411--422.
+
+\bibitem[\protect\citeauthoryear{Gneiting and Ranjan}{Gneiting and
+  Ranjan}{2013}]{GneitingRanjan2013}
+Gneiting, T. and R.~Ranjan (2013).
+\newblock Combining predictive distributions.
+\newblock {\em Electronic Journal of Statistics\/}~{\em 7}, 1747--1782.
+
+\bibitem[\protect\citeauthoryear{Gneiting and Resin}{Gneiting and
+  Resin}{2023}]{GneitingResin2022}
+Gneiting, T. and J.~Resin (2023).
+\newblock Regression diagnostics meets forecast evaluation: Conditional
+  calibration, reliability diagrams, and coefficient of determination.
+\newblock {\em Electronic Journal of Statistics\/}~{\em 17}, 3226--3286.
+
+\bibitem[\protect\citeauthoryear{Gneiting, Stanberry, Grimit, Held, and
+  Johnson}{Gneiting et~al.}{2008}]{GneitingEtAl2008}
+Gneiting, T., L.~I. Stanberry, E.~P. Grimit, L.~Held, and N.~A. Johnson (2008).
+\newblock Assessing probabilistic forecasts of multivariate quantities, with an
+  application to ensemble predictions of surface winds.
+\newblock {\em Test\/}~{\em 17}, 211--235.
+
+\bibitem[\protect\citeauthoryear{Harvey, Leybourne, and Newbold}{Harvey
+  et~al.}{1998}]{HarveyLeybourneETAL1998}
+Harvey, D.~I., S.~J. Leybourne, and P.~Newbold (1998).
+\newblock Tests for forecast encompassing.
+\newblock {\em Journal of Business \& Economic Statistics\/}~{\em 16},
+  254--259.
+
+\bibitem[\protect\citeauthoryear{Holzmann and Klar}{Holzmann and
+  Klar}{2017}]{HolzmannKlar2017}
+Holzmann, H. and B.~Klar (2017).
+\newblock Focusing on regions of interest in forecast evaluation.
+\newblock {\em The Annals of Applied Statistics\/}~{\em 11}, 2404--2431.
+
+\bibitem[\protect\citeauthoryear{Kallenberg}{Kallenberg}{2002}]{kallenberg2002foundations}
+Kallenberg, O. (2002).
+\newblock {\em Foundations of Modern Probability\/} (second ed.).
+\newblock Springer-Verlag.
+
+\bibitem[\protect\citeauthoryear{Kneib, Silbersdorff, and S{\"a}fken}{Kneib
+  et~al.}{2023}]{KneibEtAl2023}
+Kneib, T., A.~Silbersdorff, and B.~S{\"a}fken (2023).
+\newblock Rage against the mean--a review of distributional regression
+  approaches.
+\newblock {\em Econometrics and Statistics\/}~{\em 26}, 99--123.
+
+\bibitem[\protect\citeauthoryear{Lerch and Thorarinsdottir}{Lerch and
+  Thorarinsdottir}{2013}]{LerchThorarinsdottir2013}
+Lerch, S. and T.~L. Thorarinsdottir (2013).
+\newblock Comparison of non-homogeneous regression models for probabilistic
+  wind speed forecasting.
+\newblock {\em Tellus A: Dynamic Meteorology and Oceanography\/}~{\em 65},
+  21206.
+
+\bibitem[\protect\citeauthoryear{Lerch, Thorarinsdottir, Ravazzolo, and
+  Gneiting}{Lerch et~al.}{2017}]{LerchEtAl2017}
+Lerch, S., T.~L. Thorarinsdottir, F.~Ravazzolo, and T.~Gneiting (2017).
+\newblock Forecaster's dilemma: Extreme events and forecast evaluation.
+\newblock {\em Statistical Science\/}~{\em 32}, 106--127.
+
+\bibitem[\protect\citeauthoryear{Messner, Mayr, Zeileis, and Wilks}{Messner
+  et~al.}{2014}]{MessnerEtAl2014}
+Messner, J.~W., G.~J. Mayr, A.~Zeileis, and D.~S. Wilks (2014).
+\newblock Heteroscedastic extended logistic regression for postprocessing of
+  ensemble guidance.
+\newblock {\em Monthly Weather Review\/}~{\em 142}, 448--456.
+
+\bibitem[\protect\citeauthoryear{Mitchell and Weale}{Mitchell and
+  Weale}{2023}]{MitchellWeale2023}
+Mitchell, J. and M.~Weale (2023).
+\newblock Censored density forecasts: Production and evaluation.
+\newblock {\em Journal of Applied Econometrics\/}~{\em 38}, 714--734.
+
+\bibitem[\protect\citeauthoryear{Modeste}{Modeste}{2023}]{Modeste2023}
+Modeste, T. (2023).
+\newblock {\em \'Evaluation et construction des pr\'evisions probabilistes :
+  score et calibration dans un cadre dynamique}.
+\newblock Ph.\ D. thesis, Universit\'e Claude Bernard Lyon 1.
+
+\bibitem[\protect\citeauthoryear{Nolde and Ziegel}{Nolde and
+  Ziegel}{2017}]{NoldeZiegel2017}
+Nolde, N. and J.~F. Ziegel (2017).
+\newblock Elicitability and backtesting: Perspectives for banking regulation.
+\newblock {\em The Annals of Applied Statistics\/}~{\em 11}, 1833--1874.
+
+\bibitem[\protect\citeauthoryear{Olafsdottir, Rootz{\'e}n, and
+  Bolin}{Olafsdottir et~al.}{2024}]{olafsdottir.2024.wscrps}
+Olafsdottir, H.~K., H.~Rootz{\'e}n, and D.~Bolin (2024).
+\newblock Locally tail-scale invariant scoring rules for evaluation of extreme
+  value forecasts.
+\newblock {\em International Journal of Forecasting\/}~{\em 40}, 1701--1720.
+
+\bibitem[\protect\citeauthoryear{Petropoulos, Apiletti, Assimakopoulos, Babai,
+  Barrow, Taieb, Bergmeir, Bessa, Bijak, Boylan, et~al.}{Petropoulos
+  et~al.}{2022}]{PetropoulosEtAl2022}
+Petropoulos, F., D.~Apiletti, V.~Assimakopoulos, M.~Z. Babai, D.~K. Barrow,
+  S.~B. Taieb, C.~Bergmeir, R.~J. Bessa, J.~Bijak, J.~E. Boylan, et~al. (2022).
+\newblock Forecasting: Theory and practice.
+\newblock {\em International Journal of Forecasting\/}~{\em 38}, 705--871.
+
+\bibitem[\protect\citeauthoryear{Scheuerer}{Scheuerer}{2014}]{Scheuerer2014}
+Scheuerer, M. (2014).
+\newblock Probabilistic quantitative precipitation forecasting using ensemble
+  model output statistics.
+\newblock {\em Quarterly Journal of the Royal Meteorological Society\/}~{\em
+  140}, 1086--1096.
+
+\bibitem[\protect\citeauthoryear{Str\"ahl and Ziegel}{Str\"ahl and
+  Ziegel}{2017}]{StrahlZiegel2017}
+Str\"ahl, C. and J.~F. Ziegel (2017).
+\newblock Cross-calibration of probabilistic forecasts.
+\newblock {\em Electronic Journal of Statistics\/}~{\em 11}, 608--639.
+
+\bibitem[\protect\citeauthoryear{Taillardat, Foug{\`e}res, Naveau, and {de
+  Fondeville}}{Taillardat et~al.}{2023}]{TaillardatEtAl2023}
+Taillardat, M., A.-L. Foug{\`e}res, P.~Naveau, and R.~{de Fondeville} (2023).
+\newblock Evaluating probabilistic forecasts of extremes using continuous
+  ranked probability score distributions.
+\newblock {\em International Journal of Forecasting\/}~{\em 39}, 1448--1459.
+
+\bibitem[\protect\citeauthoryear{Taillardat, Foug\`eres, Naveau, and
+  Mestre}{Taillardat et~al.}{2019}]{TaillardatFougeresETAL2019}
+Taillardat, M., A.-L. Foug\`eres, P.~Naveau, and O.~Mestre (2019).
+\newblock Forest-based and semiparametric methods for the postprocessing of
+  rainfall ensemble forecasting.
+\newblock {\em Weather and Forecasting\/}~{\em 34}, 617--634.
+
+\bibitem[\protect\citeauthoryear{Tsyplakov}{Tsyplakov}{2011}]{Tsyplakov2011}
+Tsyplakov, A. (2011).
+\newblock Evaluating density forecasts: a comment.
+\newblock Available at SSRN 1907799,
+  \url{https://dx.doi.org/10.2139/ssrn.1907799}.
+
+\bibitem[\protect\citeauthoryear{Tsyplakov}{Tsyplakov}{2014}]{Tsyplakov2014}
+Tsyplakov, A. (2014).
+\newblock Theoretical guidelines for a partially informed forecast examiner.
+\newblock MPRA paper 67333, \url{https://mpra.ub.uni-muenchen.de/67333/}.
+
+\bibitem[\protect\citeauthoryear{Vovk, Gammerman, and Shafer}{Vovk
+  et~al.}{2022}]{VovkEtAl2022}
+Vovk, V., A.~Gammerman, and G.~Shafer (2022).
+\newblock {\em Algorithmic learning in a random world\/} (second ed.),
+  Volume~29.
+\newblock Springer.
+
+\bibitem[\protect\citeauthoryear{Williams, Ferro, and Kwasniok}{Williams
+  et~al.}{2014}]{WilliamsEtAl2014}
+Williams, R., C.~Ferro, and F.~Kwasniok (2014).
+\newblock A comparison of ensemble post-processing methods for extreme events.
+\newblock {\em Quarterly Journal of the Royal Meteorological Society\/}~{\em
+  140}, 1112--1120.
+
+\bibitem[\protect\citeauthoryear{Zamo, Bel, and Mestre}{Zamo
+  et~al.}{2021}]{zamo2021sequential}
+Zamo, M., L.~Bel, and O.~Mestre (2021).
+\newblock Sequential aggregation of probabilistic forecasts --- {A}pplication
+  to wind speed ensemble forecasts.
+\newblock {\em Journal of the Royal Statistical Society Series C: Applied
+  Statistics\/}~{\em 70}, 202--225.
+
+\end{thebibliography}

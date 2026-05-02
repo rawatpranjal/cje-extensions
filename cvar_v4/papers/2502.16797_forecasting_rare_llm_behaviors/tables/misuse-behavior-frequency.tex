@@ -1,0 +1,45 @@
+\begin{table}[h!]
+\centering
+\begin{subtable}[b]{0.3\textwidth}
+    \centering
+    \begin{tabular}{llc}
+    \toprule
+    Method & $m$ & \\
+    \midrule
+     & 100 & 0.841 \\
+     Gumbel-tail & 200 & 0.818 \\
+     (0.800) & 500 & 0.780 \\
+     & 1,000 & \textbf{0.762} \\
+    \midrule
+     & 100 & 3.312 \\
+     Log-normal & 200 & 3.463 \\
+     (3.655) & 500 & 3.801 \\
+     & 1,000 & 4.043 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Individual forecasts}
+\end{subtable}
+\begin{subtable}[b]{0.3\textwidth}
+    \centering
+    \begin{tabular}{llc}
+    \toprule
+    Method & $m$ & \\
+    \midrule
+     & 100 & 0.400 \\
+     Gumbel-tail & 200 & 0.385 \\
+     (0.383) & 500 & 0.376 \\
+     & 1,000 & \textbf{0.371} \\
+    \midrule
+     & 100 & 3.071 \\
+     Log-normal & 200 & 3.198 \\
+     (3.452) & 500 & 3.612 \\
+     & 1,000 & 3.927 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Average forecasts}
+\end{subtable}
+\vspace{-1.5em}
+\caption{Mean absolute log error by method, number of evaluation queries ($m$), and number of deployment queries ($n$) for forecasting misuse behavior frequency.}
+\vspace{-0.5em}
+\label{tab:misuse-behavior-frequency}
+\end{table}

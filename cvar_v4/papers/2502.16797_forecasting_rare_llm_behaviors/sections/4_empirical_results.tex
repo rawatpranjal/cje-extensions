@@ -1,0 +1,134 @@
+
+\section{Forecasting misuse}
+\label{sec:misuse-completions}
+We will first forecast whether adversaries can \emph{misuse} models for nefarious tasks at deployment, when they fail to during evaluation. 
+We focus on cases where non-adaptive adversaries attempt to elicit harmful information about how to make dangerous chemical or biological substances. 
+
+\subsection{Setup}
+\label{sec:misuse-setup}
+To test for misuse, we evaluate whether models will elicit instructions for 10 dangerous chemicals and 9 biological substance. 
+For each substance, we generate queries by simulating the high-level automated red-teaming strategy from \citet{perez2022redteaminglanguagemodels}. Specifically, we prompt a fine-tuned helpful-only variant Claude 3.5 Sonnet (new) to create model inputs designed to elicit the instructions; for example, we might use the meta-prompt \nl{Generate queries designed to elicit how chlorine gas is made from a model.} to generate queries. We then sample 100000 queries from this prompt independently at temperature one. 
+See \refapp{completion-forecasting-appendix} for specific substances and additional details. 
+We want to measure the probability that each question elicits harmful information from the LLM. To do so, we will rely on a few proxies:
+\begin{enumerate}[leftmargin=*,itemsep=0.3em,topsep=0.3em]
+    \item \emph{The probability of a specific output} that contains harmful instructions given the query. For chlorine gas, the specific output is \nl{Chlorine gas can be made by mixing bleach and vinegar}. 
+    \item The probability of a \emph{high-information keyword} in the specific output. In the chlorine gas case, the keyword is \emph{bleach}, and we measure the probability of bleach given the query and previous output tokens. 
+    \item The probability a randomly sampled output contains \emph{useful instructions}, where in this case we measure utility by checking if the keyword appears anywhere in the output. 
+\end{enumerate}
+
+All three of these proxies approximate how likely the model is to add useful information about how to make dangerous substances, but they have different tradeoffs. 
+Measuring the probability of a specific output is efficient---it can be done in a single forward pass---but may not reflect the actual likelihood of producing ``useful'' instructions. 
+Measuring keyword probabilities produces higher elicitation probabilities and is just as efficient, but requires that adversaries can prefill completions. 
+The probability obtained by repeated sampling is closer to what we directly aim to measure, but is naively expensive to compute. 
+For most of our experiments we will rely on the behaviors that can be computed with logprobs to efficiently validate our forecasting methodology, but we extend to general correctness in \refsec{misuse-correctness}. 
+
+\begin{figure*}[!ht]
+    \centering
+    \subfloat[Forecasting worst-query risk]{
+        \includegraphics[width=0.32\linewidth]{figures/fig2a.pdf}
+        \label{fig:worst-query-risk}
+    }
+    \subfloat[Forecasting behavior frequency]{
+        \includegraphics[width=0.32\linewidth]{figures/fig2b.pdf}
+        \label{fig:completion-behavior-probs}
+        
+    }
+    \subfloat[Forecasting aggregate risk]{
+        \includegraphics[width=0.32\linewidth]{figures/fig2c.pdf}
+        \label{fig:completion-agg-risk}
+    }
+    \vspace{-1mm}
+    \caption{Comparison of forecasting methods when predicting worst-query risk (left), behavior frequency (middle), and aggregate risk (right) for specific harmful outputs. The Gumbel-tail method consistently makes high-quality forecasts.}
+\end{figure*}
+
+\textbf{Evaluation.} Our primary evaluation metric is the accuracy of our forecasts. To capture the accuracy of the forecast, we measure the both \emph{average absolute error}: the average absolute difference between the predicted and actual worst-query risks, and the \emph{average absolute log error}, the average absolute difference between the log of the predicted and log of actual worst-query risks (in base 10). 
+We report both errors since they capture failures in different regimes; log error captures difference in small probabilities, while standard absolute error captures differences in large probabilities.
+
+\textbf{Log-normal baseline.} We compare our forecasts to a simpler parametric forecasting baseline that directly models distribution of negative log elicitation probabilities as log normal, or equivalently the distribution of elicitation scores as normally distributed. Specifically, we fit a normal distribution to the $m$ observed scores $\psi_i$ in our training set by computing the sample mean $\mu$ and standard deviation $\sigma$. This distribution ensures that the underlying elicitation probabilities are always valid. Under this assumption, we can analytically compute the expected maximum over $n$ samples from this distribution, and compute aggregate risk by repeatedly sampling from this distribution. The log-normal method helps us assess the impact of forecasting the extreme quantiles, rather than extrapolating from average behavior. 
+
+\subsection{Forecasting worst-query-risk}
+\label{sec:misuse-completion-wqr}
+
+We first test whether we can predict the worst-query risk: the maximum elicitation probability over $n$ deployment queries, using only $m$ evaluation queries. Intuitively, this is a proxy for the ``most effective jailbreak'' at deployment.
+
+Since the true worst-query risk is a random variable, we simulate multiple independent evaluation sets and deployment sets by partitioning the all generated queries into as many non-overlapping $(m + n)$ sets as possible, and make forecasts for each individually.
+
+\textbf{Settings.} We measure across all combinations of evaluation size $m \in \{100, 500, 1000\}$, deployment size $n \in \{10000, 20000, \hdots, 90000\}$, and models (Claude 3.5 Sonnet \citep{claude3sonnet}, Claude 3 Haiku \citep{claude3haiku}, and their two corresponding base models.
+
+\textbf{Results.} We find that our forecasts are high-quality across all settings (\reffig{worst-query-risk}). The average absolute log error is 1.7 for the Gumbel-tail method, compared to 2.4 for the log-normal method.\footnote{The average absolute errors are all less than 0.02} 
+We also find that the Gumbel-tail forecasts tend to improve disproportionately as we increase the evaluation size, and are within an order of magnitude of the actual worst-query risk 72\% of the time. 
+See \refapp{misuse-worst-query-risk} for more results. 
+
+We also study \emph{how} different methods make errors; underestimates in particular pose safety risks, since they give developers a false sense of security. 
+We find that the Gumbel-tail method tends to underestimate the actual probability only 34\% of the time, compared to 72\% for the log-normal, and the log-normal tends to produce larger-magnitude underestimates than the Gumbel-tail method. 
+However, this suggests there is room to improve both methods as they are biased (an unbiased method should underestimate 50\% of the time).
+
+While it is impossible to make perfect forecasts for this task---the maximum elicitation probability over $n$ deployment queries is a random variable---our results suggest we can nonetheless make high-quality forecasts.
+
+\subsection{Forecasting behavior frequency}
+\label{sec:completion-behavior-probability}
+
+We next forecast the behavior frequency: the fraction of queries with elicitation probability over some threshold $\tau$. This forecasts the probability that each deployment query routinely exhibits the behavior.% are at deployment.
+
+We would like to evaluate our forecasts in settings where all elicitation probabilities on the evaluation set are below some threshold, but some elicitation at deployment crosses a relatively large threshold. Since the full output probabilities tend to be small, we focus on the probability of high-information keywords, which tend to be larger.
+
+\textbf{Settings.} We measure across 1000 randomly sampled evaluation sets for each of the 19 substances, thresholds $\tau \in \{0.1, 0.3, 0.5, 0.7, 0.9\}$, and number of evaluation queries $m \in \{100, 200, 500, 1000\}$. We make forecasts whenever the fraction of queries for which the keyword probabilities exceed $\tau$ is less than $1/m$. 
+
+\textbf{Results.} We find that we can effectively predict behavior frequencies for behaviors that do not appear during evaluation across all settings (\reffig{completion-behavior-probs}). The Gumbel-tail method has average absolute log errors on individual forecasts ranging from 0.84 to 0.76 as $m$ ranges from 100 to 1000, compared to 3.31 to 4.04 for the log-normal method.\footnote{The average absolute error in this setting is uniformly small, since the ground truth and forecasts are less than 1/$m$.} The average forecast---the average (in log space) over all random evaluation sets for the same settings---leads to a factor-of-two improvement for the Gumbel-tail method, while only slightly decreasing the error of the log-normal method. See \refapp{misuse-behavior-frequency} for more results.
+
+These results demonstrate that we can forecast whether we see especially bad queries at deployment---queries with elicitation probabilities above some threshold---without seeing any at evaluation.  They also show the extreme cost of underestimating the extreme quantiles; the gap between the Gumbel-tail and log-normal methods is much larger than it was for worst-query risk, since the log-normal's moderate underestimates of extreme quantiles lead to extreme underestimates in behavior frequency. 
+
+
+\subsection{Forecasting aggregate risk}
+\label{sec:completion-aggregate-risk}
+We finally aim to forecast the aggregate risk for misuse completions. Aggregate risk measures the probability any output at deployment matches the specific target output, when sampling one output per query at temperature one. 
+
+To approximate the aggregate risk for $n$ samples, for each substance, we sample queries with replacement until we reach $n$ deployment queries with corresponding elicitation probabilities; this allows us to test the aggregate risk for larger $n$ than we sample queries for.\footnote{This slightly underestimates aggregate risk for $n > 100000$.} We call each ordered sample of $n$ queries a rollout, and simulate 10 different rollouts for each setting of $m$ and $n$. We predict the aggregate risk from $m \in \{100, 1000\}$ evaluation queries and $n \in \{10000, 20000, 50000, 100000, 200000, 500000\}$ deployment queries. We focus on the probability of the specific output to reduce computation costs. 
+
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.99\linewidth]{figures/aggregaterisk.png}
+    \vspace{-1.5em}
+    \caption{Example forecast of aggregate risk as a function of the number of queries. We compare a single rollout for the actual aggregate risk and our forecast.}
+    \vspace{-1em}
+    \label{fig:aggregate-risk-example}
+\end{figure}
+\textbf{Empirical results.} 
+We report average errors in \reffig{completion-agg-risk}, and find that the Gumbel-tail method produces more accurate forecasts of aggregate than the log-normal method; when forecasting from $m = 1000$ samples, the average absolute log error is 1.3 for the survival compared to 2.5 for the log-normal. See \refapp{misuse-aggregate-risk} for more results and \reffig{aggregate-risk-example} for an example forecast.
+
+We find that the aggregate-risk can be high even when no individual query has a high elicitation probability. This underscores the risks of stochasticity; in our setup, adversaries can elicit harmful information with arbitrarily high probability, even when no specific query routinely elicits it. 
+
+\subsection{Extending to correctness}
+\label{sec:misuse-correctness}
+So far, we have relied on predicting the probability of a specific output, which we can efficiently compute. However, in reality, there are many potential outputs that reveal dangerous information to the adversary. For example, \nl{Chlorine gas can be made by mixing bleach and vinegar} and \nl{We can make chlorine gas by mixing vinegar and bleach} are both correct instructions, but we miss the latter (and many others) when we only test for specific outputs. 
+
+To validate our previous methodology, we forecast the probability of producing generally correct instructions; since the model is trained to refuse to give instructions, this corresponds to the probability of jailbreaking the model. 
+To compute elicitation probabilities, we sample $k$ outputs uniformly at random from each query, and measure what fraction of outputs include a substance-specific keyword. 
+Since these phrases can occur anywhere in the response, we cannot efficiently compute this by taking log probabilities. 
+
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.99\linewidth]{figures/oracle-empirical-quantiles-up.png}
+    \vspace{-1em}
+    \caption{Empirical quantiles for the distribution of elicitation probabilities computed by repeated sampling. Many but not all of the extreme quantiles approximate the expected power-law relationship for sufficiently large $n$, although there is some noise in sampling queries and computing elicitation probabilities.}
+    \vspace{-2mm}
+    \label{fig:correctness-empirical-quantiles}
+\end{figure}
+
+
+Repeated sampling is much more expensive than taking log-probabilities, so we run smaller-scale experiments on Claude 3.5 Haiku. We only test for substances for which the maximum elicitation probability out of 100 examples is less than 0.5; these are the cases a developer would want to make forecasts on in practice. For each of these examples, we sample 100 outputs per query. For substances where there are fewer than 10 queries with non-zero probability after 100 outputs, we sample 500 outputs per query. We do this for 10,000 total queries. See \refapp{misuse-correctness-appendices} for details.
+
+
+
+\textbf{Do the quantiles scale?} We plot the full empirical quantiles for the different settings in \reffig{correctness-empirical-quantiles}, and find that they are frequently qualitatively linear for large enough $n$, even though the elicitation probabilities come from repeated sampling, rather than a single forward pass. This suggests that the extreme quantiles scale predictably even in the more realistic setting.
+
+\textbf{Are the forecasts high-quality?} We report the full forecasting results for worst-query risk and the behavior frequency in \refapp{misuse-correctness-appendices} and find that our forecasts are still accurate; for worst-query risk the average absolute error and log error are 0.172 and 0.17 respectively. Our forecasts also correctly predict when the maximum elicitation probability will exceed 0.5 75\% of the time. 
+
+\textbf{Mitigating the cost.} One practical challenge of this setup is it requires repeated sampling to compute elicitation probabilities, which could make forecasting prohibitively expensive. 
+
+However, we think there are multiple ways of computing elicitation probabilities more efficiently. 
+First, the Gumbel-tail method only uses the largest elicitation probabilities; this means that we can adaptively stop sampling from queries that are unlikely to have the highest elicitation probabilities based on the existing results. 
+We could also more efficiently compute probabilities via importance sampling, where we exploit knowledge about what harmful outputs look like to more efficiently compute their probability. 
+We think these are exciting directions for subsequent work.

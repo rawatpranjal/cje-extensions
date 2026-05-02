@@ -35,7 +35,7 @@ from .prompts import load_prompts
 DATA_DIR = Path(__file__).parent / "data"
 RESPONSES_DIR = DATA_DIR / "responses"
 
-DEFAULT_MAX_COMPLETION_TOKENS = 800
+DEFAULT_MAX_COMPLETION_TOKENS = 4096  # was 800; raised to align with CJE App. impl. (no truncation in spirit). Observed 95th percentile is ~600 tokens; 4096 is effectively unbounded for HealthBench medical responses while bounding worst-case cost.
 
 
 def _max_tokens_param(model: str) -> str:
@@ -46,7 +46,27 @@ def _max_tokens_param(model: str) -> str:
     return "max_tokens"
 
 
-def _client() -> OpenAI:
+FIREWORKS_BASE_URL = "https://api.fireworks.ai/inference/v1"
+FIREWORKS_MODEL_PREFIX = "accounts/fireworks/"
+
+
+def _is_fireworks_model(model: str) -> bool:
+    return model.startswith(FIREWORKS_MODEL_PREFIX)
+
+
+def _client(model: str | None = None) -> OpenAI:
+    """Return an OpenAI-compatible client. For Fireworks-hosted Llama policies
+    (model id starts with `accounts/fireworks/`), point the client at the
+    Fireworks base URL using the FIREWORKS_API_KEY env var. Otherwise use
+    the OpenAI default."""
+    if model is not None and _is_fireworks_model(model):
+        key = os.environ.get("FIREWORKS_API_KEY")
+        if not key:
+            raise RuntimeError(
+                "FIREWORKS_API_KEY not set in environment (required for "
+                f"{model!r} via Fireworks AI)."
+            )
+        return OpenAI(api_key=key, base_url=FIREWORKS_BASE_URL)
     if not os.environ.get("OPENAI_API_KEY"):
         raise RuntimeError("OPENAI_API_KEY not set in environment")
     return OpenAI()
@@ -153,7 +173,7 @@ def generate_policy_sync(policy_name: str, limit: int | None = None,
     if not todo:
         return out_path
 
-    client = _client()
+    client = _client(policy.model)
     total_in = total_out = total_cached = 0
     t0 = time.time()
     with out_path.open("a") as f:
@@ -281,7 +301,7 @@ def generate_policy_batch(policy_name: str, limit: int | None = None,
     if failed_ids:
         if verbose:
             print(f"  [retry-sync] {len(failed_ids)} failed rows", flush=True)
-        client = _client()
+        client = _client(policy.model)
         with out_path.open("a") as f:
             for pid in failed_ids:
                 row = prompts_by_id.get(pid)
@@ -433,7 +453,7 @@ def generate_all_megabatch(limit: int | None = None, verbose: bool = True,
         if failed_total:
             if verbose:
                 print(f"  [retry-sync:{model}] {failed_total} failed rows", flush=True)
-            client = _client()
+            client = _client(model)
             for pol, agg in per_policy_usage.items():
                 if not agg["fails"]:
                     continue

@@ -41,7 +41,8 @@ from .cost_ledger import CostLedger
 from .policies import (
     JUDGE_CHEAP_MODEL,
     JUDGE_ORACLE_MODEL,
-    JUDGE_TEMPERATURE,
+    JUDGE_CHEAP_TEMPERATURE,
+    JUDGE_ORACLE_TEMPERATURE,
     JUDGE_SEED,
     POLICIES,
 )
@@ -101,6 +102,14 @@ def _model_for_kind(kind: str) -> str:
     raise ValueError(f"kind must be 'cheap' or 'oracle', got {kind!r}")
 
 
+def _temperature_for_kind(kind: str) -> float:
+    if kind == "cheap":
+        return JUDGE_CHEAP_TEMPERATURE
+    if kind == "oracle":
+        return JUDGE_ORACLE_TEMPERATURE
+    raise ValueError(f"kind must be 'cheap' or 'oracle', got {kind!r}")
+
+
 def _max_reqs_per_batch_for_model(model: str) -> int:
     """OpenAI Batch API enforces a per-model enqueued-token cap. At ~700 tokens
     per grade request, the cap translates to a max chunk size:
@@ -117,7 +126,8 @@ def _parse_yn(raw: str) -> str:
     return m.group(0) if m else "?"
 
 
-def _build_grade_body(model: str, prompt: str, response: str, criterion: str) -> dict:
+def _build_grade_body(model: str, prompt: str, response: str, criterion: str,
+                      kind: str = "cheap") -> dict:
     user_msg = GRADER_USER_TEMPLATE.format(
         prompt=prompt,
         response=response[:MAX_RESPONSE_CHARS],
@@ -129,7 +139,7 @@ def _build_grade_body(model: str, prompt: str, response: str, criterion: str) ->
             {"role": "system", "content": GRADER_SYSTEM_PROMPT},
             {"role": "user", "content": user_msg},
         ],
-        "temperature": JUDGE_TEMPERATURE,
+        "temperature": _temperature_for_kind(kind),
         "seed": JUDGE_SEED,
     }
     body[_max_tokens_param(model)] = GRADER_MAX_COMPLETION_TOKENS
@@ -137,11 +147,11 @@ def _build_grade_body(model: str, prompt: str, response: str, criterion: str) ->
 
 
 def _grade_one_criterion_sync(client: OpenAI, model: str, prompt: str, response: str,
-                               criterion: str) -> tuple[str, dict]:
+                               criterion: str, kind: str = "cheap") -> tuple[str, dict]:
     last_err: Exception | None = None
     for attempt in range(5):
         try:
-            r = client.chat.completions.create(**_build_grade_body(model, prompt, response, criterion))
+            r = client.chat.completions.create(**_build_grade_body(model, prompt, response, criterion, kind=kind))
             raw = (r.choices[0].message.content or "").strip()
             usage = {
                 "input_tokens": r.usage.prompt_tokens if r.usage else 0,
@@ -355,6 +365,7 @@ def grade_policy_sync(policy_name: str, kind: str = "cheap", verbose: bool = Tru
                     verdict, usage = _grade_one_criterion_sync(
                         client, model, prompt_record["prompt_text"],
                         response_record["response"], criterion_text,
+                        kind=kind,
                     )
                 except Exception as e:
                     if verbose:
@@ -455,6 +466,7 @@ def grade_policy_batch(policy_name: str, kind: str = "cheap", verbose: bool = Tr
             body = _build_grade_body(
                 model, prompt_record["prompt_text"],
                 response_record["response"], criterion_text,
+                kind=kind,
             )
             reqs.append(BatchRequest(custom_id=cid, body=body))
         batch_id = submit_batch(reqs, sp, model=model)
@@ -529,6 +541,7 @@ def grade_policy_batch(policy_name: str, kind: str = "cheap", verbose: bool = Tr
                     verdict, usage = _grade_one_criterion_sync(
                         client, model, prompt_record["prompt_text"],
                         response_record["response"], criterion_text,
+                        kind=kind,
                     )
                 except Exception as e:
                     if verbose:
@@ -587,6 +600,7 @@ def _grade_one_kind(
             body = _build_grade_body(
                 model, prompt_record["prompt_text"],
                 response_record["response"], criterion_text,
+                kind=kind,
             )
             reqs.append(BatchRequest(custom_id=cid, body=body))
     if not reqs:
@@ -770,6 +784,7 @@ def grade_all_megabatch(kinds: list[str] = ("cheap", "oracle"), verbose: bool = 
                         verdict, usage = _grade_one_criterion_sync(
                             client, agg["model"], prompt_record["prompt_text"],
                             response_record["response"], criterion_text,
+                            kind=kind,
                         )
                     except Exception as e:
                         if verbose:

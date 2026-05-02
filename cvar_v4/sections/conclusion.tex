@@ -1,5 +1,15 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-CVaR-CJE reframes LLM judge evaluation around the failures that matter in deployment. The method keeps the CJE recipe--calibrate, evaluate, audit--but replaces mean outcomes with a lower-tail stop-loss objective. The audit is not optional: a rejected policy is a refusal to make a calibrated level claim. The next step is empirical, not rhetorical: build Arena-Tail, pre-register the alphas and gate, and show that the method separates policies whose means are similar but whose failures are not.
-
+CVaR-CJE makes lower-tail LLM evaluation affordable by combining a cheap
+judge with a small auditable oracle slice. The recipe matches mean-CJE
+(calibrate, evaluate, audit), but the calibrator predicts the stop-loss
+$(t-\Y)_+$ instead of $\Y$, the audit checks two moments instead of one,
+and at $\alpha = 1$ the entire machinery collapses back to the mean
+estimand exactly. The audit is the safety mechanism. When the calibrator
+does not transport to a target policy, the method refuses to report a
+$\CVaR$ level rather than reporting one that is wrong. On HealthBench at
+$n_0 = 500$, that refusal correctly fires on the one adversarial policy
+at the one tail level where the calibrator's transport actually breaks.
+Code, data, and the regression test enforcing the $\alpha = 1$ identity
+are released alongside this paper.

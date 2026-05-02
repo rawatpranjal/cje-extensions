@@ -26,6 +26,17 @@ PRICES: dict[str, dict[str, float]] = {
     "gpt-4o-mini-2024-07-18":    {"input": 0.15, "output": 0.60, "cached_input": 0.075},
     "gpt-4.1":                   {"input": 2.00, "output": 8.00, "cached_input": 1.00},
     "gpt-4.1-2025-04-14":        {"input": 2.00, "output": 8.00, "cached_input": 1.00},
+    # Verbatim-CJE judge stack (arxiv 2512.11150 App. impl.). Rates as of 2026-05-02.
+    # Verify against the OpenAI pricing page before running large jobs.
+    "gpt-4.1-nano":              {"input": 0.10, "output": 0.40, "cached_input": 0.05},
+    "gpt-4.1-nano-2025-04-14":   {"input": 0.10, "output": 0.40, "cached_input": 0.05},
+    "gpt-5":                     {"input": 1.25, "output": 10.00, "cached_input": 0.625},
+    "gpt-5-2025-08-07":          {"input": 1.25, "output": 10.00, "cached_input": 0.625},
+    # Llama policies via Fireworks AI (verbatim CJE Arena policy stack).
+    # Fireworks rates (2026-05-02). Cached-input not offered by Fireworks — set
+    # equal to input rate so cost_usd doesn't double-count if cached_tokens > 0.
+    "accounts/fireworks/models/llama-v3p3-70b-instruct":  {"input": 0.90, "output": 0.90, "cached_input": 0.90},
+    "accounts/fireworks/models/llama-v3p1-405b-instruct": {"input": 3.00, "output": 3.00, "cached_input": 3.00},
 }
 
 BATCH_DISCOUNT: float = 0.5

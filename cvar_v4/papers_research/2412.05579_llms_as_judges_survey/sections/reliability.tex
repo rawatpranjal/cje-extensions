@@ -1,0 +1,257 @@
+\section{Limitation}
+\label{sec:Limitation}
+Although the application of LLMs-as-judges holds great promise, there are still several significant limitations that can affect their effectiveness, reliability, and fairness~\cite{thakur2024judging,stureborg2024large}.
+These limitations arise from the inherent characteristics of LLMs, including their reliance on large-scale data for training and token-based decoding mechanisms.
+In this section, we will primarily explore the limitations in the following three key aspets: \textbf{Biases} (\S\ref{sec:biases}), \textbf{Adversarial Attacks} (\S\ref{sec:attacks}), and \textbf{Inherent Weaknesses} (\S\ref{sec:weaknesses}).
+
+
+\begin{table*}[t]
+\caption{Overview of different biases.}
+\begin{tabular}{ll}
+\hline
+\textbf{Bias}                   & \textbf{Description}                                                                                                                                                                                                        \\ \hline \hline
+\multicolumn{2}{l}{\textbf{Presentation-Related Biases} (\S\ref{sec:presentationbiases})}                                                                                                                                                                                             \\ \hline 
+\rowcolor{mygray}
+Position Bias          & \begin{tabular}[c]{@{\ }p{0.7\textwidth}@{\ }}A tendency to make judgments based on the position of the input, where responses earlier or later in the  sequence are favored over those in other positions.\end{tabular}         \\
+Verbosity Bias         & \begin{tabular}[c]{@{\ }p{0.7\textwidth}@{\ }}A tendency to favor longer responses, potentially equating length with quality, regardless of the content’s actual value.\end{tabular}                                               \\ \hline \hline
+\multicolumn{2}{l}{\textbf{Social-Related Biases} (\S\ref{sec:socialbiases})}                                                                                                                                                                                                   \\ \hline
+\rowcolor{mygray}
+Authority Bias         & \begin{tabular}[c]{@{\ }p{0.7\textwidth}@{\ }}A tendency to be swayed by references to authoritative sources, such as books, websites, or famous individuals.\end{tabular}                                                         \\
+Bandwagon-Effect Bias  & \begin{tabular}[c]{@{\ }p{0.7\textwidth}@{\ }}A tendency to align with majority opinions, where LLMs-as-judges favor prevailing views over objectively assessing the content.\end{tabular}                                      \\
+\rowcolor{mygray}
+Compassion-Fade Bias   & \begin{tabular}[c]{@{\ }p{0.7\textwidth}@{\ }}A tendency to be influenced by anonymization strategies, such as the removal of model names, affecting the judgments of LLMs.\end{tabular}                                        \\
+Diversity Bias         & \begin{tabular}[c]{@{\ }p{0.7\textwidth}@{\ }}A tendency to shift judgments based on identity-related markers, such as gender, ethnicity, or other social categorizations.\end{tabular}                                            \\ \hline \hline
+\multicolumn{2}{l}{\textbf{Content-Related Biases} (\S\ref{sec:contentbiases})}                                                                                                                                                                                                  \\ \hline
+\rowcolor{mygray}
+Sentiment Bias         & \begin{tabular}[c]{@{\ }p{0.7\textwidth}@{\ }}A tendency to favor responses with specific emotional tones, such as cheerful or neutral, over negative or fearful ones.\end{tabular}                                                \\
+Token Bias             & \begin{tabular}[c]{@{\ }p{0.7\textwidth}@{\ }}A tendency of LLMs to favor more frequent or prominent tokens during pre-training, leading to skewed judgments.\end{tabular}                                                         \\
+\rowcolor{mygray}
+Context Bias           & \begin{tabular}[c]{@{\ }p{0.7\textwidth}@{\ }}A tendency of LLMs to produce biased judgments influenced by contextual examples or cultural contexts, potentially leading to biased or culturally insensitive outcomes.\end{tabular} \\ \hline \hline 
+\multicolumn{2}{l}{\textbf{Cognitive-Related Biases} (\S\ref{sec:cognitivebiases})}                                                                                                                                                                                                \\ \hline
+\rowcolor{mygray}
+Overconfidence Bias    & \begin{tabular}[c]{@{\ }p{0.7\textwidth}@{\ }}A tendency to exhibit inflated confidence in evaluation judgments, leading to overly assertive but potentially incorrect conclusions\end{tabular}                                 \\
+Self-Enhancement Bias  & \begin{tabular}[c]{@{\ }p{0.7\textwidth}@{\ }}A tendency to favor outputs generated by the same model acting as a judge, undermining objectivity.\end{tabular}                                                                     \\
+\rowcolor{mygray}
+Refinement-Aware Bias  & \begin{tabular}[c]{@{\ }p{0.7\textwidth}@{\ }}A tendency for scoring variations influenced by whether an answer is original, refined, or accompanied by conversation history during evaluation.\end{tabular}                    \\
+Distraction Bias       & \begin{tabular}[c]{@{\ }p{0.7\textwidth}@{\ }}A tendency to be influenced by irrelevant content, which can detract from the quality of judgments by diverting attention from critical elements.\end{tabular}                    \\
+\rowcolor{mygray}
+Fallacy-Oversight Bias & \begin{tabular}[c]{@{\ }p{0.7\textwidth}@{\ }}A tendency to overlook logical fallacies, which can undermine the accuracy of judgments.\end{tabular}                                                                                \\ \hline
+\end{tabular}
+\label{tab:biases}
+\end{table*}
+
+
+
+\subsection{Biases}
+\label{sec:biases}
+Essentially, LLMs are trained on vast amounts of data gathered from diverse sources. While this allows them to generate human-like responses, it also makes them inherit to the biases inherent in the training data. 
+These biases are presented in various forms, which can significantly affect evaluation results, compromising the fairness and accuracy of decisions.
+
+
+To gain a deeper understanding of the impact of bias, we have provided a detailed classification of bias. As shown in Table~\ref{tab:biases}, the biases exhibited by LLMs-as-judges can be systematically categorized into four groups based on their underlying causes and manifestations: \textbf{Presentation-Related Biases} (\S\ref{sec:presentationbiases}), \textbf{Social-Related Biases} (\S\ref{sec:socialbiases}), \textbf{Content-Related Biases} (\S\ref{sec:contentbiases}), and \textbf{Cognitive-Related Biases} (\S\ref{sec:cognitivebiases}). In this section, we provide a detailed overview of the definition, impact, and solutions to these biases.
+
+
+
+
+
+
+
+
+
+\subsubsection{Presentation-Related Biases}  
+\label{sec:presentationbiases}
+Presentation-Related Biases refer to tendencies in LLMs where judgments are influenced more by the structure or presentation of information than by its substantive content. 
+For example, models may prioritize certain formats, styles, or patterns of expression, which can affect the quality of the input. Next, we introduce two biases related to Presentation-Related Biases: position bias and verbosity bias.
+
+
+
+\noindent\textbf{Position bias} is a prevalent issue not only in the context of LLMs-as-judges but also in human decision-making and across various machine learning domains.
+Research has shown that humans are often influenced by the order of options presented to them, leading to biased decision that can impact fairness and objectivity~\cite{shi2024judging,blunch1984position,raghubir2006center,zhao2024measuring}. 
+Similarly, in other ML applications, models trained on ordered data exhibit a positional preference, skewing outcomes based on the sequence of input~\cite{ko2020look,wang2018position}. 
+Position bias in LLMs-as-judges refers to the tendency of LLMs to favor certain answers based on their position in the response set. 
+For example, when presented with multiple answer choices or compared pairwise, LLMs disproportionately select options that appear earlier in the list, leading to skewed judgment. 
+
+Recent studies have further examined position bias in the LLMs-as-judges context. 
+For instance, a framework~\cite{llmsjuding2024openreview} is proposed to investigate position bias in pairwise comparisons, introducing metrics such as repetition stability, position consistency, and preference fairness to better understand how positions affect LLM judgments. 
+Another study~\cite{zheng2023judging} explores the limitations of LLMs-as-judges, including position biases, and verifies agreement between LLM judgments and human preferences across multiple benchmarks. 
+These findings underscore the need for robust debiasing strategies to enhance the fairness and reliableness of LLMs-as-judges.
+
+Several methods are proposed to mitigate position bias. 
+The naive approach involves excluding inconsistent judgments by swapping the positions of the candidate answers and verifying whether the LLM's judgment remains consistent. Inconsistent judgments are then filtered out~\cite{zheng2023judging,chen2024humans,wang2023large,li2023generative,zheng2023large,li2024calibraeval}.
+The \textbf{swap-based} debiasing method can be further divided into two categories: \textit{score-based} and \textit{comparison-based}. Both approaches start by swapping the positions of the candidate answers. The difference lies in how the final judgment is determined. In the score-based method, each candidate answer is scored, and the average score across multiple swaps is taken as the final score for that answer~\cite{zheng2023judging,wang2023large,li2023generative,raina2024llm,hou2024large}.In contrast, the comparison-based method considers the outcome a tie if the LLM's judgments are inconsistent after swapping.
+The conclusion of a tie is based on an analysis of the quality gap between answers. The larger the quality gap between candidate answers, the smaller the impact of position bias, resulting in higher consistency in predictions after swapping their positions, which is detailed in a recently study~\cite{llmsjuding2024openreview}.
+In addition to the aforementioned methods, PORTIA~\cite{li2023split} employs an \textbf{alignment-based} approach that simulates human comparison strategies. It divides each answer into multiple segments, aligns similar content across candidate answers, and then merges these aligned segments into a single prompt for the LLM to evaluate. By presenting content in a balanced and aligned format, PORTIA enables the model to make more consistent and unbiased judgments, focusing on answer quality rather than order. This approach is effective across various LLMs, significantly improving evaluation consistency and reducing costs.
+Further efforts to enhance LLM-based evaluations have explored new techniques to address position bias and other judgment inconsistencies. \textbf{Discussion-based} methods~\cite{li2023prd,khan2024debating} incorporate peer ranking and discussion to improve evaluation accuracy. Instead of relying solely on a single LLM’s judgment, these methods prompt multiple LLMs to compare answers and discuss preferences to reach a consensus, thereby reducing individual positional bias and enhancing alignment with human judgments. This collaborative evaluation approach represents a promising direction for mitigating biases inherent in LLM assessments.
+
+
+\noindent\textbf{Verbosity bias}~\cite{khan2024debating,chen2024humans,zheng2023judging,nasrabadi2024juree} refers to the tendency of a judge, whether human or model-based, to favor lengthier responses over shorter ones, irrespective of the actual content quality or relevance. This bias may cause LLMs prefer longer responses, even if the extended content does not contribute substantively to the correctness of the judgments. 
+
+To mitigate verbosity bias in LLMs-as-judges, several approaches~\cite{khan2024debating,ye2024justice,ye2024beyond} have been proposed. One approach~\cite{khan2024debating} employs persuasive debating techniques, structuring responses to prioritize substance. By training LLMs-as-judges to engage in a debate-like format, this method encourages clarity and relevance, reducing the tendency to favor verbose arguments that lack substantive content. Additionally, the CALM~\cite{ye2024justice} framework introduces controlled modifications to systematically assess and quantify verbosity’s impact on judgments, using automated perturbations to evaluate robustness against verbosity bias and refine LLMs-as-judges toward objective and concise assessments. Complementing these methods, the contrastive judgments (Con-J)~\cite{ye2024beyond} approach trains models with structured rationale pairs instead of scalar scores, encouraging LLMs-as-judges to focus on well-reasoned content rather than associating verbosity with quality. 
+
+
+
+
+\subsubsection{Social-Related Biases} 
+\label{sec:socialbiases}
+Social-Related Biases refer to biases in language models that resemble social phenomena~\cite{zhao2023mind}. These biases may manifest when models are swayed by references to authoritative sources (Authority Bias), align with prevailing majority opinions without independent evaluation (Bandwagon-Effect Bias), or adjust their judgments based on anonymization strategies or identity markers such as gender and ethnicity (Compassion-Fade Bias and Diversity Bias). Next, we present the details of these biases.
+
+
+\noindent\textbf{Authority bias}~\cite{chen2024humans,ye2024justice} in the context of LLMs-as-judges refers to the tendency of the model to attribute greater credibility to statements associated with authoritative references, regardless of the actual evidence supporting them. For instance, LLMs-as-judges may favor responses that include references to well-known sources or experts, even when the content is inaccurate or irrelevant. This bias highlights a critical vulnerability where the appearance of authority can unduly influence judgment outcomes.
+
+    While specific solutions to mitigate authority bias in LLMs-as-judges are still under active exploration, potential approaches include using retrieval-augmented generation (RAG) techniques to verify the validity of authoritative claims against external knowledge bases. This approach allows the model to cross-check referenced information and ensure its alignment with factual evidence. Another possible strategy is to design prompts that explicitly emphasize semantic accuracy and relevance over perceived authority. Further research is needed to validate these approaches and develop robust methods for addressing authority bias effectively in evaluative contexts.    
+
+\noindent\textbf{Bandwagon-effect bias}~\cite{koo2023benchmarking,ye2024justice}  in the context of LLMs-as-judges refers to the tendency of the model to align its judgments with the majority opinion or prevailing trends, regardless of the actual quality or correctness of the evaluated content. For instance, when multiple responses are presented with indications of popular support or consensus, LLMs-as-judges may disproportionately favor these responses over alternatives, even when the consensus is flawed or biased. This bias reflects a susceptibility to groupthink dynamics, undermining the objectivity and fairness of the judgment process.
+
+    Solutions to address bandwagon-effect bias include designing evaluation prompts that anonymize information about majority opinions, ensuring that judgments are based solely on the intrinsic quality of the responses rather than external indicators of popularity. Further exploration of debiasing strategies tailored to specific evaluative contexts is necessary to mitigate the impact of bandwagon-effect bias effectively.
+    
+    
+\noindent\textbf{Compassion-fade bias}~\cite{koo2023benchmarking,ye2024justice} occurs when the anonymity of model names or the absence of identifiable contextual cues affects the judgments made by LLMs-as-judges. For example, anonymizing model names or using neutral identifiers may lead to shifts in evaluation outcomes. This bias highlights how the lack of personalized or contextual information can diminish the model’s sensitivity to equitable considerations.
+
+    To mitigate compassion-fade bias, it is important to design evaluation prompts that standardize judgment criteria, ensuring that assessments remain consistent regardless of whether identifying details are present. Additionally, fairness-driven frameworks that explicitly address anonymization effects can further enhance the reliability of LLMs-as-judges.
+
+\noindent\textbf{Diversity bias}~\cite{chen2024humans,ye2024justice} in the context of LLMs-as-judges refers to the model’s tendency to exhibit judgment shifts based on identity-related markers, such as gender, ethnicity, religion, or other social categorizations. For example, LLMs-as-judges might favor responses associated with certain demographic groups over others, leading to unfair or skewed judgments. This bias reflects the model’s susceptibility to implicit stereotypes or unequal treatment of diverse identities present in the training data.
+Continued efforts to address this bias are crucial for ensuring fairness and inclusivity in the judgments conducted by LLMs-as-judges.
+
+
+
+\subsubsection{Content-Related Biases}
+\label{sec:contentbiases}
+Content-Related Biases involve preferences or skewed judgments based on the content’s characteristics. An LLM might favor responses with certain emotional tones (Sentiment Bias), prefer frequently occurring words from its training data (Token Bias), or be influenced by specific cultural or domain contexts leading to insensitive outcomes (Context Bias). We present the details of these biases in the following.
+
+
+
+
+\noindent\textbf{Sentiment bias}~\cite{ye2024justice} in the context of LLMs-as-judges refers to the tendency of the model to favor responses that exhibit certain emotional tones, such as positive or neutral sentiments, over others, regardless of their actual content quality or relevance. For instance, LLMs-as-judges may disproportionately reward responses that are cheerful or optimistic while penalizing those that are negative or emotionally intense, even if the latter are more contextually appropriate or accurate.
+
+To address sentiment bias, potential solution is the use of sentiment-neutralizing mechanisms, such as filtering or adjusting responses to remove sentiment-driven influences during evaluation.
+   
+    
+    
+\noindent\textbf{Token Bias}~\cite{jiang2024peek,li2024calibraeval,pezeshkpour2023large,raina2024llm} refers to that LLMs favor certain tokens during the evaluation process. This bias often arises from the model's pre-training data, where more frequently occurring tokens are prioritized over less common ones, regardless of the contextual appropriateness or correctness in judgment.
+
+\noindent\textbf{Contextual Bias} refers to the tendency of LLMs to produce skewed or biased judgments based on the specific context in which they are applied. For instance, models used in healthcare may propagate biases found in medical datasets, potentially influencing diagnoses or treatment recommendations~\cite{poulain2024bias}, while in finance, they might reflect biases in credit scoring or loan approval processes~\cite{zhou2024large}. 
+In addition, the selection of contextual examples may also introduce bias~\cite{zhou2023batch,fei2023mitigating,zhao2021calibrate,han2022prototypical}.
+
+
+
+
+\subsubsection{Cognitive-Related Biases} 
+\label{sec:cognitivebiases}
+Cognitive-Related Biases pertain to the inherent cognitive tendencies of LLMs in processing information. This includes exhibiting unwarranted confidence in judgments (Overconfidence Bias), favoring outputs generated by themselves (Self-Enhancement Bias), varying scores based on whether an answer is original or refined (Refinement-Aware Bias), being distracted by irrelevant information (Distraction Bias), or overlooking logical fallacies (Fallacy-Oversight Bias). The details of these biases are presented in the following.
+
+
+\noindent\textbf{Overconfidence bias}~\cite{khan2024debating,jung2024trust} in the context of LLMs-as-judges refers to the tendency of models to exhibit an inflated level of confidence in their judgments, often resulting in overly assertive evaluations that may not accurately reflect the true reliability of the answer. This bias is particularly concerning in evaluative contexts, as it can lead LLMs-as-judges to overstate the correctness of certain outputs, compromising the objectivity and dependability of assessments.
+
+To address Overconfidence bias, researchers have proposed several methods.
+Cascaded Selective Evaluation~\cite{jung2024trust} addresses overconfidence by using Simulated Annotators to estimate confidence. This involves simulating diverse annotator preferences through in-context learning, which provides a more realistic measure of the likelihood that a human would agree with the LLM’s judgment. By analyzing multiple simulated responses, this method offers a confidence metric that reflects human-like disagreement, which helps to avoid overconfidence bias. 
+Another method uses an adversarial debate mechanism, where two LLMs argue for different outcomes. Through structured debate rounds, each model is required to substantiate its position, which can reveal overconfidence by prompting self-reflection and critical analysis. This approach has been shown to improve truthfulness and reduces overconfidence by fostering a balanced evaluation, aligning LLMs' judgments more closely with accurate and reasoned conclusions.
+
+\noindent\textbf{Self-enhancement bias} is the tendency to favor their own outputs~\cite{liu2023g,zheng2023judging,li2023prd,liu2023g,panickssery2024llm}. 
+This concept of self-enhancement is drawn from social psychology, as discussed in Brown’s work in social cognition literature~\cite{brown1986evaluations}.
+In the context of LLMs-as-judges, this bias manifests when a LLM evaluates its own generated outputs more favorably than those of other LLMs. Such bias is particularly concerning in applications involving self-assessment or feedback generation, as it compromises the objectivity of the LLMs-as-judges.
+
+To address self-enhancement bias, PRD~\cite{li2023prd} introduces Peer Rank (PR) and Peer Discussion (PD) mechanisms. PR mitigates bias by using multiple LLMs as reviewers, each assessing pairwise comparisons between responses from different LLMs. By aggregating evaluations from several peer LLMs and weighting their preferences based on consistency with human judgments, PR reduces the impact of any single LLM’s self-enhancement bias, as more reliable reviewers have a greater influence. PD further alleviates self-enhancement bias by enabling two LLMs to engage in a dialogue to reach a mutual agreement on their preference between two answers. This multi-turn discussion encourages models to re-evaluate their initial judgments and consider alternative perspectives, focusing on content quality rather than self-generated responses. By promoting collaborative assessment and accountability, PR and PD effectively mitigate self-enhancement bias, aligning evaluations more closely with human standards.
+Recently, an automated bias quantification framework named CALM~\cite{ye2024justice} has been proposed to systematically evaluate biases in LLMs-as-judges. CALM’s findings suggest that one effective way to reduce self-enhancement bias is to avoid using the same model to both generate and judge answers, thereby ensuring that evaluation remains more impartial.
+Moreover, the Reference-Guided Verdict method~\cite{badshah2024reference} further addresses self-enhancement bias by providing a definitive gold-standard answer as a reference for LLM judges. This reference anchor helps align judgments to objective criteria, even when an LLM evaluates its own output, thus reducing the tendency to favor self-generated answers. Through structured prompts, this method has been shown to enhance reliability and mitigate variability in judgments, especially when multiple LLMs are used collectively. The integration of multiple LLMs, trained on varied datasets or fine-tuned with different parameters, has proven instrumental in producing less biased, more balanced evaluations, highlighting the effectiveness of model diversity and reference-guided criteria in combating self-enhancement bias.
+
+\noindent\textbf{Refinement-aware bias}~\cite{ye2024justice} in the context of LLMs-as-judges refers to the tendency of the model to evaluate responses differently based on whether they are original, refined, or include revision history. For instance, an answer that has been iteratively refined may be judged more favorably than an original response, even if the refinement process does not significantly improve the content quality. Similarly, responses that explicitly present their improvement process or revision rationale might receive undue preference, skewing the evaluation outcomes.
+
+While research on refinement-aware bias in the specific context of LLMs-as-judges remains limited, solution~\cite{xu2024pride} developed for general LLMs offer valuable insights. One potential solution involves incorporating external feedback mechanisms during judgment, as it introduces an objective and independent judgment mechanism that is not influenced by the LLM’s internal iterations or self-perception.
+
+\noindent\textbf{Distraction bias} in the context of LLMs-as-judges refers to the model’s tendency to be influenced by irrelevant or unimportant details when making judgments. For instance, introducing unrelated information, such as a meaningless statement like “System Star likes to eat oranges and apples,”~\cite{ye2024justice,koo2023benchmarking,shi2023large} can significantly alter the model’s evaluation outcomes. This bias highlights the vulnerability of LLMs to attentional diversion caused by inconsequential content.
+
+While existing studies~\cite{ye2024justice,koo2023benchmarking} have analyzed and discussed distraction bias, effective strategies to mitigate this issue in LLMs-as-judges remain underexplored. Potential solutions could involve input sanitization to preprocess and remove irrelevant information before presenting it to the model, ensuring that evaluations focus solely on relevant content. Additionally, explicit prompting with clear and strict guidelines could be designed to direct the LLM to evaluate only task-related aspects, reducing its susceptibility to distractions. Further research is needed to develop and validate robust methods that can systematically address distraction bias in the context of LLMs-as-judges.
+
+
+
+\noindent\textbf{Fallacy-oversight bias}~\cite{chen2024humans,ye2024justice} refers to the tendency of LLMs-as-judges to overlook logical fallacies or inconsistencies within the evaluated responses. For instance, when presented with arguments or answers containing reasoning errors—such as circular reasoning, false dilemmas, or strawman arguments—LLMs-as-judges may fail to identify these issues and treat the responses as valid, potentially compromising the integrity of their evaluations. 
+
+
+
+
+
+
+In summary, while LLMs-as-judges have garnered significant attention for their effectiveness in diverse scenarios, the exploration of various biases that impact their performance remains relatively underdeveloped. 
+% Various biases, such as bandwagon-effect bias, fallacy-oversight bias, and refinement-aware bias, have been identified, yet comprehensive studies and mitigation strategies specific to the LLMs-as-judges context are still lacking. 
+These biases pose significant challenges to ensuring fair, objective, and reliable judgments across tasks, particularly in various applications where the implications of biased judgments can be severe.
+Future research must focus on systematically identifying, quantifying, and addressing these biases within the LLMs-as-judges framework. 
+Drawing from methodologies developed for general LLMs, such as external feedback mechanisms, balanced datasets, and fairness-aware prompting, could offer initial insights. However, domain-specific challenges require tailored solutions that align with the unique demands of LLMs-as-judges. 
+
+
+% Addressing these biases is critical to advancing the reliability and trustworthiness of LLMs-as-judges, paving the way for their broader adoption in practical.
+\subsection{Adversarial Attacks}
+\label{sec:attacks}
+Adversarial attacks involve carefully crafted inputs designed to deceive the model into producing incorrect or unintended outputs. For LLM judges, attackers may subtly modify the input content, alter the wording of questions, or introduce misleading context to influence the model's evaluation results.
+Researchers have found that for LLMs, even small, seemingly insignificant changes to the input data, such as adding or removing words, changing word order, or introducing ambiguous phrasing, can significantly affect the model's response~\cite{shen2023anything,jiang2023prompt,zou2023universal}. Such attacks can lead to inaccurate ratings or assessments, particularly when evaluating complex or high-risk tasks.
+
+
+In this section, we first review research on adversarial attacks on LLMs within general domains. Then, we specifically focus on adversarial attacks in the context of LLMs-as-judges.
+
+
+
+\subsubsection{Adversarial Attacks on LLMs}
+\label{sec:Adversarial Attacks on LLMs}
+Adversarial attacks on LLMs focus on exploiting vulnerabilities within the general framework of language model functionality. These attacks can be classified into three main categories based on the manipulation level: text-level manipulations, structural and semantic distortions, and optimization-based attacks.
+
+\textbf{Text-Level Manipulations} involve subtle changes to the input text to deceive the model. Character-level perturbations, such as introducing typos, swapping letters, or inserting unnecessary characters, can cause significant changes in predictions despite minimal visible alterations~\cite{ebrahimi2017hotflip,jiang2023prompt}. Sentence-level modifications, such as rearranging phrases, adding irrelevant information, or paraphrasing inputs, further exploit the model’s sensitivity to surface-level changes~\cite{branch2022evaluating,perez2022ignore}.
+
+\textbf{Structural and Semantic Distortions} focus on the syntactic and semantic properties of the input. Syntactic attacks rewrite sentence structures while preserving semantic meaning, targeting the model’s reliance on specific linguistic patterns~\cite{xu2023llm}. Semantic preservation with perturbations modifies critical tokens identified through saliency analysis, ensuring the attack minimally affects meaning but significantly alters predictions. 
+
+\textbf{Optimization-Based Attacks} leverage algorithmic techniques to craft adversarial inputs. Gradient-based methods utilize the model’s gradients to identify and manipulate influential input features, causing substantial shifts in predictions~\cite{sun2020natural,sun2020adv}. Population-based optimization techniques iteratively generate adversarial examples in black-box settings, exploiting the model’s outputs to refine attacks~\cite{lee2022query}. 
+
+These attacks highlight the vulnerabilities in LLMs, demonstrating their susceptibility to subtle manipulations. Studying these adversarial attacks is essential, as it provides insights that can guide the development of robust defense mechanisms, ensuring that LLMs maintain reliability against such manipulations.
+
+
+
+
+\subsubsection{Adversarial Attacks on LLMs-as-judges}
+\label{sec:Adversarial Attacks on LLMs-as-judges}
+Recent studies have unveiled significant vulnerabilities in LLMs-as-judges to adversarial attacks~\cite{zheng2024cheating, doddapaneni2024finding, raina2024llm, shi2024optimization}. 
+Zheng et al.~\cite{zheng2024cheating} and Doddapaneni et al.~\cite{doddapaneni2024finding} demonstrated that automatic benchmarking systems like MT-Bench~\cite{zheng2023judging} can be easily deceived to yield artificially high scores. These findings highlight that malicious inputs can manipulate evaluation metrics, undermining the reliability of such benchmarks.
+
+Building on this, Raina et al.~\cite{raina2024llm} investigated the robustness of LLMs-as-judges against universal adversarial attacks. Their work showed that appending short, carefully crafted phrases to evaluated texts can effortlessly manipulate LLM scores, inflating them to their maximum regardless of the actual quality. Remarkably, these universal attack phrases are transferable across models; phrases optimized on smaller surrogate models (e.g., FlanT5-xl~\cite{chung2024scaling}) can successfully deceive larger models like GPT-3.5 and Llama2~\cite{touvron2023llama}.
+
+Furthermore, Shi et al.~\cite{shi2024optimization} introduced \textit{JudgeDeceiver}, an optimization-based prompt injection attack tailored for the LLMs-as-judges framework. Unlike handcrafted methods, JudgeDeceiver formulates a precise optimization objective to efficiently generate adversarial sequences. These sequences can mislead LLMs-as-judges into selecting biased or incorrect responses among candidate answers, thereby compromising the evaluation process.
+
+Although preliminary studies~\cite{shi2024optimization, raina2024llm} have highlighted the vulnerability of LLMs-as-judges to adversarial manipulations, this field remains largely underexplored. 
+It is imperative to advance our understanding of these weaknesses and devise effective defense strategies. 
+As the use of LLMs-as-judges grows across diverse applications, future research should focus on uncovering new attack methods and strengthening the models against such adversarial threats.
+
+
+
+
+
+\subsection{Inherent Weaknesses}
+\label{sec:weaknesses}
+Despite the remarkable capabilities of LLMs, they possess several inherent weaknesses that can compromise their reliability and robustness in LLMs-as-judges. This subsection discusses key limitations, including issues related to knowledge recency, hallucination, and other domain-specific knowledge gaps~\cite{zhao2023survey}.
+
+\subsubsection{Knowledge Recency}
+\label{sec:Knowledge Recency}
+One significant limitation of LLMs is their inability to access or incorporate up-to-date information reliably. LLMs are generally trained on static datasets that may become outdated over time, limiting their ability to evaluate scenarios that require knowledge of recent events, legislation, or rapidly evolving fields. The most straightforward solution is to retrain the model on new data; however, this approach is resource-intensive and risks catastrophic forgetting~\cite{luo2023empirical}, where previously learned knowledge is overwritten during training.
+This temporal disconnect can lead to judgments based on invalid data, or obsolete practices, compromising their reliability in real-world, time-sensitive applications. Consider a case where LLMs-as-judges are used to evaluate which of two responses from LLMs better answers a prompt about the COVID-19 pandemic. Suppose one response references the WHO guidelines updated timely, while the other relies on outdated 2020 guidelines. If the LLM-as-Judge has not been updated with the latest guidelines, it might erroneously prefer the outdated response, incorrectly deeming it more accurate. This failure to account for recent developments highlights the importance of addressing knowledge recency in LLMs-as-judges.
+
+
+
+Addressing the issue of knowledge recency can involve integrating retrieval-augmented generation (RAG) methods~\cite{gao2023retrieval,lewis2020retrieval}, which enable LLMs to query external, dynamically updated databases or knowledge sources during evaluation. 
+Additionally, periodic fine-tuning with updated datasets or leveraging continual learning frameworks~\cite{wu2024continual} can ensure that LLMs-as-judges remain aligned with the latest information. Combining these approaches with robust fact-checking mechanisms~\cite{dierickx2024striking} can further enhance temporal reliability in judgment contexts.
+
+
+
+
+\subsubsection{Hallucination}
+\label{sec:Hallucination}
+Another critical issue in LLMs is the hallucination problem, where models generate incorrect or fabricated information with high confidence. In the context of LLMs-as-judges, hallucination can manifest as the invention of non-existent precedents, misinterpretation of facts, or fabrication of sources, which can severely undermine the reliability of their judgments. This issue is particularly concerning in various applications, where such errors can lead to unfair or harmful outcomes.
+
+Employing fact-checking mechanisms~\cite{dierickx2024striking,ji2023survey,tonmoy2024comprehensive} during evaluation is crucial to mitigate hallucination. By cross-verifying the outputs of LLMs-as-judges with trusted databases and external knowledge sources, hallucinated information can be identified and corrected. 
+
+
+
+\subsubsection{Domain-Specific Knowledge Gaps}
+\label{sec:Domain-Specific Knowledge Gaps}
+While LLMs demonstrate broad generalization capabilities, they often lack the depth of understanding required for specialized domains~\cite{feng2023knowledge,pan2024unifying,szymanski2024limitations,dorner2024limitsscalableevaluationfrontier}. For instance, legal judgments demand intricate knowledge of statutes, precedents, and contextual nuances, which may not be adequately captured in the training data of general-purpose LLMs. This limitation can lead to shallow or incorrect judgments in domain-specific contexts.
+
+Domain adaptation techniques, such as integrating LLMs with domain-specific knowledge graphs~\cite{feng2023knowledge,pan2024unifying} or leveraging RAG systems~\cite{gao2023retrieval}, can substantially improve their performance in specialized domains. Knowledge graphs provide structured, expert-curated information that enhances context-awareness, while RAG enables LLMs to dynamically retrieve relevant knowledge from specific domain. 
+
+
+The inherent weaknesses of LLMs highlight the need for continued research and innovation. Addressing these limitations through RAG, enhanced training methods, and knowledge graph techniques is crucial for ensuring that LLMs-as-judges deliver reliable, accurate, and trustworthy evaluations in diverse applications.
+

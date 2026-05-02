@@ -8,8 +8,8 @@
   "panel_size": 500,
   "err_threshold": 0.1,
   "counts": {
-    "pass_low": 8,
-    "pass_high": 1,
+    "pass_low": 9,
+    "pass_high": 2,
     "fail_low": 1,
     "fail_high": 0
   },
@@ -62,6 +62,12 @@
         "alpha": 0.2,
         "abs_error": 0.0855121860053164,
         "verdict": "PASS"
+      },
+      {
+        "policy": "risky",
+        "alpha": 0.2,
+        "abs_error": 0.06963293769976589,
+        "verdict": "PASS"
       }
     ],
     "pass_high": [
@@ -69,6 +75,12 @@
         "policy": "parallel_universe_prompt",
         "alpha": 0.1,
         "abs_error": 0.13192221182376207,
+        "verdict": "PASS"
+      },
+      {
+        "policy": "risky",
+        "alpha": 0.1,
+        "abs_error": 0.15022803518193883,
         "verdict": "PASS"
       }
     ],

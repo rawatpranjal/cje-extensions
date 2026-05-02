@@ -1,0 +1,135 @@
+\section{Why Stop-Loss Calibration, Not Plug-In Mean Calibration}
+\label{app:calibrator-target}
+\label{app:stoploss-vs-plugin}
+
+CVaR is nonlinear in the outcome distribution. This appendix explains the
+design choice that follows: calibrate shortfalls directly, rather than taking
+the tail of calibrated mean predictions.
+
+\subsection{Two Candidate Targets}
+
+The stop-loss route fits one calibrator per threshold:
+\begin{equation}
+\widehat V^{\mathrm{SL}}_\alpha
+=\max_t\left[
+t-\frac{1}{\alpha}\E_\ptarget[\hat h_t(\Sscore,\X)]
+\right],
+\qquad
+\hat h_t(\Sscore,\X)\approx
+\E[\shortfall{t}{\Y}\mid\Sscore,\X].
+\label{eq:app-stoploss}
+\end{equation}
+The plug-in route fits one mean calibrator and takes the tail of its
+predictions:
+\begin{equation}
+\widehat V^{\mathrm{PI}}_\alpha
+=\max_t\left[
+t-\frac{1}{\alpha}
+\E_\ptarget[\shortfall{t}{\hat m(\Sscore,\X)}]
+\right],
+\qquad
+\hat m(\Sscore,\X)\approx\E[\Y\mid\Sscore,\X].
+\label{eq:app-plugin}
+\end{equation}
+The two look similar, but their population targets are different.
+
+\begin{proposition}[Plug-in mean calibration targets the wrong tail]
+\label{prop:plugin-target}
+At the population limit, the stop-loss route targets $\CVaR_\alpha(\Y)$ under
+shortfall transport. The plug-in route targets
+$\CVaR_\alpha(\E[\Y\mid\Sscore,\X])$. These are equal only under degenerate
+residual uncertainty, or at thresholds where all conditional outcome mass lies
+on one side of the threshold.
+\end{proposition}
+
+\begin{twocolproof}
+\twocolrow{
+\[
+\hat h_t(\Sscore,\X)\to
+\E[\shortfall{t}{\Y}\mid\Sscore,\X].
+\]
+}{
+This is the population target of the stop-loss calibrator.
+}
+\twocolrow{
+\[
+\E[\hat h_t(\Sscore,\X)]
+\to \E[\shortfall{t}{\Y}].
+\]
+}{
+Apply iterated expectations.
+}
+\twocolrow{
+\[
+\max_t\left[t-\alpha^{-1}\E[\shortfall{t}{\Y}]\right]
+=\CVaR_\alpha(\Y).
+\]
+}{
+Use the stop-loss representation in \cref{eq:app-cvar-definition}.
+}
+\twocolrow{
+\[
+\hat m(\Sscore,\X)\to\E[\Y\mid\Sscore,\X].
+\]
+}{
+This is the population target of the mean calibrator.
+}
+\twocolrow{
+\[
+\max_t\left[t-\alpha^{-1}\E[
+\shortfall{t}{\hat m(\Sscore,\X)}]\right]
+\to
+\CVaR_\alpha(\E[\Y\mid\Sscore,\X]).
+\]
+}{
+The plug-in route computes CVaR on the distribution of conditional means, not
+on the distribution of realized oracle outcomes.
+}
+\end{twocolproof}
+
+\subsection{Jensen Gap}
+
+For fixed $t$, the map $u\mapsto(t-u)_+$ is convex. Therefore
+\begin{equation}
+\shortfall{t}{\E[\Y\mid\Sscore,\X]}
+\le
+\E[\shortfall{t}{\Y}\mid\Sscore,\X].
+\label{eq:jensen-shortfall}
+\end{equation}
+After taking expectations, the plug-in objective is at least as large as the
+stop-loss objective at every threshold:
+\[
+t-\alpha^{-1}\E[\shortfall{t}{\E[\Y\mid\Sscore,\X]}]
+\ge
+t-\alpha^{-1}\E[\shortfall{t}{\Y}].
+\]
+For a lower-tail score, larger CVaR is less pessimistic. Thus the plug-in
+route systematically smooths away residual tail risk whenever the cheap score
+does not determine the oracle outcome.
+
+\begin{remark}[Why more data does not fix plug-in CVaR]
+The gap in \cref{eq:jensen-shortfall} is a target mismatch, not a finite-sample
+error. More calibration data makes $\hat m$ converge more accurately to
+$\E[\Y\mid\Sscore,\X]$, which is the wrong object for CVaR unless the
+conditional residual variance is zero.
+\end{remark}
+
+\subsection{Validation Design}
+
+The controlled DGP used to validate this design choice is intentionally simple:
+\[
+\Sscore\sim\mathrm{Uniform}(0,1),\qquad
+\Y=\mathrm{clip}(0.2+0.6\Sscore+\varepsilon,0,1),
+\qquad
+\varepsilon\sim N(0,\sigma^2).
+\]
+At $\sigma=0$, the cheap score determines the oracle outcome and the two
+routes agree. As $\sigma$ grows, the residual conditional variance grows while
+$\E[\Y\mid\Sscore]$ stays fixed. The expected diagnostic pattern is:
+\begin{itemize}[leftmargin=*,nosep]
+\item the stop-loss estimator tracks $\CVaR_\alpha(\Y)$;
+\item the plug-in estimator tracks $\CVaR_\alpha(\E[\Y\mid\Sscore])$;
+\item the plug-in gap grows with $\sigma$ and is larger for smaller $\alpha$.
+\end{itemize}
+This validation belongs in the appendix because it justifies the estimator's
+regression target. It should not be used as a headline empirical result.

@@ -22,7 +22,7 @@ WRITEUP_DIR = PKG_ROOT / "writeup"
 WRITEUP_DATA_DIR = WRITEUP_DIR / "data"
 WRITEUP_FIG_DIR = WRITEUP_DIR  # figures land directly under writeup/ to match \includegraphics paths
 
-POLICIES = ["base", "clone", "premium", "parallel_universe_prompt", "unhelpful"]
+POLICIES = ["base", "clone", "premium", "parallel_universe_prompt", "unhelpful", "risky"]
 LOGGER = "base"
 
 LABELS = {
@@ -31,6 +31,7 @@ LABELS = {
     "premium": "premium",
     "parallel_universe_prompt": "parallel",
     "unhelpful": "unhelpful",
+    "risky": "risky",
 }
 
 # Plot styling: colorblind-safe palette, distinct marker per policy
@@ -40,6 +41,7 @@ COLORS = {
     "premium":                  "#2ca02c",
     "parallel_universe_prompt": "#ff7f0e",
     "unhelpful":                "#d62728",
+    "risky":                    "#9467bd",
 }
 MARKERS = {
     "base": "o",
@@ -47,6 +49,7 @@ MARKERS = {
     "premium": "^",
     "parallel_universe_prompt": "D",
     "unhelpful": "v",
+    "risky": "P",
 }
 
 

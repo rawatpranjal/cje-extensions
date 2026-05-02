@@ -1,0 +1,421 @@
+\section{Estimands and Identification}
+\label{app:estimands}
+
+This appendix fixes the formal objects used by CVaR-CJE. It contains only
+estimand definitions, identification claims, and implementation invariants
+that follow from the math.
+
+\subsection{Probability Laws and Mean-CJE}
+
+Let $P_X$ be the prompt law. A policy $\ptarget$ maps prompts to answers:
+\[
+\X\sim P_X,\qquad
+\A_\ptarget\sim\ptarget(\cdot\mid \X),\qquad
+\Sscore=s(\X,\A_\ptarget),\qquad
+\Y=y(\X,\A_\ptarget).
+\]
+The cheap judge score is $\Sscore$ and the oracle outcome is $\Y$. Write
+$P_\ptarget$ for the joint law of $(\X,\A_\ptarget,\Sscore,\Y)$ and
+$\E_\ptarget$ for expectation under that law. Let
+\[
+\mathcal{G}=\sigma(\Sscore,\X)
+\]
+be the information available to the calibrator. Under the reference policy
+$\pzero$, define
+\begin{align}
+f_0(\Sscore,\X)
+&=\E_{\pzero}[\Y\mid\mathcal{G}],\\
+h_{0,t}(\Sscore,\X)
+&=\E_{\pzero}\!\left[\shortfall{t}{\Y}\mid\mathcal{G}\right].
+\end{align}
+When the reference law is clear, write $f=f_0$ and $h_t=h_{0,t}$.
+
+The mean value of policy $\ptarget$ is
+\begin{equation}
+V(\ptarget)=\E_\ptarget[\Y].
+\end{equation}
+For any fitted surrogate $f(\Sscore,\X)$,
+\begin{equation}
+V(\ptarget)-\E_\ptarget[f(\Sscore,\X)]
+=\E_\ptarget[\Y-f(\Sscore,\X)].
+\label{eq:mean-transport-identity}
+\end{equation}
+
+\begin{assumption}[Mean transport]
+\label{ass:mean-transport}
+For target policy $\ptarget$,
+\[
+\E_\ptarget[\Y-f(\Sscore,\X)]=0.
+\]
+\end{assumption}
+
+\begin{proposition}[Mean-CJE identification]
+\label{prop:formal-mean-identification}
+For any fixed surrogate $f$, \cref{ass:mean-transport} holds if and only if
+$\E_\ptarget[f(\Sscore,\X)]=V(\ptarget)$.
+\end{proposition}
+
+\begin{twocolproof}
+\twocolrow{
+\[
+V(\ptarget)-\E_\ptarget[f(\Sscore,\X)]
+=\E_\ptarget[\Y]-\E_\ptarget[f(\Sscore,\X)].
+\]
+}{
+Use the definitions of $V(\ptarget)$ and the surrogate value.
+}
+\twocolrow{
+\[
+\E_\ptarget[\Y]-\E_\ptarget[f(\Sscore,\X)]
+=\E_\ptarget[\Y-f(\Sscore,\X)].
+\]
+}{
+Apply linearity of expectation.
+}
+\twocolrow{
+\[
+\E_\ptarget[f(\Sscore,\X)]=V(\ptarget)
+\Longleftrightarrow
+\E_\ptarget[\Y-f(\Sscore,\X)]=0.
+\]
+}{
+This is exactly \cref{ass:mean-transport}.
+}
+\end{twocolproof}
+
+\subsection{Lower-Tail CVaR}
+
+Fix $\alpha\in(0,1]$. Let
+\[
+F_\ptarget(t)=\Pp_\ptarget(\Y\le t),
+\qquad
+q_\alpha(\ptarget)=\inf\{t:F_\ptarget(t)\ge\alpha\}.
+\]
+The lower-tail Rockafellar--Uryasev objective is
+\begin{equation}
+\Psi_{\alpha,\ptarget}(t)
+=t-\frac{1}{\alpha}\E_\ptarget[\shortfall{t}{\Y}],
+\qquad
+\shortfall{t}{\Y}=(t-\Y)_+.
+\label{eq:app-stoploss-cvar}
+\end{equation}
+The lower-tail CVaR is
+\begin{equation}
+\CVaR_\alpha(\ptarget)=\sup_{t\in\R}\Psi_{\alpha,\ptarget}(t).
+\label{eq:app-cvar-definition}
+\end{equation}
+
+The positive part in $(t-\Y)_+$ is essential. Without it,
+\[
+t-\E[t-\Y]=t-(t-\E[\Y])=\E[\Y],
+\]
+so the threshold would carry no tail information and the objective would
+collapse to the mean for every $\alpha$.
+
+\begin{assumption}[Regular lower tail]
+\label{ass:regular-tail}
+For $\alpha\in(0,1)$, the target distribution of $\Y$ is continuous at
+$q_\alpha(\ptarget)$, has positive density near $q_\alpha(\ptarget)$, and the
+maximizer of \cref{eq:app-stoploss-cvar} is unique up to quantile equivalence.
+\end{assumption}
+
+\begin{proposition}[Stop-loss derivation]
+\label{prop:formal-stoploss}
+Under \cref{ass:regular-tail}, the optimizer of
+\cref{eq:app-stoploss-cvar} is $t_\alpha^\star=q_\alpha(\ptarget)$, and
+\[
+\CVaR_\alpha(\ptarget)
+=\E_\ptarget[\Y\mid \Y\le q_\alpha(\ptarget)].
+\]
+\end{proposition}
+
+\begin{twocolproof}
+\twocolrow{
+\[
+\frac{d}{dt}\E_\ptarget[\shortfall{t}{\Y}]
+=\Pp_\ptarget(\Y\le t)=F_\ptarget(t).
+\]
+}{
+At continuity points, differentiating $(t-\Y)_+$ in $t$ gives
+$\one\{\Y\le t\}$.
+}
+\twocolrow{
+\[
+\frac{d}{dt}\Psi_{\alpha,\ptarget}(t)
+=1-\frac{F_\ptarget(t)}{\alpha}.
+\]
+}{
+Differentiate the stop-loss objective.
+}
+\twocolrow{
+$\Psi_{\alpha,\ptarget}$ increases while $F_\ptarget(t)<\alpha$ and decreases
+after $F_\ptarget(t)>\alpha$.
+}{
+The derivative changes sign at the $\alpha$-quantile.
+}
+\twocolrow{
+\[
+t_\alpha^\star=q_\alpha(\ptarget).
+\]
+}{
+\cref{ass:regular-tail} gives a regular unique optimizer.
+}
+\twocolrow{
+\[
+\begin{aligned}
+\Psi_{\alpha,\ptarget}(q_\alpha)
+&=q_\alpha-\frac{1}{\alpha}
+\E_\ptarget[(q_\alpha-\Y)\one\{\Y\le q_\alpha\}]\\
+&=\frac{1}{\alpha}
+\E_\ptarget[\Y\one\{\Y\le q_\alpha\}].
+\end{aligned}
+\]
+}{
+Continuity gives $\Pp_\ptarget(\Y\le q_\alpha)=\alpha$, so the threshold
+terms cancel.
+}
+\twocolrow{
+\[
+\Psi_{\alpha,\ptarget}(q_\alpha)
+=\E_\ptarget[\Y\mid \Y\le q_\alpha].
+\]
+}{
+Divide by the lower-tail probability $\alpha$.
+}
+\end{twocolproof}
+
+\subsection{Direct CVaR-CJE Identification}
+
+For each $t$, CVaR estimation is a mean estimation problem for the shortfall
+variable $Z_t=\shortfall{t}{\Y}$. The reference-law shortfall surrogate is
+\[
+h_t(\Sscore,\X)=\E_{\pzero}[Z_t\mid\mathcal{G}].
+\]
+For target policy $\ptarget$, define the surrogate stop-loss objective
+\begin{equation}
+\Psi^h_{\alpha,\ptarget}(t)
+=t-\frac{1}{\alpha}\E_\ptarget[h_t(\Sscore,\X)].
+\label{eq:formal-surrogate-stoploss}
+\end{equation}
+
+\begin{assumption}[Shortfall transport]
+\label{ass:shortfall-transport}
+On an index set $\mathcal{T}\subseteq\R$,
+\[
+\E_\ptarget[\shortfall{t}{\Y}-h_t(\Sscore,\X)]=0
+\qquad\text{for every }t\in\mathcal{T}.
+\]
+\end{assumption}
+
+\begin{theorem}[CVaR-CJE identification]
+\label{thm:formal-cvar-identification}
+If \cref{ass:shortfall-transport} holds on $\mathcal{T}$, then
+\[
+\Psi^h_{\alpha,\ptarget}(t)=\Psi_{\alpha,\ptarget}(t)
+\qquad\text{for every }t\in\mathcal{T}.
+\]
+Consequently,
+\[
+\sup_{t\in\mathcal{T}}\Psi^h_{\alpha,\ptarget}(t)
+=\sup_{t\in\mathcal{T}}\Psi_{\alpha,\ptarget}(t).
+\]
+If $\mathcal{T}=\R$, the Direct CVaR-CJE population target equals
+$\CVaR_\alpha(\ptarget)$.
+\end{theorem}
+
+\begin{twocolproof}
+\twocolrow{
+\[
+\Psi_{\alpha,\ptarget}(t)-\Psi^h_{\alpha,\ptarget}(t)
+=-\frac{1}{\alpha}
+\E_\ptarget[\shortfall{t}{\Y}-h_t(\Sscore,\X)].
+\]
+}{
+Subtract the surrogate objective from the oracle objective; the threshold
+terms cancel.
+}
+\twocolrow{
+\[
+\Psi_{\alpha,\ptarget}(t)-\Psi^h_{\alpha,\ptarget}(t)=0.
+\]
+}{
+Apply \cref{ass:shortfall-transport} at the same threshold $t$.
+}
+\twocolrow{
+\[
+\sup_{t\in\mathcal{T}}\Psi^h_{\alpha,\ptarget}(t)
+=\sup_{t\in\mathcal{T}}\Psi_{\alpha,\ptarget}(t).
+\]
+}{
+Identical functions on the same index set have identical suprema.
+}
+\end{twocolproof}
+
+\begin{assumption}[Nuisance and grid regularity]
+\label{ass:nuisance}
+The fitted shortfall calibrators are independent of the evaluation folds,
+uniformly square-integrable near the relevant maximizers, and satisfy
+\[
+\sup_{t\in\mathcal{T}_n}
+\left|
+\frac{1}{n}\sum_{i=1}^n \hat h_t(\Sscore_i,\X_i)
+-\E_\ptarget[h_t(\Sscore,\X)]
+\right|=o_p(1).
+\]
+The grid $\mathcal{T}_n$ is fixed before policy comparisons and covers the
+population maximizers at the target precision.
+\end{assumption}
+
+\subsection{Discrete Outcomes and Atom Splitting}
+\label{sec:app-discrete}
+
+When $\Y$ has atoms, the stop-loss definition remains the primitive. Let
+\[
+q_\alpha=\inf\{t:F(t)\ge\alpha\},
+\qquad
+F(q_\alpha-)=\Pp(\Y<q_\alpha).
+\]
+The atom-split lower-tail expected shortfall is
+\begin{equation}
+\ES_{\alpha}
+=\frac{1}{\alpha}\left(
+\E[\Y\one\{\Y<q_\alpha\}]
++q_\alpha(\alpha-\Pp(\Y<q_\alpha))
+\right).
+\label{eq:discrete-es}
+\end{equation}
+The boundary atom is split so exactly $\alpha$ probability mass enters the
+tail average.
+
+\begin{proposition}[Discrete stop-loss value]
+\label{prop:formal-discrete-stoploss}
+If
+\[
+\Pp(\Y<q_\alpha)\le\alpha\le\Pp(\Y\le q_\alpha),
+\]
+then the optimized stop-loss value equals \cref{eq:discrete-es}.
+\end{proposition}
+
+\begin{twocolproof}
+\twocolrow{
+\[
+\E[(q_\alpha-\Y)_+]
+=\E[(q_\alpha-\Y)\one\{\Y<q_\alpha\}].
+\]
+}{
+Only outcomes strictly below the boundary atom contribute to the lower-tail
+shortfall.
+}
+\twocolrow{
+\[
+\Psi_\alpha(q_\alpha)
+=q_\alpha-\frac{1}{\alpha}
+\E[(q_\alpha-\Y)\one\{\Y<q_\alpha\}].
+\]
+}{
+Substitute into the stop-loss objective.
+}
+\twocolrow{
+\[
+\Psi_\alpha(q_\alpha)
+=q_\alpha-\frac{1}{\alpha}
+\left(q_\alpha\Pp(\Y<q_\alpha)-\E[\Y\one\{\Y<q_\alpha\}]\right).
+\]
+}{
+Expand the expectation.
+}
+\twocolrow{
+\[
+\Psi_\alpha(q_\alpha)
+=\frac{1}{\alpha}
+\left(\E[\Y\one\{\Y<q_\alpha\}]
++q_\alpha(\alpha-\Pp(\Y<q_\alpha))\right).
+\]
+}{
+Rearrange. This is the atom-split formula.
+}
+\end{twocolproof}
+
+For sorted observations $Y_{(1)}\le\cdots\le Y_{(n)}$ and
+$k=\lfloor \alpha n\rfloor$, the sample atom-split lower-tail CVaR is
+\begin{equation}
+\widehat{\CVaR}_\alpha(\Y)
+=\frac{1}{\alpha n}\left[
+\sum_{i=1}^{k}Y_{(i)}+(\alpha n-k)Y_{(k+1)}
+\right].
+\label{eq:atom-sample}
+\end{equation}
+This is the full-oracle truth formula for tied rubric outcomes. The naive
+average over all observations satisfying $Y_i\le q_\alpha$ overcounts the
+boundary atom.
+
+\subsection{\texorpdfstring{$\alpha=1$}{alpha=1} Collapse}
+\label{app:alpha-one}
+
+\begin{theorem}[$\alpha=1$ collapses to Mean-CJE]
+\label{prop:formal-alpha-one}
+If $\Y\in[0,1]$, then $\CVaR_1(\ptarget)=V(\ptarget)$. Taking any
+$t\ge1$ and $h_t(\Sscore,\X)=t-f(\Sscore,\X)$, the CVaR shortfall residual
+is the negative of the mean-CJE residual:
+\[
+\shortfall{t}{\Y}-h_t(\Sscore,\X)
+=f(\Sscore,\X)-\Y.
+\]
+The tail-mass moment is identically zero when $t\ge1$.
+\end{theorem}
+
+\begin{twocolproof}
+\twocolrow{
+\[
+\Psi_{1,\ptarget}(t)
+=t-\E_\ptarget[\shortfall{t}{\Y}]
+=\E_\ptarget[\min\{t,\Y\}].
+\]
+}{
+For $\alpha=1$, $t-(t-\Y)_+=\min\{t,\Y\}$ pointwise.
+}
+\twocolrow{
+\[
+\E_\ptarget[\min\{t,\Y\}]\le\E_\ptarget[\Y],
+\]
+with equality for every $t\ge1$.
+}{
+The oracle outcome is bounded in $[0,1]$.
+}
+\twocolrow{
+\[
+\CVaR_1(\ptarget)=\E_\ptarget[\Y]=V(\ptarget).
+\]
+}{
+Take the supremum over $t$.
+}
+\twocolrow{
+\[
+h_t(\Sscore,\X)
+=\E_{\pzero}[t-\Y\mid\mathcal{G}]
+=t-f(\Sscore,\X).
+\]
+}{
+For $t\ge1$, the shortfall is $t-\Y$ and conditional expectation is linear.
+}
+\twocolrow{
+\[
+(t-\Y)-(t-f(\Sscore,\X))=f(\Sscore,\X)-\Y.
+\]
+}{
+Substitute into the shortfall residual.
+}
+\twocolrow{
+\[
+\one\{\Y\le t\}-1=0.
+\]
+}{
+If $t\ge1$ and $\Y\in[0,1]$, every observation lies below the threshold.
+}
+\end{twocolproof}
+
+The identity is also an implementation invariant. At $\alpha=1$, the grid must
+include a threshold above $\max_iY_i$; the fitted stop-loss calibrator must
+equal $t-\hat f(\Sscore,\X)$; the CVaR point estimate, bootstrap draws,
+calibration variance, and audit residuals must match the corresponding
+Mean-CJE quantities up to numerical tolerance.

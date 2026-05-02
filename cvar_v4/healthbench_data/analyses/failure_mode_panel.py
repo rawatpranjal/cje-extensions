@@ -5,12 +5,24 @@ from the same n=500 panel — small (n=100), medium (n=250), large (n=500)
 — and emits a small-multiples figure showing per-cell audit verdicts and
 |ḡ_1| against the heuristic 0.05 threshold.
 
-The story: the audit's heuristic |ḡ| ≤ 0.05 has a per-row sensitivity of
-1/n_audit. At small n_audit a single row crossing t̂ moves |ḡ_1| past
-0.05; at large n_audit only structural transport failures do. So the
-audit's apparent verdict is non-monotone in n: cells flag at small n,
-relax to PASS at medium n, and only the structural failures flag again
-at large n.
+Why HEURISTIC_THR = 0.05:
+    The audit verdict heuristic |ḡ_1| ≤ 0.05 is calibrated to the
+    α-tolerance of typical CVaR claims. A 5-percentage-point deviation
+    in tail-mass at the threshold corresponds to roughly half of α=0.10
+    or a quarter of α=0.20 — small enough that the resulting CVaR bias
+    is bounded by a few percentage points of Y. This is NOT a hypothesis
+    test (the formal test is `two_moment_wald_audit_xf`); it's a fast
+    triage threshold. Cells that flag here can be re-checked formally.
+
+The non-monotone-in-n story:
+    The heuristic has per-row sensitivity 1/n_audit. At small n_audit a
+    SINGLE row crossing t̂ moves |ḡ_1| past 0.05 even when the underlying
+    tail-mass is exactly α; at large n_audit only structural transport
+    failures cross 0.05. Net result: a cell can flag at n=100, relax to
+    PASS at n=250, and only flag again at n=500 if the failure is real
+    (not heuristic noise). This panel makes that pattern legible by
+    putting the same five policies × two alphas at three sample sizes
+    side-by-side.
 
 Outputs:
     writeup/data/failure_mode_panel.json
@@ -46,6 +58,7 @@ POLICY_DISPLAY = {
     "premium": "premium",
     "parallel_universe_prompt": "parallel",
     "unhelpful": "unhelpful",
+    "risky": "risky",
 }
 
 

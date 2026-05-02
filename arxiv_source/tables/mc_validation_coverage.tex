@@ -1,0 +1,17 @@
+\begin{table}[h]
+\centering\small
+\caption{\textbf{Monte Carlo headline results.} Per-policy 95\%-CI coverage of the calibration-aware total CI, RMSE, and audit reject rate at the null. Cell: $n{=}500$, oracle coverage 0.25, $\alpha{=}0.10$, uniform design, $\delta{=}0$. Calibrator $\hat m_{\text{base}}$ with $m_{\text{override}}{=}\hat m_{\text{base}}$, so the only mis-specification source is per-policy heterogeneity in $Y$ marginals and noise $\sigma(Y)$.}
+\label{tab:mc-validation-headline}
+\begin{tabular}{lrrrrrr}
+\toprule
+target $\pi'$ & $n_{\text{rep}}$ & Mean cov.\ & CVaR cov.\ & RMSE Mean & RMSE CVaR & Mean rej.\ \\
+\midrule
+\texttt{base} & 60 & 0.95 & 0.70 & 0.035 & 0.162 & 0.28 \\
+\texttt{clone} & 60 & 0.92 & 0.68 & 0.037 & 0.144 & 0.27 \\
+\texttt{parallel\_universe\_prompt} & 60 & 0.50 & 0.77 & 0.069 & 0.193 & 0.67 \\
+\texttt{premium} & 60 & 0.37 & 0.77 & 0.097 & 0.106 & 0.82 \\
+\texttt{risky} & 60 & 0.57 & 0.68 & 0.062 & 0.193 & 0.47 \\
+\texttt{unhelpful} & 60 & 0.57 & 0.82 & 0.090 & 0.248 & 0.88 \\
+\bottomrule
+\end{tabular}
+\end{table}

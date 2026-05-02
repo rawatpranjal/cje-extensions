@@ -510,3 +510,197 @@ demonstrate exactly the dataset's value:
    starts firing for premium (which has the largest transport gap). This
    would calibrate the "minimum n for audit power" recommendation in
    the paper's appendix.
+
+---
+
+## Session 2026-05-02 — estimator alignment with original CJE paper
+
+Goal of the session: bring the estimator into alignment with the original
+CJE paper (arxiv 2512.11150) and audit whether earlier "open issue" claims
+in CLAUDE.md still match the actual code. Also: do the new fixes actually
+improve coverage on the existing OpenAI-graded panel?
+
+### What landed (no API spend, all local code changes)
+
+#### 1. Verified estimator status against the actual code (corrected stale CLAUDE.md)
+
+Earlier the directory CLAUDE.md "Pressing open issues" listed 4 unimplemented
+estimator features. Side-by-side reading of `_estimator.py` showed only one
+was actually missing:
+
+- **A2 — augmented one-step `V_aug`**: was already implemented at
+  `_estimator.py:630–634` (`aug_point = plug_point + gbar2_point`).
+  `variance_breakdown.py:295–307` already emitted `aug` rows. CLAUDE.md
+  was wrong; updated.
+- **A3 — calibration-aware variance**: Efron-Stein delete-one-fold
+  jackknife at `_estimator.py:875–881`; `analyze.py:403–413` already
+  computed `var_total = var_eval + var_cal`. Headline pilot table
+  emitted `ci_lo_total, ci_hi_total`. Status: PARTIAL (the headline
+  uses analytical `Var_audit` at fixed `t̂`; the full-pipeline bootstrap
+  in `pipeline_bootstrap_cvar` is used only in the variance-breakdown
+  diagnostic). Not the deal-breaker the old log implied.
+- **A4 — mean transport audit**: was already implemented at
+  `_estimator.py:927–983` (one-sample t-test on `Y − f̂(S)` with HT
+  weighting). Per-policy results were already in the pilot table.
+- **A1 — two-stage calibration**: this was the one real gap. NOT
+  implemented before this session.
+
+CLAUDE.md "Pressing open issues" rewritten with the corrected status,
+plus a new "Differences from the original CJE paper" table covering every
+deviation (prompt corpus, sample size, policies, judges, prompts, etc.).
+
+#### 2. Closed real estimator gaps
+
+- **A1 (mean side, `direct+cov`)**: new `fit_two_stage_calibrator(s, length, y, ...)`
+  in `_estimator.py`. Stage 1: ridge on `[S, S², length, length², S·length]`.
+  Stage 2: ECDF transform of stage-1 prediction → mean-preserving isotonic
+  of `Y` vs `ECDF(Z)`. `mean_transport_audit` extended with optional
+  `length_train, length_audit`. `analyze.py:step5_oracle_calibrated_uniform`
+  emits `mean_cje_est_cov`, `mean_abs_error_cov`, `mean_audit_cov_p`,
+  `mean_audit_cov_residual`, `mean_audit_cov_reject` as parallel columns.
+  **α=1 collapse identity preserved** at machine precision (|Δ| ~ 5.6e-17)
+  because the headline `mean_cje_est` stays isotonic-on-S; `+cov` is a
+  parallel companion.
+
+- **A2 (V_aug surfaced)**: `cvar_est_aug = cvar_est + gbar2`,
+  `mean_cje_aug = mean_cje_est + audit_residual_mean` now emitted in the
+  pilot table alongside `cvar_est` / `mean_cje_est`. Plus `cvar_gbar2`,
+  `abs_error_aug`, `mean_abs_error_aug`.
+
+- **A4 Bonferroni**: `mean_transport_audit` called with
+  `wald_alpha = 0.05 / k` where `k = bonferroni_k` (default 5 = target
+  policies; logger excluded). Pilot table emits
+  `mean_audit_alpha_bonferroni = 0.01`.
+
+- **B3 token cap**: `DEFAULT_MAX_COMPLETION_TOKENS` 800 → 4096 in
+  `generate.py`. Aligns with CJE App. impl. (no truncation in spirit).
+
+- **B5 oracle temp**: `JUDGE_TEMPERATURE` split into `JUDGE_CHEAP_TEMPERATURE = 0.0`
+  and `JUDGE_ORACLE_TEMPERATURE = 1.0`. New `_temperature_for_kind(kind)`
+  helper in `judge.py`; all 3 sync-call sites updated. Required for gpt-5
+  oracle, which doesn't support temp=0.
+
+#### 3. Fireworks AI infrastructure ready (no model strings flipped yet)
+
+For the planned Llama migration (verbatim CJE Arena policy stack):
+
+- `pricing.py`: rates added for `gpt-4.1-nano-2025-04-14`, `gpt-5-2025-08-07`,
+  `accounts/fireworks/models/llama-v3p3-70b-instruct`,
+  `accounts/fireworks/models/llama-v3p1-405b-instruct`.
+- `generate.py`: `_client(model)` now routes Fireworks-prefixed model ids
+  to `https://api.fireworks.ai/inference/v1` using `FIREWORKS_API_KEY`.
+  All 3 sync-path callers updated.
+- **Known gap**: Fireworks does not expose OpenAI's Batch API, so Llama
+  policy generation must use `--sync` mode. Judges (gpt-4.1-nano + gpt-5)
+  still go through OpenAI batch. The pipeline supports `--sync --per-policy`.
+
+Policy/judge model strings stay on OpenAI (gpt-4o-mini + gpt-4.1) until
+the data archival + re-collection phases — flipping them now would create
+an inconsistency between on-disk responses and the configured models.
+
+### What we discovered (issues for next iteration)
+
+#### Issue 11 — Two-stage tail-loss `+cov` calibrator collapses under length covariate shift
+
+- **What we tried**: extend `direct+cov` to the CVaR side by adding
+  `fit_two_stage_tail_loss` in `_estimator.py` and threading length
+  covariates through `simple_cvar_audit` and `estimate_direct_cvar_isotonic`.
+- **Symptom**: at α=1, `cvar_est_cov` is constant +0.2559 across all 6
+  policies, while `mean_cje_est_cov` varies per policy. The α=1 collapse
+  identity (CVaR_α=1 == mean) breaks: |Δ_cov| ranges 0.04 (clone) to
+  0.34 (unhelpful), versus |Δ| ~ 1e-17 in non-`+cov` mode.
+- **Root cause** (diagnosed): the `unhelpful` policy averages 153 chars
+  per response; the calibration training slice averages 1502 chars
+  (the logger panel is gpt-4o-mini medical-assistant responses, which
+  are ~10× longer than `unhelpful`'s deliberately-off-topic 1-2-sentence
+  responses). The Stage-1 ridge predicts off-distribution z values for
+  short responses; the Stage-2 ECDF (built on the training distribution)
+  rank-clips those predictions to the bottom; the isotonic-on-flat-ECDF
+  returns a single value (`pred_audit ≡ 0.7207` for all unhelpful rows
+  in the diagnostic).
+- **Coverage cost** (20-seed sweep on existing data):
+  - Headline `cvar_var_total` (no `+cov`): 0.95–1.00 across all 6 policies.
+  - `cvar_cov_var_total` (with `+cov`): 0.65–1.00. Premium drops to
+    0.65, parallel to 0.75, unhelpful to 0.80.
+  - `cvar_aug_cov_var_total`: drops further (0.55–0.95).
+  - On the mean side: `mean_cov_var_total` for parallel and premium
+    drops to 0.30 — the calibrator's bias outpaces the CI width.
+- **Decision**: ship the `+cov` columns but **do not use the tail-loss
+  `+cov` for headline reporting**. Keep `cvar_est` (isotonic-on-S only)
+  as the headline. Document this in the methodology notes when paper
+  edits resume.
+- **Possible fixes for a future iteration**:
+  1. Use `log(1 + length)` instead of raw length to compress the tail
+     of the length distribution. Likely closes the OOD gap for `unhelpful`.
+  2. Winsorize length to the 5th/95th training percentiles before the
+     ridge fit.
+  3. Fit Stage 1 with K-fold cross-validation on `λ` (currently fixed
+     `ridge_alpha=1.0`).
+  4. Skip ECDF transform when target points are out-of-rank; fall back
+     to a tail-extrapolation isotonic.
+- **For the MVP**: don't do any of the above. Use isotonic-on-S only on
+  the CVaR side. Re-evaluate after the Llama migration since Llama
+  policies may have more uniform length distributions across the panel.
+
+#### Issue 12 — `+cov` mean is mixed (better point, worse coverage on shifted policies)
+
+- **Wins**: parallel mean abs_error 0.037 → 0.0001; premium 0.074 → 0.055.
+  Length carries real signal for those two policies.
+- **Losses**: risky 0.008 → 0.021. Premium and parallel coverage drops
+  to 0.30–0.35 (the same length covariate shift bites here too).
+- **Decision**: keep `mean_cje_est_cov` as a parallel column for paper
+  reporting (matches CJE's `direct+cov` claim) but the headline stays on
+  isotonic-on-S.
+
+### Coverage sweep results (20 seeds × 2 α × 6 policies × 9 CI variants = 108 cells)
+
+`cvar_v4/healthbench_data/writeup/data/coverage_sweep.{json,md}` (script:
+`cvar_v4/healthbench_data/analyses/coverage_sweep.py`).
+
+Headline reading:
+
+- **`cvar_var_total`** (headline CVaR envelope, isotonic-on-S):
+  **0.95–1.00 across all 6 policies, both α**. The CJE paper's
+  calibration-aware variance claim holds on our panel. **A3's "PARTIAL"
+  status is fine — no further routing needed for headline.**
+- **`mean_var_total`** drops to 0.70 for premium at both α; **`mean_aug_var_total`**
+  recovers to 1.00. **V_aug is the right correction for premium's mean
+  transport bias** (premium's `mean_audit_p ≈ 0.002` flagged real bias).
+  This validates surfacing `V_aug` in the headline.
+- **`mean_eval_only`** (eval-only bootstrap, no Var_cal) tanks on premium
+  to 0.25 — confirms calibration-aware variance is necessary, not optional.
+- **`+cov` variants under-cover** for shifted policies (parallel, premium,
+  unhelpful, risky on the CVaR side; same on the mean side). See Issue 11.
+
+### Numbers that didn't move (unchanged in this session)
+
+- `cvar_est`, `t_hat`, `mean_g1`, `mean_g2`, `verdict` for all 6 policies
+  at both α — bit-identical (headline path stays isotonic-on-S).
+- `unhelpful @ α=0.20` is still the single FLAG_TAIL on the panel.
+- `risky @ α=0.10` is still PASS with abs_error = 0.150 (high envelope band).
+- Mean-vs-CVaR divergence story for risky unchanged.
+
+### What's pending (money-spending phases)
+
+The Llama migration plan in `~/.claude/plans/yep-do-it-full-quiet-rabbit.md`
+is approved but unstarted. Phases:
+
+- **Phase E** archive existing OpenAI panel (no $).
+- **Phase A** smoke-test `risky` v3 prompt on Llama 405B (~$1–3).
+- **Phase F** full re-collect (6 × 500 Llama generations + ~72k judge
+  calls under gpt-4.1-nano + gpt-5 stack, ~$50–200 dominated by gpt-5
+  oracle).
+
+### Files changed this session
+
+| file | change |
+|---|---|
+| `cvar_v4/eda/deeper/_estimator.py` | added `fit_two_stage_calibrator`, `fit_two_stage_tail_loss`; extended `mean_transport_audit`, `simple_cvar_audit`, `estimate_direct_cvar_isotonic` with optional `length_*` kwargs |
+| `cvar_v4/healthbench_data/analyze.py` | added `RESPONSES_DIR`, `_load_response_lengths`; threaded length through `step5_oracle_calibrated_uniform`; added Bonferroni `α/k`; emitted V_aug, `+cov` variants, `+cov_aug` columns |
+| `cvar_v4/healthbench_data/policies.py` | split `JUDGE_TEMPERATURE` into cheap/oracle |
+| `cvar_v4/healthbench_data/judge.py` | added `_temperature_for_kind`; `_build_grade_body` and `_grade_one_criterion_sync` accept `kind` |
+| `cvar_v4/healthbench_data/generate.py` | `DEFAULT_MAX_COMPLETION_TOKENS` 800 → 4096; `_client(model)` routes Fireworks |
+| `cvar_v4/healthbench_data/pricing.py` | rates for gpt-4.1-nano, gpt-5, Llama 70B, Llama 405B |
+| `cvar_v4/healthbench_data/CLAUDE.md` | "Pressing open issues" rewritten with verified status; new "Differences from the original CJE paper" table |
+| `cvar_v4/healthbench_data/analyses/coverage_sweep.py` | NEW — multi-seed coverage measurement script |
+| `cvar_v4/healthbench_data/analyses/_common.py`, `analyses/tail_cdf.py`, `eda_check.py`, `pilot_evaluation.py`, `pipeline.py` (docstring) | ancillary edits earlier in session: added `risky` to POLICIES lists / DEFAULT_POLICIES / docstring count |

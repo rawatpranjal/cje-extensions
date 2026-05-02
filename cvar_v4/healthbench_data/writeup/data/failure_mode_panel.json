@@ -76,6 +76,17 @@
     {
       "size_label": "small",
       "n_total": 100,
+      "alpha": 0.1,
+      "policy": "risky",
+      "n_audit": 26,
+      "abs_error": 0.3042090415538864,
+      "mean_g1": -0.061538461538461556,
+      "mean_g2": -0.01493142525676133,
+      "verdict": "FLAG_TAIL"
+    },
+    {
+      "size_label": "small",
+      "n_total": 100,
       "alpha": 0.2,
       "policy": "base",
       "n_audit": 5,
@@ -127,6 +138,17 @@
       "mean_g1": -0.04615384615384616,
       "mean_g2": -0.012494645447271437,
       "verdict": "PASS"
+    },
+    {
+      "size_label": "small",
+      "n_total": 100,
+      "alpha": 0.2,
+      "policy": "risky",
+      "n_audit": 26,
+      "abs_error": 0.0922261470306866,
+      "mean_g1": -0.1230769230769231,
+      "mean_g2": -0.02373644094134466,
+      "verdict": "FLAG_TAIL"
     },
     {
       "size_label": "medium",
@@ -186,6 +208,17 @@
     {
       "size_label": "medium",
       "n_total": 250,
+      "alpha": 0.1,
+      "policy": "risky",
+      "n_audit": 64,
+      "abs_error": 0.09433843980755441,
+      "mean_g1": -0.05312499999999999,
+      "mean_g2": -0.01183100643920752,
+      "verdict": "FLAG_TAIL"
+    },
+    {
+      "size_label": "medium",
+      "n_total": 250,
       "alpha": 0.2,
       "policy": "base",
       "n_audit": 13,
@@ -236,6 +269,17 @@
       "abs_error": 0.035953294659836654,
       "mean_g1": -0.12187499999999998,
       "mean_g2": -0.02866210777399566,
+      "verdict": "FLAG_TAIL"
+    },
+    {
+      "size_label": "medium",
+      "n_total": 250,
+      "alpha": 0.2,
+      "policy": "risky",
+      "n_audit": 64,
+      "abs_error": 0.024532314888786655,
+      "mean_g1": -0.13749999999999998,
+      "mean_g2": -0.028020040558775404,
       "verdict": "FLAG_TAIL"
     },
     {
@@ -296,6 +340,17 @@
     {
       "size_label": "large",
       "n_total": 500,
+      "alpha": 0.1,
+      "policy": "risky",
+      "n_audit": 132,
+      "abs_error": 0.15022803518193883,
+      "mean_g1": 0.006060606060606059,
+      "mean_g2": -0.0023386812684712058,
+      "verdict": "PASS"
+    },
+    {
+      "size_label": "large",
+      "n_total": 500,
       "alpha": 0.2,
       "policy": "base",
       "n_audit": 26,
@@ -347,6 +402,17 @@
       "mean_g1": 0.1636363636363637,
       "mean_g2": 0.007531846349668542,
       "verdict": "FLAG_TAIL"
+    },
+    {
+      "size_label": "large",
+      "n_total": 500,
+      "alpha": 0.2,
+      "policy": "risky",
+      "n_audit": 132,
+      "abs_error": 0.06963293769976589,
+      "mean_g1": -0.048484848484848464,
+      "mean_g2": -0.004203672792456495,
+      "verdict": "PASS"
     }
   ]
 }

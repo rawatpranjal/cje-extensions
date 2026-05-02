@@ -1,0 +1,115 @@
+\section{Calibration Model Validation}
+\label{app:calibration-validation}
+\label{app:forensics}
+
+This appendix defines the diagnostics that make a calibrated CJE estimate
+credible. It does not duplicate the result tables. Each diagnostic answers a
+specific design question.
+
+\subsection{Signal in the Cheap Score}
+\label{app:reliability}
+
+The cheap score must contain usable information about the oracle outcome,
+especially in the lower tail. The basic diagnostic is a decile table:
+\[
+\text{bin }b
+\quad\mapsto\quad
+\left(
+\overline{\Sscore}_b,\;
+\overline{\Y}_b,\;
+\overline{\Sscore}_b-\overline{\Y}_b,\;
+\mathrm{sd}(\Y\mid b)
+\right).
+\]
+The table is not a proof of transport. It checks that the surrogate has signal
+and that the cheap-to-oracle map is not flat in the region where CVaR is
+estimated.
+
+\subsection{Tail-Specific Calibration Gap}
+
+Mean calibration can look good while the tail is wrong. For each policy and
+tail level, report
+\[
+\CVaR_\alpha(\Sscore),\qquad
+\CVaR_\alpha(\Y),\qquad
+\CVaR_\alpha(\Y)-\CVaR_\alpha(\Sscore).
+\]
+The purpose is to show whether the cheap judge compresses, misses, or reverses
+tail severity before calibration. This diagnostic motivates the stop-loss
+calibrator but does not gate the level claim; the audit does.
+
+\subsection{Base-vs-Clone Sanity Check}
+\label{app:bcforensics}
+
+When two policies share model, prompt, and sampling configuration except for
+seed, their distributions should be statistically close. A large calibrated
+gap between them is evidence of pipeline or grader instability. The diagnostic
+should report:
+\begin{itemize}[leftmargin=*,nosep]
+\item mean difference;
+\item CVaR difference;
+\item overlap of lower-tail prompt identities;
+\item whether disagreements concentrate in a small set of rubric criteria.
+\end{itemize}
+
+\subsection{Policy-Wise Residual Transport}
+
+For each estimand, validation is policy-wise:
+\[
+\text{mean:}\quad \Y-\hat f(\Sscore,\X),
+\qquad
+\text{CVaR:}\quad
+\hat g_1,\hat g_2.
+\]
+The diagnostic should show residual means and audit verdicts by policy. It
+should also state the refusal rule: a rejected row is a diagnostic point
+estimate, not an interpretable calibrated level.
+
+\subsection{Risky-Policy Mechanism Check}
+
+For a policy designed to expose mean-vs-tail divergence, the key validation is
+not only the final mean and CVaR. It is whether the failure concentrates where
+the policy is designed to fail. Split prompts into routine and dangerous
+medical edge cases and report:
+\[
+\overline{\Y}_{\mathrm{routine}},
+\quad
+\overline{\Y}_{\mathrm{dangerous}},
+\quad
+\CVaR_{\alpha,\mathrm{routine}},
+\quad
+\CVaR_{\alpha,\mathrm{dangerous}}.
+\]
+The desired pattern is ordinary routine performance and a much worse dangerous
+tail. Without this split, a constructed risky policy can look like a tuned row
+rather than a mechanism-backed stress test.
+
+\subsection{Threshold-Gap Diagnostic}
+\label{app:thresholdgap}
+
+Let $\hat t_\alpha$ be the threshold selected by the calibrated surrogate and
+let $t^\star_\alpha$ be the atom-split oracle quantile on the full oracle panel
+when that panel is available. The gap
+\[
+\hat t_\alpha-t^\star_\alpha
+\]
+is a mechanism diagnostic. It does not gate the level claim. A large gap with
+small audit moments can happen because the stop-loss objective trades off tail
+mass and shortfall severity. A large gap with large audit moments is evidence
+that the threshold mechanism itself failed to transport.
+
+\subsection{Implementation Invariants From the Math Notes}
+
+The estimator should satisfy these non-negotiable checks:
+\begin{itemize}[leftmargin=*,nosep]
+\item the threshold grid covers the upper endpoint needed for the
+$\alpha=1$ identity;
+\item the stop-loss calibrator is monotone decreasing in the cheap score;
+\item the mean calibrator is monotone increasing in the cheap score;
+\item bootstrap replicates refit the calibrator and re-optimize
+$\hat t_\alpha$;
+\item at $\alpha=1$, CVaR truth, point estimates, bootstrap draws,
+calibration variance, and audit residuals collapse to their Mean-CJE
+counterparts.
+\end{itemize}
+These are regression-test targets, not optional diagnostics.

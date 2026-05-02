@@ -4,6 +4,19 @@ Under transport, the count of audit rows with Y ≤ t̂ is Binomial(n, alpha).
 We compare each cell's observed count against this reference and report the
 two-sided binomial p-value.
 
+Why a binomial p-value (and not just the |g₁| heuristic):
+    The verdict heuristic |ḡ₁| ≤ 0.05 has per-row sensitivity of
+    1 / n_audit. At n_audit = 26 (held-out logger slice), a single row
+    crossing t̂ moves |ḡ₁| past 0.05 and triggers FLAG_TAIL even when
+    the underlying tail-mass is exactly α. The binomial p-value tells
+    us whether the observed count is statistically incompatible with
+    Binom(n, α), filtering "real" transport failures from
+    small-sample heuristic artifacts. Cells with FLAG and p < 0.05
+    are likely structural transport failures; FLAG with p ≥ 0.05 is
+    likely a sampling-noise flag. The full audit (`two_moment_wald_audit_xf`)
+    does this more rigorously via paired bootstrap; this binomial check
+    is a fast triage that uses only the audit-slice data.
+
 Outputs:
     writeup/data/audit_drilldown.json
 """

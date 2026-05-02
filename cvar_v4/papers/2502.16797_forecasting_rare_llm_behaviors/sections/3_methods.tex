@@ -1,0 +1,91 @@
+\section{Methods}
+\label{sec:methods}
+The goal of pre-deployment language model testing---such as standard evaluation or small-scale beta tests---is to assess the risks of deployment to inform release decisions. We introduce a method that \textit{forecasts} deployment-scale risks using orders-of-magnitude fewer queries. To do so, we extract a continuous measure of risk across queries that grows predictably from evaluation to deployment.
+
+Concretely, suppose a language model will be used on $n$ queries sampled from the distribution $\Ddeploy$ at deployment, i.e., $x_1, \hdots, x_n \sim \Ddeploy$, which produce outputs $o_1, \hdots, o_n$. 
+These $n$ deployment queries might be different attempts to elicit instructions about how to make chlorine gas from the model. 
+If $\behave$ is a boolean indicator specifying whether an output exhibits the behavior in question (in this case, successful instructions for producing chlorine gas), we wish to understand the probability that $B(o_i) = 1$ for at least one $o_i$. 
+This testing is especially important for high-stakes risks, where even a single failure can be catastrophic. 
+
+The standard way this testing is done in practice is by collecting an evaluation set of queries that tests for the undesired behavior; the evaluation set might be a benchmark, or a small-scale beta test.  
+Formally, we assume the evaluation set is constructed by sampling $m$ queries $x_1, \hdots x_m \sim \Deval$, and getting outputs $o_1, \hdots o_m$. Evaluation successfully flags risks if any output exhibits the undesired behavior \citep{Mitchell_2019, openai2024o1systemcard, anthropic2024claude3}.
+
+Unfortunately, this methodology can miss deployment failures. 
+One potential reason is there could be a \emph{distribution shift} between evaluation and deployment; i.e., $\Deval \neq \Ddeploy$, and deployment queries are more likely to produce failures.\footnote{This distribution shift can be partly addressed by developers data from a beta test, although this does not handle temporal shifts.} However, even after accounting for distribution shifts, evaluation can miss deployment failures due to differences in scale; the number of deployment queries $n$ is frequently orders of magnitude larger than the number of evaluation queries $m$. 
+Larger scale increases risks since risks come from \emph{any} undesired output; intuitively, more attempts to elicit instructions for chlorine gas increases the probability that at least one attempt will work. 
+
+To identify when risks emerge from the scale of deployment, our goal is to \emph{forecast} risks from a smaller, in-distribution evaluation set.
+Formally, we assume $\Dqueries \coloneq \Deval = \Ddeploy$, and want to predict whether or not we should expect to see a behavior on any $n$ deployment queries; for example, we might aim to predict whether any of 10,000 jailbreaks from some distribution will break the model, given 100 failed jailbreaks from the same distribution. 
+To do so, we develop a continuous measure for the risk of each query $x_i$ even when its output $o_i$ does not exhibit the behavior.
+We then find that the risks under this measure grows in a predictable way, which lets us forecast actual risks at deployment. 
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/repeated-sampling.png}
+    \caption{Repeatedly sampling from queries can elicit undesired behaviors with low-but-nonzero probability. We measure these (low) elicitation probabilities on evaluation queries and use them to forecast the largest elicitation probabilities at deployment.}
+    \vspace{-1.3em}
+    \label{fig:repeated-sampling}
+\end{figure}
+\subsection{Elicitation probabilities} 
+\label{sec:elicitation-probabilities}
+To extract more information from evaluation queries, a natural extension to sampling one output per query is to sample many, then test what fraction elicit the behavior. 
+We define this as the \emph{elicitation probability} of a query: the probability that a sampled output from a query has a specific behavior. 
+Formally, if $\distllm(x)$ is the distribution over outputs for query $x$, the elicitation probability $\pbehave(x; \distllm)$ of query $x$ for behavior $\behave$ is:
+\begin{align}
+    \pbehave(x; \distllm, \behave) &= \mathbb{E}_{o \sim \distllm(x)}\mathbf{1}[\behave(o) = 1].
+\end{align}
+Empirically, we find that many queries have small but non-zero elicitation probabilities (e.g., $\pbehave< 0.01$) (\reffig{repeated-sampling}). 
+This is even true for jailbreaks; repeatedly sampling from a query that produces refusals on most outputs such as can sometimes produce useful instructions. 
+
+Measuring elicitation probabilities is especially useful since we can compute the deployment risk from deployment elicitation probabilities. 
+At deployment, we sample $n$ queries, each of which has a corresponding elicitation probability $\pbehave(x_i; \distllm, \behave)$. 
+Each query's elicitation probability determines whether it produces an undesired output; depending on the setup, a query might produce a bad output if the elicitation probability is above a threshold, or randomly with probability $\pbehave(x_i; \distllm, \behave)$. 
+
+Much of the risk at deployment frequently comes from the largest sampled elicitation probabilities.  
+We capture how the largest elicitation probabilities grow with scale by studying the \emph{largest quantiles} of the distribution of elicitation probabilities across queries; for example, the 99th percentile elicitation probability might tell us what to expect in 100 queries, while the 99.99th percentile elicitation probability might indicate how large the elicitation probabilities should be in 10000 queries. 
+To formalize this, define $Q_p(n)$ to be the threshold for the top $1/n$ fraction of elicitation probabilities; informally, $Q_p(n)$ is defined such that
+\begin{align}
+    \mathbf{P}_{x \sim \Dqueries} [\pbehave(x; \distllm, \behave) \geq Q_p(n)] = 1/n.
+\end{align}
+We can measure how scale increases risk by studying how $Q_p(n)$ grows with the number of deployment queries $n$. 
+
+\subsection{Metrics for deployment risk}
+\label{sec:quantities-from-quantiles}
+We now argue that forecasting the tail quantiles $Q_p(n)$ is sufficient to forecast deployment risk. 
+\begin{enumerate}[leftmargin=*,itemsep=0.3em,topsep=0.3em]
+    \item  The \textbf{\emph{worst-query risk}} is the maximum elicitation probability out of $n$ sampled queries:
+\vspace{-8pt}
+$$\max_{i \in [n]} \pbehave(\x_i; \distllm, B)$$
+We forecast the worst-query risk of $n$ samples as $Q_p(n)$. We use this to validate our forecasts of the quantiles.
+    \item The \textbf{\emph{behavior frequency}} is the fraction of queries that have an elicitation probability greater than a threshold $\tau$.
+\vspace{-8pt}
+$$\mathbf{E}_{x \sim \Dqueries} \mathbf{1}[\pbehave(x_i ; \distllm, B) > \tau]$$
+
+We compute the behavior frequency by finding the quantile that matches the chosen threshold; the behavior frequency is $1/n^\prime$, where $n^\prime$ is such that $Q_p(n^\prime) = \tau$. The behavior frequency captures risks that are concentrated in one query; i.e., query only counts as eliciting behavior if it does so routinely.  \citet{wu2024estimating} also forecast the behavior frequencies. 
+    \item The \textbf{\emph{aggregate risk}} is the probability that sampling a single random output from each of $n$ queries produces an example of the behavior
+\vspace{-8pt}
+$$1 - \prod_{i = 1}^n (1 - \pbehave(x_i; \distllm, B))$$
+
+We compute the aggregate risk by randomly sampling elicitation probabilities using the forecasted quantiles $Q_p(n)$ and the empirical distribution.\footnote{To compute the aggregate risk, we sample $u_i \sim U_{[0,1]}$, then set the elicitation probability $p_i$ to be the $u_i^{\text{th}}$ quantile of the distribution. We use the empirical quantiles if $u_i < 1 - 1/m$ (i.e., the evaluation quantiles) and otherwise use the forecasted quantiles.} This simulates sampling single output from each query at deployment. Aggregate risks can arise even when the worst-query risk and behavior probabilities are low, as the low elicitation probabilities can compound with scale. 
+\end{enumerate}
+
+\subsection{Forecasting the extreme quantiles}
+\label{sec:forecasting-extreme-quantiles}
+Deployment risks are a function of the tail of the distribution of elicitation probabilities; we need to account for a one-in-a-million query for a million query deployment. This means that some of the quantiles that we need to compute risk, $Q_p(n)$, are not represented during evaluation. 
+We instead forecast them from the empirical evaluation quantiles. 
+
+Our primary forecasting approach is the \textbf{\emph{Gumbel-tail method}}, where we assume that logarithm of the extreme quantiles scales according to a power law with respect to the number of queries $n$. Concretely, define $\psi_i = -\log (-\log \pbehave(x_i; \distllm, B))$ to be the elicitation score of input $x_i$. Under fairly general conditions, extreme value theory tells us that the distribution of the highest quantiles random variables tends towards the extreme quantiles of one of three distributions, one of which is Gumbel. We include further motivation for why we expect to see Gumbel scaling in particular in \refapp{why-gumbel}.
+
+For distributions with extreme behavior that tends towards a Gumbel, we can exploit a key property: the tail of the log survival function is an approximately linear function of the elicitation score. Formally, for survival function $S(\psi) = \mathbf{P}(\psi_i > \psi)$, this says $\log S(\psi) = a\psi + b$ for constants $a$ and $b$ for sufficiently large $\psi$. See \refapp{survival-linear} for a complete argument. 
+This means that if $Q_\psi(n)$ is the ${1/n}^{th}$ largest quantile score, for sufficiently large $n$, 
+\begin{align}
+    \log S(Q_\psi(n)) &= aQ_\psi(n) + b \\ 
+    \log \frac{1}{n} &= aQ_\psi(n) + b \\ 
+    Q_\psi(n) &= -\frac{1}{a}(\log n  - b),
+\end{align}
+where the second line comes from the definition of $Q_\psi(n)$. 
+
+We thus make forecasts about extreme quantiles using the linear relationship between $\log n$ and the corresponding score quantiles; this corresponds to a power law between the log-quantiles of the distribution of elicitation probabilities and the number of queries. Specifically, we fit $a$ and $b$ using ordinary least squares regression between the elicitation score and the corresponding log survival probability, for the ten highest elicitation scores during evaluation. We then use the learned $a$ and $b$ to extrapolate to larger quantiles (see \reffig{fig1} for an example). Since the score function is monotone, this means that the original distribution has quantiles $Q_p(n) = e^{-e^{-Q_\psi(n)}}$, and there is a power law between $-\log Q_p(n)$ and $n$. 
+
+There are limitations to this method. Since our forecast only uses the largest ten elicitation probabilities, the forecasts are sensitive to stochasticity in the specific evaluation set. Moreover, the evaluation set might not be large enough to capture the extreme tail behavior. 
+We find that despite these limitations, the Gumbel-tail method frequently makes accurate forecasts in practice. 

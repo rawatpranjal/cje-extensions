@@ -1,4 +1,4 @@
-"""End-to-end orchestrator: prompts → generate × 5 policies → judge cheap × 5 → judge oracle × 5
+"""End-to-end orchestrator: prompts → generate × 6 policies → judge cheap × 6 → judge oracle × 6
    → assemble CJE-format JSONL files.
 
 Output layout (matches cvar_v3 / original Arena format):
@@ -11,6 +11,7 @@ Output layout (matches cvar_v3 / original Arena format):
             premium_responses.jsonl
             parallel_universe_prompt_responses.jsonl
             unhelpful_responses.jsonl
+            risky_responses.jsonl
 
 Usage:
     python3 -m cvar_v4.healthbench_data.pipeline --pilot 20

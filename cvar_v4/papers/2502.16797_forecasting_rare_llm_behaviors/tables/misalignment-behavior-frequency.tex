@@ -1,0 +1,43 @@
+\begin{table}[h!]
+\centering
+\begin{subtable}[b]{0.3\textwidth}
+    \centering
+    \begin{tabular}{llc}
+    \toprule
+    Method & $m$ & \\
+    \midrule
+     & 100 & 1.046 \\
+     Survival & 200 & 1.042 \\
+     (1.046) & 500 & 1.161 \\
+     & 1,000 & \textbf{1.034} \\
+    \midrule
+     & 100 & 3.353 \\
+     Log-normal & 200 & 3.991 \\
+     (4.097) & 500 & 4.901 \\
+     & 1,000 & 5.008 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Individual forecasts}
+\end{subtable}
+\begin{subtable}[b]{0.3\textwidth}
+    \centering
+    \begin{tabular}{llc}
+    \toprule
+    Method & $m$ & \\
+    \midrule
+     & 100 & 0.535 \\
+     Survival & 200 & 0.555 \\
+     (0.535) & 500 & 0.636 \\
+     & 1,000 & \textbf{0.508} \\
+    \midrule
+     & 100 & 4.182 \\
+     Log-normal & 200 & 4.959 \\
+     (5.386) & 500 & 6.213 \\
+     & 1,000 & 6.189 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Average forecasts}
+\end{subtable}
+\caption{Mean absolute log error by method, number of evaluation queries ($m$) for misaligned actions over individual questions.}
+\label{tab:oom-errors}
+\end{table}

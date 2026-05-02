@@ -1,8 +1,20 @@
 """Base versus clone tail forensics.
 
 Identifies the prompts in the bottom-k oracle rows of each policy and
-flags those unique to one or the other. Useful for asking whether the
-mean-vs-tail finding is real or seed-specific.
+flags those unique to one or the other.
+
+Why a separate diagnostic for this pair:
+    base and clone share the same generator (gpt-4o-mini with the same
+    prompt template); they should be statistically indistinguishable
+    on every estimand if the policy panel is well-constructed and the
+    cheap/oracle judges are stable. A real base-vs-clone difference
+    in the tail signals one of: (a) genuine sampling variation across
+    temperature seeds, (b) judge noise on borderline criteria, or
+    (c) a bug in the policy panel. Listing the prompts that appear
+    ONLY in one bottom-k and not the other lets the analyst eyeball
+    which is happening. The ideal output is heavy overlap (most
+    prompts shared) — that's the shared-generator failure-mode
+    signature, not real policy divergence.
 
 Outputs:
     writeup/data/base_clone.json

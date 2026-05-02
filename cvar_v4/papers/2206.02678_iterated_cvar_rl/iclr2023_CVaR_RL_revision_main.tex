@@ -1,0 +1,893 @@
+
+\documentclass{article} % For LaTeX2e
+\usepackage{iclr2023_conference,times}
+
+
+\usepackage{hyperref}
+\usepackage{url}
+
+% My packages
+\usepackage{bm}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\newtheorem{example}{Example}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}{Assumption}
+
+\usepackage{ifthen}
+\usepackage{thm-restate}
+\usepackage{tikz}
+\usetikzlibrary{positioning,chains,fit,shapes,calc}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{enumerate}
+\usepackage{flushend}
+\usepackage{mathrsfs}
+\usepackage{subfigure}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage{setspace}
+\usepackage{xcolor}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+%\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage{bbm}
+\usepackage{wrapfig}
+\usepackage[page, header]{appendix}
+\usepackage{hyperref} 
+\hypersetup{
+	hidelinks
+	%	colorlinks = true,
+	%	urlcolor   = black,
+	%	linkcolor  = blue,
+	%	citecolor  = blue
+}
+
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bT}{\mathbb{T}}
+\newcommand{\bOne}{\mathbbm{1}}
+\newcommand{\bA}{\boldsymbol{A}}
+\newcommand{\ba}{\boldsymbol{a}}
+\newcommand{\bB}{\boldsymbol{B}}
+\newcommand{\bI}{\boldsymbol{I}}
+\newcommand{\bL}{\boldsymbol{L}}
+\newcommand{\bO}{\boldsymbol{O}}
+\newcommand{\br}{\boldsymbol{r}}
+\newcommand{\bR}{\boldsymbol{R}}
+\newcommand{\bS}{\boldsymbol{S}}
+\renewcommand{\bT}{\boldsymbol{T}}
+\newcommand{\bU}{\boldsymbol{U}}
+\newcommand{\bu}{\boldsymbol{u}}
+\newcommand{\bV}{\boldsymbol{V}}
+\newcommand{\bv}{\boldsymbol{v}}
+\newcommand{\bw}{\boldsymbol{w}}
+\newcommand{\bW}{\boldsymbol{W}}
+\newcommand{\bX}{\boldsymbol{X}}
+\newcommand{\bY}{\boldsymbol{Y}}
+\newcommand{\bx}{\boldsymbol{x}}
+\newcommand{\by}{\boldsymbol{y}}
+\newcommand{\bz}{\boldsymbol{z}}
+\newcommand{\bZ}{\boldsymbol{Z}}
+\newcommand{\bpi}{\boldsymbol{\pi}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cD}{\mathcal{D}}
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cG}{\mathcal{G}}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\cI}{\mathcal{I}}
+\newcommand{\cJ}{\mathcal{J}}
+\newcommand{\cK}{\mathcal{K}}
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\cN}{\mathcal{N}}
+\newcommand{\cO}{\mathcal{O}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cQ}{\mathcal{Q}}
+\newcommand{\cR}{\mathcal{R}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cT}{\mathcal{T}}
+\newcommand{\cV}{\mathcal{V}}
+\newcommand{\cX}{\mathcal{X}}
+\newcommand{\ttheta}{\tilde{\theta}}
+\newcommand{\tR}{\tilde{R}}
+\newcommand{\tP}{\tilde{P}}
+\newcommand{\tQ}{\tilde{Q}}
+\newcommand{\tY}{\tilde{Y}}
+\newcommand{\tZ}{\tilde{Z}}
+\newcommand{\hP}{\hat{P}}
+\newcommand{\hZ}{\hat{Z}}
+\newcommand{\vg}{\vec{g}}
+\newcommand{\vx}{\vec{x}}
+\newcommand{\vzero}{\vec{0}}
+\newcommand{\vtheta}{\vec{\theta}}
+
+
+\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+\mathchardef\mhyphen="2D
+\newcommand{\ex}{\mathbb{E}}
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\kl}{\textup{KL}}
+\newcommand{\var}{\textup{Var}}
+\newcommand{\cov}{\textup{Cov}}
+\newcommand{\unitvec}{\textbf{1}}
+\newcommand{\sbr}[1]{\left( #1 \right)}
+\newcommand{\mbr}[1]{\left[ #1 \right]}
+\newcommand{\lbr}[1]{\left\{ #1 \right\}}
+\newcommand{\abr}[1]{\left| #1 \right|}
+\newcommand{\cvar}{\textup{CVaR}}
+\newcommand{\icvar}{\textup{ICVaR}}
+\newcommand{\quantile}{\textup{VaR}}
+\newcommand{\std}{\textup{Std}}
+\newcommand{\supp}{\textup{supp}}
+\newcommand{\algcvar}{\mathtt{ICVaR\mbox{-}RM}}
+\newcommand{\algcvarbpi}{\mathtt{ICVaR\mbox{-}BPI}}
+\newcommand{\algmin}{\mathtt{MaxWP}}
+\newcommand{\algcomment}[1]{{\color{blue} \hfill // #1}}
+\newcommand{\indicator}[1]{\mathbbm{1}\left\{ #1 \right\}}
+\newcommand{\sumtext}{\textup{sum}}
+\newcommand{\bernoulli}{\mathtt{Ber}}
+\newcommand{\hyphen}{\mbox{-}}
+\newcommand{\revision}[1]{{\color{black} #1}}
+
+
+% add package
+\usepackage{cleveref}
+\crefname{equation}{Eq.}{Eqs.}
+\crefname{section}{Section}{Sections}
+\crefname{algorithm}{Algorithm}{Algorithms}
+\crefname{figure}{Figure}{Figures}
+\crefname{table}{Table}{Tables}
+\crefname{theorem}{Theorem}{Theorems}
+\crefname{lemma}{Lemma}{Lemmas}
+\crefname{corollary}{Corollary}{Corollaries}
+\crefname{definition}{Definition}{Definitions}
+
+
+% Macro for comments:
+\newcommand{\compilehidecomments}{true}%HIDE comments
+\ifthenelse{ \equal{\compilehidecomments}{true} }{%
+	\newcommand{\longbo}[1]{}
+	\newcommand{\yihan}[1]{}
+	\newcommand{\siwei}[1]{}
+}{
+	\newcommand{\longbo}[1]{{\color{red}  [\text{Longbo:} #1]}}
+	\newcommand{\yihan}[1]{{\color{teal} [\text{Yihan:} #1]}}
+	\newcommand{\siwei}[1]{{\color{brown} [\text{Siwei:} #1]}}
+}
+
+%% macro for full vs. short version
+\newcommand{\compilefullversion}{true} %Compile Full Version
+\ifthenelse{\equal{\compilefullversion}{false}}{%
+	\newcommand{\OnlyInFull}[1]{}
+	\newcommand{\OnlyInShort}[1]{#1}
+}{%
+	\newcommand{\OnlyInFull}[1]{#1}%
+	\newcommand{\OnlyInShort}[1]{}%
+}%
+
+\allowdisplaybreaks
+\abovedisplayskip=4pt
+\belowdisplayskip=4pt
+\setlength\textfloatsep{5pt}
+
+
+\title{Provably Efficient Risk-Sensitive Reinforcement Learning: Iterated CVaR and Worst Path}
+
+% Authors must not appear in the submitted version. They should be hidden
+% as long as the \iclrfinalcopy macro remains commented out below.
+% Non-anonymous submissions will be rejected without review.
+
+%\author{Antiquus S.~Hippocampus, Natalia Cerebro \& Amelie P. Amygdale \thanks{ Use footnote for providing further information
+%		about author (webpage, alternative address)---\emph{not} for acknowledging
+%		funding agencies.  Funding acknowledgements go at the end of the paper.} \\
+%	Department of Computer Science\\
+%	Cranberry-Lemon University\\
+%	Pittsburgh, PA 15213, USA \\
+%	\texttt{\{hippo,brain,jen\}@cs.cranberry-lemon.edu} \\
+%	\And
+%	Ji Q. Ren \& Yevgeny LeNet \\
+%	Department of Computational Neuroscience \\
+%	University of the Witwatersrand \\
+%	Joburg, South Africa \\
+%	\texttt{\{robot,net\}@wits.ac.za} \\
+%	\AND
+%	Coauthor \\
+%	Affiliation \\
+%	Address \\
+%	\texttt{email}
+%}
+
+
+\author{Yihan Du\\
+	Institute for Interdisciplinary Information Sciences\\
+	Tsinghua University\\
+	Beijing, China \\
+	\texttt{duyh18@mails.tsinghua.edu.cn} \\
+	\And
+	Siwei Wang \\
+%	Department of Computational Neuroscience \\
+	Microsoft Research \\
+	Beijing, China \\
+	\texttt{siweiwang@microsoft.com} \\
+	\AND
+	Longbo Huang \thanks{Corresponding author.} \\
+	Institute for Interdisciplinary Information Sciences \\
+	Tsinghua University\\
+	Beijing, China \\
+	\texttt{longbohuang@tsinghua.edu.cn}
+}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\iclrfinalcopy 
+% Uncomment for camera-ready version, but NOT for submission.
+\begin{document}
+	
+	
+	\maketitle
+	
+	\begin{abstract}
+		In this paper, we study a novel episodic risk-sensitive Reinforcement Learning (RL) problem, named Iterated CVaR RL, which aims to maximize the tail of the reward-to-go at each step, and focuses on tightly controlling the risk of getting into catastrophic situations at each stage. 
+		This formulation is applicable to real-world tasks that demand strong risk avoidance throughout the decision process, such as autonomous driving, clinical treatment planning and robotics. 
+		We investigate two performance metrics under Iterated CVaR RL, i.e., Regret Minimization  and Best Policy Identification. For both metrics, we design efficient algorithms $\algcvar$ and $\algcvarbpi$, respectively, and provide nearly matching upper and lower bounds with respect to the number of episodes $K$. 
+		We also investigate an interesting limiting case of Iterated CVaR RL, called Worst Path RL, where the objective becomes to maximize the minimum possible cumulative reward. For Worst Path RL, we propose an efficient algorithm with constant upper and lower bounds. 
+		Finally, our techniques for bounding the change of CVaR due to the value function shift and decomposing the regret via a distorted visitation distribution are novel, and can find applications in other risk-sensitive RL problems. 
+	\end{abstract}
+	
+	
+	\section{Introduction}
+	%\longbo{try to revise this paragraph by highlighting the safety issue}\yihan{Revised this paragraph} 
+	Reinforcement Learning (RL)~\citep{kaelbling1996reinforcement,szepesvari2010algorithms,sutton2018reinforcement} is a classic online decision-making formulation, where an agent interacts with an unknown environment with the goal of maximizing the obtained reward. 
+	% In recent years, several RL algorithms, e.g.,~\cite{szepesvari2010algorithms,azar2017minimax,jin2018q,zanette2019tighter}, have been developed and demonstrated the sample efficiency.
+	Despite the empirical success and theoretical progress of recent RL algorithms, e.g., ~\citep{szepesvari2010algorithms,agrawal2017optimistic,azar2017minimax,zanette2019tighter}, they focus mainly on the risk-neutral criterion, i.e., maximizing the expected cumulative reward, and can fail to avoid rare but disastrous situations. % and fails to capture the risk in decision-making processes. 
+	%
+	As a result, existing algorithms cannot be applied to tackle real-world risk-sensitive tasks, such as autonomous driving~\citep{wen2020safe} and clinical treatment planning~\citep{healthcare}, where 
+	%safety is a top-priority performance metric and 
+	policies that ensure low risk of getting into catastrophic situations
+	% (e.g., accidents in autonomous driving) 
+	at all decision stages are strongly preferred. 
+	
+	
+	Motivated by the above facts, we investigate Iterated CVaR RL, a novel episodic RL formulation equipped with an important risk-sensitive criterion, i.e., Iterated Conditional Value-at-Risk (CVaR)~\citep{hardy2004iterated}. 
+	Here, CVaR~\citep{artzner1999coherent} is a popular static (single-stage) risk measure which stands for the expected tail reward. 
+	Iterated CVaR is a dynamic (multi-stage) risk measure defined upon CVaR by backward iteration, and
+	% is first proposed in financial insurance~\cite{hardy2004iterated} and 
+	focuses on the worst portion of the reward-to-go at each stage. 
+	%Iterated CVaR~\cite{hardy2004iterated,chu2014markov,bauerle2022markov} is a dynamic (multi-stage) risk measure first proposed in financial insurance~\cite{hardy2004iterated}, and it is defined by backward iteration based on the popular CVaR measure~\cite{artzner1999coherent,rockafellar2000optimization} in risk management. 
+	In the Iterated CVaR RL problem, an agent interacts with an \emph{unknown} episodic Markov Decision Process (MDP) in order to maximize the worst $\alpha$-portion of the reward-to-go 
+	%the reward that can be obtained when the worst $\alpha$-portion situations happen 
+	at each step, where $\alpha \in (0,1]$ is a given risk level.
+	%\yihan{Revised the description of the problem}\longbo{looks good}\yihan{Revised it again}
+	Under this model, we investigate two important performance metrics,
+	% in RL~\cite{kaelbling1996reinforcement,szepesvari2010algorithms,sutton2018reinforcement}, 
+	i.e., Regret Minimization (RM), where the goal is to minimize the cumulative regret over all episodes,  and Best Policy Identification (BPI), where the performance is measured by the number of episodes required for identifying an optimal policy. 
+	
+	
+	%In contrast to existing risk-sensitive RL works~\citep{di2012policy,la2013actor,fei2020near_optimal,fei2021exponential,fei2021function_approx}, which take all successor states into account and mainly quantify the risk by the variance-related or exponential utility criteria, Iterated CVaR RL primarily concerns the worst portion successor states.
+	%Also, different from existing CVaR MDP works~\citep{boda2006time,bauerle2011markov,chow2015risk}, which maximize the CVaR of the total reward with \emph{known} transition, Iterated CVaR RL considers optimizing the performance under bad situations and preventing from getting into catastrophic states \emph{at each step} with \emph{unknown} transition. 
+	%This Iterated CVaR RL formulation enables us to control the risk of falling into disastrous situations throughout the decision process, and is most suitable for applications where such safety-at-all-time is critical, e.g., autonomous driving~\citep{wen2020safe} and clinical treatment planning~\citep{healthcare}.
+	
+	\revision{
+		Compared to existing CVaR MDP model, e.g., \citep{boda2006time,ott2010markov,bauerle2011markov,chow2015risk},\yihan{added ``e.g.,'' for the references of CVaR MDP} which aims to maximize the CVaR (i.e., the worst $\alpha$-portion) of the \emph{total} reward, our Iterated CVaR RL concerns the worst $\alpha$-portion of the reward-to-go \emph{at each step}, and prevents the agent from getting into catastrophic states more carefully. Intuitively, CVaR MDP takes more cumulative reward into account\yihan{changed ``overall performance'' to ``cumulative reward''} and prefers actions which have better performance in general, but can have larger probabilities of getting into catastrophic states. Thus, CVaR MDP is suitable for scenarios where bad situations lead to a higher cost instead of fatal damage, e.g., finance.
+		In contrast, our Iterated CVaR RL prefers actions which have smaller probabilities of getting into catastrophic states. 
+		Hence, Iterated CVaR RL is suitable for \emph{safety-critical} applications, where catastrophic states are unacceptable and need to be carefully avoided, e.g., clinical treatment planning~\citep{wang2019artificial} and unmanned helicopter control~\citep{unmanned_helicopter}.
+		For example, consider the case where 
+		% an unmanned helicopter control task, where 
+		we fly an unmanned helicopter to complete some task. There is a small probability that, at each time during execution, the helicopter encounters a sensing or control failure and does not take the scheduled action. 
+		%we prefer to adopt a safe policy rather than pursuing high expected reward,
+		To guarantee the safety of surrounding workers and the helicopter, we need to make sure that even if 
+		%accidents occur, e.g., 
+		the failure occurs, the taken policy ensures that the helicopter does not crash and cause fatal damage  (see Appendix~\ref{apx:comparison_cvar},~\ref{apx:comparison_exp_uti} for more detailed comparisons with existing risk-sensitive MDP models).
+		%For such scenarios, Iterated CVaR RL provides a rigorous model to capture potentially dangerous situations and prevent catastrophic consequences. 
+	}
+	
+	Iterated CVaR RL faces several unique challenges as follows. 
+	(i) The importance (contribution to regret) of a state in Iterated CVaR RL is not proportional to its visitation probability. Specifically, there can be states which are critical (risky) but have a small visitation probability. As a result, the regret for Iterated CVaR RL cannot be decomposed into the estimation error at each step with respect to the visitation distribution, as in standard RL analysis~\citep{jaksch2010near,azar2017minimax,zanette2019tighter}.
+	%In particular, there are some risky states that are more critical, but difficult to collect information from. 
+	(ii) In Iterated CVaR RL, the calculation of estimation error involves bounding the change of CVaR when the true value function shifts to optimistic value function, which is very different from typically bounding the change of expected rewards as in existing RL analysis~\citep{jaksch2010near,azar2017minimax,jin2018q}.
+	%Without the consistency between state importance and its visitation probability and the reward decomposition, which are key to existing RL analysis~\citep{jaksch2010near,azar2017minimax,zanette2019tighter}, 
+	Therefore, Iterated CVaR RL demands brand-new algorithm design and analytical techniques. 
+	To tackle the above challenges, we design two efficient algorithms $\algcvar$ and $\algcvarbpi$ for the RM and BPI metrics, respectively, equipped with delicate CVaR-adapted value iteration and exploration bonuses to allocate more attention on rare but potentially dangerous states. 
+	% 
+	We also develop novel analytical techniques, for bounding the change of CVaR due to the value function shift and decomposing the regret via a distorted visitation distribution.
+	Lower bounds for both metrics are established to demonstrate the optimality of our algorithms with respect to the number of episodes $K$. Moreover, we present experiments to validate our theoretical results and show the performance superiority of our algorithm (see Appendix~\ref{apx:experiments}). 
+	
+	%
+	%\longbo{again, this sentence looks a bit disconnected. think about where to put it}Our results capture the essential hardness of Iterated CVaR RL, i.e., any algorithm must pay a price for exploring risk-sensitive but hard-to-reach states. 
+	
+	
+	We further study an interesting limiting case of Iterated CVaR RL when $\alpha$ approaches $0$, called Worst Path RL, where the goal becomes to maximize the minimum possible cumulative reward (optimize the worst path).  This setting corresponds to the scenario where the decision maker is extremely risk-adverse and concerns the worst situation (e.g., in clinical treatment planning~\citep{healthcare}, the worst case can be disastrous). 
+	% clinicians need to give sufficient consideration to the consequences of surgical failures
+	%In this limiting case, 
+	We emphasize that Worst Path RL cannot be directly solved by taking $\alpha \to 0$ 
+	%\siwei{I change "$\alpha = 0$" to "$\alpha \to 0$", since it seems that in your definition of CVAR we need $\alpha \in (0,1]$.}\yihan{revised throughout the paper}
+	in Iterated CVaR RL's results, as the results there have a dependency on $\frac{1}{\alpha}$ in both upper and lower bounds. 
+	To handle this limiting case, we design a simple yet efficient algorithm $\algmin$, and obtain constant upper and lower regret bounds which are independent of $K$. 
+	
+	The contributions of this paper are summarized as follows. 
+	
+	
+	\begin{itemize}
+		\item We propose a novel Iterated CVaR RL formulation, where an agent interacts with an unknown environment, with the objective of maximizing the worst $\alpha$-percent tail of the reward-to-go at each step. 
+		This formulation enables one to tightly control risk throughout the decision process, and is most suitable for applications where such safety-at-all-time is critical.
+		% e.g., autonomous driving and clinical treatment planning.
+		\item We investigate two important metrics of Iterated CVaR RL, i.e., Regret Minimization (RM) and Best Policy Identification (BPI), and propose efficient algorithms $\algcvar$ and $\algcvarbpi$. We establish nearly matching regret/sample complexity upper and lower bounds with respect to $K$. 
+		%Our results reveal an essential hardness of Iterated CVaR RL, i.e., if an agent is highly sensitive to rare but bad situations, a regret due to exploring critical but hard-to-reach states has to be paid.
+		Moreover, we develop novel techniques to bound the change of CVaR due to the value function shift and decompose the regret via a distorted visitation distribution, which can be applied to other risk-sensitive decision making problems.
+		
+		% To our best knowledge, this is the first work to consider best policy identification in risk-sensitive RL and provide sample complexity guarantees.
+		%	\yihan{Highlighted the first risk-sensitive BPI result here} 
+		\item We further investigate a limiting case of Iterated CVaR RL when $\alpha$ approaches $0$, called Worst Path RL, where the objective is to maximize the minimum possible cumulative reward. We develop a simple and efficient algorithm $\algmin$, and provide constant regret upper and lower bounds (independent of $K$). 
+	\end{itemize}
+	
+	Due to space limit, we defer all proofs and experiments to Appendix.
+	
+	%\section{Related Work}
+	%
+	%\textbf{CVaR-based Markov Decision Process (MDP).}
+	%%There are several prior works that study MDPs with CVaR-based criteria. 
+	%\cite{chow2014algorithms} considers a CVaR-constrained MDP, which aims to minimize the expected total cost with a constraint on the CVaR of the total cost.
+	%\cite{bauerle2011markov,haskell2015convex,chow2015risk} investigate how to minimize the CVaR of the total cost in decision processes, i.e., CVaR MDPs, and propose approximate planning algorithms with convergence analysis (see Appendix~\ref{apx:comparison_cvar} for a detailed comparison between our formulation and CVaR MDPs).
+	%\cite{hardy2004iterated} firstly defines Iterated CVaR, and demonstrates that it is a coherent and consistent dynamic risk measure, and applicable to equity-linked insurance. \cite{osogami2012iterated,chu2014markov,bauerle2022markov} investigate MDPs with general iterated coherent risk measures, including Iterated CVaR, and demonstrate the existence of Markovian optimal policies for these MDPs. \cite{hardy2004iterated,coraluppi1997mixed,coraluppi1999risk} study MDPs with the goal of minimizing the worst-case discounted cost, develop dynamic programming for value functions, and design heuristic algorithms without theoretical analysis.
+	%The above works mainly study mathematical properties (e.g., the existence of optimal policies), offline planning algorithms, and convergence guarantees for MDPs with known transition distribution, while our work investigates an online RL problem for unknown MDPs, designs online algorithms and derives regret/sample complexity guarantees. %Our algorithm design, results and techniques  differ significantly from prior works. 
+	%
+	%
+	%
+	%\textbf{Risk-Sensitive Reinforcement Learning.}
+	%\cite{chow2017risk} studies a risk-constrained RL problem where risk is represented by a constraint on the CVaR of the total cost, and designs policy gradient and actor-critic algorithms with convergence analysis.
+	%\cite{fei2020near_optimal} considers risk-sensitive RL with the exponential utility criterion, and proposes efficient algorithms with regret guarantees. \cite{fei2021exponential} further improves the regret results of \cite{fei2020near_optimal} by developing an exponential Bellmen equation and a Bellman backup analytical procedure.
+	%\cite{fei2021function_approx} extends the results in \cite{fei2020near_optimal,fei2021exponential} from the tabular setting to  function approximation, and designs algorithms with sub-linear regret guarantees. 
+	%The above works study RL with the CVaR constraints or the exponential utility criterion, which greatly differ from our formulation, and their algorithms and results cannot be applied to our problem.
+	
+	
+	
+	\section{Related Work}
+	
+	Below we review the most related works, and defer a full literature review to Appendix~\ref{apx:related_work}.
+	
+	\textbf{CVaR-based MDPs (Known Transition).}
+	\cite{boda2006time,ott2010markov,bauerle2011markov,chow2015risk} study the CVaR MDP where the objective is to minimize the CVaR of the total cost, and show that the optimal policy for CVaR MDP is history-dependent
+	% and inefficient to exactly compute 
+	(see Appendix~\ref{apx:comparison_cvar} for a detailed comparison with CVaR MDP).
+	\cite{hardy2004iterated} firstly define the Iterated CVaR measure, and
+	%, and prove that it is a coherent dynamic risk measure. 
+	\cite{osogami2012iterated,chu2014markov,bauerle2022markov} consider iterated coherent risk measures (including Iterated CVaR) in MDPs, and demonstrate the existence of Markovian optimal policies.
+	% (see Appendix~\ref{apx:comparison_cvar} for a detailed comparison between our formulation and CVaR MDPs).
+	The above works focus mainly on the planning side, i.e., proposing algorithms and error guarantees for MDPs with \emph{known} transition, while our work develops RL algorithms (interacting with the environment) and regret/sample complexity results for \emph{unknown} transition.
+	
+	\textbf{Risk-sensitive Reinforcement Learning (Unknown Transition).}
+	%\cite{borkar2001sensitivity,borkar2002q} study risk-sensitive RL with the exponential utility measure, and design algorithms based on actor–critic learning and Q-learning, respectively.
+	%In risk-sensitive RL, \cite{di2012policy,la2013actor} study variance-related risk criteria. 
+	\revision{\cite{tamar2015optimizing,keramati2020being} study CVaR MDP with unknown transition and provide convergence analysis.}
+	\cite{borkar2014risk,chow2014algorithms,chow2017risk} investigate RL with CVaR-based constraints.
+	%aim to minimize the expected total cost with CVaR-based constraints, and propose policy gradient, actor-critic and stochastic approximation-style algorithms.
+	\cite{heger1994consideration,coraluppi1997mixed,coraluppi1999risk} consider minimizing the worst-case cost in RL and design heuristic algorithms. 
+	%There are other safe RL works~\citep{cheng2019end,fatemi2019dead,fatemi2021medical} which focus on state-wise safety (constrain the agent within a set of safe states), and their formulations are very different from ours.  A comprehensive survey on safe RL can be found in \citep{garcia2015comprehensive}.
+	%The above works mainly investigate convergence analysis, and do not provide regret/sample complexity bounds as us. 
+	%
+	%To our best knowledge, there are only a few risk-sensitive RL works~\citep{fei2020near_optimal,fei2021exponential,fei2021function_approx} which establish rigorous regret bounds.
+	\revision{\cite{fei2020near_optimal,fei2021exponential,fei2021function_approx} study risk-sensitive RL with the exponential utility criterion,
+		%\cite{fei2021function_approx} extend the model and results in \citep{fei2020near_optimal,fei2021exponential} from the tabular setting to the function approximation formulation. 
+		which takes all successor states into account with an exponential reweighting scheme. In contrast, our Iterated CVaR RL primarily concerns the worst $\alpha$-portion successor states, and focuses on optimizing the performance under bad situations (see Appendix~\ref{apx:comparison_exp_uti} for a detailed comparison).}
+	
+	
+	
+	\section{Problem Formulation} \label{sec:formulation}
+	In this section, we present the problem formulations of Iterated CVaR RL and Worst Path RL. 
+	% Below, we start by introducing the risk measures. 
+	
+	\textbf{Conditional Value-at-Risk (CVaR).}
+	We first introduce two risk measures, i.e., Value-at-Risk (VaR) and Conditional Value-at-Risk (CVaR). Let $X$ be a random variable with cumulative distribution function $F(x)=\Pr[X \leq x]$. Given a risk level $\alpha \in (0,1]$, the VaR at risk level $\alpha$ is the $\alpha$-quantile of $X$, i.e., $\quantile^{\alpha}(X)=\min\{x|F(x) \geq \alpha\}$, and the CVaR at risk level $\alpha$ is defined as~\citep{rockafellar2000optimization}:  
+	\begin{align*}
+		\cvar^{\alpha}(X)=\sup_{x \in \R} \Big\{ x-\frac{1}{\alpha} \ex \mbr{ (x-X)^{+} } \Big\},
+	\end{align*}
+	where $(x)^{+}:=\max\{x,0\}$. If there is no probability atom at $\quantile^{\alpha}(X)$, CVaR can also be written as  
+	$
+	\cvar^{\alpha}(X)=\ex [X|X \leq \quantile^{\alpha}(X)]
+	$
+	~\citep{shapiro2021lectures}.
+	Intuitively, $\cvar^{\alpha}(X)$ is a distorted expectation of $X$ conditioning on its  $\alpha$-portion tail, which depicts the average value when bad situations happen. When $\alpha=1$, $\cvar^{\alpha}(X)=\ex[X]$, and when $\alpha \to 0$, $\cvar^{\alpha}(X)$ tends to $\min(X)$~\citep{chow2015risk}.
+	
+	
+	\textbf{Iterated CVaR RL.}
+	We consider an episodic Markov Decision Process (MDP) $\cM(\cS,\cA,H,p,r)$. Here $\cS$ is the state space, $\cA$ is the action space, and $H$ is the length of horizon in each episode. $p$ is the transition distribution, i.e., $p(s'|s,a)$ gives the probability of transitioning to $s'$ when starting from state $s$ and taking action $a$. $r: \cS \times \cA \mapsto [0,1]$ is a reward function, and $r(s,a)$ gives a deterministic reward for taking action $a$ in state $s$. A policy $\pi$ is defined as a collection of $H$ functions, i.e., $\pi=\{\pi_h: \cS \mapsto \cA\}_{h \in [H]}$, where $[H]:=\{1, 2, ..., H\}$. 
+	
+	The \emph{episodic} RL game is as follows. In each episode $k$, an agent chooses a policy $\pi^k$, and starts from a fixed initial state $s_1$, i.e., $s^k_1:=s_1$, as assumed in many prior RL works~\citep{fiechter1994efficient,kaufmann2021adaptive,menard2021fast}.
+	%\footnote{This is a common assumption in the literature, e.g.,~\citep{fiechter1994efficient,kaufmann2021adaptive,menard2021fast}. In addition, if the initial state is drawn from a fixed distribution $\mu \in \triangle_{\cS}$, we can add an artificial state $s_0$ with transition probability $p(s'|s_0,a)=\mu(s')$ for any $a \in \cA$ and $s' \in \cS$. Then, this setting can be regarded as starting from a fixed initial state $s_0$ and solved by our algorithms and analysis~\citep{menard2021fast}.} 
+	%, which is arbitrarily picked by the environment and is the same for all $k$ in the best policy identification setting, as in the literature~\cite{jin2018q,zanette2019tighter,dann2015sample,menard2021fast}. 
+	At each step $h \in [H]$, the agent observes the state $s^k_h$ and takes an action $a^k_h=\pi^k_h(s^k_h)$. After that, it receives a reward $r(s^k_h,a^k_h)$ and  transitions to a next state $s^k_{h+1}$ according to the transition distribution $p(\cdot|s^k_h,a^k_h)$. 
+	The episode ends after $H$ steps and the agent enters the next episode. 
+	%After the agent takes an action and receives the reward at step $H$, this episode ends, and she enters the next episode. 
+	%For consistency of notation, we define $s^k_1:=s_1$ for each episode $k$. \longbo{does the agent start from the same initial state $s_1$ in each episode?}\yihan{yes. we need this, and it is also needed in prior works. it is equivalent to starting from a fixed initial state distribution. I added a footnote, and revised that sentence}\siwei{Why we say "we define $s_1^k = s_1$"? It seems this equation directly follows the fact that "xxxx, and starts from a fixed initial state $s_1$".}
+	
+	
+	In Iterated CVaR RL, for any risk level $\alpha \in (0,1]$ and a policy $\pi$, we use value function $V^{\alpha,\pi}_h:\cS \mapsto \R$ and Q-value function $Q^{\alpha,\pi}_h:\cS \times \cA \mapsto \R$ to denote the cumulative reward that can be obtained when 
+	%the worst $\alpha$-portion event happens (
+	the agent transitions to the worst $\alpha$-portion states at each step, starting from $s$ and $(s,a)$ at step $h$, respectively. 
+	For simplicity of notation, when the value of $\alpha$ is clear, we omit the superscript $\alpha$ and use the notations $V^{\pi}_h$ and $Q^{\pi}_h$. 
+	Formally, $Q^{\pi}_h$ and $V^{\pi}_h$ are recurrently defined in Eq.~(i) below.  %\longbo{which one is the ``left equation''? not clear}\yihan{automatic labels cannot be added to the equations below. I added manual labels} (which is also the Bellman equation of Iterated CVaR RL).
+	Since $\cS$, $\cA$ and $H$ are finite and the maximization of $V^{\pi}_h(s)$ in Iterated CVaR RL satisfies the optimal substructure property, there exists an optimal policy $\pi^{*}$ which gives the optimal value $V^{*}_h(s)=\max_{\pi} V^{\pi}_h(s)$ for all $s \in \cS$ and $h \in [H]$~\citep{chu2014markov}. 
+	Therefore, the Bellman equation and the Bellman optimality equation are given in Eqs.~(i),(ii) below, respectively~\citep{chu2014markov}. %\longbo{are they established rigorously? if so, give ref. the current sentence reads like they are just intuitive equations}\yihan{yes. added the ref}
+	\begin{equation*}
+		\left\{
+		\begin{aligned}
+			\! Q^{\pi}_h(s,a)& =\! r(s,a) \!+\! \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}\!(V^{\pi}_{h+1}(s'))
+			\\
+			\! V^{\pi}_h(s)&=Q^{\pi}_h(s,\pi_h(s))
+			\\
+			\! V^{\pi}_{H+1}(s)&=0, \ \forall s \in \cS ,\hspace*{7em} \textup{(i)}
+		\end{aligned}
+		\right. 
+		%	\label{eq:cvar_bellman}
+		%\end{equation*}
+		%\begin{equation*}
+		\left\{
+		\begin{aligned}
+			\! Q^{*}_h(s,a) &=\! r(s,a) \!+\! \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}\!(V^{*}_{h+1}(s'))
+			\\
+			\! V^{*}_h(s)&= \max_{a \in \cA} Q^{*}_h(s,a)
+			\\
+			\! V^{*}_{H+1}(s)&=0, \ \forall s \in \cS ,\hspace*{7em} \textup{(ii)}
+		\end{aligned}
+		\right. 
+		%	\label{eq:cvar_optimality_bellman}
+	\end{equation*}
+	where $\cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V^{\pi}_{h+1}(s'))$ denotes the CVaR value of random variable $V^{\pi}_{h+1}(s')$ with $s' \sim p(\cdot|s,a)$ at risk level $\alpha$. \revision{We also provide the expanded version of value function definitions for Iterated CVaR RL (Eqs.~(i),~(ii)) in Appendix~\ref{apx:expanded_value_function}.}
+	
+	%Unfolding the Bellman equation, $Q^{\pi}_h$ and $V^{\pi}_h$ can also be expressed as 
+	%\begin{align*}
+	%	Q^{\pi}_h(s,a)& = r(s,a) + \cvar^{\alpha}_{s_{h+1} \sim p(\cdot|s,\pi_h(s))} \bigg(r(s_{h+1},\pi_{h+1}(s_{h+1})) \\& 
+	%	\!\!\!\!+\cvar^{\alpha}_{s_{h+2} \sim p(\cdot|s_{h+1},\pi_{h+1}(s_{h+1}))} \Big( \!\dots
+	%	\cvar^{\alpha}_{s_{H} \sim p(\cdot|s_{H-1},\pi_{H-1}(s_{H-1}) )}(r(s_{H},\pi_{H}(s_{H}) ) ) \Big) \bigg) ,
+	%	\\
+	%	V^{\pi}_h(s)&= r(s, \pi_h(s)) + \cvar^{\alpha}_{s_{h+1} \sim p(\cdot|s,\pi_h(s))} \bigg(r(s_{h+1},\pi_{h+1}(s_{h+1})) \\& 
+	%	\!\!\!\!+\cvar^{\alpha}_{s_{h+2} \sim p(\cdot|s_{h+1},\pi_{h+1}(s_{h+1}))} \Big( \!\dots 
+	%	\cvar^{\alpha}_{s_{H} \sim p(\cdot|s_{H-1},\pi_{H-1}(s_{H-1}))}(r(s_{H},\pi_{H}(s_{H}))) \Big) \bigg) .
+	%\end{align*}
+	
+	%\begin{align*}
+	%Q^{\pi}_h(s,a)& = r(s_h,a_h) + \cvar^{\alpha}_{s_{h+1} \sim p(\cdot|s_h,a_h)} \bigg(r(s_{h+1},a_{h+1})+\cvar^{\alpha}_{s_{h+2} \sim p(\cdot|s_{h+1},a_{h+1})} \Big(\dots 
+	%\\
+	%& \cvar^{\alpha}_{s_{H} \sim p(\cdot|s_{H-1},a_{H-1})}(r(s_{H},a_{H})) \Big) \bigg) 
+	%\bigg| s_h=s,a_h=a,\pi  ,
+	%\\
+	%V^{\pi}_h(s)&= r(s_h,a_h) + \cvar^{\alpha}_{s_{h+1} \sim p(\cdot|s_h,a_h)} \bigg(r(s_{h+1},a_{h+1})+\cvar^{\alpha}_{s_{h+2} \sim p(\cdot|s_{h+1},a_{h+1})} \Big(\dots 
+	%\\
+	%& \cvar^{\alpha}_{s_{H} \sim p(\cdot|s_{H-1},a_{H-1})}(r(s_{H},a_{H})) \Big) \bigg) 
+	%\bigg| s_h=s,\pi  .
+	%\end{align*}
+	
+	
+	%Since $\cS$, $\cA$, $H$ are finite and the Iterated CVaR RL problem satisfies the optimal substructure property, there exists an optimal policy $\pi^{*}$ which gives the optimal value $V^{*}_h(s)=\max_{\pi} V^{\pi}_h(s)$ for all $s \in \cS$ and $h \in [H]$~\cite{chu2014markov,bauerle2022markov,sutton2018reinforcement}. 
+	%The Bellman equation is given in Eq.~\eqref{eq:cvar_bellman}, and the Bellman optimality equation is as follows:
+	%\begin{equation}
+	%	\left\{
+	%	\begin{aligned}
+		%		Q^{*}_h(s,a)&= r(s,a)+ \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V^{*}_{h+1}(s'))
+		%		\\
+		%		V^{*}_h(s)&= \max_{a \in \cA} Q^{*}_h(s,a)
+		%		\\
+		%		V^{*}_{H+1}(s)&=0, \ \forall s \in \cS .
+		%	\end{aligned}
+	%	\right. \label{eq:cvar_optimality_bellman}
+	%\end{equation}
+	
+	We consider two performance metrics for Iterated CVaR RL, i.e., Regret Minimization (RM) and Best Policy Identification (BPI). In Iterated CVaR RL-RM, the agent aims to minimize the cumulative regret in  $K$ episodes, defined as 
+	\begin{align}
+		\cR(K)=\sum_{k=1}^{K} \sbr{V^{*}_1(s_1)-V^{\pi_k}_1(s_1)} . \label{eq:regret}
+	\end{align}
+	In Iterated CVaR RL-BPI, given a confidence parameter $\delta \in (0,1]$ and an accuracy parameter $\varepsilon>0$, the agent needs to use as few trajectories (episodes) as possible to identify an $\varepsilon$-optimal policy $\hat{\pi}$, which satisfies
+	$
+	V^{\hat{\pi}}_1(s_1) \geq V^{*}_1(s_1) - \varepsilon 
+	$, with probability as least $1-\delta$. 
+	%where $s_1$ denotes the fixed initial state in the BPI setting.
+	That is, the performance of BPI is measured by the number of trajectories used, i.e., sample complexity.
+	
+	
+	
+	\textbf{Worst Path RL.}
+	Furthermore, we investigate an interesting limiting case of Iterated CVaR RL when $\alpha$ approaches $0$, called Worst Path RL. In this case,  the objective  becomes maximizing the minimum possible reward~\citep{heger1994consideration}. %\longbo{give ref about this}\yihan{added the ref}
+	% 
+	The Bellman (optimality) equations become  %(Eqs.~\eqref{eq:cvar_bellman} and \eqref{eq:cvar_optimality_bellman}) become
+	\begin{equation}
+		\left\{
+		\begin{aligned}
+			Q^{\pi}_h(s,a)&= r(s,a)+ \min_{s' \sim p(\cdot|s,a)}(V^{\pi}_{h+1}(s'))
+			\\
+			V^{\pi}_h(s)&=Q^{\pi}_h(s,\pi_h(s))  
+			\\
+			V^{\pi}_{H+1}(s)&=0, \ \forall s \in \cS ,
+		\end{aligned}
+		\right.
+		\ 
+		%\textup{and}
+		\left\{
+		\begin{aligned}
+			Q^{*}_h(s,a)&= r(s,a)+ \min_{s' \sim p(\cdot|s,a)}(V^{*}_{h+1}(s'))
+			\\
+			V^{*}_h(s)&= \max_{a \in \cA} Q^{*}_h(s,a)
+			\\
+			V^{*}_{H+1}(s)&=0, \ \forall s \in \cS ,
+		\end{aligned}
+		\right. \label{eq:min_bellman}
+	\end{equation}
+	%\begin{equation*}
+	%\left\{
+	%\begin{aligned}
+	%Q^{*}_h(s,a)=& r(s,a)+ \min_{s' \sim p(\cdot|s,a)}(V^{*}_{h+1}(s'))
+	%\\
+	%V^{*}_h(s)=& \max_{a \in \cA} Q^{*}_h(s,a)
+	%\\
+	%V^{*}_{H+1}(s)=&0, \ \forall s \in \cS .
+	%\end{aligned}
+	%\right.
+	%\end{equation*}
+	where $\min_{s' \sim p(\cdot|s,a)}(V^{\pi}_{h+1}(s'))$ denotes the minimum value of random variable $V^{\pi}_{h+1}(s')$ with $s' \sim p(\cdot|s,a)$. 
+	From Eq.~\eqref{eq:min_bellman}, one sees that
+	%the Q-value/value functions can also be expressed as
+	\begin{align*}
+		Q^{\pi}_h(s,a) = \!\!\! \min_{(s_t,a_t) \sim \pi} \!\! \mbr{ \sum_{t=h}^{H} r(s_t,a_t) \Big| s_h=s,a_h=a,\pi } \!,
+		\ 
+		V^{\pi}_h(s) = \!\!\! \min_{(s_t,a_t) \sim \pi} \!\! \mbr{ \sum_{t=h}^{H} r(s_t,a_t) \Big| s_h=s,\pi } \!.
+	\end{align*}
+	Thus,   $Q^{\pi}_h(s,a)$ and $V^{\pi}_h(s)$ denote the minimum possible cumulative reward under policy $\pi$, starting from $(s,a)$ and $s$ at step $h$, respectively.  The optimal policy $\pi^{*}$ maximizes the minimum possible cumulative reward (i.e., optimizes the worst path) for all starting states and steps. Formally, $\pi^{*}$ gives the optimal value $V^{*}_h(s)=\max_{\pi} V^{\pi}_h(s)$ for all $s \in \cS$ and $h \in [H]$.
+	
+	
+	For Worst Path RL, in this paper we mainly consider the regret minimization setting, where the regret is defined the same as Eq.~\eqref{eq:regret}. Note that this case cannot be directly solved by taking $\alpha\to0$ in Iterated CVaR RL, as the results there have a dependency on $\frac{1}{\alpha}$. Thus, changing from $\cvar(\cdot)$ to $\min(\cdot)$ in Worst Path RL requires a different algorithm design and analysis. %\longbo{I am a bit hesitate about "brand new". because the case of $\alpha=1$ can also reuse some steps in the general case}\yihan{``different analysis'' looks fine}
+	
+	The best policy identification setting of Worst Path RL, on the other hand, is very challenging. This is because we cannot establish confidence intervals under the $\min(\cdot)$  operation, and it is difficult to determine when the estimated optimal policy is accurate enough and when the algorithm should stop. We will further investigate this setting in future work. %\longbo{what about BPI? briefly comment?}\yihan{added comments for worst path with BPI}
+	
+	
+	
+	
+	
+	\section{Iterated CVaR RL with Regret Minimization}
+	In this section, we consider regret minimization (Iterated CVaR RL-RM). We propose an algorithm $\algcvar$ with CVaR-adapted exploration bonuses, and demonstrate its sample efficiency. 
+	
+	
+	\subsection{Algorithm $\algcvar$ and Regret Upper Bound}
+	We propose a value iteration-based algorithm $\algcvar$ (Algorithm~\ref{alg:cvar}), which adopts Brown-type~\citep{brown2007large} (CVaR-adapted) exploration bonuses and delicately pays more attention to rare but risky states.  
+	%
+	Specifically, in each episode $k$, $\algcvar$ computes the empirical CVaR for the values of next states $\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\bar{V}^k_{h+1}(s'))$ and Brown-type exploration bonuses $\frac{H}{\alpha}\sqrt{\frac{L}{n_k(s,a)}}$.
+	Here $n^{k}(s,a)$ is the number of times  $(s,a)$ was visited up to episode $k$, and $\hat{p}^{k}(s'|s,a)$ is the empirical estimate of transition probability $p(s'|s,a)$. 
+	% 
+	Then, $\algcvar$ constructs optimistic Q-value function $\bar{Q}^k_h(s,a)$, optimistic value function $\bar{V}^k_h(s)$, and a greedy policy $\pi^k$ with respect to $\bar{Q}^k_h(s,a)$. 
+	After calculating the value functions and policy,  $\algcvar$ plays episode $k$ with policy $\pi^k$, observes a trajectory, and updates $n_k(s,a)$ and  $\hat{p}^{k+1}(s'|s,a)$. 
+	The calculation of CVaR (Line~\ref{line:calculation_cvar}) can be implemented efficiently, and costs $O(S \log S)$ computation complexity~\citep{shapiro2021lectures}.
+	
+	We summarize the regret performance of $\algcvar$ as follows. 
+	
+	
+	\begin{algorithm}[t]
+		\caption{$\algcvar$} \label{alg:cvar}
+		\KwIn{$\delta$, $\alpha$, $\delta':=\frac{\delta}{5}$, $L:=\log(\frac{KHSA}{\delta'})$, $\bar{V}^k_{H+1}(s) = 0$ for any $k>0$ and $s \in \cS$}
+		\For{$k=1,2,\dots,K$}
+		{
+			\For{$h=H,H-1,\dots,1$} 
+			{
+%				\For{$s \in \cS$}
+%				{
+%					\For{$a \in \cA$}
+%					{
+					\hspace*{-0.6em}
+					$\bar{Q}^k_h(s,a)  \!\leftarrow\! \min \{ r(s,a) \!+\! \cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\bar{V}^k_{h+1}(s')) \!+\! \frac{H}{\alpha}\sqrt{\frac{L}{n_k(s,a)}}, H \}$,  $\forall (s,a) \!\in\! \cS \!\times\! \cA$\;\label{line:calculation_cvar}
+%					}
+					$\bar{V}^k_h(s) \leftarrow \max_{a \in \cA} \bar{Q}^k_h(s,a)$, 
+					$\pi^k_h(s) \leftarrow  \argmax_{a \in \cA} \bar{Q}^k_h(s,a)$, $\forall s \in \cS$\;
+%				}
+			}
+			Play the episode $k$ with policy $\pi^k$, and update $n_{k+1}(s,a)$ and $\hat{p}^{k+1}(s'|s,a)$\;
+		}
+	\end{algorithm}
+	
+	
+	
+	\begin{theorem}[Regret Upper Bound]\label{thm:cvar_rm_ub}
+		With probability at least $1-\delta$, the regret of algorithm $\algcvar$ is bounded by
+		\begin{align*}
+			O \Bigg( \bm{\min} \Bigg\{ \frac{1}{\sqrt{\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)}},\ \frac{1}{\sqrt{\alpha^{H-1}}} \Bigg\} \cdot \frac{ HS \sqrt{KHA} }{\alpha} \log\sbr{\frac{KHSA}{\delta}} \Bigg) ,  
+		\end{align*}
+		where $w_{\pi,h}(s)$ denotes the probability of visiting state $s$ at step $h$ under policy $\pi$.
+		% for any $s \in [S]$, $h \in [H]$ and policy $\pi$.
+	\end{theorem}
+	
+	
+	\textbf{Remark 1.}
+	The regret depends on the \emph{minimum} between an MDP-intrinsic visitation factor $(\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s))^{-\frac{1}{2}}$ and  $\frac{1}{\sqrt{\alpha^{H-1}}}$.  
+	When $\alpha$ is small, the first term %$\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)$ 
+	dominates the bound, which stands for the minimum probability of visiting an available state under any feasible policy. 
+	Note that $\min_{\pi,h,s:\ w_{\pi,h}(s)>0} w_{\pi,h}(s)$ takes the minimum over only the policies under which $s$ is reachable, and thus, this factor will never be zero. Indeed, this factor also exists in the lower bound (see Section~\ref{sec:regret_lb}). Thus, it characterizes the essential problem hardness, i.e., when the agent is highly risk-adverse, her regret will be heavily influenced by exploring critical but hard-to-reach states. 
+	%
+	%Compared to existing risk-sensitive RL~\cite{chow2017risk,fei2020near_optimal,fei2021exponential,fei2021function_approx} which either consider the exponential utility criterion and have an exponential regret in $H$, or consider the CVaR constraint and do not have regret guarantees, for Iterated CVaR RL, we provide a polynomial regret in all problem parameters and demonstrate the sample efficiency.
+	
+	When $\alpha$ is large, $\frac{1}{\sqrt{\alpha^{H-1}}}$ instead dominates the bound. The intuition behind the factor $\frac{1}{\sqrt{\alpha^{H-1}}}$ is that for any state-action pair, the ratio of the visitation probability conditioning on transitioning to bad successor states over the original visitation probability can be upper bounded by $\frac{1}{\alpha^{H-1}}$. This ratio is critical and will appear in the regret bound (see Lemma~\ref{lemma:w_cvar_over_w} for a formal statement). 
+	
+	In the special case when $\alpha=1$, our Iterated CVaR RL problem reduces to the classic RL formulation, and our regret bound becomes $\tilde{O}( HS \sqrt{KHA} )$, which matches the result in existing classic RL work~\citep{jaksch2010near}. This bound has a gap of $\sqrt{HS}$ to the state-of-the-art regret bound for classic RL~\citep{azar2017minimax,zanette2019tighter}. This is because our algorithm is mainly designed for general risk-sensitive cases (which require CVaR-adapted exploration bonuses), and does not use the Bernstein-type exploration bonuses (which only work for classic expectation maximization criterion). Such phenomenon also appears in existing risk-sensitive RL works~\citep{fei2020near_optimal,fei2021exponential}. Designing an algorithm which achieves an optimal regret simultaneously for both risk-sensitive cases and classic expectation maximization case is still an open problem, which we leave for future work.  
+	%
+	To validate our theoretical analysis, we also conduct experiments to exhibit the influences of parameters $\alpha$, $\delta$, $H$, $S$, $A$ and $K$ on the regret of $\algcvar$ in practice, and the empirical results well match our theoretical bound (see Appendix~\ref{apx:experiments}). 
+	
+	
+	%\longbo{can consider remove this sentence, given that you will talk about it again below.}Compared to risk-neutral RL~\cite{azar2017minimax,jin2018q,zanette2019tighter}, where the importance of a state is proportional to its visitation probability and  the regret depends mainly on $K,H,S,A$, the Iterated CVaR RL problem  is mostly influenced by rare but risky states and pays a price $\min_{\pi,h,s:\ w_{\pi,h}(s)>0} w_{\pi,h}(s)$ for learning in these states. 
+	
+	
+	
+	\revision{\emph{Challenges and Novelty in Regret Analysis.} 
+		The analysis of Iterated CVaR RL faces several challenges.
+		% compared to existing RL works, e.g.,~\cite{azar2017minimax,jin2018q,zanette2019tighter}.
+		(i) First of all, in Iterated CVaR RL, the contribution of a state to the regret is not proportional to its visitation probability as in standard RL analysis~\citep{jaksch2010near,azar2017minimax,zanette2019tighter}. Instead, the regret is influenced more by risky but hard-to-reach states. Thus, the regret cannot be decomposed into estimation error with respect to visitation distribution. (ii) Second, unlike existing RL analysis~\citep{jaksch2010near,azar2017minimax,jin2018q} which typically calculates the change of expected rewards between optimistic and true value functions, in Iterated CVaR RL, we need to instead analyze the change of CVaR when the true value function shifts to an optimistic value function.
+		%since the value function is measured by the tail reward rather than the expectation, the regret is no longer the summation of the estimation error over all state-action pairs under the standard visitation distribution. 
+		%As a result, existing analysis cannot be applied to solve our problem.  
+		%
+		To tackle these challenges,  
+		we develop a new analytical technique to bound the change of CVaR due to the value function shift via conditional transition probabilities, which can be applied to other CVaR-based RL problems. Furthermore, we establish a novel regret decomposition for Iterated CVaR RL via a distorted (conditional) visitation distribution, and quantify the deviation between this distorted visitation distribution and the original visitation distribution.}
+	
+	%we develop novel analytical techniques, to bound the deviation of CVaR between optimistic and true value functions and decompose regret into estimation error via a distorted visitation distribution. 
+	
+	Below we present a proof sketch for Theorem~\ref{thm:cvar_rm_ub} (see Appendix~\ref{apx:regret_ub} for a complete proof). 
+	
+	
+	\emph{Proof sketch of Theorem~\ref{thm:cvar_rm_ub}.} First, we introduce a key inequality (Eq.~\eqref{eq:cvar_gap_V_shift_main_text}) to bound the change of CVaR when the true value function shifts to an optimistic one. To this end, let $\beta^{\alpha,V}(\cdot|s,a) \in \R^{S}$ denote the conditional transition probability conditioning on transitioning to the worst $\alpha$-portion successor states $s'$,  i.e., with the lowest values $V(s')$. It satisfies that
+	$
+	\sum_{s' \in \cS} \beta^{\alpha,V}(s'|s,a) \cdot V(s') = \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V(s')) .
+	$
+	%Intuitively, $\beta^{\alpha,V}(\cdot|s,a)$ is a distorted distribution of transition distribution $p(\cdot|s,a)$, which gives more weights to bad successor states.
+	Then, for any $(s,a)$ and value functions $\bar{V}, V$ such that $\bar{V}(s') \geq V(s')$ for any $s' \in \cS$, we have
+	\begin{align}
+		\cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(\bar{V}(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V(s')) \leq \beta^{\alpha,V}(\cdot|s,a)^\top \sbr{\bar{V}-V} . \label{eq:cvar_gap_V_shift_main_text}
+	\end{align}
+	Eq.~\eqref{eq:cvar_gap_V_shift_main_text} implies that the deviation of CVaR between optimistic and true value functions can be bounded by their value deviation under the conditional transition probability, which resolves the aforementioned challenge (ii), and serves as the basis of our recurrent regret decomposition. 
+	
+	Now, since $\bar{V}^k_h$ is an optimistic estimate of $V^{*}_h$, we decompose the regret in episode $k$ as
+	
+	\vspace*{-1em}
+	\begin{align} 
+		\!\bar{V}^k_1(s^k_1) \!-\! V^{\pi^k}_1(s^k_1)
+		\!\overset{\textup{(a)}}{\leq} &  \frac{H}{\alpha}\sqrt{\frac{L}{n_k(s^k_1,a^k_1)}}+\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s^k_1,a^k_1)}(\bar{V}^k_{2}(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s^k_1,a^k_1)}(\bar{V}^k_{2}(s')) \nonumber\\& + \cvar^{\alpha}_{s' \sim p(\cdot|s^k_1,a^k_1)}(\bar{V}^k_{2}(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s^k_1,a^k_1)}(V^{\pi^k}_{2}(s'))
+		\nonumber\\
+		\overset{\textup{(b)}}{\leq} &  \frac{H}{\alpha}\sqrt{\frac{L}{n_k(s^k_1,a^k_1)}}+ \frac{4H}{\alpha}\sqrt{\frac{SL}{n_k(s^k_1,a^k_1)}} +  \beta^{\alpha,V^{\pi^k}_{2}}(\cdot|s^k_1,a^k_1)^\top (\bar{V}^k_{2} - V^{\pi^k}_{2})
+		\nonumber\\
+		\overset{\textup{(c)}}{\leq} & \sum_{h=1}^{H} \sum_{(s,a)} w^{\cvar,\alpha,V^{\pi^k}}_{kh}\!\!(s,a) \cdot \frac{H\sqrt{L}+4H\sqrt{SL}}{\alpha \sqrt{n_k(s,a)}} 	\label{eq:regret_per_episode_main_text}
+	\end{align}
+	\vspace*{-1em}
+	
+	Here $w^{\cvar,\alpha,V^{\pi^k}}_{kh}\!\!(s,a)$ denotes the conditional probability of visiting $(s,a)$ at step $h$ of episode $k$, conditioning on transitioning to the worst $\alpha$-portion successor states $s'$ (i.e., with the lowest $\alpha$-portion values $V^{\pi^k}_{h'+1}(s')$) at each step $h'=1,\dots,h-1$. Intuitively, $w^{\cvar,\alpha,V^{\pi^k}}_{kh}\!\!(s,a)$ is a distorted visitation probability under the conditional transition probability $\beta^{\alpha,V^{\pi^k}}(\cdot|\cdot,\cdot)$. Inequality (b) uses the concentration of CVaR and  Eq.~\eqref{eq:cvar_gap_V_shift_main_text}. Inequality (c) follows from recurrently applying steps (a)-(b) to unfold $\bar{V}^k_{h}(\cdot) - V^{\pi^k}_{h}(\cdot)$ for $h=2,\dots,H$, and the fact that $w^{\cvar,\alpha,V^{\pi^k}}_{kh}\!\!(s,a)$ is the visitation probability under conditional transition probability $\beta^{\alpha,V^{\pi^k}}(\cdot|\cdot,\cdot)$. 
+	Eq.~\eqref{eq:regret_per_episode_main_text} decomposes the regret into estimation error at all state-action pairs via the distorted (conditional) visitation distribution $w^{\cvar,\alpha,V^{\pi^k}}_{kh}\!\!(s,a)$, which overcomes the aforementioned challenge (i).
+	%, which resolves the challenges due to additional focus on risky states under Iterated CVaR. 
+	%
+	%Finally, summing Eq.~\eqref{eq:regret_per_episode_main_text} over all episodes $k$, and computing the ratio of distorted visitation probability over standard visitation probability, we obtain Theorem~\ref{thm:cvar_rm_ub}.
+	
+	
+	Summing Eq.~\eqref{eq:regret_per_episode_main_text} over all episodes $k \in [K]$ and using the Cauchy–Schwarz inequality, we have
+	\begin{align*}
+		\ex[\cR(K)]
+		%	\sum_{k=1}^{K} \sbr{\bar{V}^k_1(s^k_1) - V^{\pi^k}_1(s^k_1)} 
+		\leq & \frac{5H\sqrt{SL}}{\alpha} \sqrt{ \sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a)} \frac{w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a)}{n_k(s,a)}} \cdot \sqrt{\sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a)} w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a)}
+		\nonumber\\
+		\overset{\textup{(d)}}{=} & \frac{ 5H\sqrt{SL} \cdot \sqrt{KH} }{\alpha} \! \sqrt{ \sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a)} \frac{w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a)}{w_{kh}(s,a)} \cdot \frac{w_{kh}(s,a)}{n_k(s,a)} \cdot \indicator{w_{kh}(s,a) \neq 0} } 
+		\nonumber\\
+		\overset{\textup{(e)}}{\leq} & \frac{5H\sqrt{KHSL}}{\alpha} \!\! \sqrt{ \min \! \bigg\{\! \frac{1}{ \min \limits_{\begin{subarray}{c}\pi,h,(s,a):\ w_{\pi,h}(s,a)>0\end{subarray}} w_{\pi,h}(s,a)}, \frac{1}{\alpha^{H-1}} \!\bigg\}  \sum_{k=1}^{K} \! \sum_{h=1}^{H} \! \sum_{(s,a)} \! \frac{w_{kh}(s,a)}{n_k(s,a)} } ,
+	\end{align*}
+	Here $w_{kh}(s,a)$ denotes the probability of visiting $(s,a)$ at step $h$ of episode $k$, and \revision{$w_{\pi,h}(s,a)$ denotes the probability of visiting $(s,a)$ at step $h$ under policy $\pi$.} Equality (d) uses the facts that  $\sum_{(s,a)} w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a) = 1$, and if the visitation probability $w_{kh}(s,a)=0$, the conditional visitation probability $w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a)$ must be 0 as well. Inequality (e) is due to that $w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a)/w_{kh}(s,a)$ can be bounded by both $1/ \min_{\begin{subarray}{c}\pi,h,(s,a):\ w_{\pi,h}(s,a)>0\end{subarray}} w_{\pi,h}(s,a)$ and $1/\alpha^{H-1}$. 
+	%\longbo{which one is former and which is latter?}\yihan{revised this sentence}
+	Specifically, the bound $1/ \min_{\begin{subarray}{c}\pi,h,(s,a):\ w_{\pi,h}(s,a)>0\end{subarray}} w_{\pi,h}(s,a)$ follows from $\min_{\begin{subarray}{c}\pi,h,(s,a):\ w_{\pi,h}(s,a)>0\end{subarray}} w_{\pi,h}(s,a) \leq w_{kh}(s,a)$, %\yihan{revised this sentence}
+	% of $\min_{\begin{subarray}{c}\pi,h,(s,a):\ w_{\pi,h}(s,a)>0\end{subarray}} w_{\pi,h}(s,a)$, 
+	and the bound $1/\alpha^{H-1}$ comes from the fact that the conditional visitation probability $w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a)$ is at most $1/\alpha^{H-1}$ times the visitation probability $w_{kh}(s,a)$. 
+	% 
+	Having established the above, we can use a similar analysis as that in classic RL~\citep{azar2017minimax,zanette2019tighter} to bound  $\sum_{k=1}^{K} \! \sum_{h=1}^{H} \! \sum_{(s,a)} \! \frac{w_{kh}(s,a)}{n_k(s,a)}$, and then, we can obtain Theorem~\ref{thm:cvar_rm_ub}.
+	%Therefore, we bound the ratio of distorted visitation probability over original visitation probability by an MDP-intrinsic visitation factor and an $\alpha$-dependent factor, and derive the regret bound in Theorem~\ref{thm:cvar_rm_ub}.
+	$\hfill \square$
+	
+	
+	\subsection{Regret Lower Bound}\label{sec:regret_lb}
+	We now present a regret lower bound to demonstrate the optimality of algorithm $\algcvar$. 
+	
+	\begin{theorem}[Regret Lower Bound] \label{thm:cvar_rm_lb}
+		There exists an instance of Iterated CVaR RL-RM, where $\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s) > \alpha^{H-1}$ and the regret of any algorithm is at least 
+		\begin{align}
+			\Omega \Bigg( H \sqrt{\frac{AK}{\alpha \min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)} } \Bigg) . \label{eq:lb_min_w}
+		\end{align}
+		In addition, there exists an instance of Iterated CVaR RL-RM, where $\alpha^{H-1} > \min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)$ and the regret of any algorithm is at least 
+		$
+		\Omega ( \sqrt{\frac{AK}{{\alpha}^{H-1}}} ) 
+		$.
+	\end{theorem}
+	
+	
+	\textbf{Remark 2.} 
+	Theorem~\ref{thm:cvar_rm_lb} demonstrates that when $\alpha$ is small, the factor $\min_{\pi,h,s:\  w_{\pi,h}(s)>0} w_{\pi,h}(s)$ is inevitable in general.
+	% tightness of our regret upper bound (Theorem~\ref{thm:cvar_rm_ub})
+	This reveals the intrinsic hardness of Iterated CVaR RL, i.e., when the agent is highly sensitive to bad situations, she must suffer a regret due to exploring risky but hard-to-reach states.
+	This lower bound also validates that $\algcvar$ is near-optimal with respect to $K$. 
+	
+	
+	\revision{
+		
+		\begin{wrapfigure}[10]{r}{0.4\textwidth}
+			\centering    
+			\vspace*{-1.5em}
+			\includegraphics[width=0.38\textwidth]{fig/instance_lb_main_text.pdf}  
+			\vspace*{-0.6em}
+			\caption{Instance for the lower bound.}     
+			\label{fig:lower_bound_main_text}
+		\end{wrapfigure}
+		
+		\emph{Lower Bound Analysis.} 
+		Here we provide the proof idea of the first lower bound (Eq.~\eqref{eq:lb_min_w}) in Theorem \ref{thm:cvar_rm_lb}, and defer the full proof to Appendix~\ref{apx:lb_rm}.
+		% due to space limit.
+		We construct an instance with a hard-to-reach bandit state (which has an optimal action and multiple sub-optimal actions), 
+		and show that this state is critical for minimizing the regret, but difficult for any algorithm to learn. 
+		As shown in Figure~\ref{fig:lower_bound_main_text}, we consider an MDP with $A$ actions, $n$ regular states $s_1,\dots,s_n$ and three absorbing states $x_1,x_2,x_3$, where $n < \frac{1}{2} H$.  The reward function $r(s,a)$ depends only on the states, i.e., $s_1,\dots,s_n$ generate zero reward, and $x_1,x_2,x_3$ generate rewards $1$, $0.8$ and $0.2$, respectively. 
+		%Let $\mu$ be a parameter which satisfies that $0<\alpha<\mu<\frac{1}{3}$.
+		Let $\mu$ be a parameter such that $0<\alpha<\mu<\frac{1}{3}$.
+		Under all actions, 
+		state $s_1$ transitions to $s_2,x_1,x_2,x_3$ with probabilities $\mu$, $1-3\mu$, $\mu$ and $\mu$, respectively, and state $s_i$ ($2 \leq i \leq n-1$) transitions to $s_{i+1},x_1$ with probabilities $\mu$ and $1-\mu$, respectively.
+		For the bandit state $s_n$, under the optimal action, $s_n$ transitions to $x_2,x_3$ with probabilities $1-\alpha+\eta$ and $\alpha-\eta$, respectively. Under sub-optimal actions, $s_n$ transitions to $x_2,x_3$ with  probabilities $1-\alpha$ and $\alpha$, respectively. % and the constructed gap of transition probability $\eta>0$. 
+		%
+		%Let the length of the episode $H>n$. 
+		
+		
+		In this MDP, under the Iterated CVaR criterion, the value function mainly depends on the path $s_1 \rightarrow s_2 \rightarrow \dots \rightarrow s_n \rightarrow x_2/x_3$, and especially on the action choice in the bandit state $s_n$. 
+		%However, when $\mu$ is small, it is difficult for any policy to reach (and collect information from) $s_n$. 
+		Thus, to distinguish the optimal action in $s_n$, any algorithm must suffer a regret dependent on the probability of visiting $s_n$, which is exactly the minimum visitation probability over all reachable states $\min_{\pi,h,s:\ w_{\pi,h}(s)>0} w_{\pi,h}(s)$.
+		% (here this factor is much larger than $\alpha^{H-1}$ since $H \gg n$).
+		Note that in this instance, $\min_{\pi,h,s:\ w_{\pi,h}(s)>0} w_{\pi,h}(s)=\mu^{n-1}$, which does not depend on $\alpha$ and $H$.
+		%, and is an essential dependency for the lower bound.
+		This demonstrates that there is an essential dependency on $\min_{\pi,h,s:\ w_{\pi,h}(s)>0} w_{\pi,h}(s)$ in the lower bound.
+	}
+	
+	\vspace*{-0.2em}
+	\section{Iterated CVaR RL with Best Policy Identification}
+	In this section, we design an efficient algorithm $\algcvarbpi$, and establish sample complexity upper and lower bounds for Iterated CVaR RL with best policy identification (BPI). % To our best knowledge, they are the first BPI results for risk-sensitive RL. 
+	% Due to space limit, we defer the algorithm pseudo-code, a detailed algorithm description and a formal statement of lower bound to Appendix~\ref{apx:bpi}.
+	
+	\vspace*{-0.2em}
+	\subsection{Algorithm $\algcvarbpi$ and Sample Complexity Upper Bound}
+	
+	\revision{Algorithm $\algcvarbpi$ introduces a novel distorted (conditional) empirical transition probability to construct estimation error, which effectively assigns more attention to bad situations and  fits the main focus of the Iterated CVaR criterion.} Due to space limit, we defer the pseudo-code and detailed description of $\algcvarbpi$ to Appendix~\ref{apx:bpi_alg}.
+	%In each episode, $\algcvarbpi$ builds optimistic and pessimistic value functions with Brown-type~\citep{brown2007large} exploration bonuses, and establishes the estimation error of value functions. As the number of played episodes increases, the estimation error decreases. Once the estimation error shrinks with a given accuracy parameter $\varepsilon$, $\algcvarbpi$ returns the hypothesized optimal policy. 
+	%
+	Below we present the sample complexity of $\algcvarbpi$.
+	
+	\begin{theorem} [Sample Complexity Upper Bound] \label{thm:bpi_ub}
+		The number of trajectories used by 
+		algorithm $\algcvarbpi$ to return an $\varepsilon$-optimal policy with probability at least $1-\delta$ is bounded by
+		\begin{align*}
+			O \bigg( & \bm{\min} \Big\{\frac{ 1 }{\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)},\ \frac{1}{\alpha^{H-1}} \Big\} \frac{ H^3 S^2 A}{\varepsilon^2 \alpha^2 } \cdot C \bigg) ,
+		\end{align*}
+		where $C:=\log^2 ( \min \{\frac{ 1 }{\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)},\ \frac{1}{\alpha^{H-1}} \} \frac{HSA}{ \varepsilon \alpha \delta } )$.
+	\end{theorem}
+	
+	\vspace*{-0.5em}
+	Similar to Theorem~\ref{thm:cvar_rm_ub}, $\min_{\pi,h,s:\ w_{\pi,h}(s)>0} w_{\pi,h}(s)$ and $\alpha^{H-1}$ dominate the bound for a large $\alpha$ and a small $\alpha$, respectively. When $\alpha=1$, the problem reduces to the classic RL formulation with best policy identification, and our sample complexity becomes $\tilde{O} ( \frac{H^3 S^2 A}{\varepsilon^2 } )$, which recovers the result in prior classic RL work~\citep{dann2017unifying}. Similar to Theorem~\ref{thm:cvar_rm_ub}, this bound has a gap of $HS$ to the state-of-the-art sample complexity for classic RL~\citep{menard2021fast}. This gap is due to the fact that the result in~\citep{menard2021fast} is obtained using the Bernstein-type exploration bonuses, which are more fine-grained for the classic RL problem but do not work for general risk-sensitive cases, because it cannot be used to  quantify the estimation error of CVaR. 
+	
+	
+	To validate the tightness of Theorem~\ref{thm:bpi_ub}, we further provide sample complexity lower bounds $\Omega ( \frac{ H^2 A}{\varepsilon^2 \alpha \min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)} \log \sbr{\frac{1}{\delta}} )$ and $\Omega ( \frac{A}{\alpha^{H-1} \varepsilon^2} \log \sbr{\frac{1}{\delta}} )$ for different instances, which demonstrate that the factor $\min \{ 1/\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s),\ 1/\alpha^{H-1} \}$ is indispensable in general (see Appendix~\ref{apx:lb_bpi} for a formal statement of lower bound).
+	
+	
+	\begin{algorithm}[t]
+		\caption{$\algmin$} \label{alg:min}
+		\KwIn{$\delta$, $\delta':=\frac{\delta}{2}$, $L:=\log(\frac{SA}{\delta'})$, $\hat{V}^k_{H+1}(s)=0$ for any $k>0$ and $s \in \cS$}
+		\For{$k=1,2,\dots,K$}
+		{
+			\For{$h=H,H-1,\dots,1$}
+			{
+%				\For{$s \in \cS$}
+%				{
+%					\For{$a \in \cA$}
+%					{
+						$\hat{Q}^k_h(s,a) \leftarrow r(s,a)+\min_{s' \sim \hat{p}^k(\cdot|s,a)}(\hat{V}^k_{h+1}(s'))$, $\forall (s,a)\in\cS\times\cA$\;
+%					}
+					$\hat{V}^k_h(s) \leftarrow \max_{a \in \cA} \hat{Q}^k_h(s,a)$, 
+					$\pi^k_h(s) \leftarrow  \argmax_{a \in \cA} \hat{Q}^k_h(s,a)$, $\forall s \in \cS$\;
+%				}
+			}
+			Play the episode $k$ with policy $\pi^k$, and update $n_{k+1}(s,a)$ and $\hat{p}^{k+1}(s'|s,a)$\;
+		}
+	\end{algorithm}
+	
+	\vspace*{-0.5em}
+	\section{Worst Path RL}
+	
+	In this section, we investigate an interesting limiting case of Iterated CVaR RL when $\alpha \to 0$, called Worst Path RL, in which case the agent aims to maximize the minimum possible cumulative reward.
+	% (i.e., optimize the worst path). 
+	%We develop a simple and efficient algorithm $\algmin$, and provide constant regret upper and lower bounds which are independent of $K$. 
+	
+	
+	%\textbf{Unique Properties and Challenges.}
+	Worst Path RL has a \emph{unique feature} that, the value function (Eq.~\eqref{eq:min_bellman}) concerns only the minimum value of successor states, which are independent of specific transition probabilities. 
+	% 
+	Therefore, once we learn the connectivity among states, we can perform a planning to compute the optimal policy. 
+	% 
+	Yet, this feature does not make the Worst Path RL problem trivial, because it is still challenging to distinguish whether a successor state is hard to reach or does not exist. As a result, a careful scheme is needed to both explore undetected successor states and exploit observations to minimize regret.
+	
+	\vspace*{-0.5em}
+	\subsection{Algorithm $\algmin$ and Regret Upper Bound}
+	
+	\revision{We design an algorithm $\algmin$ (Algorithm~\ref{alg:min}) based on a simple and efficient empirical Q-value function,
+		%, which achieves a novel constant regret. 
+		%Unlike existing RL algorithms~\citep{jaksch2010near,azar2017minimax,zanette2019tighter} which typically use optimistic exploration bonuses, 
+		which makes full use of the unique feature of Worst Path RL, and simultaneously explores undetected successor states and exploits the current best action.}
+	Specifically, in episode $k$, $\algmin$ constructs empirical Q-value/value functions $\hat{Q}^k_h(s,a), \hat{V}^k_h(s)$ using the estimated lowest value of next states, and then, takes a greedy policy $\pi^k_h(s)$ with respect to $\hat{Q}^k_h(s,a)$ in this episode.
+	% , and updates the number of visitations and empirical transition distribution.
+	
+	\revision{The intuition behind $\algmin$ is as follows. 
+		Since the Q-value function for Worst Path RL uses the $\min$ operator, if the Q-value function is not accurately estimated, it can only be over-estimated (not under-estimated). 
+		%$\algmin$ always selects the action $a^k_h$ that maximizes $\hat{Q}^k_h(s,a)$, and then, 
+		If  over-estimation happens, $\algmin$ will be exploring an over-estimated action and urging its empirical Q-value to get back to its true Q-value. Otherwise, if the Q-value function is already accurate, $\algmin$ just selects the optimal action.
+		In other words, $\algmin$ combines the exploration of over-estimated actions (which lead to undetected successor states) and  exploitation of current best actions.} 
+	%
+	Below we provide the regret guarantee for algorithm $\algmin$. 
+	\begin{theorem} \label{thm:min_regret_ub}
+		With probability at least $1-\delta$, the regret of algorithm $\algmin$ is bounded by
+		\begin{align*}
+			O \bigg( \sum_{(s,a) \in \cS \times \cA} \frac{H}{\min_{\begin{subarray}{c} \pi: \ \upsilon_{\pi}(s,a)>0 \end{subarray}} \upsilon_{\pi}(s,a) \cdot \min_{s' \in \supp( p(\cdot|s,a))} p(s'|s,a) } \log \Big( \frac{SA}{\delta} \Big) \bigg) ,
+		\end{align*}
+		where $\upsilon_{\pi}(s,a)$ denotes the probability  $(s,a)$ is visited at least once in an episode under policy $\pi$.  
+	\end{theorem}
+	
+	\textbf{Remark 3.}
+	The factor $\min_{ \pi: \ \upsilon_{\pi}(s,a)>0} \upsilon_{\pi}(s,a)$ stands for the minimum probability of visiting $(s,a)$ at least once in an episode over all feasible policies, and $\min_{s' \in \supp( p(\cdot|s,a))} p(s'|s,a)$ denotes the minimum transition probability over all successor states of $(s,a)$. 
+	%These two factors also exist in the lower bound (see Appendix~\ref{apx:worst_path_lb}), and are unavoidable in general. 
+	Note that this result cannot be implied by Theorem~\ref{thm:cvar_rm_ub}, because the result for Iterated CVaR RL there depends on $\frac{1}{\alpha}$, and simply taking $\alpha \to 0$ leads to a vacuous bound.
+	
+	Theorem~\ref{thm:min_regret_ub} demonstrates that algorithm $\algmin$ enjoys a constant regret with respect to $K$. This constant regret is made possible by the 
+	unique feature of Worst Path RL that, under the worst path metric, once the agent determines the connectivity among states, she can accurately estimate the value function and find the optimal policy. Furthermore, determining the connectivity among states (with a given confidence) only requires a number of samples independent of $K$. $\algmin$ effectively utilizes this problem feature, and efficiently explores the connectivity among states.
+	%i.e., algorithm $\algmin$ always takes the optimal policy after some episode. 
+	
+	To validate the optimality of our regret upper bound, we also provide a lower bound $\Omega( \max_{ (s,a): \exists h,\ a \neq \pi^{*}_h(s) } \frac{ H }{\min_{ \pi: \upsilon_{\pi}(s,a)>0 } \upsilon_{\pi}(s,a) \cdot \min_{s' \in \supp( p(\cdot|s,a))} p(s'|s,a) } )$ for Worst Path RL, which demonstrates the tightness of the factors $\min_{ \pi: \ \upsilon_{\pi}(s,a)>0} \upsilon_{\pi}(s,a)$ and $\min_{s' \in \supp( p(\cdot|s,a))} p(s'|s,a)$.
+	
+	
+	\vspace*{-0.5em}
+	\section{Conclusion} \label{sec:conclusion}
+	In this paper, we investigate a novel Iterated CVaR RL problem with the regret minimization and best policy identification metrics. We design two efficient algorithms $\algcvar$ and $\algcvarbpi$, and provide nearly matching regret/sample complexity upper and lower bounds with respect to $K$. We also study an interesting limiting case called Worst Path RL, and propose a simple and efficient algorithm $\algmin$ with rigorous regret guarantees.
+	There are several interesting directions for future work, e.g., further closing the gap between upper and lower bounds, and extending our model and results from the tabular setting to the function approximation framework. 
+	%Novel techniques are developed to bound the change of CVaR due to the value function shift and decompose the regret via a distorted visitation distribution, which can be applicable to other risk-sensitive online decision-making problems.  
+	
+	%There are several interesting directions for future work. One direction is to close the gap in upper and lower bounds with respect to $\alpha,H,S$ for Iterated CVaR RL. Another direction is to extend the Iterated CVaR RL problem from the tabular setting to function approximation. 
+	
+%	\section{Reproducibility Statement}
+%	
+%	To make our results reproducible, we provide complete proofs for all our theoretical results in Appendix. Moreover, we also include the code and implementation instructions for our experiments in the supplementary material. One can easily reproduce our theoretical and experimental results by following our proofs and running our code.
+
+	\section*{Acknowledgements}
+	
+	The work of Yihan Du and Longbo Huang is supported by the Technology and Innovation Major Project of the Ministry of Science and Technology of China under Grant 2020AAA0108400 and 2020AAA0108403, the Tsinghua University Initiative Scientific Research Program, and Tsinghua Precision Medicine Foundation 10001020109.
+	The work of Siwei Wang was supported in part by the National Natural Science Foundation of China Grant 62106122.
+	
+	
+	\bibliographystyle{iclr2023_conference}
+	\bibliography{iclr2023_CVaR_RL_revision_ref}
+	
+	\OnlyInFull{
+		\clearpage
+		\input{iclr2023_CVaR_RL_revision_supp}
+	}
+	
+\end{document}

@@ -1,7 +1,7 @@
 {
-  "batch_id": "batch_69f387749b988190baf7c217af8c7f02",
-  "input_file_id": "file-3NSGqzj7jLJWN5iHwEQ8Ft",
-  "submitted_ts": "2026-04-30T16:46:44+00:00",
+  "batch_id": "batch_69f4b314d7888190832bfc617f0eeb56",
+  "input_file_id": "file-DYbgAEuCWzat3TS1QYg3cS",
+  "submitted_ts": "2026-05-01T14:05:08+00:00",
   "request_count": 1200,
   "model": "gpt-4.1-2025-04-14",
   "endpoint": "/v1/chat/completions"

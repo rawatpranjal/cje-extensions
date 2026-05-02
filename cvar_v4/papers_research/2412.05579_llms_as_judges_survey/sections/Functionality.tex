@@ -1,0 +1,145 @@
+\section{Functionality}
+\label{sec:Functionality}
+As an emerging evaluation paradigm, LLMs-as-judges play a significant role across various scenarios. Based on their functionality, we categorize the application of LLM evaluators into three main directions: \textbf{Performance Evaluation} (\S\ref{sec:Performance Evaluation}), \textbf{Model Enhancement} (\S\ref{sec:Model Enhancement}), and \textbf{Data Construction} (\S\ref{sec:Data Construction}). In this section, we will delve into these functionalities, explore their potential, and discuss specific implementation methods.
+
+
+\begin{figure}[t]
+\includegraphics[width=\linewidth]{figs/function.pdf}
+\caption{Overview of the Functionality of LLMs-as-judges.}
+% \vspace{-5mm}
+\label{figure:function}
+\end{figure}
+
+
+
+
+\subsection{Performance Evaluation}
+\label{sec:Performance Evaluation}
+ Performance evaluation represents the most fundamental application objective of an LLM judges, serving as the cornerstone for understanding and optimizing their other function. It can be broadly divided into two components: \textbf{Responses Evaluation} (\S\ref{sec:Responses Evaluation}) and \textbf{Model Evaluation} (\S\ref{sec:Model Evaluation}). 
+ Response Evaluation focuses on aspects such as the quality, relevance, and coherence, and fluency of the responses for a given task. In contrast, model evaluation takes a holistic approach, assessing the overall capabilities of LLMs. Although these two aspects are interconnected, they focus on different levels of analysis, providing multidimensional insights into performance. 
+
+\subsubsection{Responses Evaluation}
+\label{sec:Responses Evaluation}
+
+The purpose of evaluating responses is to identify better answers within the context of a specific question or task, which can enhance overall decision-making.
+These responses can originate from either AI models or humans. 
+Evaluation criteria typically consider general attributes such as accuracy, relevance, coherence, and fluency. However, in practical applications, the evaluation of responses often requires customized metrics tailored to specific tasks. For instance, in the education domain, the focus may be more on the inspirational and educational value of the answers.
+
+
+LLM judges have also been widely applied in the assessment of text response~\cite{lin2023llm,wang2024automated,zhou2024llm}. Lin et al.~\cite{lin2023llm} propose LLM-Eval, a unified framework employing a single-prompt strategy to evaluate the performance of open-domain dialogue systems across multiple dimensions, including content, grammar, relevance, and appropriateness. 
+Wang et al.~\cite{wang2024automated} proposed an article scoring and feedback system tailored to different genres, such as essays, narratives, and question-answering articles. Using BERT and ChatGPT models, they enabled automated scoring and detailed feedback, showcasing the potential of LLMs in article evaluation.
+Moreover, Zhou et al.~\cite{zhou2024llm} conduct a detailed evaluation of whether LLMs can serve as reliable tools for automated paper review. Their findings indicate that current LLMs are still not sufficiently reliable for such tasks, particularly in scenarios requiring logical reasoning or a deep knowledge base.
+
+
+Furthermore, the evaluation of a single response is not limited to assessing the quality of the final answer but can also extend to analyzing the response process~\cite{saad2023ares,asai2023self,lei2024recexplainer}. For instance, this can include evaluating whether retrieval is necessary at a given step, the relevance of the retrieved documents, and the interpretability of the response.
+For example, ARES~\cite{saad2023ares} uses LLM judges to evaluate RAG systems across three dimensions: Contextual Relevance, Answer Faithfulness, and Answer Relevance. Similarly, Asai et al. ~\cite{asai2023self} proposed SELF-RAG, which employs reflective token to determine whether retrieval is required and to self-assess the quality of generated outputs. Lei et al.~\cite{lei2024recexplainer} introduced LLMs to evaluate the quality of generated explanations, demonstrating the effectiveness of LLMs in understanding and generating explanations for recommendation tasks.
+
+
+
+
+\subsubsection{Model Evaluation}
+\label{sec:Model Evaluation}
+Model evaluation typically begins with assessing individual responses and then extends to analyzing overall capabilities. This wider perspective aims to analyze the model's performance across various tasks or domains, such as coding ability, instruction-following proficiency, reasoning, and other specialized skills relevant to its intended applications.
+
+A common and straightforward approach is to represent model performance using average performance on static benchmarks~\cite{zheng2023judging,lin2024wildbench,tan2024judgebench}. LLM judges assess the model's performance using a set of carefully designed metrics, which results in a performance ranking. This method is widely adopted due to its simplicity and comparability. For example, task sets can be designed to evaluate the model's knowledge coverage, reasoning depth, and language generation quality~\cite{son2024mm,liu2024rm,lambert2024rewardbench}, or real-world scenarios can be simulated to assess the model's ability to handle complex situations~\cite{liu2023agentbench,trivedi2024appworld}.
+
+
+As the demand for evaluation increases, the evaluation process has gradually shifted from traditional static testing to more dynamic, interactive assessments~\cite{bai2024benchmarking,zhao2024auto,yu2024kieval}.
+LLMs-as-judges has pioneered this approach, similar to Chatbot Arena~\cite{zheng2023judging}, a crowdsourced platform that collects anonymous votes on LLM performance and ranks them using Elo scores. 
+Auto-Arena~\cite{zhao2024auto,luo2024videoautoarena} and LMExam~\cite{bai2024benchmarking} assess model capabilities by using LLMs as both question setters and evaluators. These frameworks innovatively combine diverse question generation, multi-turn question-answering evaluation, and a decentralized model-to-model evaluation mechanism, providing more detailed and granular performance assessments.
+Additionally, KIEval~\cite{yu2024kieval} introduces an LLM-driven ``interactor'' role, which evaluates the knowledge mastery and generation abilities of LLMs through dynamic multi-turn conversations. These dynamic evaluation methods effectively address data leakage and evaluation bias issues common in traditional benchmark tests.
+
+
+
+\subsection{Model Enhancement}
+\label{sec:Model Enhancement}
+In addition to Performance Evaluation, LLMs-as-judges is also widely used for Model Enhancement. From training to inference, LLMs-as-judges plays a key role in improving model performance. Its application in model enhancement offers a novel optimization pathway for artificial intelligence, fostering the refinement and personalization of intelligent systems across a broader spectrum of real-world applications.
+
+\subsubsection{Reward Modeling During Training}
+\label{sec: Reward Modeling During Training}
+
+A primary application of LLMs-as-judges is in reward modeling during training, particularly in reinforcement learning with feedback~\cite{yuan2024self,guo2024direct,wang2024cream,xu2024perfect,cao2024enhancing}. LLM judges assign scores to model outputs by evaluating them against human-defined criteria, guiding optimization toward desired behaviors. This ensures alignment with human values, improving the quality and relevance of the generated outputs and improving the effectiveness of LLMs in real-world tasks.
+
+
+A series of works, such as SRLMs~\cite{yuan2024self}, OAIF~\cite{guo2024direct}, and RLAIF~\cite{lee2023rlaif}, have enabled LLMs to become their own reward models. This overcomes the traditional RLHF dependency on fixed reward models, allowing the model to iteratively reward and self-optimize, fostering self-evolution through continuous self-assessment.
+RELC~\cite{cao2024enhancing} tackles the challenge of sparse rewards in traditional RL by introducing a Critic Language Model (Critic LM) to evaluate intermediate generation steps. This dense feedback at each step helps mitigate reward sparsity, offering more detailed guidance to the model during training.
+
+However, using the same LLM for both policy generation and reward modeling can pose challenges in ensuring the accuracy of the rewards. This dual role setup may lead to accumulated biases and preference data noise, which can undermine the training effectiveness. To address this issue, CREAM~\cite{wang2024cream} introduces cross-iteration consistency constraints to regulate the training process and prevent the model from learning unreliable preference data. This significantly enhances reward consistency and alignment performance. In addition, CGPO~\cite{xu2024perfect} groups tasks by category (such as dialogue, mathematical reasoning, safety, etc.) and uses ``Mixed Judges'' to assign a specific reward model to each task group. This ensures that the reward signals are closely aligned with the task objectives, thereby preventing conflicts between different goals.
+
+
+
+
+
+\subsubsection{Acting as Verifier During Inference}
+\label{sec: Acting as Verifier During Inference}
+During inference, LLM judges serve as verifier, responsible for selecting the optimal response from multiple candidates~\cite{yao2024tree,besta2024graph,lightman2023let,musolesi2024creative,besta2024graph}. By comparing the outputs based on various metrics, such as factual accuracy and reasoning consistency, they are able to identify the best fit for the given task or context, thereby optimizing the inference process or improving the quality of the generated results.
+
+
+One of the simplest applications is Best-of-N sampling~\cite{jinnai2024regularized,sun2024fast}, where the model is sampled N times, and the best result is selected to improve model performance. Similarly, Wang et al.~\cite{wang2022self} introduced a promising sampling method called self-consistency, where n samples are drawn from the judge model, and the average score is output. These sampling methods enhance inference stability by selecting the best result from multiple evaluations.
+Further optimization strategies include the Tree of Thoughts (ToT)~\cite{yao2024tree} method, which models the problem-solving process as a tree structure. This allows the model to explore multiple solution paths and optimize path selection through self-assessment mechanisms.
+The Graph of Thoughts (GoT)~\cite{besta2024graph} method extends this concept by introducing directed graphs, where the non-linear interactions between nodes improve the efficiency and precision of multi-step reasoning. In both methods, LLM judges play a crucial role in guiding the model to select the most promising paths, thereby enhancing the quality and accuracy of reasoning.
+
+Similarly, Lightman et al.~\cite{lightman2023let} discuss how step-by-step validation can enhance the performance of LLMs in multi-step reasoning tasks, particularly in the domain of mathematics. SE-GBS~\cite{xie2024self} integrates self-assessment into the multi-step reasoning decoding process, generating scores that reflect logical correctness and further ensuring the accuracy and consistency of the reasoning chain. The REPS~\cite{kawabata2024rationale} improves the accuracy and reliability of reasoning validation models by comparing reasoning paths pairwise, verifying their logical consistency and factual basis.
+Also, Musolesi et al. ~\cite{musolesi2024creative} proposed Creative Beam Search, with the LLM acting as a judge to simulate the human creative selection process, thereby enhancing the diversity and creativity of the generated results.
+
+
+
+\subsubsection{Feedback for Refinement}
+\label{sec: Feedback for Refinement}
+After receiving the initial response, LLM judges provide actionable feedback to iteratively improve output quality. By analyzing the response based on specific task criteria, such as accuracy, coherence, or creativity, the LLM can identify weaknesses in the output and offer suggestions for improvement. This iterative refinement process plays a crucial role in applications that require adaptability~\cite{madaan2024self,paul2023refiner,chen2023teaching,xu2023towards,huang2023large}.
+
+SELF-REFINE~\cite{madaan2024self} enables LLMs to iteratively improve output quality through feedback generated by the model itself, without requiring additional training or supervision data. On the other hand, SELF-DEBUGGING~\cite{chen2023teaching} demonstrates a practical application of self-correction in code generation by identifying and rectifying errors through self-explanation and feedback. This approach has significantly enhanced the performance of LLMs across various code generation tasks.
+
+In addition to refining response quality, LLMs judges are also widely used to enhance reasoning abilities. For example, REFINER~\cite{paul2023refiner} optimizes the reasoning performance of LLMs through interactions between a generator model and a critic model. In this framework, the generator model is responsible for producing intermediate reasoning steps, while the critic model analyzes these steps and provides detailed feedback, such as identifying calculation errors or logical inconsistencies. Xu et al.~\cite{xu2023towards} propose a multi-agent collaboration strategy to enhance the reasoning abilities of LLMs by simulating the academic peer review process. The framework is divided into three stages: generation, review, and revision. Agents provide feedback and attach confidence scores to refine the initial answers, with the final result determined through majority voting.
+
+
+
+While the feedback and correction mechanisms of LLMs judges are continually evolving, the limitations of self-feedback in improving quality should not be overlooked. Research on Self-Correct~\cite{huang2023large,tyen2023llms} shows that, the intrinsic self-correction capabilities of LLMs often fall short of effectively improving reasoning quality. 
+Valmeekam et al.~\cite{valmeekam2023can} also raise concerns about the effectiveness of LLMs as self-validation tools in the absence of reliable external validators. Future research can focus on improving the accuracy of feedback provided by these LLM judges and incorporating external validation mechanisms to optimize their performance in complex reasoning tasks.
+
+
+
+
+
+
+
+\subsection{Data Construction}
+\label{sec:Data Construction}
+Data collection is a crucial stage in the development of machine learning systems, especially those driven by the rapid advancements in deep learning. The quality of the data directly determines the performance of the trained models.
+The LLMs-as-judges has significantly transformed the landscape of data collection, substantially reducing reliance on human effort.
+In this section, we will explore the pivotal role of LLMs-as-judges in data collection from two key perspectives: \textbf{Data Annotation} (\S\ref{sec:Data Annotation}) and \textbf{Data Synthesize} (\S\ref{sec:Data Synthesize}).
+
+
+\subsubsection{Data Annotation}
+\label{sec:Data Annotation}
+Data Annotation involves leveraging LLM judges to label large, unlabeled datasets efficiently~\cite{he2024if,gilardi2023chatgpt,tornberg2023chatgpt,hao2024fullanno}. By utilizing the advanced natural language understanding and reasoning capabilities of LLMs, the annotation process can be automated to a significant extent, enabling the generation of high-quality labels with reduced human intervention.
+
+LLMs have demonstrated remarkable potential in text annotation tasks, consistently outperforming traditional methods and human annotators in various settings.
+He et al.~\cite{he2024if} evaluated the performance of GPT-4 in crowdsourced data annotation workflows, particularly in text annotation tasks. Their comparative study revealed that, even with best practices, the highest accuracy achievable by MTurk workers was 81.5\%, whereas GPT-4 achieved an accuracy of 83.6\%.
+Similarly, Gilardi et al.~\cite{gilardi2023chatgpt} analyzed 6,183 tweets and news articles, demonstrating that ChatGPT outperformed crowdsourced workers in tasks such as stance detection, topic detection, and framing.
+Törnberg et al.~\cite{tornberg2023chatgpt} further investigated the classification of Twitter users' political leanings based on their tweet content. Their findings revealed that ChatGPT-4 not only surpassed human classifiers in accuracy and reliability but also exhibited bias levels that were comparable to or lower than those of human classifiers.
+
+
+As technology advances, more and more research is exploring their application in multimodal data annotation. For example, the FullAnno~\cite{hao2024fullanno} uses the GPT-4V model to generate image annotations, significantly improving the quality of image descriptions through a multi-stage annotation process.
+Furthermore, Latif et al.~\cite{latif2023can} explored the application of LLMs in speech emotion annotation, demonstrating that, with data augmentation, LLM-annotated samples can significantly enhance the performance of speech emotion recognition models. By integrating text, audio features, and gender information, the effectiveness of LLM-based annotations was further improved, highlighting their potential in advancing multimodal annotation tasks.
+
+
+As LLMs perform excellently in annotation tasks, researchers are actively exploring methods to further improve annotation quality and address potential challenges. For example, AnnoLLM~\cite{he2023annollm} introducedthe ``explain-then-annotate'' method, which enhances both the accuracy and transparency of annotations by prompting the LLM to justify its label assignments. 
+Additionally, the LLMAAA~\cite{zhang2023llmaaa} framework incorporates an active learning strategy to efficiently select high-information samples for annotation, thereby mitigating the effects of noisy labels and reducing the reliance on costly human annotation. These approach not only enhance the performance of task-specific models but also offer new perspectives on the efficient application of LLMs in annotation workflows.
+
+
+\subsubsection{Data Synthesize}
+\label{sec:Data Synthesize}
+The goal of Data Synthesis is to create entirely new data, either from scratch or based on seed data, while ensuring it is similar in distribution to real data. Data Synthesis enables the generation of diverse data samples, enhancing a model's generalization ability to unseen examples while reducing reliance on sensitive real-world data~\cite{ye2023selfee,dong2024self,arif2024fellowship,wang2022self,kim2024aligning,mendoncca2024soda}.
+
+
+In recent years, advancements in LLMs have led to significant improvements in both the quality and efficiency of data synthesis methods. In this domain, methods like SELFEE~\cite{ye2023selfee} and SynPO~\cite{dong2024self} have effectively enhanced the alignment capabilities of LLMs by leveraging small amounts of labeled data and iteratively generating preference-aligned data. Arif et al.~\cite{arif2024fellowship} also introduce a multi-agent workflow for generating optimized preference datasets.
+
+
+
+SELF-INSTRUCT~\cite{wang2022self} and Evol-Instruct~\cite{xu2023wizardlm,zeng2024automatic} represent innovative approaches to improving model alignment and performance through self-generated instruction data. SELF-INSTRUCT~\cite{wang2022self}  requires minimal human annotation, instead relying on self-generated instruction data to align pre-trained models. Evol-Instruct~\cite{xu2023wizardlm,zeng2024automatic}  further enhances LLM performance by automatically generating instruction data, significantly boosting model capabilities. 
+
+
+STaR~\cite{zelikman2024star} and ReSTEM~\cite{singh2023beyond} are research efforts aimed at enhancing reasoning capabilities through synthetic data. STaR~\cite{zelikman2024star} employs a self-guided iterative process to improve model performance on complex reasoning tasks, offering an effective solution for tackling increasingly sophisticated reasoning challenges in the future. ReSTEM~\cite{singh2023beyond}, on the other hand, utilizes a self-training approach based on the expectation-maximization framework to enhance the problem-solving capabilities of large language models, particularly in areas such as solving mathematical problems and generating code.
+
+

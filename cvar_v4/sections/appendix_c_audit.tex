@@ -1,0 +1,189 @@
+\section{Transport Audit and Refuse-Level Gate}
+\label{app:audit}
+
+The audit is an estimand-specific admissibility check. It does not ask whether
+the policy is good. It asks whether the calibrated level estimate can be
+interpreted as a level claim for this policy and tail level.
+
+\subsection{Two Audit Moments}
+\label{app:audit-formal}
+
+At a regular population optimizer $t_\alpha^\star$, define
+\begin{align}
+g_1(O_\ptarget;t_\alpha^\star)
+&=\one\{\Y\le t_\alpha^\star\}-\alpha,\\
+g_2(O_\ptarget;t_\alpha^\star)
+&=\shortfall{t_\alpha^\star}{\Y}
+-h_{t_\alpha^\star}(\Sscore,\X).
+\end{align}
+The first moment checks whether the selected threshold captures the intended
+tail mass. The second checks whether the calibrated shortfall transports at
+that threshold.
+
+\begin{theorem}[Two-moment audit target]
+\label{thm:formal-two-moment}
+Under \cref{ass:regular-tail,ass:shortfall-transport},
+\[
+\E_\ptarget[g_1(O_\ptarget;t_\alpha^\star)]=0,
+\qquad
+\E_\ptarget[g_2(O_\ptarget;t_\alpha^\star)]=0.
+\]
+\end{theorem}
+
+\begin{twocolproof}
+\twocolrow{
+\[
+t_\alpha^\star=q_\alpha(\ptarget),
+\qquad
+\Pp_\ptarget(\Y\le t_\alpha^\star)=\alpha.
+\]
+}{
+\cref{ass:regular-tail} gives the regular quantile optimizer.
+}
+\twocolrow{
+\[
+\E_\ptarget[g_1(O_\ptarget;t_\alpha^\star)]
+=\Pp_\ptarget(\Y\le t_\alpha^\star)-\alpha=0.
+\]
+}{
+Take expectation of the tail-mass moment.
+}
+\twocolrow{
+\[
+\E_\ptarget[g_2(O_\ptarget;t_\alpha^\star)]
+=\E_\ptarget[
+\shortfall{t_\alpha^\star}{\Y}
+-h_{t_\alpha^\star}(\Sscore,\X)].
+\]
+}{
+This is the shortfall residual at the selected threshold.
+}
+\twocolrow{
+\[
+\E_\ptarget[g_2(O_\ptarget;t_\alpha^\star)]=0.
+\]
+}{
+Apply \cref{ass:shortfall-transport} at $t_\alpha^\star$.
+}
+\end{twocolproof}
+
+On an audit sample, use the fitted threshold and calibrator:
+\begin{align}
+\hat g_{1i}
+&=\one\{\Y_i\le\hat t_\alpha\}-\alpha,\\
+\hat g_{2i}
+&=\shortfall{\hat t_\alpha}{\Y_i}
+-\hat h_{\hat t_\alpha}(\Sscore_i,\X_i),
+\end{align}
+and let $\bar g_n=n^{-1}\sum_i(\hat g_{1i},\hat g_{2i})^\top$.
+
+\subsection{Wald Gate}
+
+Let $\Omega$ be the asymptotic covariance of $\sqrt n\bar g_n$, including the
+first-order effect of fitting $\hat h_t$ and selecting $\hat t_\alpha$. Let
+$\hat\Omega$ be a consistent estimator. The Wald statistic is
+\begin{equation}
+W_n=n\bar g_n^\top\hat\Omega^{-1}\bar g_n.
+\label{eq:formal-wald}
+\end{equation}
+
+\begin{theorem}[Wald limit]
+\label{thm:formal-wald-limit}
+Suppose the two audit moments have mean zero, \cref{ass:nuisance} holds, and
+\[
+\sqrt n\bar g_n
+=\frac{1}{\sqrt n}\sum_{i=1}^n\phi(O_i)+o_p(1),
+\qquad
+\E[\phi(O_i)]=0,\qquad
+\E[\phi(O_i)\phi(O_i)^\top]=\Omega,
+\]
+with $\Omega$ nonsingular and $\hat\Omega\overset{p}{\to}\Omega$. Then
+\[
+W_n\rightsquigarrow\chi^2_2.
+\]
+\end{theorem}
+
+\begin{twocolproof}
+\twocolrow{
+\[
+\sqrt n\bar g_n
+=n^{-1/2}\sum_{i=1}^n\phi(O_i)+o_p(1).
+\]
+}{
+Use the assumed first-order expansion.
+}
+\twocolrow{
+\[
+\sqrt n\bar g_n\rightsquigarrow N(0,\Omega).
+\]
+}{
+Apply the multivariate central limit theorem.
+}
+\twocolrow{
+\[
+\hat\Omega^{-1}\overset{p}{\to}\Omega^{-1}.
+\]
+}{
+Use covariance consistency and nonsingularity.
+}
+\twocolrow{
+\[
+n\bar g_n^\top\hat\Omega^{-1}\bar g_n
+\rightsquigarrow Z^\top\Omega^{-1}Z,\qquad Z\sim N(0,\Omega).
+\]
+}{
+Apply Slutsky's theorem and the continuous mapping theorem.
+}
+\twocolrow{
+\[
+Z^\top\Omega^{-1}Z\sim\chi^2_2.
+\]
+}{
+Whiten $Z$.
+}
+\end{twocolproof}
+
+At audit level $\eta$,
+\[
+W_n>\chi^2_{2,1-\eta}
+\quad\Longrightarrow\quad
+\RefuseLevel.
+\]
+Rejected rows may be shown as diagnostics, but not interpreted as calibrated
+level claims.
+
+\subsection{Held-Out Audit Design}
+\label{app:audit-holdout}
+
+The audit slice must be disjoint from the rows used to train the calibrator.
+When the target policy is the logger, the selected logger oracle rows are split
+into a calibration portion and a held-out audit portion. When the target policy
+differs from the logger, the target's selected oracle rows are already outside
+the logger calibration sample, so they can serve as the target audit slice.
+
+This split is not cosmetic. If the isotonic calibrator is audited on the same
+rows it fit, residuals are mechanically shrunk and the audit no longer tests
+transport.
+
+\subsection{Interpreting Failures}
+\label{app:audit-cells}
+
+The two moments diagnose different failures:
+\begin{itemize}[leftmargin=*,nosep]
+\item small $|\bar g_1|$ and small $|\bar g_2|$: threshold and shortfall
+transport both look credible; report the level estimate.
+\item large $|\bar g_1|$ and small $|\bar g_2|$: the threshold is in the wrong
+tail percentile, but conditional shortfall predictions are locally reasonable.
+\item small $|\bar g_1|$ and large $|\bar g_2|$: the threshold captures the
+right amount of mass, but the cheap-to-oracle shortfall map does not transport.
+\item both large: refuse; both the tail boundary and the shortfall surface are
+misaligned.
+\end{itemize}
+
+\subsection{Mean and CVaR Gates Are Not Nested}
+
+Mean-CJE audits $\E_\ptarget[\Y-f(\Sscore,\X)]=0$. CVaR-CJE audits tail mass
+and shortfall transport at $\hat t_\alpha$. Either gate can pass while the
+other fails. A valid mean claim does not certify a tail claim, and a valid tail
+claim does not certify a mean claim. Each reported estimand must be gated by
+its own audit.

@@ -1,0 +1,95 @@
+\tikzstyle{my-box}= [
+    rectangle,
+    draw=hidden-draw,
+    rounded corners,
+    text opacity=1,
+    minimum height=1.5em,
+    minimum width=5em,
+    inner sep=2pt,
+    align=center,
+    fill opacity=.5,
+]
+\tikzstyle{leaf}=[my-box, minimum height=1.5em,
+    fill=blue!15, text=black, align=left,font=\scriptsize,
+    inner xsep=2pt,
+    inner ysep
+=4pt,
+]
+\begin{figure*}[t]
+
+    \centering
+    \resizebox{\textwidth}{!}{
+        \begin{forest}
+            forked edges,
+            for tree={
+                grow=east,
+                reversed=true,
+                anchor=base west,
+                parent anchor=east,
+                child anchor=west,
+                base=left,
+                font=\small,
+                rectangle,
+                draw=hidden-draw,
+                rounded corners,
+                align=left,
+                minimum width=4em,
+                edge+={darkgray, line width=1pt},
+                s sep=3pt,
+                inner xsep=2pt,
+                inner ysep=3pt,
+                ver/.style={rotate=90, child anchor=north, parent anchor=south, anchor=center},
+            },
+            where level=1{text width=6.4em,font=\scriptsize,}{},
+            where level=2{text width=6.4em,font=\scriptsize,}{},
+            where level=3{text width=6.4em,font=\scriptsize,}{},
+            where level=4{text width=6.4em,font=\scriptsize,}{},
+[LLMs-as-judges, ver
+    [LIMITATION (\S \ref{sec:Limitation})
+        [Biases (\S\ref{sec:biases})
+            [Presentation-Related \\ (\S\ref{sec:presentationbiases})
+                [Position bias~\cite{blunch1984position,raghubir2006center, ko2020look, wang2018position, llmsjuding2024openreview, zheng2023judging,chen2024humans,wang2023large,li2023generative,zheng2023large, raina2024llm,hou2024large, li2023split, li2023prd,khan2024debating, zhou2023batch, li2024calibraeval,  shi2024judging, stureborg2024large, zhao2024measuring}{, }Verbosity bias~\cite{nasrabadi2024juree, ye2024justice, ye2024beyond}, leaf, text width=41em] ]
+            [Social-Related (\S\ref{sec:socialbiases})
+                [Authority bias~\cite{chen2024humans,ye2024justice, zhao2023mind}{, }Bandwagon-effect bias~\cite{koo2023benchmarking,ye2024justice}{, }Compassion-fade bias~\cite{koo2023benchmarking,ye2024justice}{, }Diversity bias~\cite{chen2024humans,ye2024justice}, leaf, text width=41em] ]
+            [Content-Related \\(\S\ref{sec:contentbiases})
+                [Sentiment bias~\cite{ye2024justice}{, }Token Bias~\cite{jiang2024peek,li2024calibraeval,pezeshkpour2023large,raina2024llm}{, }Contextual Bias~\cite{poulain2024bias, zhou2024large,zhou2023batch,fei2023mitigating,zhao2021calibrate,han2022prototypical}, leaf, text width=41em] ]
+            [Cognitive-Related \\(\S\ref{sec:cognitivebiases})
+                [Overconfidence bias~\cite{khan2024debating,jung2024trust}{, }Self-enhancement bias~\cite{liu2023g,zheng2023judging,li2023prd,liu2023g, brown1986evaluations,ye2024justice, badshah2024reference}{, }Refinement-aware bias~\cite{ye2024justice, xu2024pride}\\Distraction bias~\cite{ye2024justice,koo2023benchmarking,shi2023large}{, }Fallacy-oversight bias~\cite{chen2024humans,ye2024justice}, leaf, text width=41em] ] ]
+        [Adversarial Attacks \\(\S\ref{sec:attacks})
+            [Adversarial Attacks \\on LLMs (\S \ref{sec:Adversarial Attacks on LLMs})
+                [Text-Level Manipulations~\cite{ebrahimi2017hotflip, jiang2023prompt, branch2022evaluating, perez2022ignore}{, }Structural and Semantic Distortions~\cite{xu2023llm}{, }Optimization-Based Attacks~\cite{sun2020natural,sun2020adv, lee2022query}, leaf, text width=41em] ]
+            [Adversarial Attacks \\on LLMs-as-Judges \\(\S \ref{sec:Adversarial Attacks on LLMs-as-judges})
+                [Zheng et al.~\cite{zheng2024cheating}{, }Doddapaneni et al.~\cite{doddapaneni2024finding}{, }MT-Bench~\cite{zheng2023judging}{, }Raina et al.~\cite{raina2024llm}{, }Shi et al.~\cite{shi2024optimization}, leaf, text width=41em] ]  ]
+        [Inherent Weaknesses \\(\S\ref{sec:weaknesses}) 
+            [Knowledge Recency \\(\S \ref{sec:Knowledge Recency})
+                [Zhao et al. ~\cite{zhao2023survey}{, }Luo et al.~\cite{luo2023empirical}{, }Gao et al.~\cite{gao2023retrieval}{, }Lewis et al.~\cite{lewis2020retrieval}{, }Wu et al.~\cite{wu2024continual}{, }Dierickx et al. ~\cite{dierickx2024striking}, leaf, text width=41em]]
+            [Hallucination (\S \ref{sec:Hallucination})
+                [Dierickx et al.~\cite{dierickx2024striking}{, }Ji et al.~\cite{ji2023survey}{, }Tonmoy et al.~\cite{tonmoy2024comprehensive}, leaf, text width=41em]]
+            [Domain-Specific \\Knowledge Gaps \\(\S \ref{sec:Domain-Specific Knowledge Gaps})
+                [Feng et al.~\cite{feng2023knowledge}{, }Pan et al.~\cite{pan2024unifying}{, }Gao et al.~\cite{gao2023retrieval}{, }Szymanski et al.~\cite{szymanski2024limitations}{, }Dorner et al.~\cite{dorner2024limitsscalableevaluationfrontier}, leaf, text width=41em]] ]]
+[
+    FUTURE WORK \\(\S\ref{sec:Future})
+    [
+        More Efficient (\S\ref{sec:more-Efficient})
+        [
+            Automated Construction of Evaluation Criteria and Tasks~\cite{bai2024benchmarking,zhao2024auto,yu2024kieval,zhang2024talec,wang2024revisiting}{, }Scalable Evaluation Systems~\cite{xu2024perfect}{, }Accelerating Evaluation Processes~\cite{lee2024aligning,liu2024aligning, chen2024internet}, leaf, text width=49em
+        ]
+    ]
+    [
+        More Effective (\S\ref{sec:more-Effective})
+        [
+            Integration of Reasoning and Judge Capabilities~\cite{zhuo2023ice,yi2024protocollm,stephan2024calculation}{, }Establishing a Collective Judgment Mechanism~\cite{chan2023chateval,chu2024pre}{, }Enhancing Domain Knowledge~\cite{raju2024constructing}{, }\\Cross-Domain and Cross-Language Transferability~\cite{son2024mm,hada2023large,watts2024pariksha}{, }Multimodal Integration Evaluation~\cite{chen2024mllm}, leaf, text width=49em
+        ]
+    ]
+    [
+        More Reliable (\S\ref{sec:more-Reliable})
+        [
+            Enhancing Interpretability and Transparency~\cite{liu2024hd}{, }
+            Mitigating Bias and Ensuring Fairness~\cite{li2024calibraeval}{, }
+            Enhancing Robustness~\cite{shi2024optimization,elangovan2024beyond}, leaf, text width=49em
+        ]]]]
+        \end{forest}
+    }
+    \caption{Taxonomy of LLMs-as-judges in limitation and future work.}
+    \label{Taxonomy_2}
+\end{figure*}

@@ -1,0 +1,24 @@
+\section{Discussion}
+\label{sec:discussion}
+In this work, we forecast how risks grow with deployment scale by studying the elicitation probabilities of evaluation queries. 
+However, there are many ways to make our forecasts more accurate and practical. 
+For each forecast, we could adaptively test the fit of each extreme-value distribution, model whether our evaluation set captures tail behavior, and add uncertainty estimates to our forecasts. 
+We could also explore making forecasts for a broader range of behaviors on more natural distributions of queries. 
+We think these are exciting areas for subsequent work. 
+
+In our experiments, we study deployments that are at most three orders of magnitude larger than evaluation and could in principle be evaluation sets themselves. 
+We do this because simulating ground truth for actual deployment scales is prohibitively expensive; this would require generating millions to billions of queries. 
+However we think our forecasts could seamlessly extrapolate to larger-scale deployments that are intractable to test pre-deployment; for example, curating ground-truth evaluation sets on billions of queries is intractable, but only requires slightly more extrapolation on the log-log plot to make forecasts.  
+
+We do not study distribution shifts between evaluation and deployment queries, only shifts in the total number of queries. 
+We hope that for many kinds of risks, historical queries are representative of future ones; model developers can thus construct on-distribution evaluation sets from previous usage, or run small-scale beta tests.  
+However, adversaries in practice may adaptively adjust their queries based on the model, and users may deploy models in new settings based on current capabilities. 
+We think studying how robust our forecasts are to distribution shifts is interesting subsequent work. 
+
+Another natural approach to find rare behaviors is to \emph{optimize} for them during evaluation. This could include optimizing over prompts to find a behavior \citep{jones2023arca, zou2023universal}, or fine-tuning the model to elicit a behavior \citep{greenblatt2024stress}. 
+However, these methods suffer from false positives and false negatives: optimizing can find instances of a behavior that are too rare to ever come up in practice, while optimizers can miss behaviors when they optimize over the wrong attack surface, or do not converge to global optima. 
+Our forecasts also have generalization assumptions to test for rare behaviors; we think trading off between these different generalization assumptions can produce better deployment decisions. 
+
+Finally, our method naturally extends to monitoring. The maximum elicitation probability provides a real-time metric for how close models are to producing some undesired behavior, and our scaling laws can be used to forecast how much longer a deployment can continue with low risk. 
+Forecasting in real time also resolves some of the limitations of our setup; we can adaptively test whether we are in the extreme tail, refine our forecasts based on additional evidence, and are less susceptible to distribution shifts. 
+We hope our work better allows developers to preemptively flag deployment risks and make necessary adjustments. 

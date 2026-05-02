@@ -2,17 +2,47 @@
 \label{sec:related}
 
 \paragraph{Calibrated LLM-as-judge inference.}
-CJE calibrates cheap judge scores to oracle labels and audits transport across policies \citep{LandesbergNarayan2026CJE}. Recent LLM-as-judge work emphasizes reporting bias correction and uncertainty rather than raw judge scores \citep{Lee2025LLMJudgeReporting,Chen2026EfficientLLMJudge}. CalibraEval studies selection bias in LLM judges \citep{Li2025CalibraEval}. CVaR-CJE is complementary: it changes the estimand from a mean to a lower-tail risk functional and adds a threshold audit.
+CJE calibrates cheap judge scores to oracle labels and audits transport
+across policies \citep{LandesbergNarayan2026CJE}. Recent LLM-as-judge
+work emphasizes reporting bias correction and uncertainty rather than
+raw judge scores \citep{Lee2025LLMJudgeReporting,Chen2026EfficientLLMJudge,
+Li2025CalibraEval}. CVaR-CJE complements that line of work. It changes
+the estimand from a mean to a lower-tail risk functional, adds a
+threshold-and-shortfall audit for that functional, and recovers the
+original mean audit at $\alpha = 1$.
 
 \paragraph{LLM judges and benchmarks.}
-MT-Bench and Chatbot Arena established scalable judge-based comparison protocols \citep{Zheng2023Judging,Chiang2024ChatbotArena}. G-Eval and Prometheus-style evaluators study model-based grading quality \citep{Liu2023GEval,Kim2024Prometheus2}. RewardBench evaluates reward models used for preference and alignment pipelines \citep{Lambert2024RewardBench}. These works motivate scalable evaluation but generally do not provide audit-gated lower-tail inference.
+MT-Bench and Chatbot Arena established scalable judge-based comparison
+protocols \citep{Zheng2023Judging,Chiang2024ChatbotArena}. G-Eval and
+Prometheus-style evaluators study model-based grading quality
+\citep{Liu2023GEval,Kim2024Prometheus2}. RewardBench evaluates reward
+models used for preference and alignment pipelines
+\citep{Lambert2024RewardBench}. These works motivate scalable
+evaluation but generally do not provide audit-gated lower-tail
+inference.
 
-\paragraph{Tail risk.}
-CVaR, also known as expected shortfall, is a standard coherent risk measure and admits the stop-loss optimization form used here \citep{RockafellarUryasev2000,AcerbiTasche2002}. The novelty here is not CVaR itself; it is the audit-gated surrogate estimation of CVaR for LLM policy evaluation.
+\paragraph{Tail risk and conformal prediction.}
+CVaR (also called expected shortfall) is the standard coherent risk
+measure with the stop-loss optimization form used here
+\citep{RockafellarUryasev2000,RockafellarUryasev2002,AcerbiTasche2002}.
+Our contribution is the audit-gated surrogate estimation of CVaR for
+LLM policy evaluation, not CVaR itself. A natural neighbor is conformal
+prediction, the standard tool for individual-response LLM uncertainty
+\citep{Angelopoulos2021Gentle}. Conformal prediction returns predictive
+intervals for individual responses. CVaR-CJE returns a confidence
+interval for a population-level functional, the expected outcome on
+the worst $\alpha$-fraction of responses under a target policy. The
+two answer different deployment-time questions.
 
-\paragraph{Safety and high-stakes datasets.}
-HealthBench motivates worst-case reliability in medical interactions and provides a rubric-based path to continuous outcomes \citep{OpenAI2025HealthBench}. BeaverTails, PKU-SafeRLHF, WildJailbreak, HarmBench, and StrongREJECT provide prompt and evaluation resources for harmful requests, adversarial prompting, and refusal behavior \citep{Ji2023BeaverTails,Ji2024PKUSafeRLHF,Jiang2024WildTeaming,Mazeika2024HarmBench,Souly2024StrongREJECT}.
-
-\paragraph{Auditable assumptions.}
-The refusal gate follows a broader statistical idea: surrogate relationships can fail under context shift, so high-stakes use should rely on checkable diagnostics rather than untested transport assumptions \citep{FlemingDeMets1996,Lipsitch2010,TchetgenTchetgen2024}.
-
+\paragraph{Safety and high-stakes evaluation.}
+HealthBench motivates worst-case reliability in medical interactions
+and provides a rubric-based path to continuous outcomes
+\citep{OpenAI2025HealthBench}. BeaverTails, PKU-SafeRLHF, WildJailbreak,
+HarmBench, and StrongREJECT provide prompt and evaluation resources for
+harmful requests, adversarial prompting, and refusal behavior
+\citep{Ji2023BeaverTails,Ji2024PKUSafeRLHF,Jiang2024WildTeaming,
+Mazeika2024HarmBench,Souly2024StrongREJECT}. The auditable-assumption
+framing follows a broader statistical idea. Surrogate relationships
+can fail under context shift, so high-stakes use should rely on
+checkable diagnostics rather than untested transport assumptions
+\citep{FlemingDeMets1996,Lipsitch2010,TchetgenTchetgen2024}.

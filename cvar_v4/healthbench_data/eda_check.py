@@ -32,7 +32,7 @@ RESPONSES_DIR = ROOT / "data" / "responses"
 JUDGE_DIR = ROOT / "judge_outputs"
 OUT_PATH = ROOT / "writeup" / "data" / "integrity_check.json"
 
-POLICIES = ["base", "clone", "premium", "parallel_universe_prompt", "unhelpful"]
+POLICIES = ["base", "clone", "premium", "parallel_universe_prompt", "unhelpful", "risky"]
 KINDS = ["cheap", "oracle"]
 
 # Priors from CLAUDE.md (Mean CJE benchmark; reasonable bounds for our Y).
@@ -42,6 +42,7 @@ PRIOR_MEAN_Y = {
     "premium": (0.1, 0.7),
     "parallel_universe_prompt": (-0.2, 0.4),
     "unhelpful": (-0.5, 0.1),
+    "risky": (-0.2, 0.5),
 }
 
 

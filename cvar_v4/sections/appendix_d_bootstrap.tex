@@ -1,0 +1,138 @@
+\section{Full-Pipeline Bootstrap and Variance Taxonomy}
+\label{app:bootstrap}
+
+This appendix separates two questions that are easy to conflate:
+\emph{where would the estimate move under a different oracle slice?} and
+\emph{does the calibrator transport on the held-out audit slice?} The first is
+estimator uncertainty. The second is audit uncertainty.
+
+\subsection{Bootstrap Algorithm}
+
+\begin{algorithm}[h]
+\caption{Full-pipeline cluster bootstrap for Direct CVaR-CJE}
+\label{alg:bootstrap}
+\begin{algorithmic}[1]
+\REQUIRE Logger oracle slice $\mathcal{O}$; target-policy cheap-score rows
+$\{(\X_i,\Sscore_i)\}_{i=1}^{n_\ptarget}$; target audit slice
+$\mathcal{A}_\ptarget$; threshold grid $\mathcal{T}$; tail level $\alpha$;
+replicate count $B$; prompt-cluster map $c(\cdot)$.
+\STATE Fit point-estimate shortfall calibrators $\hat h_t^{(0)}$ on
+$\mathcal{O}$.
+\STATE Select
+$\hat t_\alpha^{(0)}\in\arg\max_{t\in\mathcal{T}}
+\left[t-\alpha^{-1}n_\ptarget^{-1}\sum_i
+\hat h_t^{(0)}(\Sscore_i,\X_i)\right]$.
+\STATE Compute point estimate $\hat V_\alpha^{(0)}$ and audit moments
+$(\bar g_1^{(0)},\bar g_2^{(0)})$.
+\FOR{$b=1$ to $B$}
+\STATE Resample prompt clusters with replacement.
+\STATE Build replicate calibration rows, target evaluation rows, and audit rows.
+\STATE Refit the shortfall calibrators $\hat h_t^{(b)}$ on the replicate
+calibration rows.
+\STATE Re-optimize
+$\hat t_\alpha^{(b)}\in\arg\max_{t\in\mathcal{T}}
+\left[t-\alpha^{-1}(n_\ptarget^{(b)})^{-1}
+\sum_i\hat h_t^{(b)}(\Sscore_i^{(b)},\X_i^{(b)})\right]$.
+\STATE Recompute $\hat V_\alpha^{(b)}$ and the audit moments at
+$\hat t_\alpha^{(b)}$.
+\ENDFOR
+\STATE Use percentile quantiles of $\{\hat V_\alpha^{(b)}\}_{b=1}^B$ for the
+estimate CI.
+\STATE Use the covariance of bootstrap audit moments to estimate $\hat\Omega$
+for the Wald gate in \cref{eq:formal-wald}.
+\end{algorithmic}
+\end{algorithm}
+
+The cluster is the prompt. All policy rows tied to the same prompt move
+together, preserving prompt-level dependence.
+
+\subsection{Why Re-Optimize \texorpdfstring{$\hat t_\alpha$}{t-hat}}
+
+The CVaR estimate is a supremum:
+\[
+\hat V_\alpha=\sup_{t\in\mathcal{T}}\hat\Psi_{\alpha,\ptarget}(t).
+\]
+The selected threshold can change when the calibration slice or evaluation
+sample changes. Holding $\hat t_\alpha$ fixed inside bootstrap replicates
+suppresses this argmax variation and gives intervals for the wrong functional.
+Re-optimization is therefore part of the estimator, not a robustness extra.
+
+\begin{remark}[The argmax wedge]
+Mean-CJE has no threshold-selection nuisance. CVaR-CJE does. This is the main
+reason its bootstrap and audit covariance need a full-pipeline treatment rather
+than a fixed-threshold residual standard error alone.
+\end{remark}
+
+\subsection{Variance Taxonomy}
+\label{app:variance-decomp}
+
+There are two variance families:
+\begin{itemize}[leftmargin=*,nosep]
+\item \textbf{Estimator variance}: how much the level estimate moves under a
+different calibration/evaluation draw. This is what bootstrap CIs on figures
+should show.
+\item \textbf{Audit variance}: how noisy the held-out residual moments are
+when testing transport. This belongs in the gate, not as the figure's level CI.
+\end{itemize}
+
+For reporting a total uncertainty envelope, decompose
+\begin{equation}
+\Var_{\mathrm{total}}(\hat V_\alpha)
+\approx
+\Var_{\mathrm{cal}}(\hat V_\alpha)
++\Var_{\mathrm{audit}}(\hat V_\alpha).
+\label{eq:var-total}
+\end{equation}
+Here $\Var_{\mathrm{cal}}$ is the variation from refitting the calibrator on a
+different oracle slice. $\Var_{\mathrm{audit}}$ is the finite-sample variation
+of the held-out audit residual average. Adding them is justified only when the
+calibration and audit rows are disjoint, as in \cref{app:audit-holdout}.
+
+\subsection{Mean-CJE and CVaR-CJE Inference Machines}
+
+\begin{center}
+\small
+\begin{tabular}{p{0.22\linewidth}p{0.34\linewidth}p{0.34\linewidth}}
+\toprule
+ & Mean-CJE & CVaR-CJE \\
+\midrule
+Calibrator &
+$\hat f(\Sscore,\X)\approx\E[\Y\mid\Sscore,\X]$ &
+$\hat h_t(\Sscore,\X)\approx\E[(t-\Y)_+\mid\Sscore,\X]$ for each $t$ \\
+Threshold &
+none &
+$\hat t_\alpha$ from a grid argmax \\
+Audit moments &
+one residual mean $\Y-\hat f(\Sscore,\X)$ &
+tail mass $g_1$ and shortfall residual $g_2$ \\
+Estimator bootstrap &
+refit $\hat f$ &
+refit $\hat h_t$ and re-optimize $\hat t_\alpha$ \\
+Failure semantics &
+average cheap-to-oracle residual does not transport &
+tail mass, shortfall, or both do not transport \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Cost-Equivalence Definition}
+\label{app:cost-equivalence}
+
+For an audit-only baseline that computes empirical CVaR on the
+$n_{\mathrm{audit}}$ oracle rows alone, define
+\[
+\sigma^2_{\mathrm{audit\_only}}=\mathrm{se}(\mathrm{audit\_only})^2,
+\qquad
+\sigma^2_{\mathrm{direct}}=\Var_{\mathrm{cal}}+\Var_{\mathrm{audit}}.
+\]
+The oracle-equivalent sample size is
+\begin{equation}
+\mathrm{cost\_ratio}
+=\frac{\sigma^2_{\mathrm{audit\_only}}}{\sigma^2_{\mathrm{direct}}},
+\qquad
+n_{\mathrm{equiv}}
+=\lceil n_{\mathrm{audit}}\cdot \mathrm{cost\_ratio}\rceil.
+\label{eq:cost-equiv}
+\end{equation}
+This is a methodological diagnostic. Numerical ratios should be regenerated
+for the current run and reported with the per-policy spread.

@@ -1,0 +1,12 @@
+\section{Related work}
+\label{sec:related-work}
+
+\textbf{Language model evaluations.} Language models are typically evaluated on benchmarks for general question-answering (\citet{hendrycks2021measuringmassivemultitasklanguage, mmlu_pro, simpleqa, phan2025humanitysexam}), code (\citet{jimenez2024swebenchlanguagemodelsresolve, sweverified, jain2024livecodebench}) STEM (\citet{rein2023gpqagraduatelevelgoogleproofqa, AIME2024}); and general answer quality (\citet{alpaca2.0, li2024crowdsourced}). Typical evaluation for safety includes static tests for dangerous content elicitation (\citet{shevlane2023modelevaluationextremerisks, phuong2024evaluatingfrontiermodelsdangerous}), and automated red-teaming (\citet{brundage2020trustworthyaidevelopmentmechanisms, perez2022redteaminglanguagemodels, ganguli2022red, feffer2024redteaminggenerativeaisilver}). 
+
+\textbf{Modelling rare model outputs.} Our work aims to forecast rare behaviors for LLMs; this builds on rare behavior detection for image classification \citep{webb2019statisticalapproachassessingneural}, autonomous driving \citep{uesato2018rigorousagentevaluationadversarial}, and increasingly in LLM safety \citep{hoffmann2022training,phuong2024evaluatingfrontiermodelsdangerous}. The most related work to ours is \citet{wu2024estimating}, which forecasts the probability of greedily generating a specific single-token LLM output under synthetic distribution of prompts. 
+We make forecasts about more general classes of behaviors, using the extreme quantiles of elicitation probabilities to forecast. 
+
+\textbf{Inference-time scaling laws for LLMs.} Our work builds on inference-time scaling laws \citep{brown2024largelanguagemonkeysscaling, snell2024scaling}, where more inference-time compute improves output quality, and can also improve jailbreak robustness \citep{wen2024adaptivedeploymentuntrustedllms, zaremba2025adversarial}. The closest inference-time scaling law to our work is \citet{hughes2024bestofnjailbreaking}, which shows that the fraction of examples in a benchmark that jailbreak the model has predictable scaling behavior in the number of attempted jailbreaks. 
+We instead show an \emph{example-based} scaling law, which allows us to forecast when a specific example will be jailbroken. 
+
+We include additional related work in Appendix \ref{app:related_work}. %\ej{Mohammed add, and include the pretraining-based scaling laws plus a bunch of other papers}

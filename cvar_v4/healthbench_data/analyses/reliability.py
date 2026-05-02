@@ -4,6 +4,15 @@ Bin pooled (cheap, oracle) pairs by cheap-score decile and report the
 oracle mean and gap per bin. Tells us whether the cheap judge has signal
 where CVaR lives (the lower part of the distribution).
 
+Why the bottom-20% bin is the headline:
+    The CVaR estimand averages the lower α-mass with α ∈ {0.10, 0.20}.
+    The bottom-20% bin covers BOTH levels in a single number — it fully
+    contains the α=0.20 tail and is a strict superset of the α=0.10
+    tail. Reporting the cheap-vs-oracle gap and Pearson correlation
+    there gives a single tail-calibration number that's directly
+    relevant to the two alphas we ship. Narrower bins (e.g. bottom-10%)
+    at this n produce too few oracle rows for a stable mean.
+
 Outputs:
     writeup/data/reliability.json
 """

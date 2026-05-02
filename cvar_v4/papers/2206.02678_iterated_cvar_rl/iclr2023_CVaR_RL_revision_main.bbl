@@ -1,0 +1,343 @@
+\begin{thebibliography}{52}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Agrawal \& Jia(2017)Agrawal and Jia]{agrawal2017optimistic}
+Shipra Agrawal and Randy Jia.
+\newblock Optimistic posterior sampling for reinforcement learning: worst-case
+  regret bounds.
+\newblock \emph{Advances in Neural Information Processing Systems}, 30, 2017.
+
+\bibitem[Artzner et~al.(1999)Artzner, Delbaen, Eber, and
+  Heath]{artzner1999coherent}
+Philippe Artzner, Freddy Delbaen, Jean-Marc Eber, and David Heath.
+\newblock Coherent measures of risk.
+\newblock \emph{Mathematical Finance}, 9\penalty0 (3):\penalty0 203--228, 1999.
+
+\bibitem[Auer et~al.(2002)Auer, Cesa-Bianchi, Freund, and
+  Schapire]{auer2002nonstochastic}
+Peter Auer, Nicolo Cesa-Bianchi, Yoav Freund, and Robert~E. Schapire.
+\newblock The non-stochastic multi-armed bandit problem.
+\newblock \emph{SIAM Journal on Computing}, 32\penalty0 (1):\penalty0 48--77,
+  2002.
+
+\bibitem[Azar et~al.(2017)Azar, Osband, and Munos]{azar2017minimax}
+Mohammad~Gheshlaghi Azar, Ian Osband, and R{\'e}mi Munos.
+\newblock Minimax regret bounds for reinforcement learning.
+\newblock In \emph{International Conference on Machine Learning}, pp.\
+  263--272. PMLR, 2017.
+
+\bibitem[B{\"a}uerle \& Glauner(2022)B{\"a}uerle and
+  Glauner]{bauerle2022markov}
+Nicole B{\"a}uerle and Alexander Glauner.
+\newblock Markov decision processes with recursive risk measures.
+\newblock \emph{European Journal of Operational Research}, 296\penalty0
+  (3):\penalty0 953--966, 2022.
+
+\bibitem[B{\"a}uerle \& Ott(2011)B{\"a}uerle and Ott]{bauerle2011markov}
+Nicole B{\"a}uerle and Jonathan Ott.
+\newblock Markov decision processes with average-value-at-risk criteria.
+\newblock \emph{Mathematical Methods of Operations Research}, 74\penalty0
+  (3):\penalty0 361--379, 2011.
+
+\bibitem[Boda \& Filar(2006)Boda and Filar]{boda2006time}
+Kang Boda and Jerzy~A Filar.
+\newblock Time consistent dynamic risk measures.
+\newblock \emph{Mathematical Methods of Operations Research}, 63\penalty0
+  (1):\penalty0 169--186, 2006.
+
+\bibitem[Borkar \& Jain(2014)Borkar and Jain]{borkar2014risk}
+Vivek Borkar and Rahul Jain.
+\newblock Risk-constrained markov decision processes.
+\newblock \emph{IEEE Transactions on Automatic Control}, 59\penalty0
+  (9):\penalty0 2574--2579, 2014.
+
+\bibitem[Borkar(2001)]{borkar2001sensitivity}
+Vivek~S Borkar.
+\newblock A sensitivity formula for risk-sensitive cost and the actor--critic
+  algorithm.
+\newblock \emph{Systems \& Control Letters}, 44\penalty0 (5):\penalty0
+  339--346, 2001.
+
+\bibitem[Borkar(2002)]{borkar2002q}
+Vivek~S Borkar.
+\newblock {Q-learning} for risk-sensitive control.
+\newblock \emph{Mathematics of Operations Research}, 27\penalty0 (2):\penalty0
+  294--311, 2002.
+
+\bibitem[Brown(2007)]{brown2007large}
+David~B Brown.
+\newblock Large deviations bounds for estimating conditional value-at-risk.
+\newblock \emph{Operations Research Letters}, 35\penalty0 (6):\penalty0
+  722--730, 2007.
+
+\bibitem[Cheng et~al.(2019)Cheng, Orosz, Murray, and Burdick]{cheng2019end}
+Richard Cheng, G{\'a}bor Orosz, Richard~M Murray, and Joel~W Burdick.
+\newblock End-to-end safe reinforcement learning through barrier functions for
+  safety-critical continuous control tasks.
+\newblock In \emph{Proceedings of the AAAI Conference on Artificial
+  Intelligence}, volume~33, pp.\  3387--3395, 2019.
+
+\bibitem[Chow \& Ghavamzadeh(2014)Chow and Ghavamzadeh]{chow2014algorithms}
+Yinlam Chow and Mohammad Ghavamzadeh.
+\newblock Algorithms for {CVaR} optimization in {MDPs}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~27, 2014.
+
+\bibitem[Chow et~al.(2015)Chow, Tamar, Mannor, and Pavone]{chow2015risk}
+Yinlam Chow, Aviv Tamar, Shie Mannor, and Marco Pavone.
+\newblock Risk-sensitive and robust decision-making: a {CVaR} optimization
+  approach.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~28, 2015.
+
+\bibitem[Chow et~al.(2017)Chow, Ghavamzadeh, Janson, and Pavone]{chow2017risk}
+Yinlam Chow, Mohammad Ghavamzadeh, Lucas Janson, and Marco Pavone.
+\newblock Risk-constrained reinforcement learning with percentile risk
+  criteria.
+\newblock \emph{Journal of Machine Learning Research}, 18\penalty0
+  (1):\penalty0 6070--6120, 2017.
+
+\bibitem[Chu \& Zhang(2014)Chu and Zhang]{chu2014markov}
+Shanyun Chu and Yi~Zhang.
+\newblock Markov decision processes with iterated coherent risk measures.
+\newblock \emph{International Journal of Control}, 87\penalty0 (11):\penalty0
+  2286--2293, 2014.
+
+\bibitem[Coraluppi \& Marcus(1997)Coraluppi and Marcus]{coraluppi1997mixed}
+Stefano~P Coraluppi and Steven~I Marcus.
+\newblock Mixed risk-neutral/minimax control of markov decision processes.
+\newblock In \emph{Proceedings 31st Conference on Information Sciences and
+  Systems}. Citeseer, 1997.
+
+\bibitem[Coraluppi \& Marcus(1999)Coraluppi and Marcus]{coraluppi1999risk}
+Stefano~P Coraluppi and Steven~I Marcus.
+\newblock Risk-sensitive and minimax control of discrete-time, finite-state
+  markov decision processes.
+\newblock \emph{Automatica}, 35\penalty0 (2):\penalty0 301--309, 1999.
+
+\bibitem[Coronato et~al.(2020)Coronato, Naeem, De~Pietro, and
+  Paragliola]{healthcare}
+Antonio Coronato, Muddasar Naeem, Giuseppe De~Pietro, and Giovanni Paragliola.
+\newblock Reinforcement learning for intelligent healthcare applications: A
+  survey.
+\newblock \emph{Artificial Intelligence in Medicine}, 109:\penalty0 101964,
+  2020.
+
+\bibitem[Dann \& Brunskill(2015)Dann and Brunskill]{dann2015sample}
+Christoph Dann and Emma Brunskill.
+\newblock Sample complexity of episodic fixed-horizon reinforcement learning.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pp.\
+  2818--2826, 2015.
+
+\bibitem[Dann et~al.(2017)Dann, Lattimore, and Brunskill]{dann2017unifying}
+Christoph Dann, Tor Lattimore, and Emma Brunskill.
+\newblock Unifying {PAC} and regret: Uniform {PAC} bounds for episodic
+  reinforcement learning.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~30, 2017.
+
+\bibitem[Di~Castro et~al.(2012)Di~Castro, Tamar, and Mannor]{di2012policy}
+Dotan Di~Castro, Aviv Tamar, and Shie Mannor.
+\newblock Policy gradients with variance related risk criteria.
+\newblock \emph{arXiv preprint arXiv:1206.6404}, 2012.
+
+\bibitem[Fatemi et~al.(2019)Fatemi, Sharma, Van~Seijen, and
+  Kahou]{fatemi2019dead}
+Mehdi Fatemi, Shikhar Sharma, Harm Van~Seijen, and Samira~Ebrahimi Kahou.
+\newblock Dead-ends and secure exploration in reinforcement learning.
+\newblock In \emph{International Conference on Machine Learning}, pp.\
+  1873--1881. PMLR, 2019.
+
+\bibitem[Fatemi et~al.(2021)Fatemi, Killian, Subramanian, and
+  Ghassemi]{fatemi2021medical}
+Mehdi Fatemi, Taylor~W Killian, Jayakumar Subramanian, and Marzyeh Ghassemi.
+\newblock Medical dead-ends and learning to identify high-risk states and
+  treatments.
+\newblock \emph{Advances in Neural Information Processing Systems},
+  34:\penalty0 4856--4870, 2021.
+
+\bibitem[Fei et~al.(2020)Fei, Yang, Chen, Wang, and Xie]{fei2020near_optimal}
+Yingjie Fei, Zhuoran Yang, Yudong Chen, Zhaoran Wang, and Qiaomin Xie.
+\newblock Risk-sensitive reinforcement learning: Near-optimal risk-sample
+  tradeoff in regret.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~33, pp.\  22384--22395, 2020.
+
+\bibitem[Fei et~al.(2021{\natexlab{a}})Fei, Yang, Chen, and
+  Wang]{fei2021exponential}
+Yingjie Fei, Zhuoran Yang, Yudong Chen, and Zhaoran Wang.
+\newblock Exponential bellman equation and improved regret bounds for
+  risk-sensitive reinforcement learning.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~34, 2021{\natexlab{a}}.
+
+\bibitem[Fei et~al.(2021{\natexlab{b}})Fei, Yang, and
+  Wang]{fei2021function_approx}
+Yingjie Fei, Zhuoran Yang, and Zhaoran Wang.
+\newblock Risk-sensitive reinforcement learning with function approximation: A
+  debiasing approach.
+\newblock In \emph{International Conference on Machine Learning}, pp.\
+  3198--3207. PMLR, 2021{\natexlab{b}}.
+
+\bibitem[Fiechter(1994)]{fiechter1994efficient}
+Claude-Nicolas Fiechter.
+\newblock Efficient reinforcement learning.
+\newblock In \emph{Conference on Computational Learning Theory}, pp.\  88--97,
+  1994.
+
+\bibitem[Garc{\i}a \& Fern{\'a}ndez(2015)Garc{\i}a and
+  Fern{\'a}ndez]{garcia2015comprehensive}
+Javier Garc{\i}a and Fernando Fern{\'a}ndez.
+\newblock A comprehensive survey on safe reinforcement learning.
+\newblock \emph{Journal of Machine Learning Research}, 16\penalty0
+  (1):\penalty0 1437--1480, 2015.
+
+\bibitem[Hardy \& Wirch(2004)Hardy and Wirch]{hardy2004iterated}
+Mary~R Hardy and Julia~L Wirch.
+\newblock The iterated {CTE}: a dynamic risk measure.
+\newblock \emph{North American Actuarial Journal}, 8\penalty0 (4):\penalty0
+  62--75, 2004.
+
+\bibitem[Haskell \& Jain(2015)Haskell and Jain]{haskell2015convex}
+William~B Haskell and Rahul Jain.
+\newblock A convex analytic approach to risk-aware markov decision processes.
+\newblock \emph{SIAM Journal on Control and Optimization}, 53\penalty0
+  (3):\penalty0 1569--1598, 2015.
+
+\bibitem[Heger(1994)]{heger1994consideration}
+Matthias Heger.
+\newblock Consideration of risk in reinforcement learning.
+\newblock In \emph{International Conference on Machine Learning}, pp.\
+  105--111. Elsevier, 1994.
+
+\bibitem[Jaksch et~al.(2010)Jaksch, Ortner, and Auer]{jaksch2010near}
+Thomas Jaksch, Ronald Ortner, and Peter Auer.
+\newblock Near-optimal regret bounds for reinforcement learning.
+\newblock \emph{Journal of Machine Learning Research}, 11\penalty0 (4), 2010.
+
+\bibitem[Jin et~al.(2018)Jin, Allen-Zhu, Bubeck, and Jordan]{jin2018q}
+Chi Jin, Zeyuan Allen-Zhu, Sebastien Bubeck, and Michael~I Jordan.
+\newblock Is {Q-learning} provably efficient?
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~31, 2018.
+
+\bibitem[Johnson \& Kannan(2002)Johnson and Kannan]{unmanned_helicopter}
+Eric Johnson and Suresh Kannan.
+\newblock Adaptive flight control for an autonomous unmanned helicopter.
+\newblock In \emph{AIAA Guidance, Navigation, and Control Conference and
+  Exhibit}, pp.\  4439, 2002.
+
+\bibitem[Kaelbling et~al.(1996)Kaelbling, Littman, and
+  Moore]{kaelbling1996reinforcement}
+Leslie~Pack Kaelbling, Michael~L Littman, and Andrew~W Moore.
+\newblock Reinforcement learning: A survey.
+\newblock \emph{Journal of Artificial Intelligence Research}, 4:\penalty0
+  237--285, 1996.
+
+\bibitem[Kaufmann et~al.(2021)Kaufmann, M{\'e}nard, Domingues, Jonsson,
+  Leurent, and Valko]{kaufmann2021adaptive}
+Emilie Kaufmann, Pierre M{\'e}nard, Omar~Darwiche Domingues, Anders Jonsson,
+  Edouard Leurent, and Michal Valko.
+\newblock Adaptive reward-free exploration.
+\newblock In \emph{Algorithmic Learning Theory}, pp.\  865--891. PMLR, 2021.
+
+\bibitem[Keramati et~al.(2020)Keramati, Dann, Tamkin, and
+  Brunskill]{keramati2020being}
+Ramtin Keramati, Christoph Dann, Alex Tamkin, and Emma Brunskill.
+\newblock Being optimistic to be conservative: Quickly learning a cvar policy.
+\newblock In \emph{Proceedings of the AAAI Conference on Artificial
+  Intelligence}, volume~34, pp.\  4436--4443, 2020.
+
+\bibitem[La \& Ghavamzadeh(2013)La and Ghavamzadeh]{la2013actor}
+Prashanth La and Mohammad Ghavamzadeh.
+\newblock Actor-critic algorithms for risk-sensitive {MDPs}.
+\newblock \emph{Advances in Neural Information Processing Systems}, 26, 2013.
+
+\bibitem[M{\'e}nard et~al.(2021)M{\'e}nard, Domingues, Jonsson, Kaufmann,
+  Leurent, and Valko]{menard2021fast}
+Pierre M{\'e}nard, Omar~Darwiche Domingues, Anders Jonsson, Emilie Kaufmann,
+  Edouard Leurent, and Michal Valko.
+\newblock Fast active learning for pure exploration in reinforcement learning.
+\newblock In \emph{International Conference on Machine Learning}, pp.\
+  7599--7608. PMLR, 2021.
+
+\bibitem[Osogami(2012)]{osogami2012iterated}
+Takayuki Osogami.
+\newblock Iterated risk measures for risk-sensitive markov decision processes
+  with discounted cost.
+\newblock \emph{arXiv preprint arXiv:1202.3755}, 2012.
+
+\bibitem[Ott(2010)]{ott2010markov}
+Jonathan~Theodor Ott.
+\newblock A markov decision model for a surveillance application and
+  risk-sensitive markov decision processes.
+\newblock 2010.
+
+\bibitem[Rockafellar et~al.(2000)Rockafellar, Uryasev,
+  et~al.]{rockafellar2000optimization}
+R~Tyrrell Rockafellar, Stanislav Uryasev, et~al.
+\newblock Optimization of conditional value-at-risk.
+\newblock \emph{Journal of Risk}, 2:\penalty0 21--42, 2000.
+
+\bibitem[Shapiro et~al.(2021)Shapiro, Dentcheva, and
+  Ruszczynski]{shapiro2021lectures}
+Alexander Shapiro, Darinka Dentcheva, and Andrzej Ruszczynski.
+\newblock \emph{Lectures on stochastic programming: modeling and theory}.
+\newblock SIAM, 2021.
+
+\bibitem[Sutton \& Barto(2018)Sutton and Barto]{sutton2018reinforcement}
+Richard~S Sutton and Andrew~G Barto.
+\newblock \emph{Reinforcement learning: An introduction}.
+\newblock MIT press, 2018.
+
+\bibitem[Szepesv{\'a}ri(2010)]{szepesvari2010algorithms}
+Csaba Szepesv{\'a}ri.
+\newblock Algorithms for reinforcement learning.
+\newblock \emph{Synthesis Lectures on Artificial Intelligence and Machine
+  Learning}, 4\penalty0 (1):\penalty0 1--103, 2010.
+
+\bibitem[Tamar et~al.(2015)Tamar, Glassner, and Mannor]{tamar2015optimizing}
+Aviv Tamar, Yonatan Glassner, and Shie Mannor.
+\newblock Optimizing the {CVaR} via sampling.
+\newblock In \emph{AAAI Conference on Artificial Intelligence}, 2015.
+
+\bibitem[Thomas \& Learned-Miller(2019)Thomas and
+  Learned-Miller]{thomas2019concentration}
+Philip Thomas and Erik Learned-Miller.
+\newblock Concentration inequalities for conditional value-at-risk.
+\newblock In \emph{International Conference on Machine Learning}, pp.\
+  6225--6233. PMLR, 2019.
+
+\bibitem[Wang et~al.(2019)Wang, Zhu, Hong, and Zheng]{wang2019artificial}
+Chunhao Wang, Xiaofeng Zhu, Julian~C Hong, and Dandan Zheng.
+\newblock Artificial intelligence in radiotherapy treatment planning: present
+  and future.
+\newblock \emph{Technology in cancer research \& treatment}, 18:\penalty0
+  1533033819873922, 2019.
+
+\bibitem[Weissman et~al.(2003)Weissman, Ordentlich, Seroussi, Verdu, and
+  Weinberger]{weissman2003inequalities}
+Tsachy Weissman, Erik Ordentlich, Gadiel Seroussi, Sergio Verdu, and Marcelo~J
+  Weinberger.
+\newblock Inequalities for the $\ell$1 deviation of the empirical distribution.
+\newblock \emph{Hewlett-Packard Labs, Tech. Rep}, 2003.
+
+\bibitem[Wen et~al.(2020)Wen, Duan, Li, Xu, and Peng]{wen2020safe}
+Lu~Wen, Jingliang Duan, Shengbo~Eben Li, Shaobing Xu, and Huei Peng.
+\newblock Safe reinforcement learning for autonomous vehicles through parallel
+  constrained policy optimization.
+\newblock In \emph{IEEE International Conference on Intelligent Transportation
+  Systems}, pp.\  1--7. IEEE, 2020.
+
+\bibitem[Zanette \& Brunskill(2019)Zanette and Brunskill]{zanette2019tighter}
+Andrea Zanette and Emma Brunskill.
+\newblock Tighter problem-dependent regret bounds in reinforcement learning
+  without domain knowledge using value function bounds.
+\newblock In \emph{International Conference on Machine Learning}, pp.\
+  7304--7312. PMLR, 2019.
+
+\end{thebibliography}

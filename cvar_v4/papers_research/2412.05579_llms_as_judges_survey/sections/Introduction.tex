@@ -1,0 +1,59 @@
+\section{Introduction}
+
+Studies on evaluation methods have long been a key force in guiding the development of modern Artificial Intelligence (AI)~\cite{chang2024survey}. 
+AI researchers have continuously sought to measure and validate the intelligence of AI models through various tasks~\cite{chang2024survey,guo2023evaluating}.
+In the mid-20th century, AI evaluation primarily centered on assessing algorithm performance in specific tasks, such as logical reasoning and numerical computation~\cite{nilsson2014principles}. 
+Traditional machine learning tasks like classification and regression often use programmable and statistical metrics, including accuracy, precision, and recall. 
+With the emergence of deep learning, the complexity of AI systems grew rapidly, prompting a shift in evaluation standards~\cite{lecun2015deep}. 
+The evaluation of AI has expanded from pre-defined, programmable machine metrics to more flexible, robust evaluators for solving complex, realistic tasks.
+A typical example is the Turing Test~\cite{french2000turing,turing2009computing}, which determines whether an AI model can exhibit human-like intelligent behavior through dialogue with humans. 
+The Turing Test provides a fundamental guideline in the evaluation of AI models, especially on AI models' intelligence in flexible and realistic environments. 
+% emphasizing the evaluation of intelligence through realistic and complex tasks.
+
+ 
+% As AI advances, evaluation methods have continuously evolved to keep pace with increasingly complex models and diverse applications~\cite{chang2024survey,guo2023evaluating}. 
+Recently, the emergence of Large Language Models (LLMs) and generative AI serves as a new milestone in the evolution of AI evaluation.
+LLMs exhibit remarkable generalization and adaptability, showcasing strong transfer capabilities across previously unseen tasks and diverse domains~\cite{achiam2023gpt,bai2023qwen}. However, their powerful capabilities also present new challenges for evaluation. 
+Due to the highly generative and open-ended nature of their outputs, standardized metrics are often insufficient for a comprehensive evaluation.
+For example, in natural language generation (NLG) tasks, traditional metrics like BLEU~\cite{papineni2002bleu} and ROUGE~\cite{lin2004rouge} often fail to capture key aspects such as text fluency, logical coherence, and creativity. Moreover, modern AI evaluation extends beyond task performance and must account for the ability to address complex, dynamic problems in real-world scenarios, including robustness, fairness, and interpretability.
+Human annotations, frequently regarded as the ``ground truth,'' can offer comprehensive insights and valuable feedback. By gathering responses from experts or users, researchers can gain a deeper understanding of a model's performance, practicality, and potential risks. However, collecting them are typically time-consuming and resource-intensive, making it challenging to scale up for large-scale evaluation.
+
+
+In this context, a new paradigm has emerged to replace humans and statistical metrics with LLMs in evaluation, referred to as LLMs-as-judges~\cite{ashktorab2024aligning,tseng2024expert,bavaresco2024llms,bavaresco2024llms}.
+% The key idea is that since LLMs have already been so powerful in langauge understanding and reasoning, they should be able to serve as the evaluator of other AI models or systems~\cite{ashktorab2024aligning,tseng2024expert,bavaresco2024llms,bavaresco2024llms}.
+Compared to traditional evaluation methods, LLMs-as-judges show significant strengths. 
+First, LLM judges can adjust their evaluation criteria based on the specific task context, rather than relying on a fixed set of metrics, making the evaluation process more flexible and refined. 
+Second, LLM judges can generate interpretive evaluations, offering more comprehensive feedback on model performance and enabling researchers to gain deeper insights into the evaluater's strengths and weaknesses. 
+Finally, LLM judges offer a scalable and reproducible alternative to human evaluation, significantly reducing the costs and time associated with human involvement.
+
+
+Despite its great potential and significant advantages, LLMs-as-judges also face several critical challenges.
+For example, the evaluation results of LLMs are often influenced by the prompt template, which can lead to biased or inconsistent assessments~\cite{xu2023llm}. 
+Considering that LLMs are trained on extensive text corpus, they may also inherit various implicit biases, impacting the fairness and reliability of their assessments~\cite{ye2024justice}. 
+Moreover, distinct tasks and domains require specific evaluation criteria, making it difficult for LLMs to adapt their standards dynamically to specific contexts.
+
+
+Considering the vast potential of this field, 
+this survey aims to systematically review and analyze the current state and key challenges of the LLMs-as-judges. 
+As shown in Figures \ref{Taxonomy_1} and \ref{Taxonomy_2}, we discuss existing research across five key perspectives: 1) \textbf{Functionality}: Why use LLM judges, 2) \textbf{Methodology}: How to use LLM judges, 3) \textbf{Application}: Where to use LLM judges, 4) \textbf{Meta-evaluation}: How to evaluate LLM judges and 5) \textbf{Limitation}: Existing problems of LLM judges. We explore the key challenges confronting LLMs-as-judges and hope to provide a clearer guideline for their future development.
+
+In summary, the main contributions of this paper are as follows:
+
+\begin{enumerate} 
+\item \textbf{Comprehensive and Timely Survey}: We present the extensive survey on the emerging paradigm of LLMs-as-judges, systematically reviewing the current state of research and developments in this field. By examining LLMs as performance evaluators based on their generated natural language, we highlight the unique role of LLMs in shaping the future of AI evaluation.
+
+\item \textbf{Systematic Analysis Across Five Key Perspectives}: We organize our survey around five critical aspects: Functionality, Methodology, Application, Meta-evaluation, and Limitation. This structured approach allows for a nuanced understanding of how and why LLMs are utilized as evaluators, their practical implementations, and reliability concerns.
+
+\item \textbf{Current Challenges and Future Research Directions}: We discuss the existing challenges for adopting LLMs-as-judges, highlighting potential research opportunities and directions while offering a forward-looking perspective on the future development of this paradigm, encouraging researchers to delve deeper into this exciting area. We also provide an open-source repository at \url{https://github.com/CSHaitao/Awesome-LLMs-as-Judges}, with the goal of fostering a collaborative community and advancing best practices in this area.
+\end{enumerate}
+
+The organization of this paper is as follows. In Section (\S\ref{sec:PRELIMINARIES}), we provide the formal definition of LLMs-as-judges. Then, Section (\S\ref{sec:Functionality}) reviews existing work from the perspective of ``Why use LLM judges''. Following that, Section (\S\ref{sec:Methodology}) covers ``How to use LLM judges'', summarizing the current technical developments in LLMs-as-judges. Section (\S\ref{sec:Domain}) discusses ``Where to use LLM judges'', focusing on their application domains. In Section (\S\ref{sec:Meta}), we review the metrics and benchmarks used for evaluating LLMs-as-judges. Section (\S\ref{sec:Limitation}) discusses the limitations and challenges of LLM judges. We discuss major future work in Sections (\S\ref{sec:Future})  and (\S\ref{sec:Conclusion}) to conclude the paper. 
+% In Figures \ref{Taxonomy_1} and \ref{Taxonomy_2}, we present the taxonomy of LLMs-as-Judges.
+
+
+
+
+
+
+
+

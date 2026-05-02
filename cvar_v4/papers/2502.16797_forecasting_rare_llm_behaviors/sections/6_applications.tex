@@ -1,0 +1,26 @@
+\section{Applications to red-teaming}
+\label{sec:applications}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.99\linewidth]{figures/fig5.pdf}
+    \vspace{-1mm}
+    \caption{Example where our forecasts identify the compute-optimal automated red teamer. Sonnet has a larger worst-query risk and the worst-query risk increases faster with additional queries, but our forecasts correctly predict that sampling 10x more from Haiku is optimal.}
+    \vspace{-2mm}
+    \label{fig:red-teaming-models}
+\end{figure}
+
+We finally show how our forecasts can improve automated-red-teaming pipelines by more efficiently allocating compute to models. Specifically, we assume a red-teamer aims to find a query with the maximum elicitation probability using a fixed compute budget, and can generate queries using one of two models: a lower-quality less-expensive model, and a higher-quality more-expensive model. 
+
+Concretely, the red-teamer can choose between Claude 3.5 Sonnet (new) and Claude 3.5 Haiku to generate queries, and wants to maximize the elicitation probability of the specific outputs from \refsec{misuse-completions}.
+
+\textbf{Settings.} The red-teamer gets $m \in \{100, 200, 500, 1000\}$ queries from both red-teaming models, and can deploy a fixed amount of compute corresponding to $n \in \{10000, 20000, \hdots, 90000\}$ Haiku queries. Sonnet is $c \in \{\text{10x}, \text{20x}, \text{50x}, \text{100x}\}$ more expensive than Haiku, so the red-teamer can use either $n$ Haiku queries or $n/c$ Sonnet queries. For example, if $n = 50000$ and $c=\text{10x}$, the red-teamer must forecast whether 50,000 queries from Haiku will produce a higher elicitation probability than $50000 / \text{10x} = 5000$ queries from Sonnet. We use most combinations of $m$, $n$ and $c$ except for those where $n/c < m$, leaving us with 223 settings.  
+
+We evaluate by measuring whether the forecasts correctly identify whether to allocate compute to Sonnet or Haiku. However, in many settings, the worst-query risk over $n$ samples for Haiku is comparable to $n/c$ samples from Sonnet, so the cost of incorrect predictions is low, and may just be due to noise. To account for this, we additionally measure the fraction of correct predictions when the actual difference in worst-query risk is over two orders of magnitude; intuitively, this corresponds to the case where getting the forecast right or wrong is most impactful. 
+
+Across all of our settings, we find that our forecast chooses the correct output 63\% of the time, compared to 54\% for the majority baseline and 50\% random chance.
+However our forecasts help make correct predictions much more frequently when the actual probabilities differ; we achieve an accuracy of 79\% when the true difference in the (low) probabilities is more than two orders of magnitude. 
+We include an example where we correctly anticipate that allocating more compute to Haiku is optimal due to the better sampling efficiency, despite the scaling being better for Sonnet in \reffig{red-teaming-models}. 
+
+One challenge in this setting is that our forecasts tend to slightly overestimate the actual probability, and the overestimate grows with the length of the forecast. 
+We think exploring ways to reduce the bias is important subsequent work. 

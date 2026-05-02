@@ -1,0 +1,117 @@
+\section{Application}
+\label{sec:Domain}
+
+Due to the convenience and effectiveness of LLM Judges, they have been widely applied as judges across various domains.
+These applications not only cover general domains but also specific domains such as multimodal, medical, legal, financial, education, information retrieval and others. In this section, we will provide a detailed introduction to these applications, demonstrating how LLMs achieve precise and efficient evaluations in different domains.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figs/domain5.pdf}
+    \caption{LLMs-as-judges are widely applied across various domains.}
+    \label{figure:application}
+\end{figure}
+
+\subsection{General}
+\label{sec:General}
+In general domains, LLM Judges are applied to tasks requiring both understanding and generation, such as dialogue generation, open-ended question answering, summarization, and language translation. Each task follows its own set of evaluation criteria to meet its specific requirements.
+For instance, in dialogue generation \cite{li2017dailydialog}, the criteria emphasize the natural flow, emotional resonance, and contextual relevance of the conversation. In summarization tasks \cite{narayan2018don}, the evaluation focuses on the coherence, consistency, fluency, and relevance of the text. In translation tasks \cite{feng2024improving}, the assessment prioritizes the quality, accuracy, fluency, and style.
+
+As these diverse sub-tasks require specialized evaluation criteria, LLM judges provides refined evaluation methods that go beyond traditional metrics, paving the way for more comprehensive and in-depth assessments. For instance, Shu et al. \cite{shu2024fusion} introduced Fusion-Eval, an innovative approach that leverages LLMs to integrate insights from various assistant evaluators. Fusion-Eval evaluated summary quality across four dimensions—coherence, consistency, fluency, and relevance, achieving a system-level Kendall-Tau correlation of 0.962 with human judgments. For dialogue quality, it assessed six aspects: coherence, engagingness, naturalness, groundedness, understandability, and overall quality, attaining a turn-level Spearman correlation of 0.744. Furthermore, Xu et al. \cite{xu2024large} proposed the ACTIVE-CRITIC framework, which enables LLMs to actively infer the target task and relevant evaluation criteria while dynamically optimizing prompts. In the story generation task, this framework achieved superior evaluation performance.
+
+
+
+
+
+
+
+\subsection{Multimodal}
+\label{sec:Multimodal}
+In the multimodal domain, the evaluation objects of LLMs are not limited to textual data but extend to various forms of information such as images, audio, and video. One of the primary challenges in evaluating multimodal tasks lies in the significant heterogeneity among these modalities, including substantial differences in data structures, representation methods, and feature distributions.
+
+To address this challenge, advanced techniques are often required to help LLMs integrate different forms of information, ensuring that they can provide accurate and meaningful evaluations. For example, Xiong et al. \cite{xiong2024llava} trained an open-source multimodal LLM, LLaVA-Critic, specifically to evaluate model performance in multimodal scenarios. Similarly, Chen et al. \cite{chen2024mllm} developed a Multimodal LLM-as-a-judge for 14 Vision-Language tasks, providing a unified evaluation framework. In addition, LLMs-as-judges can also be used in audio. For instance, Latif et al. \cite{latif2023can} used LLMs for identifying and evaluating emotional cues in speech, achieving remarkable accuracy in the process. Beyond these efforts, some recent studies \cite{zhou2024calibrated, deng2024efficient} have also explored the potential of multimodal LLMs to self-evaluate and self-reward, enhancing their performance without the need for external evaluators or human annotations.
+
+As the application of LLMs-as-judges continues to expand in multimodal domains, there is a growing interest in exploring their use in more specific real-world scenarios, such as autonomous driving. Chen et al. \cite{chen2024automated} proposed CODA-LM, a novel vision-language benchmark for self-driving, which provides automatic and systematic evaluation of Large Vision-Language Models (LVLMs) on road corner cases. Interestingly, they found that using the text-only LLM judges resulted in a closer alignment with human preferences than LVLMs. 
+
+
+
+\subsection{Medical}
+\label{sec:Medical}
+In the medical field, LLMs-as-judges have demonstrated significant potential, particularly in areas such as diagnostic support, medical text analysis, clinical decision-making, and patient education.
+In this domain, high-quality evaluation requires LLM judges to possess precise interpretation capabilities for domain-specific terminology, the ability to comprehensively analyze diverse data types (such as clinical records and medical imaging), and strict compliance with high accuracy standards and ethical guidelines.
+
+
+
+
+In the realm of \textbf{medical text generation}, Xie et al. \cite{xie2024doclens} used LLMs to evaluate the compduikeyi1leteness, conciseness, and attribution of medical texts at a fine-grained level. Similarly, Brake et al. \cite{brake2024comparing} leveraged LLMs, such as Llama2, to assess clinical note consistency, with results indicating agreement levels comparable to human annotators. When it comes to \textbf{medical question answering}, Krolik et al. \cite{krolik2024towards} explored the use of LLMs to automatically evaluate answer quality. Their focus was on evaluating adherence to medical knowledge and professional standards, completeness of information, accuracy of terminology, clarity of expression, and relevance to the question. 
+
+In the area of \textbf{mental health counseling}, Li et al. \cite{li2024automatic} utilized LLMs to automate the evaluation of counseling effectiveness and quality. Key assessments included whether the counseling identified the client’s emotional needs, provided appropriate responses, demonstrated empathy, managed negative emotions, and met the overall goals of mental health support. Beyond these above applications, LLMs' judging capabilities have also been applied to assist in improving performance in specialized \textbf{medical reasoning tasks}. For instance, many studies \cite{jeong2024improving} employed LLMs to evaluate and filter medical information, thereby supporting enhanced medical reasoning.
+
+\subsection{Legal}
+\label{sec:Legal}
+
+
+Due to the powerful evaluation capabilities of LLMs, LLMs-as-judges have been widely applied in the legal domain, covering multiple key scenarios, including evaluating the performance of law LLMs and relevance judgment in legal case retrieval. In the legal domain, the application of LLMs requires a deep understanding of the legal framework of specific jurisdictions, complex legal language, and rigorous logical reasoning abilities~\cite{li2024lexevalcomprehensivechineselegal}. At the same time, interpretability and transparency of the evaluation results are essential core requirements, as legal practice highly depends on clear logic and verifiable conclusions. Furthermore, the bias and fairness of the model are of significant concern, as any bias in legal evaluations could have a profound impact on judicial fairness. These unique demands set higher standards for LLM judges.
+
+
+In response to these challenges, recent research has explored various ways in which LLMs can be effectively employed in legal evaluations. Some research used LLMs as judges to assist in \textbf{evaluating the performance of Law LLMs}. For example, Yue et al. \cite{yue2023disc} introduced DISC-LawLLM to provide a wide range of legal services and utilized GPT-3.5 as a referee to evaluate the model’s performance. They assessed three key criteria—accuracy, completeness, and clarity—by assigning a rating score from 1 to 5. Similarly, Ryu et al. \cite{ryu2023retrieval} applied retrieval-based evaluation to assess the performance of LLMs in Korean legal question-answering tasks, which applied RAG not for generation but for evaluation. What's more, LLMs have also been utilized to construct evaluation sets. Raju et al. \cite{raju2024constructing} explored methods for constructing these domain-specific evaluation sets, which are essential for enabling LLMs-as-judges to perform effective evaluation in legal domain. Beyond performance evaluation, LLMs have also been utilized for \textbf{relevance judgment} in legal case retrieval. For instance, Ma et al. \cite{ma2024leveraging} used LLMs to automate the evaluation of large numbers of retrieved legal documents, improving both the scalability and accuracy of legal case retrieval systems. In conclusion, the application of LLMs-as-judges in law holds significant promise in future.
+
+
+\subsection{Financial}
+\label{sec:Financial}
+
+
+In the financial domain, LLM judges have been extensively explored in scenarios such as investment risk assessment and credit scoring, which presenting unique challenges. For example, the complexity of risk assessment requires LLMs to accurately capture the influence of multifaceted factors, including market volatility, regulatory changes, and geopolitical events. Real-time processing demands further elevate the challenge, requiring LLMs not only to be computationally efficient but also to deliver rapid response times. Additionally, the dynamic nature of high-frequency trading demanding that LLMs swiftly adapt to fluctuating market conditions.
+
+
+
+In \textbf{investment risk assessment}, LLMs have proven effective due to their ability to process large amounts of data and make informed judgments. For instance, Xie et al. \cite{xie2023pixiu} developed a financial LLM, FinMA, fine-tuned on LLaMA to evaluate investment risks more effectively. Their model is designed to follow instructions for risk assessment and decision analysis, improving the accuracy and efficiency of financial evaluations.
+
+Another key application in the financial domain is \textbf{credit scoring}, which predicts the future repayment ability and default risk of individuals or businesses. By analyzing a vast array of data, including credit history, financial status, and other relevant factors, LLMs can help financial institutions make more accurate credit scoring assessments. For example, Babaei et al. \cite{babaei2024gpt} demonstrated how LLMs can process unstructured text data, such as customer histories, contract terms, and news reports, to enhance the precision of credit assessments.
+
+Furthermore, as the use of LLMs in finance continues to grow, there is a rising need to \textbf{evaluate the performance of these financial LLMs}. To address this, Son et al. \cite{son2024krx} developed an automated financial evaluation benchmark that leverages LLMs to extract valuable insights from both unstructured and structured data. This framework helps optimize the construction, updating, and compliance checks of financial benchmarks, supporting more efficient and scalable evaluation processes. Based on this, they facilitated the continuous optimization of financial LLMs, driving further advancements in the financial domain.
+
+\subsection{Education}
+\label{sec:Education}
+LLMs-as-judges have found extensive applications in the education domain, covering a wide range of tasks, such as grading student assignments, evaluating essays, assessing mathematical reasoning, and judging debate performance. These applications present several key challenges, including the diversity of student responses and individual differences, as well as the need for multidimensional evaluation. Effective evaluation in education requires LLMs to consider not only correctness but also creativity, clarity, and logical coherence. Additionally, the interpretability and fairness of the evaluation results are crucial, as educational assessments significantly impact students' development and future opportunities.
+
+In \textbf{assignment grading}, Chiang et al. \cite{chiang2024large} introduced
+the concept of an LLM Teaching Assistant (LLM TA) in university classrooms, utilizing GPT-4 to
+automate the grading of student assignments. By employing prompt engineering to define scoring
+criteria and task descriptions, LLM TA generates quantitative scores and detailed feedback. Their
+study emphasized the system’s ability to maintain consistency, adhere to grading standards, and
+resist adversarial prompts, highlighting its robustness and practicality for classroom use.
+
+In addition to assignment grading, LLMs-as-judges are also being explored for \textbf{automated essay scoring.} Wang et al. \cite{wang2024automated} proposed an advanced intelligent essay scoring system, integrating LLMs such as BERT and ChatGPT to enable automated scoring and feedback generation for essays across various genres. Similarly, Song et al. \cite{song2024automated} investigated a framework and methodology for automated essay scoring and revision based on open-source LLMs. Furthermore, Zhou et al. \cite{zhou2024llm} explored the potential of LLMs in academic paper reviewing tasks, assessing their reliability, effectiveness, and possible biases as reviewer. They found that while LLMs show certain promise in the domain of automated reviewing, they are not yet sufficient to fully replace human reviewers, particularly in areas with high technical complexity or strong innovation.
+
+Another area where LLMs-as-judges are making an impact is in the evaluation of \textbf{math reasoning}. Unlike traditional mathematical task evaluation, which focuses solely on the correctness of the final results, Xia et al. \cite{xia2024evaluating} argued that additional aspects of the reasoning process should also be assessed, such as logical errors or unnecessary steps. In their work, the authors proposed ReasonEval, a new methodology for evaluating the quality of reasoning steps based on LLMs-as-judges.
+
+LLMs have also been employed in \textbf{judging debate performance}. Liang et al. \cite{liang2024debatrix} proposed Debatrix, a new method which leverages LLMs to evaluate and analyze debates. The main aspects assessed include the logical consistency of arguments, the effectiveness of rebuttals, the appropriateness of emotional expression, and the coherence of the debate.
+
+\subsection{Information Retrieval}
+\label{sec: Information Retrieval}
+Information retrieval refers to the process of effectively retrieving, filtering, and ranking relevant information from a large collection of data, matching information resources to users' needs (queries). However, evaluating these systems presents several challenges, particularly due to the the complexity of real-world data, the diversity of user needs, and personalization. To solve these challenges, LLMs-as-judges have been used across various applications, including relevance judgment, text ranking, recommendation explanations evaluation, and assessing retrieval-augmented generation (RAG) systems.
+
+One key area in information retrieval is the evaluation of \textbf{the relevance of retrieved results to user queries}, a task that traditionally relies on manual annotations~\cite{soboroff2024don,rahmani2024llmjudge}. Rahmani et al. \cite{rahmani2024llmjudge} proposed a framework called LLMJudge which leveraged LLMs to assess the relevance of information retrieval system results to user queries, providing a more scalable and efficient evaluation approach.
+
+Another important aspect of information retrieval is the \textbf{ranking of search results or recommendation lists}. Traditional ranking models often rely on shallow features or direct matching scores, which may not yield optimal results. To address this,  Qin et al. \cite{qin2023large} examined the performance of LLMs in text ranking tasks and proposed a novel method based on pairwise ranking prompting, utilizing LLMs for text ranking. Additionally, Niu et al. \cite{niu2024judgerank} introduced a framework called JudgeRank, which leveraged LLMs to rerank results in reasoning-intensive tasks. By evaluating the logic, relevance, and quality of candidate results, this approach tried to enhance ranking performance.
+
+In recommendation systems, \textbf{explanation evaluation} plays a crucial role in helping users understand why a specific product, movie, or piece of content is recommended. Zhang et al. \cite{zhang2024large} investigated the potential of LLMs as automated evaluators of recommendation explanations, assessing them across multiple dimensions such as quality, clarity, and relevance. This approach provides a more efficient way to evaluate the effectiveness of explanations, which is essential for improving user trust and satisfaction.
+
+Furthermore, with the growing use of \textbf{retrieval-augmented generation (RAG) systems} in tasks like question answering, fact-checking, and customer support, there is an increasing need to evaluate the quality of these systems. Traditional evaluation methods rely on large manually annotated datasets, which are time-consuming and costly. To address this, Saad et al. \cite{saad2023ares} proposed a new automated evaluation framework called ARES, which leveraged LLMs as the core evaluation tool to directly assess retrieval and generated content across multiple dimensions, including relevance, accuracy, coverage, fluency, and coherence.
+
+\subsection{Others}
+\label{sec: Others}
+\subsubsection{Soft Engineering}
+\label{sec: Soft Engineering}
+The challenges that LLMs-as-judges need to overcome in the software engineering domain include complex code structures and the diversity of evaluation criteria. A numerous of articles \cite{patel2024aime, weyssow2024codeultrafeedback} used LLMs-as-judges to assess the quality of code generation. Moreover, Kumar et al. \cite{kumar2024llms} employed LLMs to evaluate the quality of Bug Report Summarization.
+
+\subsubsection{Biology}
+\label{sec: Biology}
+The main evaluation challenges in biological field include the complexity and diversity of the data and the need for specialized biological knowledge~\cite{o2023bioplanner,hijazi2024using}. For example, Hijazi et al. \cite{hijazi2024using} used LLMs to evaluate Query-focused summarization (QFS), which refers to generating concise and accurate summaries from a large set of biomedical literature based on a specified query. In this context, the LLMs are used to assess whether these summaries accurately answer the specified query and whether they cover the correct biological knowledge.
+\subsubsection{Social Science}
+\label{sec: Social Science}
+LLMs-as-Judges have also found applications in social sciences. On one hand, they are used in \textbf{real-world human social contexts}. For example, Tessler et al. \cite{tessler2024ai} used LLMs to participate in democratic discussions, assessing the quality of arguments, identifying fallacies, or providing a balanced view of an issue, thus helping people reach consensus on complex social and political matters. On the other hand, LLMs-as-judges are also used in \textbf{social scenarios constructed by language agents}. Zhou et al. \cite{zhou2023sotopia} proposed an interactive evaluation framework called Sotopia, which used LLMs to assess the social intelligence of language agents from multiple dimensions, such as emotional understanding, response adaptability, and other social skills.
+
+
+In this section, we have outlined the specific applications of LLMs-as-judges across various domains. In these applications, LLMs leverage their powerful text understanding and generation capabilities to perform effective evaluations and judgments, providing accurate feedback and improvement suggestions. Although LLMs-as-judges have shown tremendous potential in these areas, especially in handling large-scale data and automating assessments, they still face challenges such as \textbf{the depth of domain-specific knowledge, limitations in reasoning abilities, and the diversity of evaluation criteria}. In the future, with continuous improvements in model performance and domain adaptation capabilities,, we believe the application of LLMs-as-judges will become more widespread and precise across various domains.
+

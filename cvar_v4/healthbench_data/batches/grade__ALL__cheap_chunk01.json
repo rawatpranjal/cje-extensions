@@ -1,7 +1,7 @@
 {
-  "batch_id": "batch_69f3dd4baf7c8190890980602b914ab3",
-  "input_file_id": "file-NhGaBjNH7n8YyBQH59Zopz",
-  "submitted_ts": "2026-04-30T22:53:00+00:00",
+  "batch_id": "batch_69f4b4dc143081908b50c7f9003d7f37",
+  "input_file_id": "file-HHRCQdnke34bnZLSrCvR5F",
+  "submitted_ts": "2026-05-01T14:12:44+00:00",
   "request_count": 2000,
   "model": "gpt-4o-mini-2024-07-18",
   "endpoint": "/v1/chat/completions"

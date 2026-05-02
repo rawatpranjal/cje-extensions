@@ -29,6 +29,7 @@ LABELS = {
     "premium": "premium",
     "parallel_universe_prompt": "parallel",
     "unhelpful": "unhelpful",
+    "risky": "risky",
 }
 
 
@@ -38,14 +39,26 @@ def load_rows() -> list[dict]:
         if not line.strip():
             continue
         r = json.loads(line)
-        # Prefer SE_total (Var_cal + Var_audit) for honest CI envelopes;
-        # fall back to bootstrap percentile if SE_total isn't in the row.
-        mean_se_t = r.get("mean_se_total")
-        cvar_se_t = r.get("cvar_se_total")
-        mean_ci_lo = (r["mean_cje_est"] - 1.96 * mean_se_t) if mean_se_t is not None else r.get("mean_ci_lo")
-        mean_ci_hi = (r["mean_cje_est"] + 1.96 * mean_se_t) if mean_se_t is not None else r.get("mean_ci_hi")
-        cvar_ci_lo = (r["cvar_est"] - 1.96 * cvar_se_t) if cvar_se_t is not None else r.get("cvar_ci_lo")
-        cvar_ci_hi = (r["cvar_est"] + 1.96 * cvar_se_t) if cvar_se_t is not None else r.get("cvar_ci_hi")
+        # CI source priority:
+        #   1. Full-pipeline-bootstrap percentile CI (resample train + eval +
+        #      audit; refit calibrator; re-optimize t̂ per replicate). The
+        #      principled envelope.
+        #   2. Wald CI from analytical Var_cal + Var_audit (legacy fallback).
+        #   3. Train-only bootstrap percentile CI (oldest fallback).
+        if r.get("cvar_pipeline_ci_lo") is not None:
+            cvar_ci_lo = r["cvar_pipeline_ci_lo"]; cvar_ci_hi = r["cvar_pipeline_ci_hi"]
+        elif (cvar_se_t := r.get("cvar_se_total")) is not None:
+            cvar_ci_lo = r["cvar_est"] - 1.96 * cvar_se_t
+            cvar_ci_hi = r["cvar_est"] + 1.96 * cvar_se_t
+        else:
+            cvar_ci_lo = r.get("cvar_ci_lo"); cvar_ci_hi = r.get("cvar_ci_hi")
+        if r.get("mean_pipeline_ci_lo") is not None:
+            mean_ci_lo = r["mean_pipeline_ci_lo"]; mean_ci_hi = r["mean_pipeline_ci_hi"]
+        elif (mean_se_t := r.get("mean_se_total")) is not None:
+            mean_ci_lo = r["mean_cje_est"] - 1.96 * mean_se_t
+            mean_ci_hi = r["mean_cje_est"] + 1.96 * mean_se_t
+        else:
+            mean_ci_lo = r.get("mean_ci_lo"); mean_ci_hi = r.get("mean_ci_hi")
         out.append({
             "policy": LABELS.get(r["policy"], r["policy"]),
             # Mean panel
@@ -157,6 +170,28 @@ def main() -> None:
 
     y_positions = list(range(len(rows)))[::-1]
 
+    # Faint shaded band covering the base+clone rows. They are the same
+    # model at adjacent seeds and are statistically indistinguishable; the
+    # shading anchors that fact visually so the reader notices the overlap
+    # is intentional.
+    base_clone_indices = [
+        i for i, r in enumerate(rows) if r["policy"] in ("base", "clone")
+    ]
+    if len(base_clone_indices) == 2:
+        ys = sorted([y_positions[i] for i in base_clone_indices])
+        for ax in (ax_m, ax_c):
+            ax.axhspan(ys[0] - 0.42, ys[1] + 0.42,
+                       facecolor="#fff3cd", edgecolor="none",
+                       alpha=0.55, zorder=0)
+        # Label the band on the right (CVaR) panel only, to avoid clutter.
+        ax_c.text(
+            0.985, (ys[0] + ys[1]) / 2.0 + 0.50,
+            "Indistinguishable\ncontrol group",
+            transform=ax_c.get_yaxis_transform(),
+            ha="right", va="bottom", fontsize=8.5,
+            color="#9a7b00", style="italic",
+        )
+
     # Draw both panels
     draw_panel(ax_m, rows, y_positions, kind="mean")
     draw_panel(ax_c, rows, y_positions, kind="cvar")
@@ -207,20 +242,20 @@ def main() -> None:
         ha="right", va="bottom", fontsize=8.5, color="#666666",
     )
 
-    # Shared legend at bottom
+    # Shared legend at bottom (renamed per paper terminology).
     legend_items = [
         Line2D([0], [0], marker="^", color="none", markerfacecolor=CHEAP_COLOR,
                markeredgecolor="#75849a", markersize=9,
-               label="cheap-only baseline"),
+               label="Triangle = Cheap Judge (uncalibrated)"),
         Line2D([0], [0], marker="o", color="none", markerfacecolor=PASS_COLOR,
                markeredgecolor="white", markersize=10,
-               label="Direct CJE, audit pass"),
+               label="Circle = CVaR-CJE (audit pass)"),
         Line2D([0], [0], marker="o", color="none", markerfacecolor=FLAG_COLOR,
                markeredgecolor="white", markersize=10,
-               label="Direct CJE, audit flag"),
+               label="Circle = CVaR-CJE (audit flag)"),
         Line2D([0], [0], marker="D", color="none", markerfacecolor="black",
                markeredgecolor="white", markersize=8,
-               label="full-oracle truth"),
+               label="Diamond = Oracle Truth"),
         Line2D([0], [0], marker="|", color=PASS_COLOR, lw=1.4, alpha=0.55,
                markeredgecolor=PASS_COLOR, markersize=10,
                label="95% CI (Var$_{cal}$+Var$_{audit}$)"),
@@ -229,6 +264,27 @@ def main() -> None:
         handles=legend_items, loc="lower center",
         bbox_to_anchor=(0.5, 0.02), ncols=5, frameon=True,
         facecolor="white", edgecolor="#d6d6d6", fontsize=10,
+    )
+
+    # In-plot mini-legend: a compact marker key in the upper-left of the
+    # left panel. Reader doesn't have to scan to the bottom legend to learn
+    # what the three marker shapes mean.
+    inplot_handles = [
+        Line2D([0], [0], marker="^", color="none", markerfacecolor=CHEAP_COLOR,
+               markeredgecolor="#75849a", markersize=8,
+               label="Cheap"),
+        Line2D([0], [0], marker="o", color="none", markerfacecolor=PASS_COLOR,
+               markeredgecolor="white", markersize=9,
+               label="CVaR-CJE"),
+        Line2D([0], [0], marker="D", color="none", markerfacecolor="black",
+               markeredgecolor="white", markersize=7,
+               label="Oracle"),
+    ]
+    ax_m.legend(
+        handles=inplot_handles, loc="upper left",
+        frameon=True, facecolor="white", edgecolor="#e0e0e0",
+        fontsize=8.5, framealpha=0.92, handlelength=1.2,
+        borderpad=0.4, labelspacing=0.3,
     )
 
     for ext in ("png", "pdf"):

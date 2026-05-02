@@ -1,0 +1,272 @@
+\tikzstyle{my-box}= [
+    rectangle,
+    draw=hidden-draw,
+    rounded corners,
+    text opacity=1,
+    minimum height=1.5em,
+    minimum width=5em,
+    inner sep=2pt,
+    align=center,
+    fill opacity=.5,
+]
+\tikzstyle{leaf}=[my-box, minimum height=1.5em,
+    fill=blue!15, text=black, align=left,font=\scriptsize,
+    inner xsep=2pt,
+    inner ysep
+=4pt,
+]
+\begin{figure*}[t]
+
+    \centering
+    \resizebox{\textwidth}{!}{
+        \begin{forest}
+            forked edges,
+            for tree={
+                grow=east,
+                reversed=true,
+                anchor=base west,
+                parent anchor=east,
+                child anchor=west,
+                base=left,
+                font=\small,
+                rectangle,
+                draw=hidden-draw,
+                rounded corners,
+                align=left,
+                minimum width=4em,
+                edge+={darkgray, line width=1pt},
+                s sep=3pt,
+                inner xsep=2pt,
+                inner ysep=3pt,
+                ver/.style={rotate=90, child anchor=north, parent anchor=south, anchor=center},
+            },
+            where level=1{text width=6.4em,font=\scriptsize,}{},
+            where level=2{text width=6.4em,font=\scriptsize,}{},
+            where level=3{text width=6.4em,font=\scriptsize,}{},
+            where level=4{text width=6.4em,font=\scriptsize,}{},
+[LLMs-as-Judges, ver
+    [FUNCTIONALITY(\S \ref{sec:Functionality})
+        [Performance \\Evaluation (\S \ref{sec:Performance Evaluation})
+            [Responses \\Evaluation(\S \ref{sec:Responses Evaluation})
+                [LLM-Eval~\cite{lin2023llm}{, }Wang et al.~\cite{wang2024automated}{, }Zhou et al.~\cite{zhou2024llm}{, }ARES~\cite{saad2023ares}{, }SELF-RAG~\cite{asai2023self}{, }Lei et al.~\cite{lei2024recexplainer}, leaf, text width=41em]]
+            [Model \\Evaluation (\S \ref{sec:Model Evaluation})
+                [Auto-Arena~\cite{zhao2024auto,luo2024videoautoarena}{, }LMExam~\cite{bai2024benchmarking}{, }KIEval~\cite{yu2024kieval}, leaf, text width=41em]]]
+        [Model \\Enhancement (\S \ref{sec:Model Enhancement})
+            [Reward Modeling \\During Training \\ (\S \ref{sec: Reward Modeling During Training})
+                [SRLMs~\cite{yuan2024self}{, }OAIF~\cite{guo2024direct}{, }RLAIF~\cite{lee2023rlaif}{, }RELC~\cite{cao2024enhancing}{, }CREAM~\cite{wang2024cream}{, }CGPO~\cite{xu2024perfect}{, }Chen et al.~\cite{chen2023adaptation}, leaf, text width=41em]]
+            [Acting as Verifier \\During Inference \\(\S \ref{sec: Acting as Verifier During Inference})
+                [Best-of-N sampling~\cite{jinnai2024regularized,sun2024fast}{, }ToT~\cite{yao2024tree}{, }GoT~\cite{besta2024graph}{, }Lightman et al.~\cite{lightman2023let}{, }SE-GBS~\cite{xie2024self}{, }REPS~\cite{kawabata2024rationale}{, }Musolesi et al.~\cite{musolesi2024creative}, leaf, text width=41em]]
+            [Feedback for \\Refinement (\S \ref{sec: Feedback for Refinement})
+                [SELF-REFINE~\cite{madaan2024self}{, }SELF-DEBUGGING~\cite{chen2023teaching}{, }REFINER~\cite{paul2023refiner}{, }Xu et al.~\cite{xu2023towards}{, }Self-Correct~\cite{huang2023large,tyen2023llms}{, }Valmeekam et al.~\cite{valmeekam2023can}, leaf, text width=41em]]]
+        [Data \\ Construction  (\S \ref{sec:Data Construction})
+           [Data \\Annotation (\S \ref{sec:Data Annotation})
+                [He et al.~\cite{he2024if}{, }Gilardi et al.~\cite{gilardi2023chatgpt}{, }Törnberg et al.~\cite{tornberg2023chatgpt}{, }FullAnno~\cite{hao2024fullanno}{, }Latif et al.~\cite{latif2023can}{, }AnnoLLM~\cite{he2023annollm}{, }LLMAAA~\cite{zhang2023llmaaa}, leaf, text width=41em]]
+           [Data \\Synthesize (\S \ref{sec:Data Synthesize})
+               [SELFEE~\cite{ye2023selfee}{, }SynPO~\cite{dong2024self}{, }Arif et al.~\cite{arif2024fellowship}{, }SELF-INSTRUCT~\cite{wang2022self}{, }Evol-Instruct~\cite{xu2023wizardlm,zeng2024automatic}{, }STaR~\cite{zelikman2024star}{, }Mendoncca et al.~\cite{mendoncca2024soda}{, }\\ReSTEM~\cite{singh2023beyond}{, }Kim et al.~\cite{kim2024aligning}, leaf, text width=41em]]]]
+    [
+    METHODOLOGY (\S \ref{sec:Methodology})
+    [
+        Single-LLM  (\S \ref{sec:Single-LLM System})
+        [
+            Prompt-based (\S \ref{sec:Prompt Engineering})
+            [
+                In-Context Learning
+                [
+                    GPTScore~\cite{fu2023gptscore}{, }LLM-EVAL~\cite{lin2023llm}{, }TALEC~\cite{zhang2024talec}{, }Jain et al.~\cite{jain2023multi}{, }ALLURE~\cite{hasanbeig2023allure}{, }Song et al.~\cite{song2024can}, leaf, text width=33em
+                ]
+            ]
+            [
+                Step-by-step
+                [
+                    Chain-of-Thought (CoT)~\cite{wei2022chain,kotonya2023little}{, }G-EVAL~\cite{liu2023g}{, }ICE-Score~\cite{zhuo2023ice}{, }ProtocoLLM~\cite{yi2024protocollm}{, }Chiang et al.~\cite{chiang2023closer}{, }\\FineSurE~\cite{song2024finesure}, leaf, text width=33em
+                ]
+            ]
+            [
+                Definition \\Augmentation 
+                [
+                    AUTOCALIBRATE~\cite{liu2023calibrating}{, }PORTIA~\cite{li2023split}{, }SALC~\cite{gupta2024unveiling}{, }LLM-as-a-personalized-judge~\cite{dong2024can}{, }BiasAlert~\cite{fan2024biasalert}{, }\\Chen et al.~\cite{chen2024llms}, leaf, text width=33em
+                ]
+            ]
+            [
+                Multi-turn \\Optimization
+                [
+                    ACTIVE-CRITIC~\cite{xu2024large}{, }AUTOCALIBRATE~\cite{liu2023calibrating}{, }Auto-Arena~\cite{zhao2024auto,luo2024videoautoarena}{, }LMExam~\cite{bai2024benchmarking}{, }KIEval~\cite{yu2024kieval}, leaf, text width=33em
+                ]
+            ]]
+            [
+                Tuning-based (\S \ref{sec:Tuning})
+                [
+                    Score-based Tuning
+                    [
+                        Chen et al.~\cite{chen2023adaptation}{, }AttrScore~\cite{yue2023automatic}{, }PHUDGE~\cite{deshwal2024phudge}{, }ECT~\cite{wang2023learning}{, }SELF-J~\cite{ye2024self}{, }SorryBench~\cite{xie2024sorry}{, }TIGERScore~\cite{jiang2023tigerscore}{, }\\FENCE~\cite{xie2024improving}{, }ARES~\cite{saad2023ares}, leaf, text width=33em
+                    ]
+                ]
+                [
+                    Preference-based \\Learning
+                    [
+                        Meta-Rewarding~\cite{wu2024meta}{, }Con-J~\cite{ye2024beyond}{, }JudgeLM~\cite{zhu2023judgelm}{, }INSTRUCTSCORE~\cite{xu2023instructscore}{, }AUTO-J~\cite{li2023generative}{, }Shepherd~\cite{wang2023shepherd}{, }\\X-EVAL~\cite{liu2023x}{, }Themis~\cite{hu2024themis}{, }CritiqueLLM~\cite{ke2024critiquellm}{, }FedEval-LLM~\cite{he2024fedeval}{, }PandaLM~\cite{wang2023pandalm}{, }Self-Taught~\cite{wang2024self}{, }\\FLAMe~\cite{vu2024foundational}{, }Self-Rationalization~\cite{trivedi2024self}{, }CompassJudger-1~\cite{cao2024compassjudger}{, }Zhou et al.~\cite{zhou2024mitigating}{, }HALU-J~\cite{wang2024halu}{, }\\PROMETHEUS~\cite{kim2023prometheus}{, }PROMETHEUS 2~\cite{kim2024prometheus}{, }PROMETHEUS-VISION~\cite{lee2024prometheusvision}{, }LLaVA-Critic~\cite{xiong2024llava}, leaf, text width=33em
+                    ]
+                ]
+            ]
+            [
+                Post-processing(\S \ref{sec:Post-processing})
+                [
+                    Probability \\Calibration
+                    [
+                        Daynauth et al.~\cite{daynauth2024aligning}{, }ProbDiff~\cite{xia2024language}{, }PoE~\cite{liusie2024efficient}{, }CRISPR~\cite{yang2024mitigating}, leaf, text width=33em
+                    ]
+                ]
+                [
+                    Text Reprocessing
+                    [
+                        Sottana et al.~\cite{sottana2023evaluation}{, }AUTO-J~\cite{li2023generative}{, }Yan et al.~\cite{yan2024consolidating}{, }Tessler et al.~\cite{tessler2024ai}{, }REVISEVAL~\cite{zhang2024reviseval}Ren et al.~\cite{ren2023self}{, }\\Open-LLM-Leaderboard~\cite{myrzakhan2024open}, leaf, text width=33em
+                    ]
+                ]
+            ]]
+        [
+            Multi-LLM (\S \ref{sec:Multi-LLM System})
+            [
+                Communication(\S \ref{sec:Communication})
+                [
+                    Cooperation
+                    [
+                        WideDeep~\cite{zhang2023wider}{, }Xu et al.~\cite{xu2023towards}{, }ABSEval~\cite{liang2024abseval}, leaf, text width=33em
+                    ]
+                ]
+                [
+                    Competition
+                    [
+                        Owens et al.~\cite{owens2024multi}{, }Auto-Arena~\cite{zhao2024auto}{, }Bandi et al.~\cite{bandi2024adversarial}{, }Moniri et al.~\cite{moniri2024evaluating}{, }ChatEval~\cite{chan2023chateval}{, }PRD~\cite{li2023prd}, leaf, text width=33em
+                    ]
+                ]
+            ]
+            [ 
+                Aggregation (\S \ref{sec:Aggregation})
+                [
+                    Badshah et al.~\cite{badshah2024reference}{, }PoLL~\cite{verga2024replacing}{, }Language-Model-as-an-Examiner~\cite{bai2024benchmarking}{, }MULTI-NEWS+~\cite{choi2024multi}{, }PiCO~\cite{ning2024pico}{, }PRE~\cite{chu2024pre}{, }Chen et al. ~\cite{chen2024automaticcostefficientpeerreviewframework}{, }\\Zhang et al.~\cite{zhang2024large}{, }
+                    AIME~\cite{patel2024aime}{, }HD-EVAL~\cite{liu2024hd}{, }Gao et al.~\cite{gao2024bayesian}{, }GED~\cite{hu2024language}{, }Fusion-Eval~\cite{shu2024fusion}{, }Jung et al.~\cite{jung2024trust}{, }CascadedEval~\cite{huang2024empirical}, leaf, text width=41em
+                ]
+            ]]
+        [
+            Human-AI \\ Collaboration (\S \ref{sec:Hybrid System})
+            [
+                COEVAL\cite{li2023collaborative}{, }EvalGen\cite{shankar2024validates}{, }EvaluLLM\cite{pan2024human}{, }LLM TAs\cite{chiang2024large}{, }Wang et al.~\cite{wang2023large}, leaf, text width=49em
+            ]
+            ]
+        ]
+    [APPLICATION (\S \ref{sec:Domain})
+        [
+            General (\S \ref{sec:General})
+            [
+                Dialogue Generation~\cite{li2017dailydialog}{, }Summarization~\cite{narayan2018don}{, }Translation~\cite{feng2024improving}{, }Fusion-Eval~\cite{shu2024fusion}, leaf, text width=49em
+            ]
+        ]
+        [
+            Multimodal (\S \ref{sec:Multimodal})
+            [
+                LLaVA-Critic~\cite{xiong2024llava}{, }Chen et al.~\cite{chen2024mllm}{, }Latif et al.~\cite{latif2023can}{, }self-reward~\cite{zhou2024calibrated, deng2024efficient}{,}CODA-LM~\cite{chen2024automated}, leaf, text width=49em
+            ]
+        ]
+        [
+            Medical (\S \ref{sec:Medical})
+            [ 
+                Xie et al.~\cite{xie2024doclens}{, }Brake et al.~\cite{brake2024comparing}{, }Krolik et al.~\cite{krolik2024towards}{, }Li et al.~\cite{li2024automatic}{, }Medical Reasoning~\cite{jeong2024improving}, leaf, text width=49em
+            ]
+        ]
+        [
+            Legal (\S \ref{sec:Legal})
+            [
+                Yue et al.~\cite{yue2023disc}{,}Ryu et al.~\cite{ryu2023retrieval}{, }Raju et al.~\cite{raju2024constructing}{, }Ma et al.~\cite{ma2024leveraging}, leaf, text width=49em
+            ]
+        ]
+        [
+            Financial (\S \ref{sec:Financial})
+            [
+                FinMA~\cite{xie2023pixiu}{, }Babaei et al.~\cite{babaei2024gpt}{, }Son et al.~\cite{son2024krx}, leaf, text width=49em
+            ]
+        ]
+        [
+            Education (\S \ref{sec:Education})
+            [
+                LLM TA~\cite{chiang2024large}{, }Wang et al.~\cite{wang2024automated}{, }Song et al.~\cite{song2024automated}{, }Zhou et al.~\cite{zhou2024llm}{, }Xia et al.~\cite{xia2024evaluating}{, }Debatrix~\cite{liang2024debatrix}, leaf, text width=49em
+            ]
+        ]
+        [
+            Information Retrieval \\(\S \ref{sec: Information Retrieval})
+            [
+                Rahmani et al.~\cite{rahmani2024llmjudge}{, }JudgeRank~\cite{niu2024judgerank}{, }Zhang et al.~\cite{zhang2024large}{, }Soboroff et al. ~\cite{soboroff2024don}{, }ARES~\cite{saad2023ares}, leaf, text width=49em
+            ]
+        ]
+        [
+            Others (\S \ref{sec: Others})
+            [
+                Code~\cite{patel2024aime, weyssow2024codeultrafeedback}{, }Kumar et al.~\cite{kumar2024llms}{, }Hijazi et al.~\cite{hijazi2024using}{, }Tessler et al.~\cite{tessler2024ai}{, }Sotopia~\cite{zhou2023sotopia}, leaf, text width=49em
+            ]
+        ]]
+    [META-EVALUATION \\ (\S \ref{sec:Meta})
+        [Benchmarks (\S \ref{sec:benchmarks})
+        [
+            Code Generation \\(\S \ref{sec:Code Generation})
+            [
+                HumanEval~\cite{chen2021evaluating}{, }SWEBench~\cite{jimenez2023swe}{, }DevAI~\cite{zhuge2024agent}{, }CrossCodeEval~\cite{ding2024crosscodeeval}{, }CodeUltraFeedback~\cite{weyssow2024codeultrafeedback}, leaf, text width=41em
+            ]
+        ]
+        [
+            Machine Translation \\(\S \ref{sec:Machine Translation})
+            [
+                Freitag et al.~\cite{freitag2021results}{, }Literary Translation Comparisons~\cite{karpinska2023large}{, }MQM~\cite{freitag2021experts}, leaf, text width=41em
+            ]
+        ]
+        [
+            Text Summarization \\(\S \ref{sec:Text Summarization})
+            [
+                SummEval~\cite{fabbri2021summeval}{, }FRANK~\cite{pagnoni2021understanding}{, }OpinsummEval~\cite{shen2023opinsummeval}, leaf, text width=41em
+            ]
+        ]
+        [
+            Dialogue Generation \\(\S \ref{sec:Dialogue Generation})
+            [
+                Topical-Chat~\cite{gopalakrishnan2023topical}{, }PERSONA-CHAT~\cite{zhang2018personalizing}{, }Mehri et al.~\cite{mehri2020usr}{, }DSTC10 Track 5~\cite{yoshino2023overview,zhang2021automatic}, leaf, text width=41em
+            ]
+        ]
+        [
+            Automatic Story \\Generation (\S \ref{sec:Automatic Story Generation})
+            [ 
+                HANNA~\cite{chhun2022human}{, }MANS~\cite{guan2021openmeva}{, }OpenMEVA~\cite{guan2021openmeva}{, }StoryER~\cite{chen2023storyer}{, }PERSER~\cite{wang2023learning}, leaf, text width=41em
+            ]
+        ]
+        [
+            Values Alignment \\(\S \ref{sec:Values Alignment})
+            [
+                PKU-SafeRLHF~\cite{ji2024pku}{, }HHH~\cite{askell2021general}{, }CVALUES~\cite{xu2023cvalues}, leaf, text width=41em
+            ]
+        ]
+        [
+            Recommendation \\(\S \ref{sec:Recommendation})
+            [
+                MovieLens~\cite{harper2015movielens}{, }Zhang et al.~\cite{zhang2024large}{, }Yelp~\cite{asghar2016yelp}, leaf, text width=41em
+            ]
+        ]
+        [
+            Search (\S \ref{sec:Search})
+            [
+                TREC Deep Learning Track~\cite{lawrie2024overview}{, }MS MARCO v2 collection~\cite{bajaj2016ms}{, }LeCaRDv2~\cite{li2024lecardv2}, leaf, text width=41em
+            ]
+        ]
+        [
+            Comprehensive Data \\(\S \ref{sec:Comprehensive Data})
+            [
+                HelpSteer~\cite{wang2023helpsteer}{, }HelpSteer2~\cite{wang2024helpsteer2}{, }UltraFeedback~\cite{cui2024ultrafeedback}{, }UltraChat~\cite{ding2023enhancing}{, }ShareGPT~\cite{chiang2023vicuna}{, }TruthfulQA~\cite{lin2021truthfulqa}{, }AlpacaEval~\cite{dubois2024length}{, }\\Chatbot Arena~\cite{zheng2023judging}{, }MT-Bench~\cite{zheng2023judging}{, }
+                WildBench~\cite{lin2024wildbench}{, }FLASK~\cite{ye2023flask}{, }RewardBench~\cite{lambert2024rewardbench}{, }RM-Bench~\cite{liu2024rm}{, }
+                JudgeBench~\cite{tan2024judgebench}{, }\\MLLM-as-a-Judge~\cite{chen2024mllm}{, }MM-Eval~\cite{son2024mm}, leaf, text width=41em
+            ]
+        ]]
+        [Metric (\S \ref{sec:metric})
+            [Accuracy{, }Pearson~\cite{cohen2009pearson}{, }Spearman~\cite{sedgwick2014spearman}{, }Kendall's Tau~\cite{sen1968estimates}{, }Cohen's Kappa~\cite{warrens2015five}{, }ICC~\cite{bartko1966intraclass}, leaf, text width=49em ]]]]
+        \end{forest}
+    }
+\caption{Taxonomy of LLMs-as-judges in functionality, methodology, application, meta-evaluation.}
+\label{Taxonomy_1}
+\end{figure*}
+
+

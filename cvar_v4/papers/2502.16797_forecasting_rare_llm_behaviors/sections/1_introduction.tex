@@ -1,0 +1,33 @@
+\section{Introduction}
+\label{sec:introduction}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.99\linewidth]{figures/fig1.pdf}
+    \caption{\textbf{Scaling laws enable forecasting rare language model failures.} We find that the risk of the highest-risk queries follows a power-law in the number of queries. This lets us forecast whether any query is likely to exhibit an undesired behavior at deployment (shaded, right), from orders-of-magnitude smaller evaluations (unshaded, left).}
+    \vspace{-2mm}
+    \label{fig:fig1}
+\end{figure}
+
+Large language model (LLM) evaluations face a fundamental challenge: they attempt to accurately predict deployment-level risks from datasets that are many orders of magnitude smaller than 
+deployment scale. 
+Evaluation sets typically contain hundreds to thousands of queries \citep[e.g.,][]{souly2024strongreject}, while deployed LLMs process billions of queries daily.
+%\footnote{\url{https://x.com/OpenAINewsroom/status/1864373399218475440}} 
+ This scale disparity means that standard evaluation can miss failures: rare behaviors that do not occur during evaluation or beta testing may still manifest at deployment.
+
+To overcome this challenge, in this work we introduce a method to forecast potential deployment risks from orders-of-magnitude smaller evaluation sets. 
+For example, we might forecast whether any of 100,000 jailbreaks from some distribution will break an LLM at deployment using a set of 100 failed jailbreaks from the same distribution. 
+Critically, we predict risks \textit{before they actually manifest}, enabling model developers to take preventative action.
+
+To make forecasts, we leverage the \emph{elicitation probabilities} of evaluation queries. While any individual LLM output provides a binary signal (i.e., it either exhibits a target behavior or not), the probability that a fixed query elicits a behavior is continuous. For example, seemingly ineffective jailbreaks in fact elicit harmful outputs with non-zero probability under enough repeated sampling. Elicitation probabilities let us reason about deployment risks; risk is often concentrated in the queries with the largest elicitation probabilities, as these are most likely to elicit the behavior.
+%and consistently with high ones.
+
+We find that the largest observed elicitation probabilities exhibit \textit{predictable scaling behavior} (\reffig{fig1}). Specifically, we find that the logarithm of the largest-quantile elicitation probabilities follows a power-law in the number of samples required to estimate them. 
+We use this relationship to forecast how the largest elicitation probabilities grow with scale; for example, we predict the top-0.001\% elicitation probability (which manifests at a 100000-query deployment) by measuring growth from the top-1\% to the top 0.1\% elicitation probabilities (using a 1000 query evaluation set). 
+
+We find that our method can accurately forecast diverse undesirable behaviors, ranging from models providing dangerous chemical information to models taking power-seeking actions, over orders-of-magnitude larger deployments. 
+For example, 
+when forecasting the risk at 90,000 samples using only 900 samples (a difference of two orders of magnitude), our forecasts stay within one order of magnitude of the true risk for 86\% of misuse forecasts. 
+We also find that our forecasts can improve LLM-based automated red-teaming algorithms by more efficiently allocating compute between different red-teaming models. 
+
+Our forecasts are not perfect---they can be sensitive to the specific evaluation sets, and deployment risks themselves are stochastic. Nevertheless, we hope our work enables developers to proactively anticipate and mitigate potential harms before they manifest in real-world deployments. 

@@ -1,0 +1,1988 @@
+\appendix
+%\section*{Appendix}
+
+\renewcommand{\appendixpagename}{\centering \Large \textsc{Appendix}}
+\appendixpage
+
+
+\section{Experiments}\label{apx:experiments}
+
+In this section, we provide experimental results to evaluate the empirical performance of our algorithm $\algcvar$, and compare it to the state-of-the-art algorithms $\mathtt{EULER}$~\citep{zanette2019tighter} and $\mathtt{RSVI2}$~\citep{fei2021exponential} for classic RL and risk-sensitive RL, respectively. 
+% with exponential utility criterion
+
+In our experiments, we consider an $H$-layered MDP with $S=3(H-1)+1$ states and $A$ actions. There is a single state $s_0$ (initial state) in layer $1$. For any $2 \leq h \leq H$, there are three states $s_{3(h-2)+1}, s_{3(h-2)+2}$ and $s_{3(h-2)+3}$ in layer $h$, which induce rewards $1,0$ and $0.4$, respectively. The agent starts from $s_0$ in layer 1, and for each step $h\in[H]$, she takes an action from $\{a_1,\dots,a_{A}\}$, and then transitions to one of three states in the next layer. For any $a \in \{a_1,\dots,a_{A-1}\}$, action $a$ leads to $s_{3(h-1)+1}$ and $s_{3(h-1)+2}$ with probabilities $0.5$ and $0.5$, respectively. Action $a_{A}$ leads to $s_{3(h-1)+2}$ and $s_{3(h-1)+3}$ with probabilities $0.001$ and $0.999$, respectively.
+
+We set $\alpha \in \{0.05, 0.1, 0.15\}$, $\delta \in \{0.5,0.005,0.00005\}$, $H \in \{2,5,10\}$, $S\in\{7,13,25\}$, $A\in\{3,5,12\}$ and $K\in[0,10000]$ (the change of $K$ can be seen from the X-axis in Figure~\ref{fig:experiments}). We take $\alpha=0.05$, $\delta=0.005$, $H=5$, $S=13$, $A=5$ and $K=10000$ as the basic setting, and change parameters $\alpha$, $\delta$, $H$, $S$, $A$ and $K$ to see how they affect the empirical performance of algorithm $\algcvar$. 
+For each algorithm, we perform $20$ independent runs and report the average regret across runs with $95\%$ confidence intervals. 
+
+As shown in Figure~\ref{fig:experiments}, our algorithm $\algcvar$ achieves a significantly lower regret than the other algorithms $\mathtt{EULER}$~\citep{zanette2019tighter} and $\mathtt{RSVI2}$~\citep{fei2021exponential}, which demonstrates that $\algcvar$ can effectively control the risk  under the Iterated CVaR criterion and shows performance superiority over the baselines.
+Moreover, the influences of parameters $\alpha$, $\delta$, $H$, $S$, $A$ and $K$ on the regret of algorithm $\algcvar$ match our theoretical bounds.
+Specifically, as $\alpha$ or $\delta$ increases, the regret of $\algcvar$ decreases. As $H,S$ or $A$ increases, the regret of $\algcvar$ increases as well. As the number of episodes $K$ increases, the regret of $\algcvar$ increases at a sublinear rate.
+
+\begin{figure} [t!]
+	\centering     
+	\subfigure[$\alpha=0.05$] {    
+		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005_z0.050_UCB_Factor0.100_S13_A5_H5.png} 
+	}    
+	\subfigure[$\alpha=0.1$] {    
+		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005_z0.100_UCB_Factor0.100_S13_A5_H5.png} 
+	}    
+	\subfigure[$\alpha=0.15$] {    
+		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005_z0.150_UCB_Factor0.100_S13_A5_H5.png} 
+	}    
+	\subfigure[$\delta=0.00005$] {    
+		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.000050_z0.050_UCB_Factor0.100_S13_A5_H5.png} 
+	}      
+	%	\subfigure[$\delta=0.0005$] {    
+		%		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.001_z0.050_UCB_Factor0.100_S13_A5_H5.png} 
+		%	}
+	\subfigure[$\delta=0.005$] {    
+		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005_z0.050_UCB_Factor0.100_S13_A5_H5.png} 
+	}    
+	%	\subfigure[$\delta=0.05$] {    
+		%		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.050_z0.050_UCB_Factor0.100_S13_A5_H5.png} 
+		%	}      
+	\subfigure[$\delta=0.5$] {    
+		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.500_z0.050_UCB_Factor0.100_S13_A5_H5.png} 
+	}      
+	\subfigure[$H=2$] {    
+		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005_z0.050_UCB_Factor0.100_S4_A5_H2.png} 
+	}   
+	\subfigure[$H=5$] {    
+		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005_z0.050_UCB_Factor0.100_S13_A5_H5.png} 
+	}    
+	%	\subfigure[$H=8$] {    
+		%		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005_z0.050_UCB_Factor0.100_S22_A5_H8.png} 
+		%	}    
+	\subfigure[$H=10$] {    
+		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005_z0.050_UCB_Factor0.100_S28_A5_H10.png} 
+	}    
+	\subfigure[$S=7$] {    
+		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005_z0.050_UCB_Factor0.100_S7_A5_H3.png} 
+	}    
+	\subfigure[$S=13$] {    
+		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005_z0.050_UCB_Factor0.100_S13_A5_H5.png} 
+	}    
+	\subfigure[$S=25$] {    
+		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005_z0.050_UCB_Factor0.100_S25_A5_H9.png} 
+	}    
+	\subfigure[$A=3$] {    
+		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005000_z0.050_UCB_Factor0.100_S13_A3_H5.png} 
+	}    
+	\subfigure[$A=5$] {    
+		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005_z0.050_UCB_Factor0.100_S13_A5_H5.png} 
+	}    
+	%	\subfigure[$A=8$] {    
+		%		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005_z0.050_UCB_Factor0.100_S13_A8_H5.png} 
+		%	}    
+	%	\subfigure[$A=10$] {    
+		%		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005_z0.050_UCB_Factor0.100_S13_A10_H5.png} 
+		%	}    
+	\subfigure[$A=12$] {    
+		\includegraphics[width=0.31\textwidth]{fig/Layer_3States_simulation20_episode10000_delta0.005000_z0.050_UCB_Factor0.100_S13_A12_H5.png} 
+	}    
+	\caption{Experimental results for Iterated CVaR RL.}
+	\label{fig:experiments}
+\end{figure}
+
+\section{Related Work} \label{apx:related_work}
+
+Below we present a complete review of related works.
+
+\textbf{CVaR-based MDPs (Known Transition).}
+%Most of existing CVaR-based sequential decision-making researches have been conducted in the MDP context (with known transition), and only a few works have been done under the RL framework (with unknown transition). 
+\cite{boda2006time,ott2010markov,bauerle2011markov,haskell2015convex,chow2015risk} study the CVaR MDP problem where the objective is to minimize the CVaR of the total cost with known transition, and demonstrate that the optimal policy for CVaR MDP is history-dependent (not Markovian) and is inefficient to exactly compute.
+\cite{hardy2004iterated} firstly define the Iterated CVaR measure, and prove that it is a coherent dynamic risk measure, and applicable to equity-linked insurance. \cite{osogami2012iterated,chu2014markov,bauerle2022markov} investigate iterated coherent risk measures (including Iterated CVaR) in MDPs, and prove the existence of Markovian optimal policies for these MDPs.
+% (see Appendix~\ref{apx:comparison_cvar} for a detailed comparison between our formulation and CVaR MDPs).
+The above works focus mainly on designing planning algorithms and derive planning error guarantees for \emph{known} transition, while our work develops RL algorithms (interacting with the environment online) and provides regret and sample complexity guarantees for \emph{unknown} transition. 
+
+%\cite{haskell2015convex}
+
+
+\textbf{Risk-Sensitive Reinforcement Learning (Unknown Transition).} 
+\cite{heger1994consideration,coraluppi1997mixed,coraluppi1999risk} consider minimizing the worst-case cost in RL, and present dynamic programming of value functions and heuristic algorithms without theoretical analysis.
+\cite{borkar2001sensitivity,borkar2002q} study risk-sensitive RL with the exponential utility measure, and design algorithms based on actor–critic learning and Q-learning, respectively.
+\cite{di2012policy,la2013actor} investigate variance-related risk measures, and devise policy gradient and actor-critic-based algorithms with convergence analysis. \cite{tamar2015optimizing} consider maximizing the CVaR of the total reward, and propose a sampling-based estimator for the CVaR gradient and a stochastic gradient decent algorithm to optimize CVaR.
+\revision{\cite{keramati2020being} also investigate optimizing the CVaR of the total reward, and design an algorithm based on an optimistic version of the distributional Bellman operator.}
+\cite{borkar2014risk,chow2014algorithms,chow2017risk} study how to minimize the expected total cost with CVaR-based constraints, and develop policy gradient, actor-critic and stochastic approximation-style algorithms.
+The above works mainly give convergence analysis, and do not provide finite-time regret and sample complexity guarantees as in our work. 
+%In contrast, our work presents non-asymptotic regret and sample complexity results.
+
+To our best knowledge, there are only a few risk-sensitive RL works which provide finite-time regret analysis~\citep{fei2020near_optimal,fei2021exponential,fei2021function_approx}.
+\cite{fei2020near_optimal} consider risk-sensitive RL with the exponential utility criterion, and propose algorithms based on logarithmic-exponential transformation and least-squares updates. \cite{fei2021exponential} further improve the regret bound in \citep{fei2020near_optimal} by developing an exponential Bellmen equation and a Bellman backup analytical procedure.
+\cite{fei2021function_approx} extend the model and results in \citep{fei2020near_optimal,fei2021exponential} from the tabular setting to the function approximation framework. 
+Our work is very different from the above works~\citep{fei2020near_optimal,fei2021exponential,fei2021function_approx} in formulation, algorithms and results.
+The above works~\citep{fei2020near_optimal,fei2021exponential,fei2021function_approx} use the exponential utility criterion to characterize the risk and take all successor states into account in decision making. They design algorithms based on exponential Bellmen equations and doubly decaying exploration bonuses.
+%, and their regret bounds exponentially depend on the risk sensitivity parameter. 
+In contrast, we interpret the risk by the Iterated CVaR criterion, which primarily concerns the worst $\alpha$-portion successor states. We develop algorithms using CVaR-adapted exploration bonuses.
+%, and our regret bound depends on the smaller one between an MDP-intrinsic visitation factor and a risk-level-related factor.
+
+The works we discuss above fall in the literature of RL with risk-sensitive criteria. There are also other RL works which focus on state-wise safety. \cite{cheng2019end} utilize control barrier functions (CBFs) to ensure the agent within a set of safe sets and guide the learning by constraining explorable polices. \cite{fatemi2019dead,fatemi2021medical} define the notion of dead-end states (which lead to suboptimal terminal state with probability $1$ in finite steps) and aim to avoid getting into dead-end states. 
+%The goal of these works is to maximize the expected reward while constraining the agent within a set of safe states. 
+The formulations and algorithms in these works greatly differ from ours, and they do not provide finite-time regret and sample complexity analysis as us.
+We refer interested readers to the survey~\citep{garcia2015comprehensive} for detailed categorization and discussion on safe RL.
+
+
+
+\section{More Discussion on Iterated CVaR RL}
+
+In this section, we first present the expanded value function definitions for Iterated CVaR RL. Then, we compare Iterated CVaR RL with existing risk-sensitive MDP models, including CVaR MDP~\citep{boda2006time,ott2010markov,bauerle2011markov,chow2015risk} and the exponential utility-based RL~\citep{fei2020near_optimal,fei2021exponential}.
+
+\revision{
+	\subsection{Value Function Definitions for Iterated CVaR RL} \label{apx:expanded_value_function}
+	
+	The value function definition for Iterated CVaR RL, i.e., Eq. (i) in Section~\ref{sec:formulation}, can be expanded as
+	
+	\begin{align*}
+		Q^{\pi}_h(s,a)& = r(s,a) + \cvar^{\alpha}_{s_{h+1} \sim p(\cdot|s,a)} \bigg(r(s_{h+1},\pi_{h+1}(s_{h+1})) \\& 
+		\!\!\!+\cvar^{\alpha}_{s_{h+2} \sim p(\cdot|s_{h+1},\pi_{h+1}(s_{h+1}))} \Big(\dots 
+		\cvar^{\alpha}_{s_{H} \sim p(\cdot|s_{H-1},\pi_{H-1}(s_{H-1}) )}(r(s_{H},\pi_{H}(s_{H}) ) ) \Big) \bigg) ,
+		\\
+		V^{\pi}_h(s)&= r(s, \pi_h(s)) + \cvar^{\alpha}_{s_{h+1} \sim p(\cdot|s,\pi_h(s))} \bigg(r(s_{h+1},\pi_{h+1}(s_{h+1})) \\& 
+		\!\!\!+\cvar^{\alpha}_{s_{h+2} \sim p(\cdot|s_{h+1},\pi_{h+1}(s_{h+1}))} \Big(\dots 
+		\cvar^{\alpha}_{s_{H} \sim p(\cdot|s_{H-1},\pi_{H-1}(s_{H-1}))}(r(s_{H},\pi_{H}(s_{H}))) \Big) \bigg) .
+	\end{align*}
+	
+	Similarly, the optimal value function definition, e.g., Eq. (ii) in Section~\ref{sec:formulation}, can be expanded as 
+	
+	\begin{align}
+		& Q^{*}_h(s,a) \!=\! \max_{\pi} \! \Bigg\{ r(s,a) + \cvar^{\alpha}_{s_{h+1} \sim p(\cdot|s,a)} \bigg(r(s_{h+1},\pi_{h+1}(s_{h+1})) \nonumber\\& 
+		+\cvar^{\alpha}_{s_{h+2} \sim p(\cdot|s_{h+1},\pi_{h+1}(s_{h+1}))} \Big(\! \dots \! 
+		\cvar^{\alpha}_{s_{H} \sim p(\cdot|s_{H-1},\pi_{H-1}(s_{H-1}) )}(r(s_{H},\pi_{H}(s_{H}) ) ) \Big) \bigg) \Bigg\} ,
+		\nonumber\\
+		& V^{*}_h(s) \!=\! \max_{\pi} \! \Bigg\{ r(s, \pi_h(s)) + \cvar^{\alpha}_{s_{h+1} \sim p(\cdot|s,\pi_h(s))} \bigg(r(s_{h+1},\pi_{h+1}(s_{h+1})) \nonumber\\& 
+		+\cvar^{\alpha}_{s_{h+2} \sim p(\cdot|s_{h+1},\pi_{h+1}(s_{h+1}))} \Big(\! \dots \!
+		\cvar^{\alpha}_{s_{H} \sim p(\cdot|s_{H-1},\pi_{H-1}(s_{H-1}))}(r(s_{H},\pi_{H}(s_{H}))) \Big) \bigg) \Bigg\} . \label{eq:expanded_optimal_value_function}
+	\end{align}
+	
+	
+	From the above value function definitions, we can see that, Iterated CVaR RL aims to maximize the worst $\alpha$-portion tail of the reward-to-go at each step, i.e., taking the CVaR operator on the reward-to-go at each step. 
+	Intuitively, Iterated CVaR RL wants to optimize the performance even when bad situations happen at each decision stage.
+}
+
+
+\revision{
+	\subsection{Comparison with CVaR MDP} \label{apx:comparison_cvar}
+	
+	\begin{figure} [t!]
+		\centering       
+		\includegraphics[width=0.8\textwidth]{fig/comparison_CVaR.pdf} 
+		\caption{Illustrating example for the comparison between CVaR MDP and Iterated CVaR RL.}
+		\label{fig:comparison_cvar}
+	\end{figure}
+	
+	The objective of CVaR MDP, e.g., \citep{boda2006time,ott2010markov,bauerle2011markov,chow2015risk},\yihan{added ``e.g.,'' for the references of CVaR MDP} is to maximize the worst $\alpha$-portion of the \emph{total} reward, which is formally defined as
+	\begin{align*}
+		\max_{\pi} \ \cvar^{\alpha}_{(s_h,a_h) \sim p,\pi} \sbr{\sum_{h=1}^{H} r(s_h,a_h)} .
+	\end{align*}
+	
+	%CVaR MDP aims to maximize the worst $\alpha$-portion of the \emph{total} reward.
+	Compared to our Iterated CVaR RL (Eq.~\eqref{eq:expanded_optimal_value_function} and Eq.~(ii) in Section~\ref{sec:formulation}) which concerns bad situations \emph{at each step}, CVaR MDP takes more cumulative reward into account\yihan{changed ``overall performance'' to ``cumulative reward''} and prefers actions which have better performance in general, but can have larger probabilities of getting into catastrophic states. Thus, CVaR MDP is suitable for scenarios where bad situations lead to a higher cost but not fatal damage, e.g., finance. 
+	In contrast, Iterated CVaR RL prefers actions which have smaller probabilities of getting into catastrophic states. 
+	Hence, Iterated CVaR RL is most suitable for safety-critical applications, where catastrophic states are unacceptable and need to be carefully avoid, e.g., clinical treatment planning. 
+	
+	We emphasize that Iterated CVaR is \emph{not equivalent to} simply taking the worst $\alpha^H$-portion of the total reward. In fact, the good $(1-\alpha^H)$-portion of the total reward also contributes to Iterated CVaR. This is because Iterated CVaR accounts bad situations for all states (both good and bad states) in its iterated computation, instead of just considering bad situations upon bad states.
+	
+	Below we provide an example of clinical treatment planning to illustrate the difference between Iterated CVaR and CVaR MDP. Here we interpret the objective as cost minimization for ease of understanding, and set the risk level $\alpha=0.05$.
+	
+	
+	Consider a 4-layered binary tree-structured MDP shown in Figure~\ref{fig:comparison_cvar}. The state sets in layers 1, 2, 3 and 4 are $\{s_1\}$, $\{s_2,s_3\}$, $\{s_4,\dots,s_7\}$ and $\{s_8,\dots,s_{15}\}$,  respectively. There are two actions $a_1,a_2$ in each state, and $a_1,a_2$ have the same transition distribution in all states except the initial state $s_1$. Thus, a policy is to decide whether to choose $a_1$ or $a_2$ in state $s_1$, which leads to different subsequent costs. 
+	
+	
+	The agent starts from the initial state $s_1$ in layer 1. 
+	If the agent takes action $a_1$, she will transition to state $s_2$ deterministically, and goes into the left sub-tree. On the other hand, if the agent takes action $a_2$ in state $s_1$, she will transition to state $s_3$ deterministically, and enters the right sub-tree.
+	
+	If the agent goes into the left sub-tree (state $s_2$) in layer 2, she will transition to $s_4$ and $s_5$ in layer 3 with probabilities $0.05$ and $0.95$, respectively. 
+	Then, if she starts from state $s_4$ in layer 3, she will transition to $s_8$ and $s_9$ in layer 4 with probabilities $0.05$ and $0.95$, respectively. 
+	Otherwise, if she starts from state $s_5$ in layer 3, she will transition to $s_{10}$ and $s_{11}$ in layer 4 with probabilities $0.05$ and $0.95$, respectively.
+	
+	On the other hand, if the agent goes into the right sub-tree (state $s_3$) in layer 2, she will transition to $s_6$ and $s_7$ in layer 3 with probabilities $0.01$ and $0.99$, respectively. 
+	Then, if she starts from state $s_6$ in layer 3, she will transition to $s_{12}$ and $s_{13}$ in layer 4 with probabilities $0.01$ and $0.99$, respectively. 
+	Otherwise, if she starts from state $s_7$ in layer 3, she will transition to $s_{14}$ and $s_{15}$ in layer 4 with probabilities $0.01$ and $0.99$, respectively.
+	
+	%	In the right sub-tree, starting from a parent state $s_3$ ($s_6$ or $s_7$), the agent will transition to its left and right children states,  i.e., $s_6$ and $s_7$ ($s_{12}$ and $s_{13}$ or $s_{14}$ and $s_{15}$), with probabilities $0.01$ and $0.99$, respectively.
+	
+	The costs are state-dependent, and only the states in layer 4 produce non-zero costs. To be concrete, we use the clinical trial example and the costs represent the patient status. Specifically, in layer 4, $s_8$ and $s_{12}$ give costs 1, which denote \emph{death}. $s_{13}$ and $s_{14}$ produce costs 0.5, which means the patient is \emph{getting better}. $s_9$ and $s_{10}$ induce costs 0.4, which denote that the patient \emph{gets much better}. $s_{11}$ and $s_{15}$ produce costs 0, which stand for that the patient is \emph{fully cured}.
+	
+	
+	
+	Under the CVaR criterion, we have that 
+	$$
+	Q^{\cvar, \alpha}(s_1,a_1)=\frac{0.0025}{0.05} \cdot 1+\frac{0.05-0.0025}{0.05} \cdot 0.4=0.43 ,
+	$$
+	and 
+	$$
+	Q^{\cvar, \alpha}(s_1,a_2)=\frac{0.0001}{0.05} \cdot 1+\frac{0.05-0.0001}{0.05} \cdot 0.5=0.501 .
+	$$
+	
+	Thus, CVaR MDP will choose action $a_1$ (and goes into the left sub-tree), since $a_1$ leads to better medium states $s_9$ and $s_{10}$, which give a lower cost $0.4$ than the cost $0.5$ produced by the right sub-tree.
+	%, and take a large part in the summed performance.
+	
+	On the other hand, under the Iterated CVaR criterion, we have that
+	$$
+	Q^{\icvar, \alpha}(s_1,a_1)=\frac{0.05}{0.05} \cdot Q^{\icvar, \alpha}(s_4,\cdot)=\frac{0.05}{0.05} \cdot \left( \frac{0.05}{0.05} \cdot Q^{\icvar, \alpha}(s_8,\cdot) \right)=\frac{0.05}{0.05} \cdot \left( \frac{0.05}{0.05} \cdot 1 \right)=1 ,
+	$$ 
+	and 
+	\begin{align*}
+		&Q^{\icvar, \alpha}(s_1,a_2)
+		\\
+		=&\frac{0.01}{0.05} \cdot Q^{\icvar, \alpha}(s_6,\cdot) + \frac{0.05-0.01}{0.05} \cdot Q^{\icvar, \alpha}(s_7,\cdot) 
+		\\
+		=&\frac{0.01}{0.05} \cdot \left( \frac{0.01}{0.05} \cdot Q^{\icvar, \alpha}(s_{12},\cdot) + \frac{0.05-0.01}{0.05} \cdot Q^{\icvar, \alpha}(s_{13},\cdot) \right) \\& + \frac{0.05-0.01}{0.05} \cdot \left( \frac{0.01}{0.05} \cdot Q^{\icvar, \alpha}(s_{14},\cdot) + \frac{0.05-0.01}{0.05} \cdot Q^{\icvar, \alpha}(s_{15},\cdot) \right) 
+		\\
+		=&\frac{0.01}{0.05} \cdot \left( \frac{0.01}{0.05} \cdot 1 + \frac{0.05-0.01}{0.05} \cdot 0.5 \right) + \frac{0.05-0.01}{0.05} \cdot \left( \frac{0.01}{0.05} \cdot 0.5 + \frac{0.05-0.01}{0.05} \cdot 0 \right) 
+		\\
+		%=\frac{0.01}{0.05} \cdot 0.6 + \frac{0.05-0.01}{0.05} \cdot 0.1 
+		=&0.2 .
+	\end{align*}
+	Thus, Iterated CVaR RL will instead choose action $a_2$, because $a_2$ has a smaller probability of going into the bad left direction (which leads to the catastrophic state $s_{12}$).
+	% , and performs better when bad situations happen at each step. 
+	
+	
+	The above example shows that, Iterated CVaR RL prefers actions with a smaller probability of getting into catastrophic states. In contrast, CVaR MDP favors actions with better average therapeutic effects, but has a larger probability of causing death. 
+	%For the clinical treatments which need to be widely applied, a lower death rate can be the top priority. 
+	
+	Note that the above example also demonstrates that Iterated CVaR is \emph{not equivalent} to the worst $\alpha^{H}$-portion of the total cost. To see this, we have that (here we consider $\alpha^{3}$ because  there are $3$ transition steps): 
+	$$
+	Q^{\cvar, \alpha^{3}}(s_1,a_2)=\frac{0.0001}{0.000125} \cdot 1+\frac{0.000125-0.0001}{0.000125} \cdot 0.5=0.9 ,
+	$$
+	and 
+	\begin{align*}
+		& Q^{\icvar, \alpha}(s_1,a_2)
+		\\
+		=& \frac{0.01}{0.05} \cdot \left( \frac{0.01}{0.05} \cdot 1 + \frac{0.05-0.01}{0.05} \cdot 0.5 \right) + \frac{0.05-0.01}{0.05} \cdot \left( \frac{0.01}{0.05} \cdot 0.5 + \frac{0.05-0.01}{0.05} \cdot 0 \right) 
+		\\
+		=& 0.2 .
+	\end{align*}
+	In addition, one can see that, the good state which gives cost 0 (i.e., $s_{15}$) also contributes to $Q^{\icvar, \alpha}(s_1,a_2)$, which shows that the good $(1-\alpha^H)$-portion of the total cost also matters for Iterated CVaR.
+}
+
+
+\subsection{Comparison with exponential utility-based risk-sensitive RL} \label{apx:comparison_exp_uti}
+
+The Bellman optimality equation for risk-sensitive RL with the exponential utility criterion~\citep{fei2020near_optimal,fei2021exponential} is defined as
+$$
+Q^*_h(s,a)=r_h(s,a)+\frac{1}{\beta} \log \{ \mathbb{E}_{s' \sim p(\cdot|s,a)} [ \exp (\beta \cdot V^*_{h+1}(s')) ] \} ,
+$$
+which takes all successor states $s'$ into account, i.e., all successor states $s'$ contribute to the computation of the Q-value. Here $\beta<0$ is a risk-sensitivity parameter.
+
+In contrast, in Iterated CVaR RL, the Bellman optimality equation is defined as
+$$
+Q^{*}_h(s,a) = r(s,a)+ \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V^{*}_{h+1}(s')) ,
+$$
+which focuses only on the worst $\alpha$-portion successor states $s'$ (i.e., with the lowest $\alpha$-portion values $V^{*}_{h+1}(s')$), i.e., only the worst $\alpha$-portion successor states $s'$ contribute to the computation of the Q-value. 
+% Here $\alpha \in (0,1]$ is a risk level parameter.
+
+%Since our Iterated CVaR criterion mainly concerns the bad successor states, instead of all successor states as in~\citep{fei2020near_optimal,fei2021exponential}, we can prevent the agent from getting into catastrophic states at a lower cost of regret. We use an example to illustrate this point below.
+%
+%As shown in Figure~[], there is an initial state $s_1$ with two actions $a_1,a_2$ and three successor states $s_2,s_3$ and $s_4$. States  $s_2,s_3$ and $s_4$ are absorbing states, which always induce rewards $0.1,0$ and $0.01$, respectively. 
+%Action $a_1$ leads to $s_2,s_3$, with probabilities $0.9,0.1$, respectively, while action $a_2$ leads to $s_4$ deterministically. The length of each episode $H=10$. In this example, state $s_3$ is the catastrophic state, since it is an absorbing state that always induces zero reward. 
+%
+%For this example, under a moderate risk sensitivity parameter $0< \beta \leq -20$, the algorithm obtained in ~\citep{fei2020near_optimal,fei2021exponential} will choose $a_1$, since $a_1$ leads to a higher overall (expected) reward. In contrast, under a moderate risk level parameter $\alpha \leq 0.1$, our solution will choose $a_2$, since Iterated CVaR focuses mainly on bad successor states. 
+%Although one can take a small enough $\beta<-20$ to urge the exponential utility criterion to pay more attention to bad successor states and also choose $a_1$, the regret bound in \citep{fei2020near_optimal,fei2021exponential} depends on $\exp(|\beta|H)$ and will exponentially increase as the negative parameter $\beta$ decreases (as the agent becomes more risk-adverse). 
+
+%By contrast, our regret bound depends on $\min \{ \frac{1}{\sqrt{\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)}},\ \frac{1}{\sqrt{\alpha^{H-1}}} \} \frac{ 1 }{\alpha}$, which can be controlled by an MDP-intrinsic visitation factor $\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)$ and is only polynomial in the risk-level-inverse factor $\frac{1}{\alpha}$ for a small enough $\alpha$ (for the highly risk-adverse case).
+
+%Thus, we can prevent the agent from getting into the catastrophic state $s_3$, while ~\citep{fei2020near_optimal,fei2021exponential,fei2021function_approx} cannot achieve this since they consider the overall performance contributed from all successor states.
+
+Besides the formulation, our algorithm design and results are also very different from those in \citep{fei2020near_optimal,fei2021exponential}. The algorithms in \citep{fei2020near_optimal,fei2021exponential} are based on exponential Bellman equations and doubly decaying exploration bonuses, and their results depend on $\exp(|\beta|H)$. In contrast, our algorithms are based on value iteration for Iterated CVaR with CVaR-adapted exploration bonuses, and our results depend on the minimum between an MDP-intrinsic visitation measure $1/\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)$ and a risk-level-dependent factor $1/\alpha^{H-1}$.
+%$\min \{ 1/\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s),\ 1/\alpha^{H-1} \} $. When $\alpha$ is small, our regret bound is dominated by an MDP-intrinsic visitation factor $\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)$ for a small $\alpha$. When $\alpha$ is large, our regret bound is dominated by $1/\alpha^{H-1}$ and approaches to the constant $1$.
+
+
+\section{Proofs for Iterated CVaR RL with Regret Minimization}
+
+In this section, we present the proofs of regret upper and lower bounds (Theorems~\ref{thm:cvar_rm_ub} and \ref{thm:cvar_rm_lb}) for Iterated CVaR RL-RM.
+
+\subsection{Proofs of Regret Upper Bound} \label{apx:regret_ub}
+
+%In order to prove the regret upper bound (Theorem~\ref{thm:cvar_rm_ub}), we first introduce several important lemmas (Lemmas~\ref{lemma:concentration_V_star}-\ref{lemma:cvar_increase_V}) and define concentration event $\cE$.
+
+\subsubsection{Concentration}
+
+For any $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, let $n_{kh}(s,a)$ denote the number of times that $(s,a)$ was visited at step $h$ before episode $k$, and let $n_{k}(s,a):=\sum_{h=1}^{H} n_{kh}(s,a)$ denote the number of times that $(s,a)$ was visited before episode $k$.
+
+\begin{lemma}[Concentration for $V^{*}$] \label{lemma:concentration_V_star}
+	It holds that
+	\begin{align*}
+		\Pr \Bigg[ & \abr{\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V^{*}_h(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V^{*}_h(s'))} \leq \frac{H}{\alpha}\sqrt{\frac{ \log \sbr{\frac{KHSA}{\delta'}} }{n_k(s,a)}} ,
+		\\ & \forall k \in [K],\ \forall h \in [H],\ \forall (s,a) \in \cS \times \cA \Bigg] \geq 1-2\delta' .
+	\end{align*}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:concentration_V_star}]
+	Using Brown's inequality~\citep{brown2007large} (Theorem 2 in \citep{thomas2019concentration}) and a union bound over $(s,a) \in \cS \times \cA$ and $n_k(s,a) \in [KH]$, we can obtain this lemma.
+\end{proof}
+
+
+For any risk level $\alpha \in (0,1]$, function $V: \cS \mapsto \R$ and $(s',s,a) \in \cS \times \cS \times \cA$, $\beta^{\alpha,V}(s'|s,a)$ is the conditional transition probability from $(s,a)$ to $s'$, conditioning on transitioning to the worst $\alpha$-portion successor states $s'$ (i.e., with the lowest $\alpha$-portion values $V(s')$). 
+Let $\mu^{\alpha,V}(s'|s,a)$ denote how large the transition probability of successor state $s'$ belongs to the worst $\alpha$-portion, which satisfies that  $\frac{\mu^{\alpha,V}(s'|s,a)}{\alpha} = \beta^{\alpha,V}(s'|s,a)$ and $\sum_{s' \in \cS} \mu^{\alpha,V}(s'|s,a)=\alpha$.
+In addition, for any risk level $\alpha \in (0,1]$, function $V: \cS \mapsto \R$ and $(s,a) \in \cS \times \cA$,
+\begin{align*}
+	\cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V(s')) = & \frac{\sum_{s' \in \cS} \mu^{\alpha,V}(s'|s,a) \cdot V(s')}{\alpha} = \sum_{s' \in \cS} \beta^{\alpha,V}(s'|s,a) \cdot V(s') .
+\end{align*}
+
+\begin{lemma}[Concentration for any $V$] \label{lemma:concentration_any_V} 
+	It holds that
+	\begin{align*}
+		\Bigg[ &\abr{\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V(s'))} \leq \frac{2H}{\alpha}\sqrt{\frac{2S\log \sbr{\frac{KHSA}{\delta'}}}{n_k(s,a)}} ,
+		\\ & \forall V: \cS \mapsto [0,H],\ \forall k \in [K],\ \forall (s,a) \in \cS \times \cA \Bigg] \geq 1-2\delta' .
+	\end{align*}
+\end{lemma}
+
+\begin{figure} [t!]
+	\centering       
+	\includegraphics[width=0.95\textwidth]{fig/Lemma_concentration_for_any_V.pdf} 
+	\caption{\revision{Illustrating example for Lemma~\ref{lemma:concentration_any_V}. For each $s' \in \{s_1,s_2,s_3,s_4\}$, the height of the bar denotes the value $V(s')$ (fixed), and the width of the bar denotes the transition probability $p(s'|s,a)$ or $\hat{p}^{k}(s'|s,a)$. The colored part of the bars denotes the worst $\alpha$-portion successor states (i.e., with the lowest $\alpha$-portion values $V(s')$). In this example, $\alpha=0.5$.}}
+	\label{fig:concentration_any_V}
+\end{figure}
+
+\begin{proof}[Proof of Lemma~\ref{lemma:concentration_any_V}]
+	As shown in Figure~\ref{fig:concentration_any_V}, we sort all successor states $s' \in \cS$ by $V(s')$ in ascending order (from the left to the right).
+	Add a virtual line at the $\alpha$-quantile, denoted by \emph{$\alpha$-quantile line}.
+	Fix the value function $V(\cdot)$, and the transition probability changes from $p(\cdot|s,a)$ to $\hat{p}^k(\cdot|s,a)$.
+	
+	Without loss of generality, below we consider the case where as the transition probability changes from $p(\cdot|s,a)$ to $\hat{p}^k(\cdot|s,a)$, the $\alpha$-quantile line shifts from left to right (the analysis of the contrary case can also be obtained by interchanging $p(\cdot|s,a)$ and $\hat{p}^k(\cdot|s,a)$). 
+	We use \emph{original $\alpha$-quantile line} and \emph{shifted $\alpha$-quantile line} to denote the $\alpha$-quantile line before and after the shift, respectively.
+	
+	We divide the successor states $s' \in \cS$ into five subsets as follows.
+	Let $\cS_{left}$ and $\cS_{right}$ denote the sets of states which are always on the left and right sides of the original and shifted $\alpha$-quantile lines, respectively. Let $\cS_{middle}$ denote the set of states which are in the middle of the original and shifted $\alpha$-quantile lines. Let $s_{line \hyphen l}$ and $s_{line \hyphen r}$ denote the states which lie on the original and shifted $\alpha$-quantile lines, respectively.
+	
+	For any $s' \in \cS_{left}$, we have that $\mu^{\alpha,V}(s'|s,a)=p(s'|s,a)$ and $\hat{\mu}^{k;\alpha,V}(s'|s,a)=\hat{p}^k(s'|s,a)$.
+	
+	For any $s' \in \cS_{right}$, we have $\mu^{\alpha,V}(s'|s,a)=\hat{\mu}^{k;\alpha,V}(s'|s,a)=0$.
+	
+	For any $s' \in \cS_{middle}$, we have that $\mu^{\alpha,V}(s'|s,a)=0$ and $\hat{\mu}^{k;\alpha,V}(s'|s,a)=\hat{p}^{k}(s'|s,a)$.
+	
+	For state $s_{line \hyphen l}$, we have that 
+	$\mu^{\alpha,V}(s_{line \hyphen l}|s,a)=p(s_{line \hyphen l}|s,a)-(\sum_{s' \in \cS_{left}} p(s'|s,a) + p(s_{line \hyphen l}|s,a) - \alpha )$ and $\hat{\mu}^{k;\alpha,V}(s_{line \hyphen l}|s,a)=\hat{p}^{k}(s_{line \hyphen l}|s,a)$.
+	
+	For state $s_{line \hyphen r}$, we have that $\mu^{\alpha,V}(s_{line \hyphen r}|s,a)=0$ and $\hat{\mu}^{k;\alpha,V}(s_{line \hyphen r}|s,a)=\alpha-\sum_{s' \in \cS_{left}} \hat{p}^{k}(s'|s,a) - \sum_{s' \in \cS_{middle}} \hat{p}^{k}(s'|s,a) - \hat{p}^{k}(s_{line \hyphen l}|s,a)$.
+	
+	Then, we obtain
+	\begin{align}
+		& \sum_{s' \in \cS} \abr{\hat{\mu}^{k;\alpha,V}(s'|s,a)-\mu^{\alpha,V}(s'|s,a)}
+		\nonumber\\
+		\leq & \sum_{s' \in \cS_{left}} \abr{\hat{\mu}^{k;\alpha,V}(s'|s,a)-\mu^{\alpha,V}(s'|s,a)} + \sum_{s' \in \cS_{right}} \abr{\hat{\mu}^{k;\alpha,V}(s'|s,a)-\mu^{\alpha,V}(s'|s,a)} \nonumber\\& + \sum_{s' \in \cS_{middle}} \abr{\hat{\mu}^{k;\alpha,V}(s'|s,a)-\mu^{\alpha,V}(s'|s,a)} + \abr{\hat{\mu}^{k;\alpha,V}(s_{line \hyphen l}|s,a)-\mu^{\alpha,V}(s_{line \hyphen l}|s,a)} \nonumber\\& + \abr{\hat{\mu}^{k;\alpha,V}(s_{line \hyphen r}|s,a)-\mu^{\alpha,V}(s_{line \hyphen r}|s,a)}
+		\nonumber\\
+		\leq & \sum_{s' \in \cS_{left}} \abr{\hat{p}^k(s'|s,a)-p(s'|s,a)} + \sum_{s' \in \cS_{middle}} \hat{p}^{k}(s'|s,a) \nonumber\\& + \abr{\hat{p}^{k}(s_{line \hyphen l}|s,a) - p(s_{line \hyphen l}|s,a) + \sbr{\sum_{s' \in \cS_{left}} p(s'|s,a) + p(s_{line \hyphen l}|s,a) - \alpha} } \nonumber\\& + \sbr{\alpha-\sum_{s' \in \cS_{left}} \hat{p}^{k}(s'|s,a) - \sum_{s' \in \cS_{middle}} \hat{p}^{k}(s'|s,a) - \hat{p}^{k}(s_{line \hyphen l}|s,a)}
+		\nonumber\\
+		\leq & \sum_{s' \in \cS_{left}} \abr{\hat{p}^k(s'|s,a)-p(s'|s,a)} + \sum_{s' \in \cS_{middle}} \hat{p}^{k}(s'|s,a) \nonumber\\& + \abr{\hat{p}^{k}(s_{line \hyphen l}|s,a) - p(s_{line \hyphen l}|s,a)} + \abr{\sum_{s' \in \cS_{left}} p(s'|s,a) + p(s_{line \hyphen l}|s,a) - \alpha} \nonumber\\& + \sbr{\alpha-\sum_{s' \in \cS_{left}} \hat{p}^{k}(s'|s,a) - \sum_{s' \in \cS_{middle}} \hat{p}^{k}(s'|s,a) - \hat{p}^{k}(s_{line \hyphen l}|s,a)}
+		\nonumber\\
+		\overset{\textup{(a)}}{\leq} & \sum_{s' \in \cS_{left}} \abr{\hat{p}^k(s'|s,a)-p(s'|s,a)} + \sum_{s' \in \cS_{middle}} \hat{p}^{k}(s'|s,a) \nonumber\\& + \abr{\hat{p}^{k}(s_{line \hyphen l}|s,a) - p(s_{line \hyphen l}|s,a)} + \sbr{\sum_{s' \in \cS_{left}} p(s'|s,a) + p(s_{line \hyphen l}|s,a) - \alpha} \nonumber\\& + \sbr{\alpha-\sum_{s' \in \cS_{left}} \hat{p}^{k}(s'|s,a) - \sum_{s' \in \cS_{middle}} \hat{p}^{k}(s'|s,a) - \hat{p}^{k}(s_{line \hyphen l}|s,a)}
+		\nonumber\\
+		= & \sum_{s' \in \cS_{left}} \abr{\hat{p}^k(s'|s,a)-p(s'|s,a)} + \abr{\hat{p}^{k}(s_{line \hyphen l}|s,a) - p(s_{line \hyphen l}|s,a)} \nonumber\\& + \sum_{s' \in \cS_{left}} p(s'|s,a) - \sum_{s' \in \cS_{left}} \hat{p}^{k}(s'|s,a) + p(s_{line \hyphen l}|s,a) - \hat{p}^{k}(s_{line \hyphen l}|s,a)
+		\nonumber\\
+		\leq & \sum_{s' \in \cS_{left}} \abr{\hat{p}^k(s'|s,a)-p(s'|s,a)} + \abr{\hat{p}^{k}(s_{line \hyphen l}|s,a) - p(s_{line \hyphen l}|s,a)} \nonumber\\& + \sum_{s' \in \cS_{left}} \abr{p(s'|s,a) - \hat{p}^{k}(s'|s,a)} + \abr{p(s_{line \hyphen l}|s,a) - \hat{p}^{k}(s_{line \hyphen l}|s,a)}
+		\nonumber\\
+		\leq & 2 \sum_{s' \in \cS} \abr{\hat{p}^k(s'|s,a)-p(s'|s,a)} , \label{eq:bound_mu_by_2p}
+	\end{align}
+	where (a) is due to $\sum_{s' \in \cS_{left}} p(s'|s,a) + p(s_{line \hyphen l}|s,a) - \alpha \geq 0$ by the definition of state $s_{line \hyphen l}$.
+	
+	Thus, we have
+	\begin{align}
+		& \abr{\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V(s')) }
+		\nonumber\\
+		= & \abr{\frac{ \sum_{s' \in \cS} \hat{\mu}^{k;\alpha,V}(s'|s,a) \cdot V(s') }{\alpha} - \frac{ \sum_{s' \in \cS} \mu^{\alpha,V}(s'|s,a) \cdot V(s') }{\alpha}}
+		\nonumber\\
+		= & \frac{ \abr{\sum_{s' \in \cS} \sbr{\hat{\mu}^{k;\alpha,V}(s'|s,a)-\mu^{\alpha,V}(s'|s,a)} \cdot V(s')} }{\alpha}
+		\nonumber\\
+		\leq & \frac{\sum_{s' \in \cS} \abr{\hat{\mu}^{k;\alpha,V}(s'|s,a)-\mu^{\alpha,V}(s'|s,a)} \cdot H}{\alpha}
+		\nonumber\\
+		\leq & \frac{2 \sum_{s' \in \cS} \abr{p^{k}(s'|s,a)-p(s'|s,a)} \cdot H}{\alpha} \label{eq:con_for_any_V_ell_1}
+	\end{align}
+	
+	Using Eq. (55) in \citep{zanette2019tighter} (originated from \citep{weissman2003inequalities}), we have that with probability at least $1-2\delta'$, for any $k \in [K]$ and $(s,a) \in \cS \times \cA$,
+	\begin{align}
+		\sum_{s' \in \cS} \abr{\hat{p}^{k}(s'|s,a)-p(s'|s,a)} \leq  \sqrt{\frac{2S\log \sbr{\frac{KHSA}{\delta'}}}{n_k(s,a)}} . \label{eq:p_ell_1_concentration}
+	\end{align}
+	
+	
+	
+	Plugging Eq.~\eqref{eq:p_ell_1_concentration} into Eq.~\eqref{eq:con_for_any_V_ell_1}, we obtain that with probability at least $1-2\delta'$, for any $k \in [K]$, $(s,a) \in \cS \times \cA$ and function $V:\cS \mapsto [0,H]$, 
+	\begin{align*}
+		\abr{\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V(s'))} \leq \frac{2H}{\alpha}\sqrt{\frac{2S\log \sbr{\frac{KHSA}{\delta'}}}{n_k(s,a)}} .
+	\end{align*}
+	
+\end{proof}
+
+
+
+
+For any $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, let $w_{kh}(s,a)$ denote the probability of visiting $(s,a)$ at step $h$ of episode $k$. Then, it holds that for any $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $w_{kh}(s,a) \in [0,1]$ and $\sum_{(s,a)\in \cS \times \cA} w_{kh}(s,a)=1$.
+
+\begin{lemma}[Concentration of Visitation]\label{lemma:con_visitation}
+	It holds that
+	\begin{align*}
+		\Pr \Bigg[  n_k(s,a) \geq \frac{1}{2} \sum_{k'=1}^{k-1} \sum_{h=1}^{H} w_{k'h}(s,a) - H \log \sbr{\frac{HSA}{\delta'}} ,
+		\ \forall k>0,\ \forall (s,a) \in \cS \times \cA
+		\Bigg] \geq 1-\delta' .
+	\end{align*}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:con_visitation}]
+	Applying Lemma F.4 in \citep{dann2017unifying}, we have that for any fixed $h \in [H]$,
+	\begin{align*}
+		\Pr \mbr{ n_{kh}(s,a) \geq \frac{1}{2} \sum_{k'=1}^{k-1} w_{k'h}(s,a) - \log \sbr{\frac{HSA}{\delta'}} , \ \forall k>0,\ \forall (s,a) \in \cS \times \cA } \geq 1-\frac{\delta'}{H}
+	\end{align*}
+	By a union bound over $h \in [H]$, we have
+	\begin{align*}
+		\Pr \mbr{ n_{k}(s,a) \geq \frac{1}{2} \sum_{k'=1}^{k-1} \sum_{h=1}^{H} w_{k'h}(s,a) - H \log \sbr{\frac{HSA}{\delta'}} } \geq 1-\delta' .
+	\end{align*}
+\end{proof}
+
+%\textbf{Concentration Events.}
+To sum up, we define several concentration events which will be used in the following proof.
+\begin{align*}
+	\cE_1:= & \Bigg\{ \abr{\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V^{*}_h(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V^{*}_h(s'))} \leq \frac{H}{\alpha}\sqrt{\frac{ \log \sbr{\frac{KHSA}{\delta'}} }{n_k(s,a)}} ,
+	\\ & \forall k \in [K],\ \forall h \in [H],\ \forall (s,a) \in \cS \times \cA \Bigg\} 
+	\\
+	\cE_2:= & \Bigg\{ \abr{\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V(s'))} \leq \frac{2H}{\alpha}\sqrt{\frac{2S\log \sbr{\frac{KHSA}{\delta'}}}{n_k(s,a)}} ,
+	\\ & \forall V: \cS \mapsto [0,H],\ \forall k \in [K],\ \forall (s,a) \in \cS \times \cA \Bigg\} 
+	\\
+	\cE_3:= & \Bigg\{ n_k(s,a) \geq \frac{1}{2} \sum_{k'=1}^{k-1} \sum_{h=1}^{H} w_{k'h}(s,a) - H \log \sbr{\frac{HSA}{\delta'}} ,
+	\ \forall k>0,\ \forall (s,a) \in \cS \times \cA
+	\Bigg\} 
+	\\
+	\cE:= & \cE_1 \cap \cE_2 \cap \cE_3 
+\end{align*}
+
+
+\begin{lemma}\label{lemma:rm_con_event}
+	Letting $\delta'=\frac{\delta}{5}$, it holds that
+	\begin{align*}
+		\Pr \mbr{\cE} \geq 1-\delta .
+	\end{align*}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:rm_con_event}]
+	This lemma can be obtained by combining Lemmas~\ref{lemma:concentration_V_star}-\ref{lemma:con_visitation}.
+\end{proof}
+
+
+\subsubsection{Optimism, Visitation and CVaR Gap}
+
+Recall that $L:=\log \sbr{\frac{KHSA}{\delta'}}$.
+
+\begin{lemma}[Optimism] \label{lemma:optimism}
+	Suppose that event $\cE$ holds. Then,
+	for any $k \in [K]$, $h \in [H]$ and $s \in \cS$, we have
+	\begin{align*}
+		\bar{V}^k_h(s) \geq V^{*}_h(s) .
+	\end{align*}
+\end{lemma}
+
+\begin{proof}[Proof of Lemma~\ref{lemma:optimism}]
+	We prove this lemma by induction.
+	
+	First, for any $k \in [K]$, $s \in \cS$, it holds that $\bar{V}^k_{H+1}(s) = V^{*}_{H+1}(s)=0$.
+	
+	Then, for any $k \in [K]$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, if $\bar{Q}^k_h(s,a)=H$, $\bar{Q}^k_h(s,a) \geq Q^{*}_h(s,a)$ trivially holds, and otherwise,
+	\begin{align*}
+		\bar{Q}^k_h(s,a) = & r(s,a)+\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\bar{V}^k_{h+1}(s')) + \frac{H}{\alpha}\sqrt{\frac{L}{n_k(s,a)}}
+		\\
+		\overset{\textup{(a)}}{\geq} & r(s,a)+\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V^{*}_{h+1}(s')) + \frac{H}{\alpha}\sqrt{\frac{L}{n_k(s,a)}}
+		\\
+		\overset{\textup{(b)}}{\geq} & r(s,a)+\cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V^{*}_{h+1}(s'))
+		\\
+		= & Q^{*}_h(s,a) ,
+	\end{align*}
+	where (a) uses the induction hypothesis and (b) comes from Lemma~\ref{lemma:concentration_V_star}.
+	
+	Thus, we have
+	\begin{align*}
+		\bar{V}^k_h(s) \geq \bar{Q}^k_h(s,\pi^{*}_h(s)) \geq Q^{*}_h(s,\pi^{*}_h(s)) = V^{*}_h(s) ,
+	\end{align*}
+	which concludes the proof.
+\end{proof}
+
+
+
+Following \citep{zanette2019tighter}, for any episode $k>0$, we define the set of state-action pairs which have sufficient visitations in expectation as follows.
+\begin{align}
+	\cL_k := \lbr{ (s,a) \in \cS \times \cA: \frac{1}{4} \sum_{k'=1}^{k-1} \sum_{h=1}^{H} w_{k'h}(s,a) \geq H \log \sbr{\frac{HSA}{\delta'}} +H } .  \label{eq:definition_cL_k}
+\end{align}
+%Intuitively, for any episode $k>0$, $\cL_k$ is the set of state-action pairs which have sufficient historical visitations in expectation. 
+%For any $(s,a) \in \cS \times \cA$, as $k$ increases, the left-hand-side $\frac{1}{4} \sum_{k'=1}^{k-1} \sum_{h=1}^{H} w_{k'h}(s,a)$ in Eq.~\eqref{eq:definition_cL_k} increases, while the right-hand-side $H \log \sbr{\frac{HSA}{\delta'}} +H$ keeps constant. Therefore, for any $(s,a) \in \cS \times \cA$, there exists some episode $\tilde{k}(s,a)>0$ such that for any $k \leq \tilde{k}(s,a)$, $(s,a) \notin \cL_k$, and for any $k > \tilde{k}(s,a)$, $(s,a) \in \cL_k$.
+
+%For any $k>0$, let $\bar{n}_{k}(s,a):= \sum_{k'=1}^{k} \sum_{h=1}^{H} w_{k'h}(s,a)$.
+
+\begin{lemma}[Sufficient Visitation] \label{lemma:sufficient_visit}
+	Suppose that event $\cE$ holds. Then, for any $k>0$ and $(s,a) \in \cL_k$,
+	\begin{align*}
+		n_k(s,a) \geq \frac{1}{4} \sum_{k'=1}^{k} \sum_{h=1}^{H} w_{k'h}(s,a) .
+	\end{align*}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:sufficient_visit}]
+	This proof is the same as that of Lemma 6 in \citep{zanette2019tighter}.
+	
+	Using Lemma~\ref{lemma:con_visitation}, we have
+	\begin{align*}
+		n_k(s,a) \geq & \frac{1}{2} \sum_{k'=1}^{k-1} \sum_{h=1}^{H} w_{k'h}(s,a) - H \log \sbr{\frac{HSA}{\delta'}}
+		\\
+		= & \frac{1}{4} \sum_{k'=1}^{k-1} \sum_{h=1}^{H} w_{k'h}(s,a) + \frac{1}{4} \sum_{k'=1}^{k-1} \sum_{h=1}^{H} w_{k'h}(s,a) - H \log \sbr{\frac{HSA}{\delta'}}
+		\\
+		\overset{\textup{(a)}}{\geq} & \frac{1}{4} \sum_{k'=1}^{k-1} \sum_{h=1}^{H} w_{k'h}(s,a) + H
+		\\
+		\overset{\textup{(b)}}{\geq} & \frac{1}{4} \sum_{k'=1}^{k-1} \sum_{h=1}^{H} w_{k'h}(s,a) + \sum_{h=1}^{H} w_{kh}(s,a)
+		\\
+		= & \frac{1}{4} \sum_{k'=1}^{k} \sum_{h=1}^{H} w_{k'h}(s,a) 
+	\end{align*}
+	where (a) uses the fact that $(s,a) \in \cL_{k}$ and the definition of $\cL_{k}$, and (b) is due to that for any $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $w_{kh}(s,a) \in [0,1]$.
+\end{proof}
+
+\begin{lemma}[Standard Visitation Ratio] \label{lemma:standard_visitation}
+	For any $K>0$, we have 
+	\begin{align*}
+		\sqrt{\sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k} \frac{w_{kh}(s,a)}{n_k(s,a)}} \leq &  2 \sqrt{ SA \log \sbr{\frac{KHSA}{\delta'}} } .
+	\end{align*}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:standard_visitation}]
+	This proof is the same as that of Lemma 13 in \citep{zanette2019tighter}.
+	
+	Recall that for any $k>0$, let $w_{k}(s,a):=\sum_{(s,a) \in \cS \times \cA} w_{kh}(s,a)$. Then, we have
+	\begin{align*}
+		\sqrt{\sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k} \frac{w_{kh}(s,a)}{n_k(s,a)}} = & \sqrt{\sum_{k=1}^{K} \sum_{(s,a) \in \cL_k} \frac{w_{k}(s,a)}{n_k(s,a)}}
+		\nonumber\\
+		= & \sqrt{\sum_{k=1}^{K} \sum_{(s,a) \in \cS \times \cA} \frac{w_{k}(s,a)}{n_k(s,a)} \cdot \indicator{ (s,a) \in \cL_k }}
+		\nonumber\\
+		\overset{\textup{(a)}}{\leq} & 2 \sqrt{\sum_{k=1}^{K} \sum_{(s,a) \in \cS \times \cA} \frac{w_{k}(s,a)}{ \sum_{k'=1}^{k} w_{k'}(s,a) } \cdot \indicator{ (s,a) \in \cL_k }} 
+		\nonumber\\
+		= & 2 \sqrt{\sum_{(s,a) \in \cS \times \cA} \sum_{k=1}^{K} \frac{w_{k}(s,a)}{ \sum_{k'=1}^{k} w_{k'}(s,a) } \cdot \indicator{ (s,a) \in \cL_k }}
+	\end{align*}
+	where (a) is due to Lemma~\ref{lemma:sufficient_visit}.
+	
+	According to the definition of $\cL_k$ (Eq.~\eqref{eq:definition_cL_k}), for any $(s,a) \in \cS \times \cA$, once $(s,a)$ satisfies $(s,a) \in \cL_k$ in some episode $k$, it will always satisfy $(s,a) \in \cL_{k'}$ for all $k' \geq k$. For any $(s,a) \in \cS \times \cA$, let $k_0(s,a)$ denote the first episode $k$ where $(s,a) \in \cL_k$.
+	
+	Then, for any $k>0$ and $(s,a) \in \cS \times \cA$, if $(s,a) \in \cL_k$, we have
+	\begin{align*}
+		\sum_{k'=1}^{k} w_{k'}(s,a) = & \sum_{k'=1}^{k_0(s,a)-1} w_{k'}(s,a) + \sum_{k'=k_0(s,a)}^{k} w_{k'}(s,a)
+		\\
+		\overset{\textup{(a)}}{\geq} & H + \sum_{k'=k_0(s,a)}^{k} w_{k'}(s,a) ,
+	\end{align*}
+	where (a) uses the fact that $(s,a) \in \cL_{k_0(s,a)}$ and the definition of $\cL_k$ (Eq.~\eqref{eq:definition_cL_k}).
+	
+	Thus, we have
+	\begin{align*}
+		\sqrt{\sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k} \frac{w_{kh}(s,a)}{n_k(s,a)}} \leq & 2 \sqrt{ \sum_{(s,a) \in \cS \times \cA} \sum_{k=k_0(s,a)}^{K} \frac{w_{k}(s,a)}{ H + \sum_{k'=k_0(s,a)}^{k} w_{k'}(s,a) } } .
+	\end{align*}
+	
+	Let $a_1:=w_{k_0(s,a)}(s,a)$, $a_2:=w_{k_0(s,a)+1}(s,a)$, $\dots$, $a_{K-k_0(s,a)+1}:=w_{K}(s,a)$. Define function $F(x)=\sum_{i=1}^{\lfloor x \rfloor} a_i + a_{\lceil x \rceil} (x - \lfloor x \rfloor)$, where $0 \leq x \leq K-k_0(s,a)+1$. If $x$ is an integer, we have $F(x)=\sum_{i=1}^{x} a_i$, and otherwise, $F(x)$ interpolates between the function values for integers $x$. The derivative of $F(s)$ is $f(x)=a_{\lceil x \rceil}$.
+	
+	Hence, we have 
+	\begin{align*}
+		\sum_{k=k_0(s,a)}^{K} \frac{w_{k}(s,a)}{ H + \sum_{k'=k_0(s,a)}^{k} w_{k'}(s,a) } = & \sum_{k=1}^{K-k_0(s,a)+1} \frac{f(k)}{ H + F(k) } 
+		\\
+		= & \int_{0}^{K-k_0(s,a)+1} \frac{f(\lceil x \rceil)}{ H + F(\lceil x \rceil) } dx  
+		\\
+		\overset{\textup{(a)}}{\leq} & \int_{0}^{K-k_0(s,a)+1} \frac{f(x)}{ H + F(x) } dx  
+		\\
+		= & \log\sbr{ H+F(K-k_0(s,a)+1) } - \log\sbr{ H+F(0) }
+		\\
+		\overset{\textup{(b)}}{\leq} & \log\sbr{ KH }
+		\\
+		\leq & \log \sbr{\frac{KHSA}{\delta'}} ,
+	\end{align*}
+	where (a) uses the fact that for any $0 \leq x \leq K-k_0(s,a)+1$, $f(x)=f(\lceil x \rceil)$ and $F(x) \leq F(\lceil x \rceil)$, and (b) is due to that $k_0(s,a) \geq 2$ by the definitions of $\cL_k$ (Eq.~\eqref{eq:definition_cL_k}) and $k_0(s,a)$.
+	
+	Therefore, we have
+	\begin{align*}
+		\sqrt{\sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k} \frac{w_{kh}(s,a)}{n_k(s,a)}} \leq & 2 \sqrt{ \sum_{(s,a) \in \cS \times \cA} \log \sbr{\frac{KHSA}{\delta'}} }
+		\\
+		\leq & 2 \sqrt{ SA \log \sbr{\frac{KHSA}{\delta'}} }
+	\end{align*}
+\end{proof}
+
+%Before presenting the following analysis, we first recall the definitions of transition proabability $p(s'|s,a)$, \emph{distorted (conditional) transition probability} $\beta^{\alpha,V}(s'|s,a)$, visitation probability $w_{kh}(s,a)$ and \emph{distorted (conditional) visitation probability} $w_{kh}^{CVaR,\alpha,V^{\pi^k}}(s,a)$.
+
+Recall that for any $(s',s,a) \in \cS \times \cS \times \cA$, $p(s'|s,a)$ is the transition probability from $(s,a)$ to $s'$. 
+For any risk level $\alpha \in (0,1]$, function $V: \cS \mapsto \R$ and $(s',s,a) \in \cS \times \cS \times \cA$, $\beta^{\alpha,V}(s'|s,a)$ is the conditional probability of transitioning to $s'$ from $(s,a)$, conditioning on transitioning to the worst $\alpha$-portion successor states $s'$ (i.e., with the lowest $\alpha$-portion values $V(s')$), and it holds that $\cvar^{\alpha}_{s'\sim p(s'|s,a)}(V(s'))=\sum_{s' \in \cS} \beta^{\alpha,V}(s'|s,a) \cdot V(s')$. 
+%Intuitively, $\beta^{\alpha,V}(s'|s,a)$ is the weight allocated on successor state $s'$ when computing the CVaR of the value for successor states $\cvar^{\alpha}_{s'\sim p(\cdot|s,a)}(V(s'))$, and 
+
+
+For any $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $w_{kh}(s,a)$ is the probability of visiting $(s,a)$ at step $h$ of episode $k$ (under transition probability $p(\cdot|\cdot,\cdot)$), and it holds that $w_{kh}(s,a) \in  [0,1]$ and $\sum_{(s,a)\in \cS \times \cA} w_{kh}(s,a)=1$.
+For any risk level $\alpha \in (0,1]$, $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $w_{kh}^{CVaR,\alpha,V^{\pi^k}}(s,a)$ is the conditional probability of visiting $(s,a)$ at step $h$ of episode $k$, conditioning on transitioning to the worst $\alpha$-portion successor states $s'$ (i.e., with the lowest $\alpha$-portion values $V_{h'+1}^{\pi^k}(s')$) at each step $h'=1,\dots,h-1$. Here $\pi^k$ is the policy taken in episode $k$, and $V_{h}^{\pi^k}(\cdot):\cS \mapsto \R$ is the value function at step $h$ for policy $\pi^k$.
+Intuitively,  $w_{kh}^{CVaR,\alpha,V^{\pi^k}}(s,a)$ is the probability of visiting $(s,a)$ at step $h$ of episode $k$ under conditional transition probability $\beta^{\alpha,V_{h'+1}^{\pi^k}}(\cdot|\cdot,\cdot)$ for each step $h'=1,\dots,h-1$. It holds that for any risk level $\alpha \in (0,1]$, $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $w_{kh}^{CVaR,\alpha,V^{\pi^k}}(s,a) \in [0,1]$ and $\sum_{(s,a) \in \cS \times \cA} w_{kh}^{CVaR,\alpha,V^{\pi^k}}(s,a)=1$.
+
+\begin{lemma} \label{lemma:zero_w_impliy_zero_w_cvar}
+	For any risk level $\alpha \in (0,1]$, $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$,
+	if $w_{kh}(s,a)=0$, then $w_{kh}^{CVaR,\alpha,V^{\pi^k}}(s,a)=0$.
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:zero_w_impliy_zero_w_cvar}]
+	If $w_{kh}(s,a)=0$, then the algorithm has zero probability to visit $(s,a)$ at step $h$ of episode $k$, which means that $(s,a)$ is unreachable under transition probability $p(\cdot|\cdot,\cdot)$. 
+	
+	Note that for each step $h'=1,\dots,h-1$, the conditional transition probability $\beta^{\alpha,V_{h'+1}^{\pi^k}}(s'|s,a)$ just renormalizes the transition probability and assigns more weights to the worst $\alpha$-portion successor states $s'$ (i.e., with the lowest $\alpha$-portion values $V_{h'+1}^{\pi^k}(s')$), but will not make an unreachable successor state reachable. Thus, $(s,a)$ is also unreachable under conditional transition probability $\beta^{\alpha,V_{h'+1}^{\pi^k}}(\cdot|\cdot,\cdot)$ for each step $h'=1,\dots,h-1$, and therefore $w_{kh}^{CVaR,\alpha,V^{\pi^k}}(s,a)=0$.	
+\end{proof}
+
+\begin{lemma} \label{lemma:w_cvar_over_w}
+	For any functions $V_1,\dots,V_{H}:\cS \mapsto \R$, $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$ such that $w_{kh}(s,a)>0$, 
+	\begin{align*}
+		\frac{w^{\cvar,\alpha,V}_{kh}(s,a)}{w_{kh}(s,a)} \leq & \min \lbr{ \frac{1}{\min \limits_{\begin{subarray}{c}\pi,h,(s,a):\  w_{\pi,h}(s,a)>0\end{subarray}} w_{\pi,h}(s,a)} ,\  \frac{1}{\alpha^{h-1}} } ,
+	\end{align*}
+	where $w^{\cvar,\alpha,V}_{kh}(s,a)$ denotes the conditional probability of visiting $(s,a)$ at step $h$ of episode $k$, conditioning on transitioning to the worst $\alpha$-portion successor states $s'$ (i.e., with the lowest $\alpha$-portion values $V_{h'+1}(s')$) at each step $h'=1,\dots,h-1$.
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:w_cvar_over_w}]
+	Since $w^{\cvar,\alpha,V}_{kh}(s,a)$ is the conditional probability of visiting $(s,a)$, we have 
+	%for any $k>0$, $h \in [H]$, $(s,a) \in \cS \times \cA$ and functions $V_1,\dots,V_{H}:\cS \mapsto \R$, 
+	$w^{\cvar,\alpha,V}_{kh}(s,a) \in [0,1]$.
+	Since $w_{kh}(s,a)$ is the probability of visiting $(s,a)$ at step $h$ under policy $\pi^k$ and $\min_{\begin{subarray}{c}\pi,h,(s,a):\  w_{\pi,h}(s,a)>0\end{subarray}} w_{\pi,h}(s,a)$ is the minimum probability of visiting any reachable $(s,a)$ at any step $h$ over all policies $\pi$, we have
+	%	 that for any $k>0$, $h \in [H]$, $(s,a) \in \cS \times \cA$ such that $w_{kh}(s,a)>0$,
+	\begin{align*}
+		w_{kh}(s,a) \geq \min \limits_{\begin{subarray}{c}\pi,h,(s,a):\  w_{\pi,h}(s,a)>0\end{subarray}} w_{\pi,h}(s,a) . 
+	\end{align*} 
+	
+	%	Thus, for any $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$ such that $w_{kh}(s,a)>0$ and functions $V_1,\dots,V_{H}:\cS \mapsto \R$,
+	Hence, we have
+	\begin{align}
+		\frac{w^{\cvar,\alpha,V}_{kh}(s,a)}{w_{kh}(s,a)} \leq & \frac{1}{\min \limits_{\begin{subarray}{c}\pi,h,(s,a):\  w_{\pi,h}(s,a)>0\end{subarray}} w_{\pi,h}(s,a)} . \label{eq:1_over_w_min}
+	\end{align}
+	
+	Let $s_1$ be the initial state. Since $w_{kh}(s,a)$ and $w^{\cvar,\alpha,V}_{kh}(s,a)$ are the probabilities of visiting $(s,a)$ at step $h$ with policy $\pi^k$ under transition probability $p(\cdot|\cdot,\cdot)$ and conditional transition probability $\beta^{\alpha,V_{h'+1}}(\cdot|\cdot,\cdot)$ for each step $h'=1,\dots,h-1$, respectively, we have that
+	\begin{align*}
+		w_{kh}(s,a) = \sum_{(s_2,\dots,s_{h-1}) \in \cS^{h-2}} \prod_{h'=1}^{h-1} p(s_{h'+1}|s_{h'},a_{h'}) 
+	\end{align*}
+	and
+	\begin{align*}
+		w^{\cvar,\alpha,V}_{kh}(s,a) = & \sum_{(s_2,\dots,s_{h-1}) \in \cS^{h-2}} \prod_{h'=1}^{h-1} \beta^{\alpha,V_{h'+1}}(s_{h'+1}|s_{h'},a_{h'}) ,
+	\end{align*}
+	where $s_1$ is the initial state, $s_h:=s$, and $a_{h'}:=\pi^k(s_{h'})$ for $h'=1,\dots,h-1$. 
+	
+	Recall that for any risk level $\alpha \in (0,1]$, function $V: \cS \mapsto \R$ and $(s',s,a) \in \cS \times \cS \times \cA$, $\mu^{\alpha,V}(s'|s,a)$ denotes how large the transition probability of successor state $s'$ belongs to the worst $\alpha$-portion successor states (i.e., with the lowest $\alpha$-portion values $V(\cdot)$), which satisfies that  $\frac{\mu^{\alpha,V}(s'|s,a)}{\alpha} = \beta^{\alpha,V}(s'|s,a)$ and $0 \leq \mu^{\alpha,V}(s'|s,a) \leq p(s'|s,a)$.
+	
+	Thus, we have
+	\begin{align*}
+		w^{\cvar,\alpha,V}_{kh}(s,a) = & \sum_{(s_2,\dots,s_{h-1}) \in \cS^{h-2}} \prod_{h'=1}^{h-1} \frac{\mu^{\alpha,V_{h'+1}}(s_{h'+1}|s_{h'},a_{h'})}{\alpha}
+		\\
+		\leq & \sum_{(s_2,\dots,s_{h-1}) \in \cS^{h-2}} \prod_{h'=1}^{h-1} \frac{p(s_{h'+1}|s_{h'},a_{h'})}{\alpha}
+		\\
+		= & \frac{1}{\alpha^{h-1}} \sum_{(s_2,\dots,s_{h-1}) \in \cS^{h-2}} \prod_{h'=1}^{h-1} p(s_{h'+1}|s_{h'},a_{h'})
+		\\
+		= & \frac{1}{\alpha^{h-1}} \cdot w_{kh}(s,a)
+	\end{align*}
+	
+	Therefore,
+	\begin{align}
+		\frac{w^{\cvar,\alpha,V}_{kh}(s,a)}{w_{kh}(s,a)} \leq \frac{1}{\alpha^{h-1}} . \label{eq:1_over_alpha_h-1}
+	\end{align}
+	
+	Combining Eqs.~\eqref{eq:1_over_w_min} and \eqref{eq:1_over_alpha_h-1}, we obtain this lemma.
+\end{proof}
+
+\begin{lemma}[Insufficient Visitation] \label{lemma:insufficient_visit}
+	It holds that
+	\begin{align*}
+		\sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a) \notin \cL_k} 
+		w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a) \leq & \min \lbr{\frac{ 1 }{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)}, \frac{1}{\alpha^{H-1}}} \cdot \\& \sbr{ 4SAH \log\sbr{\frac{HSA}{\delta'}} + 5SAH } .
+	\end{align*}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:insufficient_visit}]
+	According to the definition of $\cL_k$ (Eq.~\eqref{eq:definition_cL_k}), for any $(s,a) \in \cS \times \cA$, once $(s,a)$ satisfies $(s,a) \in \cL_k$ in some episode $k$, it will always satisfy $(s,a) \in \cL_{k'}$ for all $k' \geq k$. For any $(s,a) \in \cS \times \cA$, let $\tilde{k}(s,a)$ denote the last episode $k$ where $(s,a) \notin \cL_k$.
+	Then, we have
+	\begin{align*}
+		\sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a) \notin \cL_k} w_{kh}(s,a) = & \sum_{(s,a) \in \cS \times \cA} \sum_{k=1}^{K} \sum_{h=1}^{H} w_{kh}(s,a) \cdot \indicator{(s,a) \notin \cL_k}
+		\\
+		= & \sum_{(s,a) \in \cS \times \cA} \sum_{k=1}^{\tilde{k}(s,a)} \sum_{h=1}^{H} w_{kh}(s,a) 
+		\\
+		= & \sum_{(s,a) \in \cS \times \cA} \sbr{\sum_{k=1}^{\tilde{k}(s,a)-1} \sum_{h=1}^{H} w_{kh}(s,a) + \sum_{h=1}^{H} w_{\tilde{k}(s,a),h}(s,a)}
+		\\
+		\overset{\textup{(a)}}{<} & \sum_{(s,a) \in \cS \times \cA} \sbr{4H \log \sbr{\frac{HSA}{\delta'}} +4H+H}
+		\\
+		\leq & 4SAH \log\sbr{\frac{HSA}{\delta'}} + 5SAH ,
+	\end{align*}
+	where (a) is due to that $(s,a) \notin \cL_{\tilde{k}(s,a)}$, and for any $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $w_{kh}(s,a) \in [0,1]$.
+	
+	For any policy $\pi$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, let $w_{\pi,h}(s,a)$ and $w_{\pi,h}(s)$ denote the probabilities of visiting $(s,a)$ and $s$ at step $h$ under policy $\pi$, respectively.
+	Then, we have
+	\begin{align*}
+		& \sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a) \notin \cL_k} 
+		w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a) 
+		\\
+		\overset{\textup{(a)}}{=} & \sum_{k=1}^{K} \sum_{h=1}^{H}  \sum_{(s,a) \notin \cL_k} 
+		\frac{w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a)}{w_{kh}(s,a)} \cdot w_{kh}(s,a) \cdot  \indicator{w_{kh}(s,a) \neq 0}
+		\\
+		\overset{\textup{(b)}}{\leq} & \min \lbr{\frac{1}{\min \limits_{\begin{subarray}{c}\pi,h,(s,a):\  w_{\pi,h}(s,a)>0\end{subarray}} w_{\pi,h}(s,a)},\ \frac{1}{\alpha^{H-1}}} \sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a) \notin \cL_k}  w_{kh}(s,a)
+		\\
+		\overset{\textup{(c)}}{\leq} & \min \lbr{\frac{ 1 }{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)}, \frac{1}{\alpha^{H-1}}} \sbr{ 4SAH \log\sbr{\frac{HSA}{\delta'}} + 5SAH } ,
+	\end{align*}
+	Here (a) is due to Lemma~\ref{lemma:zero_w_impliy_zero_w_cvar}. (b) comes from Lemma~\ref{lemma:w_cvar_over_w}. (c) uses the fact that for any deterministic policy $\pi$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, we have either $w_{\pi,h}(s,a)=w_{\pi,h}(s)$ or $w_{\pi,h}(s,a)=0$, and thus $\min_{\begin{subarray}{c}\pi,h,(s,a):\ w_{\pi,h}(s,a)>0\end{subarray}} w_{\pi,h}(s,a)=\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)$.
+\end{proof}
+
+
+
+\begin{figure}[t!]
+	\centering       
+	\includegraphics[width=0.95\textwidth]{fig/Lemma_CVaR_gap_V_shift.pdf} 
+	\caption{Illustrating example for Lemma~\ref{lemma:cvar_increase_V}. 
+		For each $s' \in \{s_1,s_2,s_3\}$, the height of the bar denotes the value $V(s')$ or $\bar{V}(s')$, and the width of the bar denotes the transition probability $p(s'|s,a)$ (fixed). The colored part of the bars denotes the worst $\alpha$-portion successor states (i.e., with the lowest $\alpha$-portion values $V(s')$ or $\bar{V}(s')$). In this example, $\alpha=0.5$.}
+	\label{fig:cvar_increase_V}
+\end{figure}
+
+Recall that for any risk level $\alpha \in (0,1]$, function $V: \cS \mapsto \R$ and $(s',s,a) \in \cS \times \cS \times \cA$, $\beta^{\alpha,V}(s'|s,a)$ is the conditional probability of transitioning to $s'$ from $(s,a)$, conditioning on transitioning to the worst $\alpha$-portion successor states $s'$ (i.e., with the lowest $\alpha$-portion values $V(s')$), and it holds that $\cvar^{\alpha}_{s'\sim p(s'|s,a)}(V(s'))=\sum_{s' \in \cS} \beta^{\alpha,V}(s'|s,a) \cdot V(s')$. 
+
+\begin{lemma}[CVaR Gap due to Value Function Shift] \label{lemma:cvar_increase_V}
+	For any $(s,a) \in \cS \times \cA$, distribution $p(\cdot|s,a) \in \triangle_{\cS}$, and functions $V,\bar{V}:\cS \mapsto [0,H]$ such that $\bar{V}(s') \geq V(s')$ for any $s' \in \cS$,
+	\begin{align*}
+		\cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(\bar{V}(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V(s')) \leq \beta^{\alpha,V}(\cdot|s,a)^\top \sbr{\bar{V}-V} .
+	\end{align*}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:cvar_increase_V}]
+	Recall that for any risk level $\alpha \in (0,1]$, function $V: \cS \mapsto \R$ and $(s',s,a) \in \cS \times \cS \times \cA$, $\beta^{\alpha,V}(s'|s,a)$ is the conditional transition probability from $(s,a)$ to $s'$, conditioning on transitioning to the worst $\alpha$-portion successor states $s'$ (i.e., with the lowest $\alpha$-portion values $V(s')$), and $\mu^{\alpha,V}(s'|s,a)$ denotes how large the transition probability of successor state $s'$ belongs to the worst $\alpha$-portion, which satisfies that  $\frac{\mu^{\alpha,V}(s'|s,a)}{\alpha} = \beta^{\alpha,V}(s'|s,a)$ and $\sum_{s' \in \cS} \mu^{\alpha,V}(s'|s,a)=\alpha$.
+	Then, for any risk level $\alpha \in (0,1]$, function $V: \cS \mapsto \R$ and $(s',s,a) \in \cS \times \cS \times \cA$,
+	\begin{align*}
+		\cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V(s')) = & \frac{\sum_{s' \in \cS} \mu^{\alpha,V}(s'|s,a) \cdot V(s')}{\alpha} = \sum_{s' \in \cS} \beta^{\alpha,V}(s'|s,a) \cdot V(s') ,
+		%		\\
+		%		\cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(\bar{V}(s')) = & \frac{\sum_{s' \in \cS} \mu^{\alpha,\bar{V}}(s'|s,a) \cdot \bar{V}(s')}{\alpha} = \sum_{s' \in \cS} \beta^{\alpha,\bar{V}}(s'|s,a) \cdot \bar{V}(s') .
+	\end{align*}
+	
+	As shown in Figure~\ref{fig:cvar_increase_V}, we sort all successor states $s' \in \cS$ by their values $V(s')$ in ascending order (from left to right).
+	Fix the transition probability $p(\cdot|s,a)$ and the value function shifts from $V(\cdot)$ to $\bar{V}(\cdot)$. Then, below we divide all successor states $s' \in \cS$ into three subsets, i.e., $\cS_{up}$, $\cS_{down}$ and $\cS_{unch}$, according to how $\mu^{\alpha,V}(s'|s,a)$ changes to $\mu^{\alpha,\bar{V}}(s'|s,a)$ as $V(s')$ shifts to $\bar{V}(s')$.
+	
+	\begin{itemize}
+		\item For any $s' \in \cS_{up}$,  $\mu^{\alpha,\bar{V}}(s'|s,a) < \mu^{\alpha,V}(s'|s,a)$, the rank of $s'$ goes up, and the position of $s'$ moves to the right (here ``rank'' means to rank all successor states $s' \in \cS$ by their values $V(s')$ or $\bar{V}(s')$ from highest to lowest). 
+		
+		\item For any $s' \in \cS_{down}$,  $\mu^{\alpha,\bar{V}}(s'|s,a) > \mu^{\alpha,V}(s'|s,a)$, the rank of $s'$ goes down, and the position of $s'$ moves to the left. 
+		
+		\item For any $s' \in \cS_{unch}$,  $\mu^{\alpha,\bar{V}}(s'|s,a) = \mu^{\alpha,V}(s'|s,a)$, the rank and position of $s'$ keep unchanged. 
+	\end{itemize}
+	
+	Then, it holds that
+	\begin{align}
+		\sum_{s' \in \cS_{up}}  \sbr{\mu^{\alpha,\bar{V}}(s'|s,a) - \mu^{\alpha,V}(s'|s,a)}  + \sum_{s' \in \cS_{down}}  \sbr{\mu^{\alpha,\bar{V}}(s'|s,a) - \mu^{\alpha,V}(s'|s,a)} =0 . \label{eq:V_shift_asc_des}
+	\end{align}
+	
+	Next, we have
+	\begin{align*}
+		& \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(\bar{V}(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V(s')) 
+		\\
+		= & \frac{1}{\alpha} \cdot \Bigg( \sum_{s' \in \cS_{up}} \sbr{ \mu^{\alpha,\bar{V}}(s'|s,a) \cdot \bar{V}(s') - \mu^{\alpha,V}(s'|s,a) \cdot V(s') } 
+		\\& 
+		+ \sum_{s' \in \cS_{down}} \sbr{ \mu^{\alpha,\bar{V}}(s'|s,a) \cdot \bar{V}(s') - \mu^{\alpha,V}(s'|s,a) \cdot V(s') } 
+		\\& 
+		+ \sum_{s' \in \cS_{unch}} \sbr{ \mu^{\alpha,\bar{V}}(s'|s,a) \cdot \bar{V}(s') - \mu^{\alpha,V}(s'|s,a) \cdot V(s') } \Bigg)
+		\\
+		= & \frac{1}{\alpha} \cdot \Bigg( \sum_{s' \in \cS_{up}} \bigg( \mu^{\alpha,V}(s'|s,a) \cdot \sbr{ \bar{V}(s') -  V(s') } 
+		\quad + \sbr{ \mu^{\alpha,\bar{V}}(s'|s,a) - \mu^{\alpha,V}(s'|s,a) } \cdot \bar{V}(s') \bigg)
+		\\& 
+		+ \sum_{s' \in \cS_{down}} \bigg( \mu^{\alpha,V}(s'|s,a) \cdot \sbr{ \bar{V}(s') -  V(s') } 
+		\quad + \sbr{ \mu^{\alpha,\bar{V}}(s'|s,a) - \mu^{\alpha,V}(s'|s,a) } \cdot \bar{V}(s') \bigg)
+		\\& + \sum_{s' \in \cS_{unch}} \mu^{\alpha,V}(s'|s,a) \cdot \sbr{  \bar{V}(s') -  V(s') } \Bigg)
+		\\
+		= & \frac{1}{\alpha} \cdot \Bigg( \sum_{s \in \cS} \mu^{\alpha,V}(s'|s,a) \cdot \sbr{ \bar{V}(s') - V(s') }
+		- \sum_{s' \in \cS_{up}}  \sbr{\mu^{\alpha,V}(s'|s,a) - \mu^{\alpha,\bar{V}}(s'|s,a) } \cdot \bar{V}(s') 
+		\\ 
+		& + \sum_{s' \in \cS_{down}}  
+		\sbr{ \mu^{\alpha,\bar{V}}(s'|s,a) - \mu^{\alpha,V}(s'|s,a) } \cdot \bar{V}(s') 
+		\Bigg)
+		\\
+		\overset{\textup{(a)}}{\leq} & \frac{1}{\alpha} \Bigg( \sum_{s \in \cS}  \mu^{\alpha,V}(s'|s,a) \cdot \sbr{ \bar{V}(s') - V(s') }
+		- \min_{s' \in \cS_{up}}  \bar{V}(s') \cdot \sum_{s' \in \cS_{up}} \sbr{ \mu^{\alpha,V}(s'|s,a) - \mu^{\alpha,\bar{V}}(s'|s,a) } 
+		\\ 
+		& + \min_{s' \in \cS_{up}}  \bar{V}(s') \cdot \sum_{s' \in \cS_{down}}  
+		\sbr{ \mu^{\alpha,\bar{V}}(s'|s,a) - \mu^{\alpha,V}(s'|s,a) }  
+		\Bigg)
+		\\
+		\overset{\textup{(b)}}{=} & \frac{1}{\alpha} \cdot  \sum_{s \in \cS}  \mu^{\alpha,V}(s'|s,a) \cdot \sbr{ \bar{V}(s') - V(s') } 
+		\\
+		= &  \beta^{\alpha,V}(\cdot|s,a)^\top \sbr{ \bar{V} - V } 
+	\end{align*}
+	Here (a) is due to that for any $s' \in \cS_{up}$,  $\mu^{\alpha,\bar{V}}(s'|s,a) < \mu^{\alpha,V}(s'|s,a)$, and for any $s \in \cS_{up}$, $s' \in \cS_{down}$, $\bar{V}(s) \geq \bar{V}(s')$. (b) comes from Eq.~\eqref{eq:V_shift_asc_des}.
+	
+\end{proof}
+
+
+
+\subsubsection{Proof of Theorem~\ref{thm:cvar_rm_ub}}
+
+\begin{proof}[Proof of Theorem~\ref{thm:cvar_rm_ub}]
+	Suppose that event $\cE$ holds. Then, for any $k \in [K]$,
+	\begin{align}
+		& V^{*}_1(s^k_1)-V^{\pi^k}_1(s^k_1)
+		\nonumber\\
+		\overset{\textup{(a)}}{\leq} & \bar{V}^k_1(s^k_1)-V^{\pi^k}_1(s^k_1)
+		\nonumber\\
+		= & \min \lbr{r(s^k_1,a^k_1) + \cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s^k_1,a^k_1)}(\bar{V}^k_{2}(s')) + \frac{H}{\alpha}\sqrt{\frac{L}{n_k(s^k_1,a^k_1)}},\ H} 
+		\nonumber\\ & - \sbr{r(s^k_1,a^k_1) + \cvar^{\alpha}_{s' \sim p(\cdot|s^k_1,a^k_1)}(V^{\pi^k}_{2}(s'))}
+		\nonumber\\
+		\leq & r(s^k_1,a^k_1) + \cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s^k_1,a^k_1)}(\bar{V}^k_{2}(s')) + \min \lbr{\frac{H}{\alpha}\sqrt{\frac{L}{n_k(s^k_1,a^k_1)}},\ H} 
+		\nonumber\\ & - \sbr{r(s^k_1,a^k_1) + \cvar^{\alpha}_{s' \sim p(\cdot|s^k_1,a^k_1)}(V^{\pi^k}_{2}(s'))}
+		%	\nonumber\\
+		%	= & \min \lbr{\frac{H}{\alpha}\sqrt{\frac{L}{n_k(s^k_1,a^k_1)}},\ H} + \cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s^k_1,a^k_1)}(\bar{V}^k_{2}(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s^k_1,a^k_1)}(V^{\pi^k}_{2}(s'))
+		\nonumber\\
+		= & \min \lbr{\frac{H}{\alpha}\sqrt{\frac{L}{n_k(s^k_1,a^k_1)}},\ H} + \cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s^k_1,a^k_1)}(\bar{V}^k_{2}(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s^k_1,a^k_1)}(\bar{V}^k_{2}(s')) \nonumber\\& + \cvar^{\alpha}_{s' \sim p(\cdot|s^k_1,a^k_1)}(\bar{V}^k_{2}(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s^k_1,a^k_1)}(V^{\pi^k}_{2}(s'))
+		\nonumber\\
+		\overset{\textup{(b)}}{\leq} & \min \lbr{\frac{H}{\alpha}\sqrt{\frac{L}{n_k(s^k_1,a^k_1)}},\ H} \!+\! \min \lbr{\frac{4H}{\alpha} \sqrt{\frac{SL}{n_k(s^k_1,a^k_1)}},\ H} \!+\! \beta^{\alpha,V^{\pi^k}_2}(\cdot|s^k_1,a^k_1)^\top (\bar{V}^k_2-V^{\pi^k}_2)
+		\nonumber\\
+		\overset{\textup{(c)}}{\leq} & \min \lbr{\frac{H\sqrt{L}+4H\sqrt{SL}}{\alpha \sqrt{n_k(s^k_1,a^k_1)}},\ 2H} +\sum_{s_2 \in \mathcal{S}} \beta^{\alpha,V^{\pi^k}_2}(s_2|s^k_1,a^k_1) \cdot (\bar{V}^k_2(s_2)-V^{\pi^k}_2(s_2))
+		\nonumber\\
+		\overset{\textup{(d)}}{\leq} & \min \lbr{\frac{H\sqrt{L}+4H\sqrt{SL}}{\alpha \sqrt{n_k(s^k_1,a^k_1)}},\ 2H} +\sum_{s_2 \in \mathcal{S}} \beta^{\alpha,V^{\pi^k}_2}(s_2|s^k_1,a^k_1) \cdot \nonumber\\& \left( \min \lbr{\frac{H\sqrt{L}+4H\sqrt{SL}}{\alpha \sqrt{n_k(s_2,a_2)}},\ 2H} +  \sum_{s_3 \in \mathcal{S}} \beta^{\alpha,V^{\pi^k}_3}(s_3|s_2,a_2) \cdot (\bar{V}^k_3(s_3) - V^{\pi^k}_3(s_3)) \right)
+		\nonumber\\
+		\overset{\textup{(e)}}{\leq} & \min \lbr{\frac{H\sqrt{L}+4H\sqrt{SL}}{\alpha \sqrt{n_k(s^k_1,a^k_1)}},\ 2H} + \sum_{s_2 \in \mathcal{S}} \beta^{\alpha,V^{\pi^k}_2}(s_2|s^k_1,a^k_1) \cdot \nonumber\\& \Bigg( \min \lbr{\frac{H\sqrt{L}+4H\sqrt{SL}}{\alpha \sqrt{n_k(s_2,a_2)}},\ 2H} + \sum_{s_3 \in \mathcal{S}} \beta^{\alpha,V^{\pi^k}_3}(s_3|s_2,a_2) \cdot \nonumber\\& \quad \left(\dots \sum_{s_H \in \mathcal{S}} \beta^{\alpha,V^{\pi^k}_H}(s_H|s_{H-1},a_{H-1}) \cdot \left( \min \lbr{\frac{H\sqrt{L}+4H\sqrt{SL}}{\alpha \sqrt{n_k(s_H,a_H)}},\ 2H} \right) \right) \Bigg) 
+		\nonumber\\
+		\overset{\textup{(f)}}{=} & \sum_{h=1}^{H} \sum_{(s,a) \in \mathcal{S} \times \mathcal{A}} w_{kh}^{CVaR,\alpha,V^{\pi^k}}(s,a) \cdot \min \lbr{\frac{H\sqrt{L}+4H\sqrt{SL}}{\alpha \sqrt{n_k(s,a)}},\ 2H} 
+		\nonumber\\
+		\leq & \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k} w_{kh}^{CVaR,\alpha,V^{\pi^k}}(s,a) \cdot \frac{H\sqrt{L}+4H\sqrt{SL}}{\alpha \sqrt{n_k(s,a)}} 
+		\nonumber\\
+		& + \sum_{h=1}^{H} \sum_{(s,a) \notin \cL_k} w_{kh}^{CVaR,\alpha,V^{\pi^k}}(s,a) \cdot 2H \label{eq:V_diff_an_episode}
+	\end{align}
+	Here $a_h:=\pi^k(s_h)$ for $h=2,\dots,H$. (a) is due to Lemma~\ref{lemma:optimism}. (b) uses Lemma~\ref{lemma:concentration_any_V} and the fact that for any $k>0$, $h \in [H]$ and $s \in \cS$, $\bar{V}^k_{h}(s) \in [0,H]$, and thus for any $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\bar{V}^k_{h+1}(s'))-\cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(\bar{V}^k_{h+1}(s')) \leq H$, and also uses Lemma~\ref{lemma:cvar_increase_V}. (c) comes from the property of $\min\{\cdot,\cdot\}$. (d) and (e) follow from recurrently applying steps (a)-(c). (f) is due to that $w_{kh}^{CVaR,\alpha,V^{\pi^k}}(s,a)$ is defined as the probability of visiting $(s,a)$ at step $h$ of episode $k$ under the conditional transition probability $\beta^{\alpha,V_{h'+1}^{\pi^k}}(\cdot|\cdot,\cdot)$ for each step $h'=1,\dots,h-1$.
+	
+	Since the second term in Eq.~\eqref{eq:V_diff_an_episode} can be bounded by  Lemma~\ref{lemma:insufficient_visit}, below we analyze the first term.
+	
+	Recall that for any policy $\pi$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $w_{\pi,h}(s,a)$ and $w_{\pi,h}(s)$ denote the probabilities of visiting $(s,a)$ and $s$ at step $h$ under policy $\pi$, respectively.
+	Summing the first term in Eq.~\eqref{eq:V_diff_an_episode} over $k \in [K]$, we have
+	\begin{align*}
+		%	\cR(K) = & \sum_{k=1}^{K} \sbr{V^{*}_1(s^k_1)-V^{\pi^k}_1(s^k_1)} 
+		%	\\
+		%	\leq & 
+		& \sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k} w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a) \frac{H\sqrt{L}+4H\sqrt{SL}}{\alpha \sqrt{n_k(s,a)}} 
+		\\
+		\leq & \frac{H\sqrt{L}+4H\sqrt{SL}}{\alpha} \sqrt{ \sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k} \frac{w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a)}{n_k(s,a)}} \cdot \sqrt{\sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k} w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a)}
+		\\
+		\overset{\textup{(a)}}{=} & \frac{H\sqrt{L}+4H\sqrt{SL}}{\alpha} \sqrt{ \sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k} \frac{w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a)}{n_k(s,a)} \cdot \indicator{w_{kh}(s,a) \neq 0} } \cdot \sqrt{KH}
+		\\
+		= & \frac{ (H\sqrt{L}+4H\sqrt{SL}) \sqrt{KH} }{\alpha}   \sqrt{ \sum_{k=1}^{K} \sum_{h=1}^{H} \! \sum_{(s,a) \in \cL_k} \!\!\!\! \frac{w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a)}{w_{kh}(s,a)} \!\cdot\! \frac{w_{kh}(s,a)}{n_k(s,a)} \!\cdot\! \indicator{w_{kh}(s,a) \neq 0} } 
+		\\
+		\overset{\textup{(b)}}{\leq} & \frac{ (\! H\sqrt{L} \!+\! 4H\sqrt{SL}) \sqrt{KH}}{\alpha} \!\!\!\! \sqrt{ \!\min \!\bigg\{\!\! \frac{1}{\min \limits_{\begin{subarray}{c}\pi,h,(s,a):\ w_{\pi,h}(s,a)>0\end{subarray}} w_{\pi,h}(s,a)}, \frac{1}{\alpha^{H-1}} \!\!\bigg\} \! \sum_{k=1}^{K} \! \sum_{h=1}^{H} \! \sum_{(s,a) \in \cL_k} \!\!\!\!\!\! \frac{w_{kh}(s,a)}{n_k(s,a)} } 
+		\\
+		\overset{\textup{(c)}}{\leq} & \frac{(H\sqrt{L}+4H\sqrt{SL}) \sqrt{KH}}{\alpha} \cdot 2\sqrt{SAL} \cdot \min \lbr{ \frac{1}{\sqrt{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)}},\ \frac{1}{\sqrt{\alpha^{H-1}}} }
+		\\
+		\leq & \frac{ 10HSL \sqrt{KHA} }{\alpha} \cdot \min \lbr{ \frac{1}{\sqrt{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)}},\ \frac{1}{\sqrt{\alpha^{H-1}}} } .
+	\end{align*}
+	Here (a) is due to Lemma~\ref{lemma:zero_w_impliy_zero_w_cvar} and the fact that for any $k>0$ and $h \in [H]$, $\sum_{(s,a) \in \cS \times \cA} w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a)=1$. (b) comes from Lemma~\ref{lemma:w_cvar_over_w}. (c) uses Lemma~\ref{lemma:standard_visitation} and the fact that for any deterministic policy $\pi$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, we have either $w_{\pi,h}(s,a)=w_{\pi,h}(s)$ or $w_{\pi,h}(s,a)=0$, and thus $\min_{\begin{subarray}{c}\pi,h,(s,a):\ w_{\pi,h}(s,a)>0\end{subarray}} w_{\pi,h}(s,a)=\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)$.
+	
+	Then, summing the first and second terms in Eq.~\eqref{eq:V_diff_an_episode} over $k \in [K]$ and using Lemma~\ref{lemma:insufficient_visit}, we have
+	\begin{align*}
+		\cR(K) = & \sum_{k=1}^{K} \sbr{V^{*}_1(s^k_1)-V^{\pi^k}_1(s^k_1)} 
+		\\
+		\leq & \sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k} w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a) \frac{H\sqrt{L}+4H\sqrt{SL}}{\alpha  \sqrt{n_k(s,a)}} \\& + \sum_{k=1}^{K} \sum_{h=1}^{H} \sum_{(s,a) \notin \cL_k} w^{\cvar,\alpha,V^{\pi^k}}_{kh}(s,a) \cdot 2H
+		\\
+		\leq & \min \lbr{ \frac{1}{\sqrt{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)}},\ \frac{1}{\sqrt{\alpha^{H-1}}} } \frac{ 10HS \sqrt{KHA} }{\alpha} \log\sbr{\frac{KHSA}{\delta'}} \\& + \min \lbr{\frac{ 1 }{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)},\ \frac{1}{\alpha^{H-1}}} \sbr{ 8SAH^2 \log\sbr{\frac{HSA}{\delta'}} + 10SAH^2 }
+	\end{align*}
+\end{proof}
+
+When $K$ is large enough, the first term dominates the bound, and thus we obtain Theorem~\ref{thm:cvar_rm_ub}.
+
+
+
+\subsection{Proof of Regret Lower Bound} \label{apx:lb_rm}
+
+Below we prove the regret lower bound (Theorem~\ref{thm:cvar_rm_lb}) for Iterated CVaR RL-RM.
+
+
+
+
+
+\begin{proof}[Proof of Theorem~\ref{thm:cvar_rm_lb}]
+	First, we construct an instance where $\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s) > \alpha^{H-1}$, and prove that on this instance any algorithm must suffer a $\Omega ( \frac{H}{\sqrt{\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)}} \sqrt{\frac{AK}{\alpha}} )$ regret.
+	
+	\revision{
+		Consider the instance shown in Figure~\ref{fig:lower_bound} (the same as Figure~\ref{fig:lower_bound_main_text} in the main text):
+		
+		The state space is $\cS=\{s_1,s_2,\dots,s_n,x_1,x_2,x_3\}$, where $s_1$ is the initial state, and $n=S-3<S<\frac{1}{2}H$.
+		
+		The reward functions are as follows.
+		For any $a \in \cA$, $r(x_1,a)=1$, $r(x_2,a)=0.8$ and $r(x_3,a)=0.2$. For any $i \in [n]$ and $a \in \cA$, $r(s_i,a)=0$.
+		
+		The transition distributions are as follows.
+		Let $\mu$ be a parameter which satisfies that $0<\alpha<\mu<\frac{1}{3}$.
+		For any $a \in \cA$, $p(s_2|s_1,a)=\mu$, $p(x_1|s_1,a)=1-3\mu$, $p(x_2|s_1,a)=\mu$ and $p(x_3|s_1,a)=\mu$.
+		For any $i\in\{2,\dots,n-1\}$ and $a \in \cA$,
+		$p(s_{i+1}|s_i,a)=\mu$ and $p(x_1|s_i,a)=1-\mu$.
+		$x_1$, $x_2$ and $x_3$ are absorbing states, i.e., for any $a \in \cA$, $p(x_1|x_1,a)=1$, $p(x_2|x_2,a)=1$ and $p(x_3|x_3,a)=1$.
+		Let $a_{J}$ be the optimal action in state $s_n$, which is uniformly drawn from $\cA$.
+		For the optimal action $a_J$, $p(x_2|s_n,a_{J})=1-\alpha+\eta$ and $p(x_3|s_n,a_{J})=\alpha-\eta$, where $\eta$ is a parameter which satisfies $0<\eta<\alpha$ and will be chosen later.
+		For any suboptimal action $a \in \cA \setminus \{a_{J}\}$,
+		$p(x_2|s_n,a)=1-\alpha$ and $p(x_3|s_n,a)=\alpha$.
+		
+		\begin{figure} [t!]
+			\centering     
+			\includegraphics[width=0.8\textwidth]{fig/instance_lb_apx.pdf}  
+			\caption{\revision{Instance of lower bounds (Theorems~\ref{thm:cvar_rm_lb} and \ref{thm:bpi_lb}) for the $\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s) > \alpha^{H-1}$ case.}} 
+			\label{fig:lower_bound} 
+		\end{figure} 
+		
+		For any $a_j \in \cA$, let $\ex_j[\cdot]$ and $\Pr_j[\cdot]$ denote the expectation and probability operators under the instance with $a_J=a_j$.
+		%
+		Let $\ex_{unif}[\cdot]$ and $\Pr_{unif}[\cdot]$ denote the expectation and probability operators under the uniform instance where all actions $a \in \cA$ in state $s_n$ have the same transition distribution, i.e., $p(x_2|s_n,a)=1-\alpha$ and $p(x_3|s_n,a)=\alpha$.
+		
+		Fix an algorithm $\cA$. 
+		Let $\pi^k$ denote the policy taken by algorithm $\cA$ in episode $k$.
+		Let $N_{s_n,a_j}=\sum_{k=1}^{K} \indicator{\pi^k(s_n)=a_j}$ denote the number of episodes that the policy chooses $a_j$ in state $s_n$.
+		Let $V_{s_n,a_j}$ denote the number of episodes that the algorithm $\cA$ visits $(s_n,a_j)$. 
+		%	Since the actions in states $s_1,\dots,s_{n-1},x_1$ have the same transition distributions, the probability of visiting $s_n$ in an episode is the same for any policy. 
+		Let $w(s_n)$ denote the probability of visiting $s_n$ in an episode (the probability of visiting $s_n$ is the same for all policies). 
+		Then, it holds that $\ex[V_{s_n,a_j}]=w(s_n) \cdot \ex[N_{s_n,a_j}]$.
+		
+		Recall that $a_J$ is the optimal action in state $s_n$.
+		According to the definition of the value function for Iterated CVaR RL,
+		we have that
+		\begin{align*}
+			V^{*}_1(s_1) = &  \frac{(\alpha-\eta)\cdot 0.2(H-n)+\eta \cdot 0.8(H-n)}{\alpha} ,
+		\end{align*}
+		and for any policy $\pi$,
+		\begin{align*}
+			V^{\pi}_1(s_1) = &  \frac{(\alpha-\eta)\cdot 0.2(H-n)+\eta \cdot 0.8(H-n)}{\alpha} \cdot \indicator{\pi(s_n)=a_{J}} \\& +   0.2(H-n) \cdot \sbr{1-\indicator{\pi(s_n)=a_{J}}} .
+		\end{align*}
+		
+		If $J=j$, for any policy $\pi$,
+		\begin{align}
+			V^{*}_1(s_1) - V^{\pi}_1(s_1) = \frac{\eta \cdot 0.6(H-n)}{\alpha} \cdot \sbr{1-\indicator{\pi(s_n)=a_{j}}} , \label{eq:lb_proof_suboptimality}
+		\end{align}
+		and summing over all episodes $k \in [K]$, we have
+		\begin{align*}
+			\ex_j \mbr{\cR(K)} = & \sum_{k=1}^{K} \sbr{V^{*}_1(s_1)-V^{\pi^k}_1(s_1)}
+			\\
+			= & \frac{\eta \cdot 0.6(H-n)}{\alpha} \cdot \sbr{K - \sum_{k=1}^{K} \indicator{\pi(s_n)=a_{j}}} 
+			\\
+			= & \frac{\eta \cdot 0.6(H-n)}{\alpha} \cdot \sbr{K - \ex_j[N_{s_n,a_j}]} 
+		\end{align*}
+		
+		Therefore, we have
+		\begin{align}
+			\ex \mbr{\cR(K)} = &  \frac{1}{A} \sum_{j=1}^{A} \sum_{k=1}^{K} \sbr{V^{*}_1(s_1)-V^{\pi^k}_1(s_1)}
+			\nonumber\\
+			= & \frac{1}{A} \sum_{j=1}^{A} \frac{\eta}{\alpha} \cdot 0.6 (H-n) \sbr{K-\ex_j[N_{s_n,a_j}] } 
+			\nonumber\\
+			= & 0.6 (H-n) \cdot \frac{\eta}{\alpha} \cdot  \sbr{K-\frac{1}{A} \sum_{j=1}^{A} \ex_j[N_{s_n,a_j}] } 
+			\label{eq:regret_lb_half}
+		\end{align}
+		
+		For any $j \in [A]$, using Pinsker's inequality and $0<\alpha<\frac{1}{3}$, we have that $\kl(p_{unif}(s_n,a_j)\|p_j(s_n,a_j)) = \kl(\bernoulli(\alpha)\|\bernoulli(\alpha-\eta)) \leq \frac{\eta^2}{(\alpha-\eta) (1-\alpha+\eta)} \leq  \frac{c_1 \eta^2}{\alpha}$ for some constant $c_1$ and small enough $\eta$.
+		Then, using Lemma~A.1 in \citep{auer2002nonstochastic}, we have that for any $j \in [A]$,
+		\begin{align*}
+			\ex_j[N_{s_n,a_j}] \leq & \ex_{unif}[N_{s_n,a_j}] + \frac{K}{2} \sqrt{ \ex_{unif}[V_{s_n,a_j}] \cdot \kl\sbr{p_{unif}(s_n,a_j)||p_j(s_n,a_j)} }
+			\nonumber\\
+			\leq & \ex_{unif}[N_{s_n,a_j}] + \frac{K}{2} \sqrt{ w(s_n) \cdot \ex_{unif}[N_{s_n,a_j}] \cdot \frac{c_1 \eta^2}{\alpha} } 
+		\end{align*}
+		
+		Then, using $\sum_{j=1}^{A} \ex_{unif}[N_{s_n,a_j}]=K$ and the Cauchy–Schwarz inequality, we have
+		\begin{align}
+			\frac{1}{A} \sum_{j=1}^{A} \ex_j[N_{s_n,a_j}] 
+			\leq & \frac{1}{A} \sum_{j=1}^{A} \ex_{unif}[N_{s_n,a_j}] +   \frac{K \eta}{2A} \sum_{j=1}^{A} \sqrt{ \frac{c_1}{\alpha} \cdot w(s_n) \cdot \ex_{unif}[N_{s_n,a_j}] } 
+			\nonumber\\
+			\leq & \frac{1}{A} \sum_{j=1}^{A} \ex_{unif}[N_{s_n,a_j}] +   \frac{K \eta}{2A} \sqrt{ A \sum_{j=1}^{A} \frac{c_1}{\alpha} \cdot w(s_n) \cdot \ex_{unif}[N_{s_n,a_j}] } 
+			\nonumber\\
+			\leq & \frac{K}{A}  +  \frac{K \eta}{2} \sqrt{ \frac{ c_1 \cdot w(s_n) K}{\alpha A}  }  \label{eq:avg_N_a_j}
+		\end{align}
+		
+		By plugging Eq.~\eqref{eq:avg_N_a_j} into Eq.~\eqref{eq:regret_lb_half}, we have
+		\begin{align*}
+			\ex \mbr{\cR(K)} 
+			\geq 0.6 (H-n) \cdot \frac{\eta}{\alpha} \cdot  \sbr{K - \frac{K}{A} - \frac{K \eta}{2} \sqrt{ \frac{c_1 \cdot w(s_n) K}{\alpha A}  }  } .
+		\end{align*}
+		
+		Let $\eta=c_2\sqrt{\frac{\alpha A}{w(s_n) K}}$ for a small enough constant $c_2$. We have
+		\begin{align*}
+			\ex \mbr{\cR(K)} 
+			= & \Omega \sbr{ H  \sqrt{\frac{A}{\alpha \cdot w(s_n) K}} \cdot K }
+			\\
+			= & \Omega \sbr{ H  \sqrt{\frac{AK}{\alpha \cdot w(s_n) }} } 
+		\end{align*}
+		
+		Recall that $n<\frac{1}{2} H$ and $0<\alpha<\mu<\frac{1}{3}$.
+		Thus, we have that $\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}}  w_{\pi,h}(s)=w(s_n)=\mu^{n-1} > \alpha^{H-1}$, and
+		\begin{align*}
+			\ex \mbr{\cR(K)} 
+			= & \Omega \sbr{ H  \sqrt{\frac{AK}{\alpha \cdot \min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s) }} } .
+		\end{align*}
+	}
+	
+	
+	
+	\begin{figure} [t!]
+		\centering     
+		\includegraphics[width=0.8\textwidth]{fig/instance_lb_apx_alpha_H.pdf}  
+		\caption{Instance of lower bounds (Theorems~\ref{thm:cvar_rm_lb} and \ref{thm:bpi_lb}) for the $\alpha^{H-1}>\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)$ case.} 
+		\label{fig:lower_bound_alpha_H} 
+	\end{figure}
+	
+	Next, we construct another instance where $\alpha^{H-1}>\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)$, and prove that on this instance any algorithm must suffer a $\Omega ( \sqrt{\frac{AK}{\alpha^{H-1}}} )$ regret.
+	
+	Consider the instance shown in Figure~\ref{fig:lower_bound_alpha_H}:
+	
+	The state space is $\cS=\{s_1,\dots,s_n,s'_2,\dots,s'_n,x_1,x_2,x_3,x_4\}$, where $n=H-1$ and $s_1$ is the initial state. Let $0<\alpha<\frac{1}{4}$.
+	
+	The reward functions are as follows.
+	For any $a \in \cA$, $r(x_1,a)=r(x_4,a)=1$, $r(x_2,a)=0.8$ and $r(x_3,a)=0.2$. For any $i \in [n]$ and $a \in \cA$, $r(s_i,a)=0$. For any $i \in \{2,\dots,n\}$ and $a \in \cA$, $r(s'_i,a)=0$.
+	
+	The transition distributions are as follows.
+	For any $a \in \cA$, $p(s_2|s_1,a)=\alpha$, $p(s'_2|s_1,a)=\gamma$ and $p(x_1|s_1,a)=1-\gamma-\alpha$.
+	For any $i\in\{2,\dots,n-1\}$ and $a \in \cA$,
+	$p(s_{i+1}|s_i,a)=\alpha$ and $p(x_1|s_i,a)=1-\alpha$.
+	For any $i\in\{2,\dots,n-1\}$ and $a \in \cA$,
+	$p(s'_{i+1}|s'_i,a)=\gamma$ and $p(x_1|s'_i,a)=1-\gamma$.
+	For any $a \in \cA$, $p(x_4|s'_n,a)=\gamma$ and $p(x_1|s'_n,a)=1-\gamma$.
+	$x_1$, $x_2$, $x_3$ and $x_4$ are absorbing states, i.e., for any $a \in \cA$ and $i \in [4]$, $p(x_i|x_i,a)=1$.
+	Let $a_{J}$ be the optimal action in state $s_n$, which is uniformly drawn from $\cA$.
+	For the optimal action $a_J$, $p(x_2|s_n,a_{J})=1-\alpha+\eta$ and $p(x_3|s_n,a_{J})=\alpha-\eta$, where $\eta$ is a parameter which satisfies $0<\eta<\alpha$ and will be chosen later.
+	For any suboptimal action $a \in \cA \setminus \{a_{J}\}$,
+	$p(x_2|s_n,a)=1-\alpha$ and $p(x_3|s_n,a)=\alpha$.
+	
+	%	For any $a_j \in \cA$, let $\ex_j[\cdot]$ and $\Pr_j[\cdot]$ denote the expectation and probability operators under the instance with $a_J=a_j$.
+	%	Let $\ex_{unif}[\cdot]$ and $\Pr_{unif}[\cdot]$ denote the expectation and probability operators under the uniform instance where all actions $a \in \cA$ in state $s_n$ have the same transition distribution, i.e., $p(x_2|s_n,a)=1-\alpha$ and $p(x_3|s_n,a)=\alpha$.
+	
+	%	Fix an algorithm $\cA$. 
+	%	Let $\pi^k$ denote the policy taken by algorithm $\cA$ in episode $k$.
+	%	Let $N_{s_n,a_j}=\sum_{k=1}^{K} \indicator{\pi^k(s_n)=a_j}$ denote the number of episodes that the policy chooses $a_j$ in state $s_n$.
+	%	Let $V_{s_n,a_j}$ denote the number of episodes that the algorithm $\cA$ visits $(s_n,a_j)$.  
+	%	Let $w(s_n)$ denote the probability of visiting $s_n$ in an episode (the probability of visiting $s_n$ is the same for all policies). 
+	%	Then, it holds that $\ex[V_{s_n,a_j}]=w(s_n) \cdot \ex[N_{s_n,a_j}]$.
+	%	
+	%	Recall that $a_J$ is the optimal action in state $s_n$.
+	According to the definition of the value function for Iterated CVaR RL,
+	we have that
+	\begin{align*}
+		V^{*}_1(s_1) = &  \frac{0.2 (\alpha-\eta) +0.8 \eta }{\alpha} ,
+	\end{align*}
+	and for any policy $\pi$,
+	\begin{align*}
+		V^{\pi}_1(s_1) = &  \frac{0.2 (\alpha-\eta) +0.8 \eta }{\alpha} \cdot \indicator{\pi(s_n)=a_{J}} +   0.2 \sbr{1-\indicator{\pi(s_n)=a_{J}}} .
+	\end{align*}
+	
+	If $J=j$, for any policy $\pi$,
+	\begin{align}
+		V^{*}_1(s_1) - V^{\pi}_1(s_1) = \frac{0.6 \eta}{\alpha} \sbr{1-\indicator{\pi(s_n)=a_{j}}} , \label{eq:lb_proof_suboptimality_2}
+	\end{align}
+	and summing over all episodes $k \in [K]$, we have
+	\begin{align*}
+		\ex_j \mbr{\cR(K)} = & \sum_{k=1}^{K} \sbr{V^{*}_1(s_1)-V^{\pi^k}_1(s_1)}
+		\\
+		= & \frac{0.6 \eta}{\alpha} \cdot \sbr{K - \sum_{k=1}^{K} \indicator{\pi(s_n)=a_{j}}} 
+		\\
+		= & \frac{0.6 \eta}{\alpha} \cdot \sbr{K - \ex_j[N_{s_n,a_j}]} 
+	\end{align*}
+	
+	Therefore, we have
+	\begin{align}
+		\ex \mbr{\cR(K)} = &  \frac{1}{A} \sum_{j=1}^{A} \sum_{k=1}^{K} \sbr{V^{*}_1(s_1)-V^{\pi^k}_1(s_1)}
+		\nonumber\\
+		= & \frac{1}{A} \sum_{j=1}^{A} \frac{0.6 \eta}{\alpha} \sbr{K-\ex_j[N_{s_n,a_j}] } 
+		\nonumber\\
+		= & \frac{0.6 \eta}{\alpha} \sbr{K-\frac{1}{A} \sum_{j=1}^{A} \ex_j[N_{s_n,a_j}] } 
+		\label{eq:regret_lb_half_2}
+	\end{align}
+	
+	Recall that $0<\alpha<\frac{1}{4}$.
+	For any $j \in [A]$, we have that $\kl(p_{unif}(s_n,a_j)\|p_j(s_n,a_j)) = \kl(\bernoulli(\alpha)\|\bernoulli(\alpha-\eta)) \leq \frac{\eta^2}{(\alpha-\eta) (1-\alpha+\eta)} \leq  \frac{c_1 \eta^2}{\alpha}$ for some constant $c_1$ and small enough $\eta$.
+	Then, using Lemma~A.1 in \citep{auer2002nonstochastic}, we have that for any $j \in [A]$,
+	\begin{align*}
+		\ex_j[N_{s_n,a_j}] \leq & \ex_{unif}[N_{s_n,a_j}] + \frac{K}{2} \sqrt{ \ex_{unif}[V_{s_n,a_j}] \cdot \kl\sbr{p_{unif}(s_n,a_j)||p_j(s_n,a_j)} }
+		\nonumber\\
+		\leq & \ex_{unif}[N_{s_n,a_j}] + \frac{K}{2} \sqrt{ w(s_n) \cdot \ex_{unif}[N_{s_n,a_j}] \cdot \frac{c_1 \eta^2}{\alpha} } 
+	\end{align*}
+	
+	Then, using $\sum_{j=1}^{A} \ex_{unif}[N_{s_n,a_j}]=K$ and the Cauchy–Schwarz inequality, we have
+	\begin{align}
+		\frac{1}{A} \sum_{j=1}^{A} \ex_j[N_{s_n,a_j}] 
+		\leq & \frac{1}{A} \sum_{j=1}^{A} \ex_{unif}[N_{s_n,a_j}] +   \frac{K \eta}{2A} \sum_{j=1}^{A} \sqrt{ \frac{c_1}{\alpha} \cdot w(s_n) \cdot \ex_{unif}[N_{s_n,a_j}] } 
+		\nonumber\\
+		\leq & \frac{1}{A} \sum_{j=1}^{A} \ex_{unif}[N_{s_n,a_j}] +   \frac{K \eta}{2A} \sqrt{ A \sum_{j=1}^{A} \frac{c_1}{\alpha} \cdot w(s_n) \cdot \ex_{unif}[N_{s_n,a_j}] } 
+		\nonumber\\
+		\leq & \frac{K}{A}  +  \frac{K \eta}{2} \sqrt{ \frac{ c_1 \cdot w(s_n) K}{\alpha A}  }  \label{eq:avg_N_a_j_2}
+	\end{align}
+	
+	By plugging Eq.~\eqref{eq:avg_N_a_j_2} into Eq.~\eqref{eq:regret_lb_half_2}, we have
+	\begin{align*}
+		\ex \mbr{\cR(K)} 
+		\geq & \frac{0.6 \eta}{\alpha} \cdot  \sbr{K - \frac{K}{A} - \frac{K \eta}{2} \sqrt{ \frac{c_1 \cdot w(s_n) K}{\alpha A}  }  } .
+	\end{align*}
+	
+	Let $\eta=c_2\sqrt{\frac{\alpha A}{w(s_n) K}}$ for a small enough constant $c_2$. We have
+	\begin{align*}
+		\ex \mbr{\cR(K)} 
+		= & \Omega \sbr{ \sqrt{\frac{A}{\alpha \cdot w(s_n) K}} \cdot K }
+		\\
+		= & \Omega \sbr{ \sqrt{\frac{AK}{\alpha \cdot w(s_n) }} } 
+	\end{align*}
+	
+	Recall that $0<\gamma<\alpha$ and $n=H-1$. Thus, we have $\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)=w(x_4)=\gamma^{H-1}<\alpha^{H-1}$. In addition, since $w(s_n)=\alpha^{n-1}=\alpha^{H-2}$, we have
+	\begin{align*}
+		\ex \mbr{\cR(K)} 
+		= & \Omega \sbr{ \sqrt{\frac{AK}{\alpha \cdot \alpha^{H-2}} } }
+		\\
+		= & \Omega \sbr{ \sqrt{\frac{AK}{ \alpha^{H-1}} } } .
+	\end{align*}
+	
+\end{proof}
+
+\begin{algorithm}[t]
+	\caption{$\algcvarbpi$} \label{alg:cvarbpi}
+	\KwIn{$\varepsilon$, $\delta$, $\alpha$, $\delta':=\frac{\delta}{7}$, $\tilde{L}(k):=\log(\frac{2HSAk^3}{\delta'})$ for any $k>0$, $J^k_{H+1}(s)=\bar{V}^k_{H+1}(s)=\underline{V}^k_{H+1}(s)=0$ for any $k>0$ and $s \in \cS$.} 
+	\For{$k=1,2,\dots,K$}
+	{
+		\For{$h=H,H-1,\dots,1$} 
+		{
+			\For{$s \in \cS$}
+			{
+				\For{$a \in \cA$}
+				{
+					$\bar{Q}^k_h(s,a) \leftarrow \min \Big\{ r(s,a)+\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\bar{V}^k_{h+1}(s')) + \frac{H}{\alpha}\sqrt{\frac{\tilde{L}(k)}{n_k(s,a)}},\ H \Big\}$\;
+					$\underline{Q}^k_h(s,a) \leftarrow \max \Big\{r(s,a)+\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\underline{V}^k_{h+1}(s')) - \frac{4H}{\alpha}\sqrt{\frac{S\tilde{L}(k)}{n_k(s,a)}},\ 0 \Big\}$\;
+					$G^k_h(s,a) \leftarrow \min \Big\{ \frac{H(1+4\sqrt{S})\sqrt{\tilde{L}(k)}}{\alpha  \sqrt{n_k(s,a)}}+\hat{\beta}^{k;\alpha,\underline{V}^k_{h+1}}(\cdot|s,a)^\top J^k_{h+1},\ H \Big\}$\; \label{line:bpi_beta}
+				}
+				$\pi^k_h(s) \leftarrow \argmax_{a \in \cA} \bar{Q}^k_h(s,a)$.
+				$\bar{V}^k_h(s) \leftarrow  \max_{a \in \cA} \bar{Q}^k_h(s,a)$.
+				$\underline{V}^k_h(s) \leftarrow   \underline{Q}^k_h(s,\pi^k_h(s))$.
+				$J^k_h(s) \leftarrow  G^k_h(s,\pi^k_h(s))$\;
+			}
+		}
+		\If{$J^k_1(s)\leq \varepsilon$}
+		{
+			{\bfseries return} $\pi^k(s)$
+		}
+		\Else
+		{
+			Play the episode $k$ with policy $\pi^k$, and update $n_{k+1}(s,a)$ and $\hat{p}^{k+1}(s'|s,a)$
+		}
+	}
+\end{algorithm}
+
+\section{Proofs for Iterated CVaR RL with Best Policy Identification}\label{apx:bpi}
+
+In this section, we present the pseudo-code and detailed description of algorithm $\algcvarbpi$, and formally state the sample complexity lower bound for Iterated CVaR-BPI (Theorem \ref{thm:bpi_lb}). We also give the proofs of sample complexity upper and lower bounds (Theorems~\ref{thm:bpi_ub} and \ref{thm:bpi_lb}).
+
+
+\subsection{Algorithm $\algcvarbpi$} \label{apx:bpi_alg}
+
+Algorithm $\algcvarbpi$ (Algorithm~\ref{alg:cvarbpi}) constructs optimistic and pessimistic value functions, estimation error, and a hypothesized optimal policy in each episode, and returns the hypothesized optimal policy when the estimation error shrinks within $\varepsilon$. 
+Specifically, in each episode $k$, $\algcvarbpi$ calculates the empirical CVaR for values of next states 
+$\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\bar{V}^k_{h+1}(s')), \cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\underline{V}^k_{h+1}(s'))$ and exploration bonuses  $\frac{H}{\alpha}\sqrt{\frac{\tilde{L}(k)}{n_k(s,a)}}, \frac{4H}{\alpha}\sqrt{\frac{S\tilde{L}(k)}{n_k(s,a)}}$, to establish the optimistic and pessimistic Q-value functions $\bar{Q}^k_h(s,a)$ and $\underline{Q}^k_h(s,a)$, respectively. 
+$\algcvarbpi$ further maintains a hypothesized optimal policy $\pi^k$, which is greedy with respect to $\bar{Q}^k_h(s,a)$.
+Let $\hat{\beta}^{k;\alpha,\underline{V}^k_{h+1}}(\cdot|s,a)$ denote the conditional empirical transition probability in episode $k$, conditioning on transitioning to the worst $\alpha$-portion successor states $s'$ (i.e., with the worst $\alpha$-portion values $\underline{V}^k_{h+1}(s')$), and it satisfies $\sum_{s' \in \cS} \hat{\beta}^{k;\alpha,\underline{V}^k_{h+1}}(s'|s,a) \cdot \underline{V}^k_{h+1}(s') = \cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\underline{V}^k_{h+1}(s'))$ (Line~\ref{line:bpi_beta}).\yihan{specified the definition of $\hat{\beta}$}
+Then, $\algcvarbpi$ computes estimation error $G^k_h(s,a)$ and $J^k_h(s)$ using conditional transition probability $\hat{\beta}^{k;\alpha,\underline{V}^k_{h+1}}(\cdot|s,a)$. 
+Once estimation error $J^k_h(s)$ shrinks within accuracy parameter $\varepsilon$, $\algcvarbpi$ returns the hypothesized optimal policy $\pi^k$.
+
+\subsection{Proofs of Sample Complexity Upper Bound}
+
+%To prove the sample complexity upper bound (Theorem~\ref{thm:bpi_ub}), we first introduce the following lemmas (Lemmas~\ref{lemma:bpi_concentration_V_star}-\ref{lemma:estimate_error}) and define concentration event $\cF$.
+
+\subsubsection{Concentration}
+
+In the best policy identification analysis, we introduce several useful lemmas and concentration events. Different from the regret minimization analysis where the logrithmic factor $\log(\frac{KHSA}{\delta'})$ in the exploration bonuses is an universal constant, here the logrithmic factor $\log(\frac{2 k^3 HSA}{\delta'})$ will increase as the index of the episode $k$ increases.
+
+\begin{lemma}[Concentration for $V^{*}$ -- BPI] \label{lemma:bpi_concentration_V_star}
+	It holds that
+	\begin{align*}
+		\Pr \Bigg[ & \abr{\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V^{*}_h(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V^{*}_h(s'))} \leq \frac{H}{\alpha}\sqrt{\frac{ \log \sbr{\frac{2 k^3 HSA}{\delta'}} }{n_k(s,a)}} ,
+		\\ & \forall k>0,\ \forall h \in [H],\ \forall (s,a) \in \cS \times \cA \Bigg] \geq 1-2\delta' .
+	\end{align*}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:bpi_concentration_V_star}]
+	Using the same analysis as Lemma~\ref{lemma:concentration_V_star}, we have that for a fixed $k$,
+	\begin{align*}
+		\Pr \Bigg[ & \abr{\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V^{*}_h(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V^{*}_h(s'))} \leq \frac{H}{\alpha}\sqrt{\frac{ \log \sbr{\frac{2 k^3 HSA}{\delta'}} }{n_k(s,a)}} ,
+		\\ & \forall h \in [H],\ \forall (s,a) \in \cS \times \cA \Bigg] \geq 1-2 \cdot \frac{\delta'}{2 k^2} .
+	\end{align*}
+	
+	By a union bound over $k=1,2,\dots$, we have
+	\begin{align*}
+		\Pr \Bigg[ & \abr{\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V^{*}_h(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V^{*}_h(s'))} \leq \frac{H}{\alpha}\sqrt{\frac{ \log \sbr{\frac{2 k^3 HSA}{\delta'}} }{n_k(s,a)}} ,
+		\\ & \forall k>0,\ \forall h \in [H],\ \forall (s,a) \in \cS \times \cA \Bigg] 
+		\\
+		\geq & 1-2 \cdot \sum_{k=1}^{\infty} \sbr{\frac{\delta'}{2 k^2}}
+		\\
+		\geq & 1-2\delta' .
+	\end{align*}
+\end{proof}
+
+\begin{lemma}[Concentration for any $V$ -- BPI] \label{lemma:bpi_concentration_any_V} 
+	It holds that
+	\begin{align*}
+		\Pr \Bigg[ &\abr{\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V(s'))} \leq \frac{2H}{\alpha}\sqrt{\frac{2S\log \sbr{\frac{2k^3HSA}{\delta'}}}{n_k(s,a)}} ,
+		\\ & \forall V: \cS \mapsto [0,H],\ \forall k>0,\ \forall (s,a) \in \cS \times \cA \Bigg] \geq 1-2\delta' .
+	\end{align*}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:bpi_concentration_any_V}]
+	Using the same analysis as Lemma~\ref{lemma:concentration_any_V}, we have that for a fixed $k$,
+	\begin{align*}
+		\Pr \Bigg[ &\abr{\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V(s'))} \leq \frac{2H}{\alpha}\sqrt{\frac{2S\log \sbr{\frac{2k^3HSA}{\delta'}}}{n_k(s,a)}} ,
+		\\ & \forall V: \cS \mapsto [0,H],\ \forall (s,a) \in \cS \times \cA \Bigg] \geq 1-2 \cdot \frac{\delta'}{2 k^2} .
+	\end{align*}
+	
+	By a union bound over $k=1,2,\dots$, we have
+	\begin{align*}
+		\Pr \Bigg[ &\abr{\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V(s'))} \leq \frac{2H}{\alpha}\sqrt{\frac{2S\log \sbr{\frac{2k^3HSA}{\delta'}}}{n_k(s,a)}} ,
+		\\ & \forall V: \cS \mapsto [0,H],\ \forall k>0,\ \forall (s,a) \in \cS \times \cA \Bigg]
+		\\
+		\geq & 1-2 \cdot \sum_{k=1}^{\infty} \sbr{\frac{\delta'}{2 k^2}}
+		\\
+		\geq & 1-2\delta' .
+	\end{align*}
+\end{proof}
+
+
+%For any $k>0$ and $(s',s,a) \in \cS \times \cS \times \cA$, $p(s'|s,a)$ and $\hat{p}^k(s'|s,a)$ are the transition probability and the empirical transition probability from $(s,a)$ to $s'$ in episode $k$, respectively.
+
+For any risk level $\alpha \in (0,1]$, function $V: \cS \mapsto \R$, $k>0$ and $(s',s,a) \in \cS \times \cS \times \cA$, $\beta^{\alpha,V}(s'|s,a)$ and $\hat{\beta}^{k;\alpha,V}(s'|s,a)$ are the conditional transition probability from $(s,a)$ to $s'$ and the conditional empirical transition probability from $(s,a)$ to $s'$ in episode $k$, conditioning on transitioning to the worst $\alpha$-portion successor states $s'$ (i.e., with the lowest $\alpha$-portion values $V(s')$), respectively.
+$\mu^{\alpha,V}(s'|s,a)$ and $\hat{\mu}^{k;\alpha,V}(s'|s,a)$ denote how large the transition probability of successor state $s'$ and the empirical transition probability of successor state $s'$ in episode $k$ belong to the worst $\alpha$-portion, respectively. 
+It holds that  
+$$
+\frac{\mu^{\alpha,V}(s'|s,a)}{\alpha} = \beta^{\alpha,V}(s'|s,a) ,
+$$ 
+and 
+$$
+\frac{\hat{\mu}^{k;\alpha,V}(s'|s,a)}{\alpha} = \hat{\beta}^{k;\alpha,V}(s'|s,a) .
+$$
+%$$
+%	\sum_{s' \in \cS} \mu^{\alpha,V}(s'|s,a)=\alpha
+%$$
+%Then, for any risk level $\alpha \in (0,1]$, function $V: \cS \mapsto \R$ and $(s',s,a) \in \cS \times \cS \times \cA$,
+%\begin{align*}
+%	\cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V(s')) = & \frac{\sum_{s' \in \cS} \mu^{\alpha,V}(s'|s,a) \cdot V(s')}{\alpha} = \sum_{s' \in \cS} \beta^{\alpha,V}(s'|s,a) \cdot V(s') 
+%\end{align*}
+
+\begin{lemma}[Concentration for conditional transition probability] \label{lemma:concentration_beta} 
+	It holds that
+	\begin{align*}
+		\Pr \Bigg[ &\abr{ \hat{\beta}^{k;\alpha,V}(s'|s,a) - \beta^{\alpha,V}(s'|s,a) } \leq \frac{2}{\alpha}\sqrt{\frac{2S\log \sbr{\frac{2k^3HSA}{\delta'}}}{n_k(s,a)}} ,
+		\\ & \forall V: \cS \mapsto \R,\ \forall k>0,\ \forall (s,a) \in \cS \times \cA \Bigg] \geq 1-2\delta' .
+	\end{align*}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:concentration_beta}]
+	Using the analysis of Eq.~\eqref{eq:bound_mu_by_2p}, we have that for any risk level $\alpha \in (0,1]$, function $V: \cS \mapsto \R$, $k>0$ and $(s,a) \in \cS \times \cA$,
+	\begin{align}
+		\sum_{s' \in \cS} \abr{\hat{\mu}^{k;\alpha,V}(s'|s,a)-\mu^{\alpha,V}(s'|s,a)} \leq 2 \sum_{s' \in \cS} \abr{\hat{p}^k(s'|s,a)-p(s'|s,a)} .
+	\end{align}
+	
+	Using Eq. (55) in \citep{zanette2019tighter} (originated from \citep{weissman2003inequalities}), we have that for any fixed $k$, with probability at least $1-2 \cdot (\frac{\delta'}{2 k^2})$, for any $(s,a) \in \cS \times \cA$,
+	\begin{align*}
+		\sum_{s' \in \cS} \abr{\hat{p}^{k}(s'|s,a)-p(s'|s,a)} \leq \sqrt{\frac{2S\log \sbr{\frac{2k^3HSA}{\delta'}}}{n_k(s,a)}} ,
+	\end{align*}
+	and thus,
+	\begin{align*}
+		\sum_{s' \in \cS} \abr{\hat{\beta}^{k;\alpha,V}(s'|s,a)-\beta^{\alpha,V}(s'|s,a)}
+		= & \sum_{s' \in \cS} \abr{ \frac{\hat{\mu}^{k;\alpha,V}(s'|s,a)}{\alpha} - \frac{\mu^{\alpha,V}(s'|s,a)}{\alpha} }
+		\\
+		= & \frac{ \sum_{s' \in \cS} \abr{\hat{\mu}^{k;\alpha,V}(s'|s,a) - \mu^{\alpha,V}(s'|s,a)} }{\alpha}
+		\\
+		\leq &  \frac{ 2 \sum_{s' \in \cS} \abr{\hat{p}^k(s'|s,a)-p(s'|s,a)} }{\alpha}
+		\\
+		\leq & \frac{2}{\alpha} \sqrt{\frac{2S\log \sbr{\frac{2k^3HSA}{\delta'}}}{n_k(s,a)}}
+	\end{align*}
+	
+	By a union bound over $k=1,2,\dots$, we have
+	\begin{align*}
+		\Pr \Bigg[ & \sum_{s' \in \cS} \abr{\hat{\beta}^{k;\alpha,V}(s'|s,a)-\beta^{\alpha,V}(s'|s,a)} \leq  \frac{2}{\alpha} \sqrt{\frac{2S\log \sbr{\frac{2k^3HSA}{\delta'}}}{n_k(s,a)}} ,
+		\\ & \forall V: \cS \mapsto \R,\ \forall k>0,\ \forall (s,a) \in \cS \times \cA \Bigg]
+		\\
+		\geq & 1-2 \cdot \sum_{k=1}^{\infty} \sbr{\frac{\delta'}{2 k^2}}
+		\\
+		\geq & 1-2\delta' .
+	\end{align*}
+\end{proof}
+
+%\textbf{Concentration Events.}
+To sum up, we define the following concentration events and recall event $\cE_3$.
+\begin{align*}
+	\cF_1:= & \Bigg\{ \abr{\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V^{*}_h(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V^{*}_h(s'))} \leq \frac{H}{\alpha}\sqrt{\frac{ \log \sbr{\frac{2k^3HSA}{\delta'}} }{n_k(s,a)}} ,
+	\\ & \forall k>0,\ \forall h \in [H],\ \forall (s,a) \in \cS \times \cA \Bigg\} 
+	\\
+	\cF_2:= & \Bigg\{ \abr{\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V(s'))} \leq \frac{2H}{\alpha}\sqrt{\frac{2S\log \sbr{\frac{2k^3HSA}{\delta'}}}{n_k(s,a)}} ,
+	\\ & \forall V: \cS \mapsto [0,H],\ \forall k>0,\ \forall (s,a) \in \cS \times \cA \Bigg\} 
+	\\
+	\cF_3:= & \Bigg\{ \abr{ \hat{\beta}^{k;\alpha,V}(s'|s,a) - \beta^{\alpha,V}(s'|s,a) } \leq \frac{2}{\alpha}\sqrt{\frac{2S\log \sbr{\frac{2k^3HSA}{\delta'}}}{n_k(s,a)}} ,
+	\\ & \forall V: \cS \mapsto \R,\ \forall k>0,\ \forall (s,a) \in \cS \times \cA \Bigg\} 
+	\\
+	\cE_3:= & \Bigg\{ n_k(s,a) \geq \frac{1}{2} \sum_{k'=1}^{k-1} \sum_{h=1}^{H} w_{k'h}(s,a) - H \log \sbr{\frac{HSA}{\delta'}} ,
+	\ \forall k>0,\ \forall (s,a) \in \cS \times \cA
+	\Bigg\} 
+	\\
+	\cF:= & \cF_1 \cap \cF_2 \cap \cF_3 \cap \cE_3 
+\end{align*}
+
+
+\begin{lemma}\label{lemma:bpi_con_event}
+	Letting $\delta'=\frac{\delta}{7}$, it holds that
+	\begin{align*}
+		\Pr \mbr{\cF} \geq 1-\delta .
+	\end{align*}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:bpi_con_event}]
+	This lemma can be obtained by combining Lemmas~\ref{lemma:bpi_concentration_V_star}-\ref{lemma:concentration_beta} and \ref{lemma:con_visitation}.
+\end{proof}
+
+
+
+\subsubsection{Optimism and Estimation Error}
+
+For any $k>0$, let $\tilde{L}(k):=\log \sbr{\frac{2HSA k^3}{\delta'}}$.
+
+\begin{lemma}[Optimism and Pessimism] \label{lemma:bpi_optimism_pessimism}
+	Suppose that event $\cF$ holds. Then, for any $k>0$, $h \in [H]$ and $s \in \cS$, 
+	\begin{align*}
+		\bar{V}^k_h(s) & \geq V^{*}_h(s) ,
+		\\
+		\underline{V}^k_h(s) & \leq V^{\pi^k}_h(s) .
+	\end{align*}
+\end{lemma}
+
+\begin{proof}[Proof of Lemma~\ref{lemma:bpi_optimism_pessimism}]
+	The proof of $\bar{V}^k_h(s) \geq V^{*}_h(s)$ is similar to Lemma~\ref{lemma:optimism}.
+	Below we prove $\underline{V}^k_h(s) \leq V^{\pi^k}_h(s)$ by induction.
+	
+	First, for any $k>0$, $s \in \cS$, it holds that $\underline{V}^k_{H+1}(s) = V^{\pi^k}_{H+1}(s)=0$.
+	
+	Then, for any $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, if $\underline{Q}^k_h(s,a)=0$, $\underline{Q}^k_h(s,a) \leq Q^{\pi^k}(s,a)$ trivially holds, and otherwise,
+	\begin{align*}
+		\underline{Q}^k_h(s,a) = & r(s,a)+\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\underline{V}^k_{h+1}(s')) - \frac{4H}{\alpha}\sqrt{\frac{S\tilde{L}(k)}{n_k(s,a)}}
+		\\
+		\overset{\textup{(a)}}{\leq} & r(s,a)+\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V^{\pi^k}_{h+1}(s')) - \frac{4H}{\alpha}\sqrt{\frac{S\tilde{L}(k)}{n_k(s,a)}}
+		\\
+		\overset{\textup{(b)}}{\leq} & r(s,a)+\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V^{\pi^k}_{h+1}(s')) \\& - \sbr{ \cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V^{\pi^k}_{h+1}(s')) - \cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V^{\pi^k}_{h+1}(s')) }
+		\\
+		= & r(s,a)+\cvar^{\alpha}_{s' \sim p(\cdot|s,a)}(V^{\pi^k}_{h+1}(s')) 
+		\\
+		= & Q^{\pi^k}(s,a) ,
+	\end{align*}
+	where (a) uses the induction hypothesis, and (b) comes from Lemma~\ref{lemma:concentration_any_V}.
+	
+	Thus, we have
+	\begin{align*}
+		\underline{V}^k_h(s) = \underline{Q}^k_h(s,\pi^k_h(s)) \leq Q^{\pi^k}_h(s,\pi^k_h(s)) = V^{\pi^k}_h(s) ,
+	\end{align*}
+	which concludes the proof.
+\end{proof}
+
+
+For any risk level $\alpha \in (0,1]$, $k>0$, $h \in [H]$ and $(s',s,a) \in \cS \times \cS \times \cA$, $\hat{\beta}^{k;\alpha,\underline{V}^k_{h+1}}(s'|s,a)$ is the conditional empirical transition  probability from $(s,a)$ to $s'$ in episode $k$, conditioning on transitioning to the worst $\alpha$-portion successor states $s'$ (i.e., with the lowest $\alpha$-portion values $\underline{V}^k_{h+1}(s')$). It holds that $\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\underline{V}^k_{h+1}(s')) = \sum_{s' \in \cS} \hat{\beta}^{k;\alpha,\underline{V}^k_{h+1}}(s'|s,a) \cdot \underline{V}^k_{h+1}(s')$.
+
+\begin{lemma}[Estimation Error] \label{lemma:estimate_error}
+	Suppose that event $\cF$ holds. Then, for any $k>0$, 
+	\begin{align*}
+		V^{*}_1(s_1)-V^{\pi^k}_1(s_1) \leq J^k_1(s_1) .
+	\end{align*}
+\end{lemma}
+
+\begin{proof}[Proof of Lemma~\ref{lemma:estimate_error}]
+	In the following, we prove by induction that for any $k>0$, $h \in [H]$ and $s \in \cS$,
+	\begin{align}
+		\bar{V}^k_h(s)-\underline{V}^k_h(s) \leq J^k_h(s) . \label{eq:bpi_est_err_induction}
+	\end{align}
+	
+	First, for any $k>0$ and $s \in \cS$, it holds that $\bar{V}^k_{H+1}(s)-\underline{V}^k_{H+1}(s) = J^k_{H+1}(s)=0$.
+	
+	
+	%	Let $\hat{\beta}^{k;\alpha,\underline{V}^k_{h+1}}(\cdot|s,a)$ denote the distorted distribution (re-normalized weights) when computing $\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\underline{V}^k_{h+1}(s'))$, i.e.,
+	%	\begin{align*}
+		%	\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\underline{V}^k_{h+1}(s')) = \sum_{s' \in \cS} \hat{\beta}^{k;\alpha,\underline{V}^k_{h+1}}(s'|s,a) \cdot \underline{V}^k_{h+1}(s') .
+		%	\end{align*}
+	
+	Then, for any $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, if $G^k_h(s,a)=H$, $\bar{Q}^k_h(s,a)-\underline{Q}^k_h(s,a) \leq G^k_h(s,a)$ holds trivially, and otherwise,
+	\begin{align*}
+		\bar{Q}^k_h(s,a)-\underline{Q}^k_h(s,a) = & \frac{H}{\alpha}\sqrt{\frac{\tilde{L}(k)}{n_k(s,a)}} + \frac{4H}{\alpha}\sqrt{\frac{S \tilde{L}(k)}{n_k(s,a)}} 
+		\\ & + \cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\bar{V}^k_{h+1}(s')) - \cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\underline{V}^k_{h+1}(s')) 
+		\\
+		\overset{\textup{(a)}}{\leq} & \frac{H\sqrt{\tilde{L}(k)}(1+4\sqrt{S})}{\alpha \sqrt{n_k(s,a)}} + \hat{\beta}^{k;\alpha,\underline{V}^k_{h+1}}(\cdot|s,a)^\top \sbr{\bar{V}^k_{h+1}-\underline{V}^k_{h+1}}
+		\\
+		\overset{\textup{(b)}}{\leq} & \frac{H\sqrt{\tilde{L}(k)}(1+4\sqrt{S})}{\alpha \sqrt{n_k(s,a)}} + \hat{\beta}^{k;\alpha,\underline{V}^k_{h+1}}(\cdot|s,a)^\top J^k_{h+1} 
+		\\
+		= & G^k_h(s,a) ,
+	\end{align*}
+	where (a) uses Lemma~\ref{lemma:cvar_increase_V} with empirical transition probability $\hat{p}^k(\cdot|s,a)$, conditional empirical transition probability $\hat{\beta}^{k;\alpha,\underline{V}^k_{h+1}}(\cdot|s,a)$, and values $\bar{V}^k_{h+1},\underline{V}^k_{h+1}$, and (b) is due to the induction hypothesis.
+	
+	Thus, 
+	\begin{align*}
+		\bar{V}^k_h(s)-\underline{V}^k_h(s)=\bar{Q}^k_h(s,\pi^k_h(s))-\underline{Q}^k_h(s,\pi^k_h(s)) \leq G^k_h(s,\pi^k_h(s)) = J^k_h(s) ,
+	\end{align*}
+	which completes the proof of Eq.~\eqref{eq:bpi_est_err_induction}.
+	
+	Hence, for any $k>0$,
+	\begin{align*}
+		\bar{V}^k_1(s_1)-\underline{V}^k_1(s_1) \leq J^k_1(s_1) .
+	\end{align*}
+	
+	Using Lemma~\ref{lemma:bpi_optimism_pessimism}, we have
+	\begin{align*}
+		V^{*}_1(s)-V^{\pi^k}_1(s_1) \leq \bar{V}^k_1(s_1)-\underline{V}^k_1(s_1) \leq J^k_1(s_1) .
+	\end{align*}
+	
+\end{proof}
+
+
+
+\subsubsection{Proof of Theorem~\ref{thm:bpi_ub}}
+
+
+\begin{proof}[Proof of Theorem~\ref{thm:bpi_ub}]
+	Suppose that event $\cF$ holds.
+	
+	First, we prove the correctness.
+	Using Lemma~\ref{lemma:estimate_error}, when algorithm $\algcvarbpi$ stops, we have
+	\begin{align*}
+		V^{*}_1(s_1)-V^{\pi^k}_1(s_1) \leq J^k_1(s_1) \leq \varepsilon .
+	\end{align*}
+	Thus, the output policy $\pi^k$ is $\varepsilon$-optimal.
+	
+	Next, we prove the sample complexity.
+	
+	%	Let $\hat{w}^{\cvar,\alpha,\underline{V}^k}_{kh}(s,a)$ denote the distorted probability (weight) of visiting $(s,a)$ at step $h$ in episode $k$ under the $\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(\underline{V}^k_{h+1}(s'))$ transition metric.
+	
+	
+	%	Recall that for any $k>0$ and $(s',s,a) \in \cS \times \cS \times \cA$, $\hat{p}^k(s'|s,a)$ is the empirical transition probability from $(s,a)$ to $s'$. 
+	%	For any $k>0$, risk level $\alpha \in (0,1]$, function $V: \cS \mapsto \R$ and $(s',s,a) \in \cS \times \cS \times \cA$, $\hat{\beta}^{k;\alpha,V}(s'|s,a)$ is the distorted (conditional) empirical transition  probability from $(s,a)$ to $s'$, conditioning on transitioning to the worst $\alpha$-portion successor states $s'$ (i.e., with the lowest $\alpha$-portion values $V(s')$). It holds that $\cvar^{\alpha}_{s' \sim \hat{p}^k(\cdot|s,a)}(V(s')) = \sum_{s' \in \cS} \hat{\beta}^{k;\alpha,V}(s'|s,a) \cdot V(s')$.
+	%	
+	%	For any $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $\hat{w}_{kh}(s,a)$ is the probability of visiting $(s,a)$ at step $h$ of episode $k$ under the empirical transition probability $\hat{p}^k(\cdot|\cdot,\cdot)$. It holds that for any $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $\hat{w}_{kh}(s,a) \in  [0,1]$ and $\sum_{(s,a)\in \cS \times \cA} \hat{w}_{kh}(s,a)=1$.
+	%	For any risk level $\alpha \in (0,1]$, $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $\hat{w}_{kh}^{CVaR,\alpha,\underline{V}^{k}}(s,a)$ is the distorted (conditional) probability of visiting $(s,a)$ at step $h$ of episode $k$, conditioning on transitioning to the worst $\alpha$-portion successor states $s'$ (i.e., with the lowest $\alpha$-portion values $\underline{V}_{h'+1}^{k}(s')$)  at each step $h'=1,\dots,h-1$. 
+	%	Intuitively,  $\hat{w}_{kh}^{CVaR,\alpha,\underline{V}^{k}}(s,a)$ is the probability of visiting $(s,a)$ at step $h$ of episode $k$ under the conditional empirical transition probability $\hat{\beta}^{k;\alpha,\underline{V}_{h'+1}^{k}}(\cdot|\cdot,\cdot)$ for each step $h'=1,\dots,h-1$. It holds that for any risk level $\alpha \in (0,1]$, $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $\hat{w}_{kh}^{CVaR,\alpha,\underline{V}^{k}}(s,a) \in [0,1]$ and $\sum_{(s,a) \in \cS \times \cA} \hat{w}_{kh}^{CVaR,\alpha,\underline{V}^{k}}(s,a)=1$.
+	
+	Unfolding $J^k_1(s_1)$, we have
+	\begin{align*}
+		J^k_1(s_1) \overset{\textup{(a)}}{=} & \min \lbr{\frac{H(1+4\sqrt{S})\sqrt{\tilde{L}(k)}}{\alpha  \sqrt{n_k(s_1,a_1)}}+ \sum_{s_2 \in \cS} \hat{\beta}^{k;\alpha,\underline{V}^k_{2}}(s_2|s_1,a_1) \cdot J^k_{2}(s_2),\ H }
+		\\
+		= & \min \Bigg\{\frac{H(1+4\sqrt{S})\sqrt{\tilde{L}(k)}}{\alpha  \sqrt{n_k(s_1,a_1)}}+ \sum_{s_2 \in \cS} \beta^{\alpha,\underline{V}^k_{2}}(s_2|s_1,a_1) \cdot J^k_{2}(s_2) \\& \qquad \quad + \sum_{s_2 \in \cS} \sbr{\hat{\beta}^{k;\alpha,\underline{V}^k_{2}}(s_2|s_1,a_1) - \beta^{\alpha,\underline{V}^k_{2}}(s_2|s_1,a_1)} \cdot J^k_{2}(s_2),\ H \Bigg\}
+		\\
+		\overset{\textup{(b)}}{\leq} & \min \Bigg\{\frac{H(1+4\sqrt{S})\sqrt{\tilde{L}(k)}}{\alpha  \sqrt{n_k(s_1,a_1)}}+ \sum_{s_2 \in \cS} \beta^{\alpha,\underline{V}^k_{2}}(s_2|s_1,a_1) \cdot J^k_{2}(s_2) \\& \qquad \quad + H \sum_{s_2 \in \cS} \abr{\sbr{\hat{\beta}^{k;\alpha,\underline{V}^k_{2}}(s_2|s_1,a_1) - \beta^{\alpha,\underline{V}^k_{2}}(s_2|s_1,a_1)}},\ H \Bigg\}
+		\\
+		\overset{\textup{(c)}}{\leq} & \min \Bigg\{\frac{H(1+4\sqrt{S})\sqrt{\tilde{L}(k)}}{\alpha  \sqrt{n_k(s_1,a_1)}}+ \sum_{s_2 \in \cS} \beta^{\alpha,\underline{V}^k_{2}}(s_2|s_1,a_1) \cdot J^k_{2}(s_2) + \frac{4H}{\alpha} \sqrt{\frac{S \cdot \tilde{L}(k)}{n_k(s_1,a_1)}},\ H \Bigg\}
+		\\
+		\overset{\textup{(d)}}{\leq} & \min \lbr{\frac{H(1+8\sqrt{S})\sqrt{\tilde{L}(k)}}{\alpha  \sqrt{n_k(s_1,a_1)}},\ H } +\sum_{s_2 \in \cS} \beta^{\alpha,\underline{V}^k_{2}}(s_2|s_1,a_1) \cdot J^k_{2}(s_2)
+		\\
+		\overset{\textup{(e)}}{\leq} & \min \lbr{\frac{H(1+8\sqrt{S})\sqrt{\tilde{L}(k)}}{\alpha  \sqrt{n_k(s_1,a_1)}},\ H } +\sum_{s_2 \in \cS} \beta^{\alpha,\underline{V}^k_{2}}(s_2|s_1,a_1) \cdot \\& \sbr{ \min \lbr{\frac{H(1+8\sqrt{S})\sqrt{\tilde{L}(k)}}{\alpha  \sqrt{n_k(s_2,a_2)}},\ H } +\sum_{s_3 \in \cS} \beta^{\alpha,\underline{V}^k_{3}}(s_3|s_2,a_2) \cdot J^k_{3}(s_3) }
+		\\
+		\overset{\textup{(f)}}{\leq} & \min \lbr{\frac{H(1+8\sqrt{S})\sqrt{\tilde{L}(k)}}{\alpha  \sqrt{n_k(s_1,a_1)}},\ H } +\sum_{s_2 \in \cS} \beta^{\alpha,\underline{V}^k_{2}}(s_2|s_1,a_1) \cdot \\& \Bigg( \min \lbr{\frac{H(1+8\sqrt{S})\sqrt{\tilde{L}(k)}}{\alpha  \sqrt{n_k(s_2,a_2)}},\ H } +\sum_{s_3 \in \cS} \beta^{\alpha,\underline{V}^k_{3}}(s_3|s_2,a_2) \cdot \\& \Bigg( \dots \sum_{s_H \in \cS} \beta^{\alpha,\underline{V}^k_{H}}(s_H|s_{H-1},a_{H-1}) \cdot \min \lbr{\frac{H(1+8\sqrt{S})\sqrt{\tilde{L}(k)}}{\alpha  \sqrt{n_k(s_H,a_H)}},\ H } \Bigg) \Bigg) 
+		\\
+		\overset{\textup{(g)}}{=} & \sum_{h=1}^{H} \sum_{(s,a) \in \cS \times \cA} w^{\cvar,\alpha,\underline{V}^k}_{kh}(s,a) \cdot \min \lbr{\frac{H(1+8\sqrt{S})\sqrt{\tilde{L}(k)}}{\alpha  \sqrt{n_k(s_H,a_H)}},\ H }
+		\\
+		\leq & \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k} w^{\cvar,\alpha,\underline{V}^k}_{kh}(s,a) \cdot \frac{H(1+8\sqrt{S})\sqrt{\tilde{L}(k)}}{\alpha  \sqrt{n_k(s,a)}} + \sum_{h=1}^{H} \sum_{(s,a) \notin \cL_k} w^{\cvar,\alpha,\underline{V}^k}_{kh}(s,a) \cdot H 
+	\end{align*}
+	Here (b) is due to that for any $k>0$, $h \in [H]$ and $s \in \cS$, $J^k_{h}(s) \in [0,H]$. (c) comes from Lemma~\ref{lemma:concentration_beta}. (e) and (f) follow from recurrently applying steps (a)-(d). (g) uses the fact that $w^{\cvar,\alpha,\underline{V}^k}_{kh}(s,a)$ is defined as the probability of visiting $(s,a)$ at step $h$ of episode $k$ under the conditional transition probability $\beta^{\alpha,\underline{V}_{h'+1}^{k}}(\cdot|\cdot,\cdot)$ for each step $h'=1,\dots,h-1$.
+	
+	Let $\tau$ denote the episode in which algorithm $\algcvarbpi$ stops ($\algcvarbpi$ will not sample any trajectory in the stopping episode $\tau$). 
+	Then, for any $k<\tau$, we have $\varepsilon < J^k_1(s_1) $. Summing over $k<\tau$, we have
+	\begin{align*}
+		(\tau-1) \cdot \varepsilon < & \sum_{k=1}^{\tau-1} J^k_1(s_1) 
+		\\
+		\leq & \sum_{k=1}^{\tau-1} \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k} w^{\cvar,\alpha,\underline{V}^k}_{kh}(s,a) \cdot \frac{H (1+8\sqrt{S}) \sqrt{\tilde{L}(k)}}{\alpha \sqrt{n_k(s,a)}} \\&+ \sum_{k=1}^{\tau-1} \sum_{h=1}^{H} \sum_{(s,a) \notin \cL_k} w^{\cvar,\alpha,\underline{V}^k}_{kh}(s,a) \cdot H
+		\\
+		\overset{\textup{(a)}}{\leq} & \frac{H (1+8\sqrt{S}) \sqrt{\tilde{L}(\tau-1)}}{\alpha} \sqrt{\sum_{k=1}^{\tau-1} \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k}  \frac{w^{\cvar,\alpha,\underline{V}^k}_{kh}(s,a)}{n_k(s,a)}} \cdot \\& \sqrt{\sum_{k=1}^{\tau-1} \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k}  w^{\cvar,\alpha,\underline{V}^k}_{kh}(s,a)}
+		\\& + \min \lbr{\frac{ 1 }{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)},\ \frac{1}{\alpha^{H-1}}}  \sbr{ 4SAH^2 \log\sbr{\frac{HSA}{\delta'}} + 5SAH^2 }
+		\\
+		\overset{\textup{(b)}}{\leq} & \frac{H (1+8\sqrt{S}) \sqrt{\tilde{L}(\tau-1)}}{\alpha} \cdot \sqrt{(\tau-1)H} \cdot \sqrt{\sum_{k=1}^{\tau-1} \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k}  \frac{w^{\cvar,\alpha,\underline{V}^k}_{kh}(s,a)}{n_k(s,a)}}  
+		\\& + \min \lbr{\frac{ 1 }{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)},\ \frac{1}{\alpha^{H-1}}}  \sbr{ 4SAH^2 \log\sbr{\frac{HSA}{\delta'}} + 5SAH^2 }
+		\\
+		\overset{\textup{(c)}}{\leq} & \frac{(1+8\sqrt{S}) H \sqrt{H \cdot \tilde{L}(\tau-1) \cdot (\tau-1)} }{\alpha} \cdot \\& \sqrt{\sum_{k=1}^{\tau-1} \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k}  \frac{w^{\cvar,\alpha,\underline{V}^k}_{kh}(s,a)}{w_{kh}(s,a)} \cdot \frac{w_{kh}(s,a)}{n_k(s,a)} \indicator{w_{kh}(s,a) \neq 0} } 
+		\\& + \min \lbr{\frac{ 1 }{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)},\ \frac{1}{\alpha^{H-1}}}  \sbr{ 4SAH^2 \log\sbr{\frac{HSA}{\delta'}} + 5SAH^2 }
+		\\
+		\leq & \frac{(1+8\sqrt{S}) H \!\sqrt{H \!\cdot\! \tilde{L}(\tau-1) \!\cdot\! (\tau-1)} }{\alpha} \!\cdot\! \min \Bigg\{\! \frac{ 1 }{\sqrt{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)}}, \frac{1}{\sqrt{\alpha^{H-1}}} \!\Bigg\} \cdot \\& \sqrt{\sum_{k=1}^{\tau-1} \sum_{h=1}^{H} \sum_{(s,a) \in \cL_k} \frac{w_{kh}(s,a)}{n_k(s,a)} } + \min \lbr{\frac{ 1 }{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)},\ \frac{1}{\alpha^{H-1}}} \cdot\\&  \sbr{ 4SAH^2 \log\sbr{\frac{HSA}{\delta'}} + 5SAH^2 }
+		\\
+		\overset{\textup{(d)}}{\leq} & \frac{(1+8\sqrt{S})H\sqrt{H \cdot \tilde{L}(\tau-1) \cdot (\tau-1)}}{\alpha } \min \Bigg\{\frac{ 1 }{\sqrt{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)}}, \frac{1}{\sqrt{\alpha^{H-1}}} \Bigg\} \cdot\\& 2 \sqrt{SA \tilde{L}(\tau-1)} 
+		+ \min \lbr{\frac{ 1 }{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)},\ \frac{1}{\alpha^{H-1}}}  \cdot \\& \sbr{ 4SAH^2 \log\sbr{\frac{HSA}{\delta'}} + 5SAH^2 }
+		\\
+		\leq & \min \lbr{\frac{ 1 }{\sqrt{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)}},\ \frac{1}{\sqrt{\alpha^{H-1}}} } \frac{18SH \cdot \tilde{L}(\tau-1) \sqrt{HA(\tau-1)}}{\alpha } \\& + \min \lbr{\frac{ 1 }{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)},\ \frac{1}{\alpha^{H-1}}}  \sbr{ 4SAH^2 \log\sbr{\frac{HSA}{\delta'}} + 5SAH^2 } ,
+	\end{align*}
+	where (a) is due to Lemma~\ref{lemma:insufficient_visit}, (b) uses the fact that for any risk level $\alpha \in (0,1]$, $k>0$ and $h \in [H]$, $\sum_{(s,a) \in \cS \times \cA} w_{kh}^{CVaR,\alpha,\underline{V}^{k}}(s,a)=1$, (c) comes from Lemma~\ref{lemma:zero_w_impliy_zero_w_cvar}, and (d) is due to Lemma~\ref{lemma:standard_visitation}.
+	
+	
+	Thus, when $\log\sbr{\frac{HSA}{\delta'}} \geq 1$, we have
+	\begin{align*}
+		\tau-1 \leq & \!\min\! \Bigg\{\!\frac{ 1 }{\sqrt{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)}}, \frac{1}{\sqrt{\alpha^{H-1}}} \!\Bigg\} \frac{18SH\sqrt{HA}}{\varepsilon \alpha } \!\cdot\! \sqrt{\tau-1} \!\cdot\! \log\sbr{\frac{2HSA(\tau-1)^3}{\delta'}} \\& + \min \lbr{\frac{ 1 }{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)},\ \frac{1}{\alpha^{H-1}}}  \frac{ 4SAH^2 \log\sbr{\frac{HSA}{\delta'}} + 5SAH^2  }{\varepsilon} 
+		\\
+		\leq & \!\min\! \Bigg\{\!\frac{ 1 }{\sqrt{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)}}, \frac{1}{\sqrt{\alpha^{H-1}}} \!\Bigg\} \frac{54SH\sqrt{HA}}{\varepsilon \alpha } \!\cdot\! \sqrt{\tau-1} \!\cdot\! \log\sbr{\frac{2HSA(\tau-1)}{\delta'}} \\& + \min \lbr{\frac{ 1 }{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)},\ \frac{1}{\alpha^{H-1}}} \frac{ 9SAH^2 }{\varepsilon} \log\sbr{\frac{HSA}{\delta'}}
+	\end{align*}
+	
+	Using Lemma~\ref{lemma:technical_tool_fast_active} with $A=1$, $B=0$, $C= \min \{\frac{ 1 }{\sqrt{\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)}},\ \frac{1}{\sqrt{\alpha^{H-1}}} \} \frac{54SH\sqrt{HA}}{\varepsilon \alpha }$, $D= \min \{\frac{ 1 }{\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)},\ \frac{1}{\alpha^{H-1}} \} \frac{ 9SAH^2 }{\varepsilon} $, $E=0$, $\beta=\frac{2HSA}{\delta'}$ and $T=\tau-1$, and recalling that algorithm $\algcvarbpi$ does not sample any trajectory in the stopping episode $\tau$, we have that the number of used trajectories is bounded by
+	\begin{align*}
+		\tau-1 = O \Bigg( & \min \Bigg\{\frac{ 1 }{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)},\ \frac{1}{\alpha^{H-1}} \Bigg\} \frac{ H^3 S^2 A}{\varepsilon^2 \alpha^2 } \cdot \\& \log^2 \Bigg( \min \Bigg\{\frac{ 1 }{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)},\ \frac{1}{\alpha^{H-1}} \Bigg\} \frac{HSA}{ \varepsilon \alpha \delta } \Bigg) \Bigg) .
+	\end{align*}
+\end{proof}
+
+
+
+\subsection{Sample Complexity Lower Bound}\label{apx:lb_bpi} 
+
+Below we present the sample complexity lower bound for Iterated CVaR RL-BPI and provide its proof.
+
+We say algorithm $\cA$ is $(\delta,\varepsilon)$-correct if $\cA$ returns an $\varepsilon$-optimal policy $\hat{\pi}$ such that
+$
+V^{\hat{\pi}}_1(s_1) \geq V^{*}_1(s_1) - \varepsilon 
+$ 
+with probability $1-\delta$.
+
+\begin{theorem}[Sample Complexity Lower Bound] \label{thm:bpi_lb}
+	There exists an instance of Iterated CVaR RL-BPI, where $\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s) > \alpha^{H-1}$ and the number of trajectories used by any $(\delta,\varepsilon)$-correct algorithm is at least 
+	\begin{align*}
+		\Omega \Bigg( \frac{ H^2 A}{\varepsilon^2 \alpha \min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)} \log \sbr{\frac{1}{\delta}} \Bigg) .
+	\end{align*}
+	In addition, there also exists an instance of Iterated CVaR RL-BPI, where $\alpha^{H-1} > \min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)$ and the number of trajectories used by any $(\delta,\varepsilon)$-correct algorithm is at least 
+	\begin{align*}
+		\Omega \Bigg( \frac{A}{\alpha^{H-1} \varepsilon^2} \log \sbr{\frac{1}{\delta}} \Bigg) .
+	\end{align*}
+\end{theorem}
+
+Theorem~\ref{thm:bpi_lb} corroborates that when $\alpha$ is small, the factor $\min_{\pi,h,s:\ w_{\pi,h}(s)>0} w_{\pi,h}(s)$ is unavoidable in general. This reveals the intrinsic hardness of Iterated CVaR RL, i.e., when the agent is highly risk-sensitive, she needs to spend a number of trajectories on exploring critical but hard-to-reach states in order to identify an optimal policy.
+
+\begin{proof}[Proof of Theorem~\ref{thm:bpi_lb}]
+	This proof uses a similar analytical procedure as Theorem 2 in \citep{dann2015sample}.
+	
+	First, we consider the instance in Figure~\ref{fig:lower_bound} as in the proof of Theorem~\ref{thm:cvar_rm_lb}, where $\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s) > \alpha^{H-1}$. Below we prove that on this instance any algorithm must suffer a $O( \frac{ 1 }{\min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)} \cdot \frac{H^3 S^2 A}{\varepsilon^2 \alpha^2} \log (\frac{1}{\delta}) )$ regret.
+	
+	Fix an algorithm $\cA$. 
+	Define $\cE_{s_n}:=\{ \hat{\pi}(s_n)=a_J \}$ as the event that the output policy $\hat{\pi}$ of algorithm $\cA$ chooses the optimal action in state $s_n$.
+	
+	Using the similar analysis as in the proof of Theorem~\ref{thm:cvar_rm_lb} (Eq.~\eqref{eq:lb_proof_suboptimality}), we have
+	\begin{align*}
+		V^{*}_1(s_1)-V^{\pi}_1(s_1) = & 0.6 (H-n) \cdot \frac{\eta}{\alpha} \cdot  (1-\indicator{ \cE_{s_n} }) .
+	\end{align*}
+	
+	For $\pi$ to be $\varepsilon$-optimal, we need
+	\begin{align*}
+		\varepsilon \geq V^{*}_1(s_1)-V^{\pi}_1(s_1) =  0.6 (H-n) \cdot \frac{\eta}{\alpha} \cdot  (1-\indicator{ \cE_{s_n} })  ,
+	\end{align*}
+	which is equivalent to
+	\begin{align*}
+		\indicator{ \cE_{s_n} } \geq 1- \frac{\varepsilon \alpha}{0.6 (H-n) \cdot \eta} .
+	\end{align*}
+	
+	Let $\eta=\frac{8 e^4 \varepsilon \alpha}{0.6c_0  (H-n)}$ for some constant $c_0$ and small enough $\varepsilon$. Then, for $\pi$ to be $\varepsilon$-optimal, we need
+	\begin{align*}
+		\indicator{ \cE_{s_n} } \geq 1-\frac{c_0}{8e^4} .
+	\end{align*}
+	
+	Let $\phi:=1-\frac{c_0}{8e^4}$.
+	For algorithm $\cA$ to be $(\varepsilon,\delta)$-correct, we need
+	\begin{align*}
+		1-\delta \leq & \Pr[ V^{*}-V^{\pi} \geq \varepsilon]
+		\\
+		\leq & \Pr[\indicator{ \cE_{s_n} } \geq \phi]  
+		\\
+		\leq & \frac{\ex[\cE_{s_n}]}{\phi}
+		\\
+		\leq & \frac{1}{\phi} \Pr[\cE_{s_n}] ,
+	\end{align*} 
+	which is equivalent to
+	\begin{align*}
+		\Pr[\bar{\cE}_{s_n}] = 1- \Pr[\cE_{s_n}] \leq  1-\phi+\phi \delta .
+	\end{align*}
+	
+	Recall that $0<\alpha<\frac{1}{3}$. For any $j \in [A]$, $\kl(p_{unif}(s_n,a_j)\|p_j(s_n,a_j)) = \kl(\bernoulli(\alpha)\|\bernoulli(\alpha-\eta)) \leq \frac{\eta^2}{(\alpha-\eta) (1-\alpha+\eta)} \leq \frac{c_1 \cdot \eta^2}{\alpha}$ for some constant $c_1$ and small enough $\eta$.
+	Let $V_{s_n}$ be the number of times that algorithm $\cA$ visited state $s_n$.
+	To ensure $\Pr[\bar{\cE}_{s_n}]  \leq 1-\phi+\phi \delta$, we need 
+	\begin{align*}
+		\ex[V_{s_n}] \geq & \sum_{j=1}^{A} \frac{1}{\kl(p_{unif}(s_n,a_j)\|p_j(s_n,a_j))} \log \sbr{\frac{c_2}{1-\phi+\phi \delta}}
+		\\
+		\geq & \frac{\alpha A}{c_1 \cdot \eta^2} \log \sbr{\frac{c_2}{1-\phi+\phi \delta}}
+		\\
+		= & \frac{\alpha A \cdot 0.6^2 c_0^2 (H-n)^2}{c_1 \cdot 64 e^8 \varepsilon^2 \alpha^2} \log \sbr{\frac{c_2}{\frac{c_0}{8e^4} + \delta}} 
+	\end{align*}
+	for some constant $c_2$.
+	
+	
+	Let $c_0$ be a small constant such that $\frac{c_0}{8e^4} < \delta$. Let $w(s_n)$ denote the probability of visiting $s_n$ in an episode, and this probability is the same for all policies. 
+	Let $\tau$ denote the number of trajectories required by $\cA$ to be $(\varepsilon,\delta)$-correct.
+	Then, $\tau$ must satisfy
+	\begin{align*}
+		\tau \geq & \frac{A \cdot 0.6^2 c_0^2  (H-n)^2}{c_1 \cdot 64 e^8 \varepsilon^2 \alpha \cdot w(s_n)} \log \sbr{\frac{c_2}{\frac{c_0}{8e^4} + \delta}}
+		\\
+		= & \Omega \sbr{ \frac{ H^2 A}{\varepsilon^2 \alpha \cdot w(s_n)} \log \sbr{\frac{1}{\delta}} } .
+	\end{align*}
+	
+	Recall that $n<\frac{1}{2}H$ and $0<\alpha<\mu<\frac{1}{3}$.
+	Thus, in the constructed instance (Figure~\ref{fig:lower_bound}), we have that $\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)=w(s_n)=\mu^{n-1} > \alpha^{H-1}$, and
+	\begin{align*}
+		\tau = & \Omega \sbr{ \frac{ H^2 A}{\varepsilon^2 \alpha \cdot \min \limits_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)} \log \sbr{\frac{1}{\delta}} } .
+	\end{align*}
+	
+	Next, we consider the instance in Figure~\ref{fig:lower_bound_alpha_H} as in the proof of Theorem~\ref{thm:cvar_rm_lb}, where $\alpha^{H-1}>\min_{\begin{subarray}{c}\pi,h,s:\  w_{\pi,h}(s)>0\end{subarray}} w_{\pi,h}(s)$. Below we prove that on this instance any algorithm must suffer a $O( \frac{1}{\alpha^{H-1}} \cdot \frac{H^3 S^2 A}{\varepsilon^2 \alpha^2} \log (\frac{1}{\delta}) )$ regret.
+	
+	%	Fix an algorithm $\cA$. 
+	Define $\cE_{s_n}:=\{ \hat{\pi}(s_n)=a_J \}$ as the event that the output policy $\hat{\pi}$ of algorithm $\cA$ chooses the optimal action in state $s_n$.
+	
+	Using the similar analysis as in the proof of Theorem~\ref{thm:cvar_rm_lb} (Eq.~\eqref{eq:lb_proof_suboptimality_2}), we have
+	\begin{align*}
+		V^{*}_1(s_1)-V^{\pi}_1(s_1) = & \frac{0.6\eta}{\alpha} \cdot  (1-\indicator{ \cE_{s_n} }) .
+	\end{align*}
+	
+	For $\pi$ to be $\varepsilon$-optimal, we need
+	\begin{align*}
+		\varepsilon \geq V^{*}_1(s_1)-V^{\pi}_1(s_1) =  \frac{0.6\eta}{\alpha} \cdot  (1-\indicator{ \cE_{s_n} })  ,
+	\end{align*}
+	which is equivalent to
+	\begin{align*}
+		\indicator{ \cE_{s_n} } \geq 1- \frac{\varepsilon \alpha}{0.6 \eta} .
+	\end{align*}
+	
+	Let $\eta=\frac{8 e^4 \varepsilon \alpha}{0.6c_0}$ for some constant $c_0$ and small enough $\varepsilon$. Then, for $\pi$ to be $\varepsilon$-optimal, we need
+	\begin{align*}
+		\indicator{ \cE_{s_n} } \geq 1-\frac{c_0}{8e^4} .
+	\end{align*}
+	
+	Let $\phi:=1-\frac{c_0}{8e^4}$.
+	For algorithm $\cA$ to be $(\varepsilon,\delta)$-correct, we need
+	\begin{align*}
+		1-\delta \leq & \Pr[ V^{*}-V^{\pi} \geq \varepsilon]
+		\\
+		\leq & \Pr[\indicator{ \cE_{s_n} } \geq \phi]  
+		\\
+		\leq & \frac{\ex[\cE_{s_n}]}{\phi}
+		\\
+		\leq & \frac{1}{\phi} \Pr[\cE_{s_n}] ,
+	\end{align*} 
+	which is equivalent to
+	\begin{align*}
+		\Pr[\bar{\cE}_{s_n}] = 1- \Pr[\cE_{s_n}] \leq  1-\phi+\phi \delta .
+	\end{align*}
+	
+	Recall that $0<\alpha<\frac{1}{4}$. For any $j \in [A]$, $\kl(p_{unif}(s_n,a_j)\|p_j(s_n,a_j)) = \kl(\bernoulli(\alpha)\|\bernoulli(\alpha-\eta)) \leq \frac{\eta^2}{(\alpha-\eta) (1-\alpha+\eta)} \leq \frac{c_1 \cdot \eta^2}{\alpha}$ for some constant $c_1$ and small enough $\eta$.
+	Let $V_{s_n}$ be the number of times that algorithm $\cA$ visited state $s_n$.
+	To ensure $\Pr[\bar{\cE}_{s_n}]  \leq 1-\phi+\phi \delta$, we need 
+	\begin{align*}
+		\ex[V_{s_n}] \geq & \sum_{j=1}^{A} \frac{1}{\kl(p_{unif}(s_n,a_j)\|p_j(s_n,a_j))} \log \sbr{\frac{c_2}{1-\phi+\phi \delta}}
+		\\
+		\geq & \frac{\alpha A}{c_1 \cdot \eta^2} \log \sbr{\frac{c_2}{1-\phi+\phi \delta}}
+		\\
+		= & \frac{\alpha A \cdot 0.6^2 c_0^2 }{c_1 \cdot 64 e^8 \varepsilon^2 \alpha^2} \log \sbr{\frac{c_2}{\frac{c_0}{8e^4} + \delta}} 
+	\end{align*}
+	for some constant $c_2$.
+	
+	
+	Let $c_0$ be a small constant such that $\frac{c_0}{8e^4} < \delta$. Let $w(s_n)$ denote the probability of visiting $s_n$ in an episode, and this probability is the same for all policies. 
+	Let $\tau$ denote the number of trajectories required by $\cA$ to be $(\varepsilon,\delta)$-correct.
+	Then, $\tau$ must satisfy
+	\begin{align*}
+		\tau \geq & \frac{A \cdot 0.6^2 c_0^2 }{c_1 \cdot 64 e^8 \varepsilon^2 \alpha \cdot w(s_n)} \log \sbr{\frac{c_2}{\frac{c_0}{8e^4} + \delta}}
+		\\
+		= & \Omega \sbr{ \frac{ A}{\varepsilon^2 \alpha \cdot w(s_n)} \log \sbr{\frac{1}{\delta}} } .
+	\end{align*}
+	
+	Recall that $n=H-1$.
+	Thus, in the constructed instance (Figure~\ref{fig:lower_bound_alpha_H}), we have that $w(s_n)=\alpha^{n-1}=\alpha^{H-2}$, and
+	\begin{align*}
+		\tau = & \Omega \sbr{ \frac{ A}{\varepsilon^2 \alpha \cdot \alpha^{H-2} \log \sbr{\frac{1}{\delta}} } }
+		\\
+		= & \Omega \sbr{ \frac{ A}{\varepsilon^2 \alpha^{H-1} \log \sbr{\frac{1}{\delta}} } } .
+	\end{align*}
+\end{proof}
+
+
+
+\section{Proofs for Worst Path RL}
+
+In this section, we provide the proofs of regret upper and lower bounds (Theorems~\ref{thm:min_regret_ub} and \ref{thm:min_regret_lb}) for Worst Path RL.
+
+\subsection{Proofs of Regret Upper Bound}
+
+%In order to prove the regret upper bound, we first introduce the following lemmas (Lemmas~\ref{lemma:bernoulli_upsilon(s,a)}-\ref{lemma:min_con_event}) and define concentration event $\cG$.
+
+\subsubsection{Concentration}
+
+Recall that for any $k>0$ and $(s,a) \in \cS \times \cA$, $n_k(s,a)$ is the number of times that $(s,a)$ was visited before episode $k$.
+For any $k>0$ and $(s',s,a)\in \cS \times \cS \times \cA$, let $n_k(s',s,a)$ denote the number of times that $(s,a)$ was visited and transitioned to $s'$ before episode $k$.
+
+For any policy $\pi$ and $(s,a)\in \cS \times \cA$, let $\upsilon_{\pi}(s,a)$ and $\upsilon_{\pi}(s)$ denote the probabilities that $(s,a)$ and $s$ are visited at least once in an episode under policy $\pi$, respectively. 
+
+\begin{lemma} \label{lemma:bernoulli_upsilon(s,a)}
+	It holds that
+	\begin{align*}
+		\Pr \mbr{n_k(s,a) \geq \frac{1}{2} \sum_{k'=1}^{k-1} \upsilon_{\pi^{k'}}(s,a) - \log \sbr{\frac{SA}{\delta'}}, \ \forall k>0,\ \forall (s,a) \in \cS \times \cA} \geq 1-\delta'
+	\end{align*}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:bernoulli_upsilon(s,a)}]
+	For any $k$ and $(s,a) \in \cS \times \cA$, conditioning on the filtration generated by episodes $1,\dots,k-1$, whether the algorithm visited $(s,a)$ at least once in episode $k$ is a Bernoulli random variable with success probability $\upsilon_{\pi^k}(s,a)$.
+	Then, using Lemma F.4 in \citep{dann2017unifying}, we can obtain this lemma.
+\end{proof}
+
+%For any policy $\pi$, let $w_{\pi, h}(s,a)$ denote the probability of visiting $(s,a)$ at step $h$ under policy $\pi$. Let $\upsilon_{\pi}(s,a):=\sum_{h=1}^{H} w_{\pi, h}(s,a)$. 
+%
+%Using Lemma~\ref{lemma:con_visitation}, we have that for any $k$ and $(s,a) \in \cS \times \cA$,
+%\begin{align}
+%n_k(s,a) \geq & \frac{1}{2} \sum_{k'=1}^{k-1} \sum_{h=1}^{H} w_{k'h}(s,a) - H \log \sbr{\frac{HSA}{\delta'}} 
+%\nonumber\\
+%= & \frac{1}{2} \sum_{k'=1}^{k-1} w_{\pi^{k'}}(s,a) - H \log \sbr{\frac{HSA}{\delta'}} . \label{eq:n_k(s,a)_for_min_ub}
+%\end{align}
+
+\begin{lemma} \label{lemma:bernoulli_p(s'|s,a)}
+	It holds that
+	\begin{align*}
+		\Pr \Bigg\{ n_k(s',s,a) \geq & \frac{1}{2} \cdot n_k(s,a) \cdot p(s'|s,a) - 2 \log \sbr{\frac{SA}{\delta'}}, 
+		\\ & \forall k>0,\ \forall (s',s,a) \in \cS \times \cS \times \cA \Bigg\} \geq 1-\delta' .
+	\end{align*}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:bernoulli_p(s'|s,a)}]
+	For any $k$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, conditioning on the event $\{s^k_h=s,a^k_h=a\}$, the indicator $\indicator{s^k_{h+1}=s'}$ is a Bernoulli random variable with success probability $p(s'|s,a)$.
+	Then, using Lemma F.4 in \citep{dann2017unifying}, we can obtain this lemma.
+\end{proof}
+
+%\textbf{Concentration Events.}
+To summarize, we define some concentration events which will be used in the following proof.
+\begin{align*}
+	\cG_1:= & \Bigg\{ n_k(s,a) \geq \frac{1}{2} \sum_{k'=1}^{k-1} \upsilon_{\pi^{k'}}(s,a) - \log \sbr{\frac{SA}{\delta'}}, \ \forall k>0,\ \forall (s,a) \in \cS \times \cA \Bigg\} 
+	\\
+	\cG_2:= & \Bigg\{  n_k(s',s,a) \geq \frac{1}{2} \cdot n_k(s,a) \cdot p(s'|s,a) - 2 \log \sbr{\frac{SA}{\delta'}}, \ 
+	\forall k>0,\ \forall (s',s,a) \in \cS \times \cS \times \cA \Bigg\} 
+	\\
+	\cG:= & \cG_1 \cap \cG_2 
+\end{align*}
+
+
+\begin{lemma}\label{lemma:min_con_event}
+	Letting $\delta'=\frac{\delta}{2}$, it holds that
+	\begin{align*}
+		\Pr \mbr{\cG} \geq 1-\delta .
+	\end{align*}
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:min_con_event}]
+	This lemma can be obtained by combining Lemmas~\ref{lemma:bernoulli_upsilon(s,a)} and \ref{lemma:bernoulli_p(s'|s,a)}.
+\end{proof}
+
+
+
+\subsubsection{Overestimation and Good Stage}
+
+%Let $L:=\log \sbr{\frac{SA}{\delta'}}$.
+
+Recall that in Worst Path RL, for any $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $Q^{*}_h(s,a):= r(s,a)+ \min_{s' \sim p(\cdot|s,a)}(V^{*}_{h+1}(s'))$ and $V^{*}_h(s):= \max_{a \in \cA} Q^{*}_h(s,a)$. In addition, $\hat{Q}^k_h(s,a) := r(s,a)+\min_{s' \sim \hat{p}^k(\cdot|s,a)}(\hat{V}^k_{h+1}(s'))$ and $\hat{V}^k_h(s) := \max_{a \in \cA} \hat{Q}^k_h(s,a)$.
+
+\begin{lemma}[Overestimation] \label{lemma:worst_path_overest}
+	For any $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $\hat{Q}^{k}_h(s,a) \geq Q^{*}_h(s,a)$ and $\hat{V}^{k}_h(s) \geq V^{*}_h(s)$. 
+\end{lemma}
+
+\textbf{Remark.} Lemma~\ref{lemma:worst_path_overest} shows that if the Q-value of some state-action pair is not accurately estimated, it can only be overestimated (not underestimated). This feature is due to the $\min$ metric in the Worst Path RL formulation (Eq.~\eqref{eq:min_bellman}).
+
+\begin{proof}[Proof of Lemma~\ref{lemma:worst_path_overest}]
+	We prove this lemma by induction.
+	
+	%	For ease of analysis, for any $k>0$ and $(s,a) \in \cS \times \cA$, we define $\hat{Q}^k_{H+1}(s,a)=Q^{*}_{H+1}(s,a)=0$.
+	
+	For any $k>0$ and $s \in \cS$, $\hat{V}^k_{H+1}(s)=V^{*}_{H+1}(s)=0$.
+	
+	For any $k>0$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, since $r(s,a)$ is known and $\hat{V}^k_{h+1}(s) \geq V^{*}_{h+1}(s)$ (due to the induction hypothesis), if $\hat{p}^k(\cdot|s,a)$ has detected all successor states, then $\hat{Q}^{k}_h(s,a) \geq Q^{*}_h(s,a)$. Otherwise, if $\hat{p}^k(\cdot|s,a)$ has not detected all successor states, due to the property of $\min$, we also have $\hat{Q}^{k}_h(s,a) \geq Q^{*}_h(s,a)$. Therefore, we have $\hat{V}^{k}_h(s) \geq V^{*}_h(s)$, which completes the proof.
+\end{proof}
+
+\begin{lemma}[Non-increasing Estimated Value] \label{lemma:decreasing_estimated_Q_value}
+	For any $k_1,k_2>0$ such that $k_1 \leq k_2$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $\hat{Q}^{k_1}_h(s,a) \geq \hat{Q}^{k_2}_h(s,a)$ and $\hat{V}^{k_1}_h(s) \geq V^{k_2}_h(s)$. 
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{lemma:decreasing_estimated_Q_value}]
+	We prove this lemma by induction.
+	
+	For any $k_1,k_2>0$ such that $k_1 \leq k_2$ and $s \in \cS$, $\hat{V}^{k_1}_{H+1}(s) = V^{k_2}_{H+1}(s)=0$.
+	
+	For any $k_1,k_2>0$ such that $k_1 \leq k_2$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, since $r(s,a)$ is known and $\hat{V}^{k_1}_{h+1}(s) \geq V^{k_2}_{h+1}(s)$ (due to the induction hypothesis), if $\hat{p}^{k_1}(\cdot|s,a)$ has detected all successor states, then $\hat{Q}^{k_1}_h(s,a) \geq \hat{Q}^{k_2}_h(s,a)$. Otherwise, if $\hat{p}^{k_1}(\cdot|s,a)$ has not detected all successor states, due to the $\min$ metric and that $\hat{p}^{k_2}(\cdot|s,a)$ will detect more (or the same) successor states than $\hat{p}^{k_1}(\cdot|s,a)$, we also have $\hat{Q}^{k_1}_h(s,a) \geq \hat{Q}^{k_2}_h(s,a)$. Therefore, we have $\hat{V}^{k_1}_h(s) \geq V^{k_2}_h(s)$, which completes the proof.
+\end{proof}
+\textbf{Remark.} Combining Lemmas~\ref{lemma:worst_path_overest} and \ref{lemma:decreasing_estimated_Q_value}, we have that as the episode $k$ increases, the estimated value $\hat{Q}^{k}_h(s,a)$ ($\hat{V}^{k}_h(s)$) will decrease to its true value $Q^{*}_h(s,a)$ ($V^{*}_h(s)$) or keep the same.
+
+%\begin{lemma}[Accurate Estimation Stage] \label{lemma:accurate_est_stage}
+%	If there exists some episode $\bar{k}>0$ which satisfies that for any $h \in [H]$ and $(s,a) \in \cS \times \cA$, $\hat{Q}^{\bar{k}}_h(s,a)=Q^{*}_h(s,a)$, then we have that for any $k \geq \bar{k}$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $\hat{Q}^{k}_h(s,a)=Q^{*}_h(s,a)$,  $\hat{V}^{k}_h(s)=V^{*}_h(s)$, and algorithm $\algmin$ takes an optimal policy.
+%\end{lemma}
+%
+%\textbf{Remark.} Lemma~\ref{lemma:accurate_est_stage} reveals that if in some episode $\bar{k}$, algorithm $\algmin$  estimates the Q-values of all state-action pairs accurately, then hereafter, algorithm $\algmin$ will always accurately estimate the Q-values of all state-action pairs and take an optimal policy. 
+%
+%We say algorithm $\algmin$ eneters an \emph{accurate estimation stage}, if for some episode $\bar{k}$, for any $k \geq \bar{k}$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, $\hat{Q}^{k}_h(s,a)=Q^{*}_h(s,a)$.
+%
+%\begin{proof}
+%	Suppose that in episode $\bar{k}$, we have that for any $h \in [H]$ and $(s,a) \in \cS \times \cA$, $\hat{Q}^{\bar{k}}_h(s,a)=Q^{*}_h(s,a)$.
+%	
+%	In the following, we prove this lemma by induction.
+%	
+%	For any $k \geq \bar{k}$ and $s \in \cS$, $\hat{V}^k_{H+1}(s)=V^{*}_{H+1}(s)=0$ trivially holds.
+%	
+%	For any $k \geq \bar{k}$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, since $r(s,a)$ is known and $\hat{V}^k_{h+1}(s)=V^{*}_{h+1}(s)$, the inaccurate estimation of $\hat{Q}^{k}_h(s,a)$ can only come from that $p^k(\cdot|s,a)$ has not detected the successor state $s'$ which achieves the lowest value $V^{*}_{h+1}(s)$. However, since $\hat{Q}^{\bar{k}}_h(s,a)=Q^{*}_h(s,a)$, we have that $p^k(\cdot|s,a)$ has already detected the successor state $s'$ which achieves the lowest value $V^{*}_{h+1}(s)$, and due to the property of $\min$, the Q-value of $(s,a)$ will not be overestimated any more. Hence, we have $\hat{Q}^{k}_h(s,a)=Q^{*}_h(s,a)$. Furthermore, we have that algorithm $\algmin$ will take the action $a$ which maximizes $Q^{*}_h(s,a)$ in state $s$, and $\hat{V}^{k}_h(s)=V^{*}_h(s)$,  which completes the proof of the induction.
+%	
+%	Therefore, for any $k \geq \bar{k}$, algorithm $\algmin$ will take an optimal policy.
+%\end{proof}
+
+
+
+Let $\cS_*:=\{s \in \cS: v_{\pi^*}(s)>0\}$ denote the set of states which are reachable for an optimal policy.
+
+\begin{lemma}[Good Stage] \label{lemma:optimal_policy_stage}
+	If there exists some episode $\bar{k}>0$ which satisfies that for any $h \in [H]$ and $s \in \cS_*$, $\hat{V}^{\bar{k}}_h(s)=V^{*}_h(s)$ and $\pi^{\bar{k}}_h(s)$ suggests an optimal action, then we have that for any $k \geq \bar{k}$, $h \in [H]$ and $s \in \cS_*$, $\hat{V}^{k}_h(s)=V^{*}_h(s)$ and $\pi^{k}_h(s)$ suggests an optimal action, and thus for any $k \geq \bar{k}$, algorithm $\algmin$ takes an optimal policy.
+\end{lemma}
+
+\textbf{Remark.} Lemma~\ref{lemma:optimal_policy_stage} reveals that if in some episode $\bar{k}$, for any step $h$ and state $s \in \cS_*$, algorithm $\algmin$ estimates the V-value accurately and chooses an optimal action, then hereafter, algorithm $\algmin$ always takes an optimal policy. 
+
+We say algorithm $\algmin$ enters a \emph{good stage}, if starting from some episode $\bar{k}$, for any $k \geq \bar{k}$, $h \in [H]$ and $s \in \cS_*$, $\hat{V}^{k}_h(s)=V^{*}_h(s)$ and $\pi^{k}_h(s)$ suggests an optimal action.
+
+\begin{proof}[Proof of Lemma~\ref{lemma:optimal_policy_stage}]
+	Suppose that in episode $\bar{k}$, we have that for any $h \in [H]$ and $s \in \cS_*$, $\hat{V}^{\bar{k}}_h(s)=V^{*}_h(s)$ and $\pi^{\bar{k}}_h(s)$ suggests an optimal action. This is equivalent to the statement that in episode $\bar{k}$, for any $h \in [H]$ and $s \in \cS_*$, for each optimal action $a$ (such that $Q^{*}_h(s,a)=V^{*}_h(s)$), $\hat{Q}^{\bar{k}}_h(s,a)=Q^{*}_h(s,a)$, and for each suboptimal action $a$ (such that $Q^{*}_h(s,a)<V^{*}_h(s)$), $Q^{*}_h(s,a) \leq \hat{Q}^{\bar{k}}_h(s,a) < V^{*}_h(s)$.
+	
+	Using Lemmas~\ref{lemma:worst_path_overest} and \ref{lemma:decreasing_estimated_Q_value}, we have that for any $h \in [H]$ and $s \in \cS_*$, as $k$ increases, $\hat{Q}^{k}_h(s,a)$ will either decrease to the true value $Q^{*}_h(s,a)$ or keep the same. Therefore, we have that for any $k \geq \bar{k}$, $h \in [H]$ and $s \in \cS_*$, for each optimal action $a$, $\hat{Q}^{\bar{k}}_h(s,a)=Q^{*}_h(s,a)$, and for each suboptimal action $a$, $Q^{*}_h(s,a) \leq \hat{Q}^{\bar{k}}_h(s,a) < V^{*}_h(s)$, which completes the proof.
+	
+	%	In the following, we prove this lemma by induction.
+	%	
+	%	For any $k \geq \bar{k}$ and $s \in \cS$, $\hat{V}^k_{H+1}(s)=V^{*}_{H+1}(s)=0$.
+	%	
+	%	For any $k \geq \bar{k}$ and $(s,a) \in \cS \times \cA$, since $\hat{Q}^k_{H}(s,a)=r(s,a)$ and $r(s,a)$ is known, we have that $\hat{Q}^{k}_{H}(s,a)=Q^{*}_{H}(s,a)$. Hence, we have that $\hat{V}^{\bar{k}}_{H}(s)=V^{*}_{H}(s)$ and $\pi^{\bar{k}}_{H}(s)$ suggests an optimal action.
+	%	
+	%	For any $k \geq \bar{k}$, $h \in [H]$ and $(s,a) \in \cS \times \cA$, since $r(s,a)$ is known and $\hat{V}^k_{h+1}(s')=V^{*}_{h+1}(s')$ for any $s' \in \cS$, the overestimation of $\hat{Q}^{k}_h(s,a)$ can only come from that $p^k(\cdot|s,a)$ has not detected the successor state $s'$ which achieves the lowest value $V^{*}_{h+1}(s')$. Then, for each optimal action $a$, since $\hat{Q}^{\bar{k}}_h(s,a)=Q^{*}_h(s,a)$, we have that $p^k(\cdot|s,a)$ has already detected the successor state $s'$ which achieves the lowest value $V^{*}_{h+1}(s')$, and thus $\hat{Q}^{k}_h(s,a)=Q^{*}_h(s,a)$. For each suboptimal action $a$, using Lemma~\ref{lemma:worst_path_overest} and the facts that $Q^{*}_h(s,a) \leq \hat{Q}^{\bar{k}}_h(s,a) < V^{*}_h(s)$ and $\hat{Q}^{k}_h(s,a)$ will not be larger than $\hat{Q}^{\bar{k}}_h(s,a)$ (due to the property of $\min$), we have $Q^{*}_h(s,a) \leq \hat{Q}^{k}_h(s,a) < V^{*}_h(s)$. Therefore, we have that $\hat{V}^{k}_h(s)=V^{*}_h(s)$ and $\pi^k_h(s)$ will suggest an optimal action, which completes the proof of the induction.
+\end{proof}
+
+
+\subsubsection{Proof of Theorem~\ref{thm:min_regret_ub}}
+
+
+\begin{proof}[Proof of Theorem~\ref{thm:min_regret_ub}]
+	Suppose that event $\cG$ holds.
+	
+	Let 
+	$$
+	\bar{T}:= \sum \limits_{(s,a)} \frac{1}{\min \limits_{\begin{subarray}{c} \pi:\  \upsilon_{\pi}(s,a)>0 \end{subarray}} \upsilon_{\pi}(s,a) \cdot \min \limits_{s' \in \supp( p(\cdot|s,a))} p(s'|s,a) } \cdot 8 \sbr{2\log\sbr{ \frac{SA}{\delta} }+1} .
+	$$ 
+	For any $(s,a) \in \cS \times \cA$, let $$
+	\bar{T}(s,a):= \frac{1}{\min \limits_{\begin{subarray}{c} \pi:\  \upsilon_{\pi}(s,a)>0 \end{subarray}} \upsilon_{\pi}(s,a) \cdot \min \limits_{s' \in \supp( p(\cdot|s,a))} p(s'|s,a) } \cdot 8 \sbr{2\log\sbr{ \frac{SA}{\delta} }+1} .
+	$$ 
+	It holds that $\bar{T}=\sum_{(s,a) \in \cS \times \cA} \bar{T}(s,a)$.
+	
+	
+	According to Lemma~\ref{lemma:optimal_policy_stage}, in order to prove Theorem~\ref{thm:min_regret_ub}, it suffices to prove that in episode $\bar{T}+1$, for any $h \in [H]$ and $s \in \cS_*$, $\hat{V}^{\bar{T}+1}_h(s)=V^{*}_h(s)$ and $\pi^{\bar{T}+1}_h(s)$ suggests an optimal action, i.e., algorithm $\algmin$ has entered the good stage in episode $\bar{T}+1$. We prove this statement by contradiction.
+	
+	Suppose that in episode $\bar{T}+1$, there exists some $h \in [H]$ and some $s \in \cS_*$ which satisfy that $\hat{V}^{\bar{T}+1}_h(s) > V^{*}_h(s)$ (the value function can only be overestimated) or $\pi^{\bar{T}+1}_h(s)$ suggests a suboptimal action. 
+	%  (due to Lemma~\ref{lemma:worst_path_overest})
+	
+	If the policy $\pi^{\bar{T}+1}$ taken in episode $\bar{T}+1$ is optimal, then there exists some $h \in [H]$, some $s \in \cS_*$ and some optimal action $a$ which satisfy that $v_{\pi^{\bar{T}+1}}(s)>0$ and $\hat{Q}^{\bar{T}+1}_h(s,a)>Q^{*}_h(s,a)$.
+	Otherwise, if the policy $\pi^{\bar{T}+1}$ taken in episode $\bar{T}+1$ is suboptimal, then there exists some $h \in [H]$, some $s \in \cS_*$ and some suboptimal action $a$ which satisfy that $v_{\pi^{\bar{T}+1}}(s)>0$ and $\hat{Q}^{\bar{T}+1}_h(s,a)>Q^{*}_h(s,a)$.  
+	Hence, no matter which of the above cases happen, we have that there exists some $h \in [H]$ and some $(s,a) \in \cS \times \cA$ which satisfy that $v_{\pi^{\bar{T}+1}}(s,a)>0$ and $\hat{Q}^{\bar{T}+1}_h(s,a)>Q^{*}_h(s,a)$.
+	
+	Under the $\min$ metric in Worst Path RL,
+	%	under the $\min$ metric in Worst Path RL, if the Q-value of some state-action pair is not accurately estimated, it can only be overestimated (not underestimated). In addition,
+	the overestimation of a Q-value comes from the following reasons: (i) Algorithm $\algmin$ has not detected the successor state with the lowest V-value. (ii) The V-values of successor states at the next step are overestimated.
+	
+	If the overestimation of $\hat{Q}^{\bar{T}+1}_h(s,a)$ comes from the overestimation of the V-values at the next step (reason (ii)), then we have that at the next step, there exists some state-action pair whose Q-value is overestimated. Then, we can trace the overestimation from $(s,a)$ at step $h$ to some $(s',a')$ at some step $h' \geq h$, which satisfies that $\hat{Q}^{\bar{T}+1}_{h'}(s',a') > Q^{*}_{h'}(s',a')$ and $\hat{V}^{\bar{T}+1}_{h'+1}(x)=V^{*}_{h'+1}(x)$ for any $x \in \cS$. In other words, the overestimation of $\hat{Q}^{\bar{T}+1}_{h'}(s',a')$ is purely due to that at $(s',a')$, algorithm $\algmin$ has not detected the successor state $x$ with the lowest value $V^{*}_{h'+1}(x)$.
+	
+	
+	%  let $\bar{T}(s,a)= \sum_{k=1}^{\bar{T}} \mathbbm{1} \{ w^{\pi^k}(s,a)>0 \}$ be the number of episodes that $(s,a)$ can be visited up to episode $\bar{T}+1$, and
+	
+	For any $k>0$ and $(s,a) \in \cS \times \cA$, let $\cT^k(s,a)=\{k' < k: \upsilon_{\pi^{k'}}(s,a)>0\}$ denote the set of episodes where $(s,a)$ is reachable before episode $k$. 
+	We consider the following two cases according to whether $|\cT^{\bar{T}+1}(s',a')|$ is large enough to detect all successor states of $(s',a')$.
+	
+	\paragraph{Case (1):} If $|\cT^{\bar{T}+1}(s',a')| \geq \bar{T}(s',a')$, using Lemma~\ref{lemma:bernoulli_upsilon(s,a)}, we have 
+	\begin{align*}
+		n_k(s',a') \geq & \frac{1}{2} \sum_{k'=1}^{k-1} \upsilon_{\pi^{k'}}(s',a') - \log \sbr{\frac{SA}{\delta'}}
+		\\
+		\geq & \frac{1}{2} \cdot \bar{T}(s',a') \cdot \min \limits_{\begin{subarray}{c} \pi:\  \upsilon_{\pi}(s',a')>0 \end{subarray}} \upsilon_{\pi}(s',a')
+		-  \log\sbr{ \frac{SA}{\delta} }
+		\\
+		= & \frac{ 4 \sbr{2\log\sbr{ \frac{SA}{\delta} }+1} }{\min \limits_{s' \in \supp( p(\cdot|s,a))} p(s'|s,a) } -  \log\sbr{ \frac{SA}{\delta} }
+		\\
+		\geq & \frac{ 2 \sbr{2\log\sbr{ \frac{SA}{\delta} }+1} }{\min \limits_{s' \in \supp( p(\cdot|s,a))} p(s'|s,a) }
+	\end{align*}
+	Then, using Lemma~\ref{lemma:bernoulli_p(s'|s,a)}, we have that for any $s \in \supp(p(\cdot|s',a'))$,
+	\begin{align*}
+		n_k(s,s',a') \geq & \frac{1}{2} \cdot n_k(s',a') \cdot \min \limits_{s \in \supp( p(\cdot|s',a'))} p(s|s',a') - 2 \log\sbr{ \frac{SA}{\delta} }
+		\\
+		\geq & \frac{1}{2} \cdot 2 \sbr{2\log\sbr{ \frac{SA}{\delta} }+1} - 2 \log\sbr{ \frac{SA}{\delta} }
+		\\
+		= & 1
+	\end{align*}
+	which contradicts that $\hat{Q}^{k}_{h'}(s',a')$ is overestimated.
+	
+	\paragraph{Case (2):} If $|\cT^{\bar{T}+1}(s',a')| < \bar{T}(s',a')$, we say the overestimation in episode $\bar{T}+1$ is due to the insufficient visitation on $(s',a')$. 
+	Then, among episodes $1,\dots,\bar{T}$, we exclude the episodes contained in $\cT^{\bar{T}+1}(s',a')$,  i.e., we ignore the episodes where $(s',a')$ is reachable and can be the source of the overestimation. Then, the number of excluded episodes due to $(s',a')$ is $|\cT^{\bar{T}+1}(s',a')| < \bar{T}(s',a')$.
+	
+	According to Lemma~\ref{lemma:optimal_policy_stage}, since episode $\bar{T}+1$ has not entered the good stage, for any $k \leq \bar{T}$, episode $k$ has also not entered the good stage. Then, for any $k \leq \bar{T}$, there exists some $h \in [H]$ and some $s \in \cS_*$ which satisfy that $\hat{V}^{k}_h(s) > V^{*}_h(s)$ or $\pi^{k}_h(s)$ suggests a suboptimal action. This implies that there exists some $h \in [H]$ and some $(s,a) \in \cS \times \cA$ which satisfy that $v_{\pi^{k}}(s,a)>0$ and $\hat{Q}^{k}_h(s,a)>Q^{*}_h(s,a)$.
+	
+	Consider the last episode $k$ among episodes $1,\dots, \bar{T}$ which is not excluded. Using the above argument, let $(s^k,a^k)$ denote the source of overestimation in episode $k$ which satisfies that $\hat{Q}^{k}_{h'}(s',a') > Q^{*}_{h'}(s',a')$ and $\hat{V}^{k}_{h'+1}(x)=V^{*}_{h'+1}(x)$ for any $x \in \cS$. Since we have excluded all the episodes where $(s',a')$ is reachable among episodes $1,\dots, \bar{T}$ and episode $k$ is not excluded, it holds that $(s^k,a^k) \neq (s',a')$. We repeat the above analysis on $\cT^k(s^k,a^k)$. If Case (1) happens, i.e., $|\cT^{k}(s^k,a^k)| \geq \bar{T}(s^k,a^k)$, then we can derive a contradiction and complete the proof. If Case (2) happens, i.e., $|\cT^{k}(s^k,a^k)| < \bar{T}(s^k,a^k)$, we exclude episode $k$ and the episodes contained in $\cT^{k}(s^k,a^k)$. Then, the number of excluded episodes due to $(s^k,a^k)$ among episodes $1,\dots, \bar{T}$ is at most $|\cT^{k}(s^k,a^k)| + 1 \leq |\bar{T}(s^k,a^k)|$.
+	
+	We repeat the above procedure. Once Case (1) happens, we can derive a contradiction and complete the proof. Otherwise, if Case (2) keeps happening, we will exclude the episodes due to the reachability and possible overestimation of $(s,a)$ for all $(s,a) \in \cS \times \cA$, and the total number of excluded episodes is strictly smaller than $ \sum_{(s,a) \in \cS \times \cA} \bar{T}(s,a)=\bar{T}$. Thus, there exists some episode $k_0$ among episodes $1,\dots, \bar{T}$ which satisfies that for any $(s,a) \in \cS \times \cA$, $\upsilon_{\pi^{k_0}}(s,a)=0$, which gives a contradiction. 
+\end{proof}
+
+
+\subsection{Regret Lower Bound}\label{apx:worst_path_lb}
+
+In the following, 
+%we prove the regret lower bound (Theorem~\ref{thm:min_regret_lb}) for Worst Path RL.
+we establish a regret lower bound for Worst Path RL and give its proof.
+
+To exclude trivial instance-specific algorithms and formally state our lower bound, we first define an $o(K)$-consistent algorithm as an algorithm which guarantees an $o(K)$ regret on any instance of Worst Path RL.
+
+\begin{theorem} \label{thm:min_regret_lb}
+	There exists an instance of Worst Path RL, for which the regret of any $o(K)$-consistent algorithm is at least
+	\begin{align*}
+		\Omega \Bigg( \max_{ (s,a):\  \exists h,\ a \neq \pi^{*}_h(s) } \frac{ H }{\min \limits_{ \pi:\   \upsilon_{\pi}(s,a)>0 } \upsilon_{\pi}(s,a) \cdot \min \limits_{s' \in \supp( p(\cdot|s,a))} p(s'|s,a) } \Bigg) ,
+	\end{align*}
+	where $\max_{\begin{subarray}{c} (s,a): \exists h,\ a \neq \pi^{*}_h(s) \end{subarray}}$ takes the maximum over all $(s,a)$ such that $a$ is sub-optimal in state $s$ at some step.
+\end{theorem}
+
+The intuition behind this lower bound is as follows. For a critical but hard-to-reach state $s$, any $o(K)$-consistent algorithm must explore all actions $a$ in state $s$, in order to detect their induced successor states $s'$ and distinguish the optimal action. This process incurs a regret dependent on factors $\min_{\pi: \upsilon_{\pi}(s,a)>0} \upsilon_{\pi}(s,a)$ and $\min_{s' \in \supp( p(\cdot|s,a))} p(s'|s,a)$, and hence the lower bound.
+
+
+\begin{figure} [t!]
+	\centering     
+	%	\includegraphics[width=0.8\textwidth]{fig/fig_lower_bound_min.pdf} 
+	\includegraphics[width=0.9\textwidth]{fig/instance_lb_min.pdf}
+	\caption{The instance for lower bound under the $\min$ metric (Theorem~\ref{thm:min_regret_lb}).} \label{fig:lower_bound_min} 
+\end{figure} 
+
+
+\begin{proof}[Proof of Theorem~\ref{thm:min_regret_lb}]
+	Consider the instance $\cI$ as shown in Figure~\ref{fig:lower_bound_min}:
+	
+	The action space contains two actions, i.e., $\cA=\{a_1,a_2\}$.
+	%
+	The state space is $\cS=\{s_1,s_2,\dots,s_n,x_1,x_2,x_3\}$, where $n=S-3$ and $s_1$ is the initial state. Let $H \gg S$ and $0<\alpha<\frac{1}{4}$.
+	
+	The reward functions are as follows.
+	For any $a \in \cA$, $r(x_1,a)=1$, $r(x_2,a)=0.8$ and $r(x_3,a)=0.2$. For any $i \in [n]$ and $a \in \cA$, $r(s_i,a)=0$.
+	
+	The transition distributions are as follows.
+	For any $a \in \cA$, $p(s_2|s_1,a)=\alpha$, $p(x_1|s_1,a)=1-3\alpha$, $p(x_2|s_1,a)=\alpha$ and $p(x_3|s_1,a)=\alpha$.
+	For any $i\in\{2,\dots,n-1\}$ and $a \in \cA$,
+	$p(s_{i+1}|s_i,a)=\alpha$ and $p(x_1|s_i,a)=1-\alpha$.
+	$x_1$, $x_2$ and $x_3$ are absorbing states, i.e., for any $a \in \cA$, $p(x_1|x_1,a)=1$, $p(x_2|x_2,a)=1$ and $p(x_3|x_3,a)=1$.
+	The state $s_n$ is a bandit state, which has an optimal action and a suboptimal action.
+	Let $a_*$ denote the optimal action in state $s_n$, which is uniformly drawn from $\{a_1,a_2\}$, and let $a_{sub}$ denote the other sub-optimal action in state $s_n$.
+	For the optimal action $a_*$, $p(x_2|s_n,a_*)=1$.
+	For the sub-optimal action $a_{sub}$, $p(x_2|s_n,a_{sub})=1-\alpha$ and $p(x_3|s_n,a_{sub})=\alpha$.
+	
+	
+	%We define a sub-optimal trajectory as a trajectory obtained by executing a sub-optimal policy.
+	% In an episode with a sub-optimal trajectory, an algorithm must suffer at least $\Delta_{\min}$ regret.
+	
+	Fix an $o(K)$-consistent algorithm $\cA$, which guarantees a sub-linear regret on any instance of Worst Path RL. 
+	We have that $\cA$ needs to observe the transition from $(s_n,a_{sub})$ to $x_3$ at least once.
+	%	, and 
+	%	otherwise, $\cA$ cannot distinguish whether the sub-optimal action in state $s_n$ is $a_1$ or $a_2$. This is because 
+	Otherwise, without any observation of the transition from $(s_n,a_{sub})$ to $x_3$,   $\cA$ can only trivially choose $a_1$ or $a_2$ in state $s_n$, and no matter $\cA$ chooses $a_1$ or $a_2$, it will suffer a linear regret in the counter instance where the unchosen action is optimal.
+	
+	
+	
+	Thus, any $o(K)$-consistent algorithm must observe the transition from $(s_n,a_{sub})$ to $x_3$ at least once, and needs at least
+	$$
+	\frac{1}{\upsilon_{\pi_{sub}}(s_n,a_{sub}) \cdot p(x_3|s_n,a_{sub})}
+	$$
+	episodes with sub-optimal policies. 
+	Here $\pi_{sub}$ denotes a policy which chooses $a_{sub}$ in state $s_n$, and $\upsilon_{\pi_{sub}}(s_n,a_{sub})$ denotes the probability that $(s_n,a_{sub})$ is visited at least once in an episode under policy $\pi_{sub}$.
+	
+	% (in other states, actions are homogeneous)
+	
+	Once the agent takes a sub-optimal policy in an episode, she will suffer regret $0.6(H-n)$ in this episode.
+	
+	Therefore, $\cA$ needs to suffer at least 
+	$$
+	\Omega \sbr{\frac{1}{\upsilon_{\pi_{sub}}(s_n,a_{sub}) \cdot p(x_3|s_n,a_{sub})} \cdot 0.6(H-n)}
+	$$
+	regret in expectation.
+	
+	
+	Since in the constructed instance (Figure~\ref{fig:lower_bound_min})
+	\begin{align*}
+		%	&\min \limits_{\begin{subarray}{c} \pi: \\ \upsilon_{\pi}(s_n,a_{sub})>0 \end{subarray}} \upsilon_{\pi}(s_n,a_{sub})=\upsilon_{\pi_{sub}}(s_n,a_{sub}) ,
+		%	\\
+		%	&\min \limits_{s' \in \supp( p(\cdot|s_n,a_{sub}))} p(s'|s_n,a_{sub})=p(x_3|s_n,a_{sub}) ,
+		%	\\
+		&\max_{\begin{subarray}{c} (s,a):\ \exists h,\ a \neq \pi^{*}_h(s) \end{subarray}} \frac{1}{\min \limits_{\begin{subarray}{c} \pi: \ \upsilon_{\pi}(s,a)>0 \end{subarray}} \upsilon_{\pi}(s,a) \cdot \min \limits_{s' \in \supp( p(\cdot|s,a))} p(s'|s,a) } = \frac{1}{\upsilon(s_n,a_{sub}) \cdot p(x_3|s_n,a_{sub})} ,
+	\end{align*} 
+	we have that $\cA$ needs to suffer at least
+	\begin{align*}
+		\Omega \sbr{ \max_{\begin{subarray}{c} (s,a):\  \exists h,\ a \neq \pi^{*}_h(s) \end{subarray}} \frac{ H }{\min \limits_{\begin{subarray}{c} \pi: \  \upsilon_{\pi}(s,a)>0 \end{subarray}} \upsilon_{\pi}(s,a) \cdot \min \limits_{s' \in \supp( p(\cdot|s,a))} p(s'|s,a) } } 
+	\end{align*}
+	regret.
+\end{proof}
+
+\section{Technical Tool}
+
+In this section, we present a useful technical tool.
+
+\begin{lemma}[Lemma 13 in \citep{menard2021fast}] \label{lemma:technical_tool_fast_active}
+	Let $A, B, C, D, E$ and $\beta$ be positive scalars such that $1 \leq B \leq E$ and $\beta \geq e$. If $T \geq 0$ satisfies
+	\begin{align*}
+		T \leq C \sqrt{T \sbr{ A \log\sbr{\beta T} + B \log^2 \sbr{\beta T} } } + D \sbr{A \log\sbr{\beta T} + E \log^2 \sbr{\beta T} } ,
+	\end{align*}
+	then we have
+	\begin{align*}
+		T \leq C^2 \sbr{A+B} C_1^2 + \sbr{D+2\sqrt{D}C} \sbr{A+E} C_1^2 +1 ,
+	\end{align*}
+	where
+	\begin{align*}
+		C_1=\frac{8}{5}\log \sbr{11 \beta^2 \sbr{A+E} \sbr{C+D}} .
+	\end{align*}
+\end{lemma}
+
+
+
+

@@ -1,4 +1,4 @@
-\begin{thebibliography}{26}
+\begin{thebibliography}{25}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -10,6 +10,18 @@ Carlo Acerbi and Dirk Tasche.
 \newblock On the coherence of expected shortfall.
 \newblock \emph{Journal of Banking and Finance}, 26\penalty0 (7):\penalty0
   1487--1503, 2002.
+
+\bibitem[Allen \& Koh(2024)Allen and Koh]{Allen2024TailCalibration}
+Sam Allen and Jonathan Koh.
+\newblock Tail calibration of probabilistic forecasts, 2024.
+\newblock URL \url{https://arxiv.org/abs/2407.03167}.
+
+\bibitem[Angelopoulos \& Bates(2021)Angelopoulos and
+  Bates]{Angelopoulos2021Gentle}
+Anastasios~N. Angelopoulos and Stephen Bates.
+\newblock A gentle introduction to conformal prediction and distribution-free
+  uncertainty quantification.
+\newblock \emph{arXiv preprint arXiv:2107.07511}, 2021.
 
 \bibitem[Arora et~al.(2025)Arora, Wei, Soskin~Hicks, Bowman,
   Qui{\~n}onero-Candela, Tsimpourlas, Sharman, Shah, Vallone, Beutel, Heidecke,
@@ -35,32 +47,20 @@ Wei-Lin Chiang, Lianmin Zheng, Ying Sheng, Anastasios~N. Angelopoulos, Tianle
   preference, 2024.
 \newblock URL \url{https://arxiv.org/abs/2403.04132}.
 
+\bibitem[Du et~al.(2023)Du, Wang, and Huang]{Du2023IteratedCVaR}
+Yihan Du, Siwei Wang, and Longbo Huang.
+\newblock Provably efficient risk-sensitive reinforcement learning: Iterated
+  {CVaR} and worst path.
+\newblock In \emph{International Conference on Learning Representations
+  (ICLR)}, 2023.
+\newblock URL \url{https://arxiv.org/abs/2206.02678}.
+
 \bibitem[Fleming \& DeMets(1996)Fleming and DeMets]{FlemingDeMets1996}
 Thomas~R. Fleming and David~L. DeMets.
 \newblock Surrogate end points in clinical trials: Are we being misled?
 \newblock \emph{Annals of Internal Medicine}, 125\penalty0 (7):\penalty0
   605--613, 1996.
 \newblock \doi{10.7326/0003-4819-125-7-199610010-00011}.
-
-\bibitem[Golodnikov et~al.(2019)Golodnikov, Kuzmenko, and
-  Uryasev]{GolodnikovKuzmenkoUryasev2019}
-Alex Golodnikov, Valentin Kuzmenko, and Stanislav Uryasev.
-\newblock {CVaR} regression based on the mixed-quantile quadrangle.
-\newblock \emph{Journal of Risk and Financial Management}, 12\penalty0
-  (3):\penalty0 107, 2019.
-\newblock \doi{10.3390/jrfm12030107}.
-\newblock URL
-  \url{https://uryasev.ams.stonybrook.edu/wp-content/uploads/2019/07/CVaR_Regression_Based_on_Mixed-Quantile_Quadrangle.pdf}.
-
-\bibitem[Homburg et~al.(2021)Homburg, Wei{\ss}, Alwan, Frahm, and
-  G{\"o}b]{HomburgWeissAlwanFrahmGob2021}
-Annika Homburg, Christian~H. Wei{\ss}, Layth~C. Alwan, Gabriel Frahm, and
-  Rainer G{\"o}b.
-\newblock Evaluating approximate risk forecasts for count processes.
-\newblock \emph{Journal of Risk and Financial Management}, 14\penalty0
-  (4):\penalty0 182, 2021.
-\newblock \doi{10.3390/jrfm14040182}.
-\newblock URL \url{https://www.mdpi.com/1911-8074/14/4/182}.
 
 \bibitem[Ji et~al.(2023)Ji, Liu, Dai, Pan, Zhang, Bian, Sun, Wang, Sun, and
   Yang]{Ji2023BeaverTails}
@@ -87,6 +87,13 @@ Liwei Jiang, Kavel Rao, Seungju Han, Allyson Ettinger, Faeze Brahman, Sachin
   safer language models, 2024.
 \newblock URL \url{https://arxiv.org/abs/2406.18510}.
 
+\bibitem[Jones et~al.(2025)Jones, Tong, Mu, Mahfoud, Leike, Grosse, Kaplan,
+  Fithian, Perez, and Sharma]{Jones2025RareLLMBehaviors}
+Erik Jones, Meg Tong, Jesse Mu, Mohammed Mahfoud, Jan Leike, Roger Grosse,
+  Jared Kaplan, William Fithian, Ethan Perez, and Mrinank Sharma.
+\newblock Forecasting rare language model behaviors, 2025.
+\newblock URL \url{https://arxiv.org/abs/2502.16797}.
+
 \bibitem[Kim et~al.(2024)Kim, Suk, Longpre, Lin, Shin, Welleck, Neubig, Lee,
   Lee, and Seo]{Kim2024Prometheus2}
 Seungone Kim, Juyoung Suk, Shayne Longpre, Bill~Yuchen Lin, Jamin Shin, Sean
@@ -109,14 +116,6 @@ Edward Landesberg and Manjari Narayan.
 \newblock Causal judge evaluation: Calibrated surrogate metrics for {LLM}
   systems, 2026.
 \newblock URL \url{https://arxiv.org/abs/2512.11150}.
-
-\bibitem[Landsman \& Valdez(2005)Landsman and Valdez]{LandsmanValdez2005}
-Zinoviy~M. Landsman and Emiliano~A. Valdez.
-\newblock Tail conditional expectations for exponential dispersion models.
-\newblock \emph{ASTIN Bulletin}, 35\penalty0 (1):\penalty0 189--209, 2005.
-\newblock \doi{10.2143/AST.35.1.583169}.
-\newblock URL
-  \url{https://www.cambridge.org/core/journals/astin-bulletin-journal-of-the-iaa/article/tail-conditional-expectations-for-exponential-dispersion-models/9F818D814C6A0A64BCB1CD31F7853835}.
 
 \bibitem[Lee et~al.(2025)Lee, Zeng, Jeong, Sohn, and
   Lee]{Lee2025LLMJudgeReporting}
@@ -147,13 +146,6 @@ Yang Liu, Dan Iter, Yichong Xu, Shuohang Wang, Ruochen Xu, and Chenguang Zhu.
 \newblock {G-Eval}: {NLG} evaluation using {GPT-4} with better human alignment,
   2023.
 \newblock URL \url{https://arxiv.org/abs/2303.16634}.
-
-\bibitem[Luxenberg et~al.(2025)Luxenberg, P{\'e}rez-Pi{\~n}eiro, Diamond, and
-  Boyd]{LuxenbergPerezPineiroDiamondBoyd2025}
-Eric Luxenberg, David P{\'e}rez-Pi{\~n}eiro, Steven Diamond, and Stephen Boyd.
-\newblock An operator splitting method for large-scale {CVaR}-constrained
-  quadratic programs, 2025.
-\newblock URL \url{https://arxiv.org/abs/2504.10814}.
 
 \bibitem[Mazeika et~al.(2024)Mazeika, Phan, Yin, Zou, Wang, Mu, Sakhaee, Li,
   Basart, Li, Forsyth, and Hendrycks]{Mazeika2024HarmBench}
@@ -193,13 +185,6 @@ Eric~J. Tchetgen~Tchetgen, Andrew Ying, Yifan Cui, Xu~Shi, and Wang Miao.
 \newblock An introduction to proximal causal inference.
 \newblock \emph{Statistical Science}, 39\penalty0 (3):\penalty0 375--390, 2024.
 \newblock \doi{10.1214/23-STS911}.
-
-\bibitem[Zhao et~al.(2024)Zhao, Ren, Hessel, Cardie, Choi, and
-  Deng]{Zhao2024WildChat}
-Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, and Yuntian
-  Deng.
-\newblock {WildChat}: 1m chatgpt interaction logs in the wild, 2024.
-\newblock URL \url{https://arxiv.org/abs/2405.01470}.
 
 \bibitem[Zheng et~al.(2023)Zheng, Chiang, Sheng, Zhuang, Wu, Zhuang, Lin, Li,
   Li, Xing, Zhang, Gonzalez, and Stoica]{Zheng2023Judging}

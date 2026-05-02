@@ -1,0 +1,109 @@
+\section{PRELIMINARIES}
+\label{sec:PRELIMINARIES}
+In this section, we will provide a formal definition of LLMs-as-judges, aiming to encompass all current evaluation paradigms and methods, thereby offering readers a clear and thorough understanding. Figure \ref{figure:overreview} presents an overview of the LLMs-as-judges system.
+
+
+
+
+The LLMs-as-judges paradigm is a flexible and powerful evaluation framework where LLMs are employed as evaluative tools, responsible for assessing the quality, relevance, and effectiveness of generated outputs based on defined evaluation criteria. This framework leverages the extensive knowledge and deep contextual understanding of LLMs, enabling it to flexibly adapt to various tasks in NLP and machine learning.
+We formalize the input-output structure of the LLMs-as-Judges paradigm, unifying various evaluation scenarios into a unified perspective. 
+Specifically, the evaluation process can be defined as follows:
+\begin{equation}\label{eqn-1} 
+(\mathcal{Y}, \mathcal{E}, \mathcal{F})=E(\mathcal{T}, \mathcal{C}, \mathcal{X}, \mathcal{R})
+\end{equation} 
+where $E$ is the evaluation function, taking the evaluation type $\mathcal{T}$, evaluation criteria $\mathcal{C}$, evaluation item $\mathcal{X}$ and optional references $\mathcal{R}$ as input. Based on these inputs, the LLM can produces three outputs: evaluation result $\mathcal{Y}$, explanation $\mathcal{E}$ and feedback $\mathcal{F}$.
+Different input-output configurations correspond to distinct methods and objectives. This unified formulation brings together diverse evaluation paradigms, offering a structured framework for categorizing and understanding various approaches within LLMs-as-judges.
+
+
+\subsection{Evaluation Function $E$}
+The evaluation function $E$ in the context of LLMs-as-judges can be categorized into three primary configurations: Single-LLM systems, Multi-LLM systems, and Hybrid systems that combine LLMs with human evaluators. Each of these configurations serves distinct purposes, offers different advantages, and faces unique challenges.
+
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Single-LLM Evaluation System~\cite{lin2023llm,zhang2024talec,liu2023g}: } A single LLM evaluation system relies on a single model to perform the evaluation tasks.  It is simple to deploy and scale, making it efficient for tasks that don't require specialized evaluation. However, its flexibility is limited, as it may struggle with tasks that demand specialized knowledge or reasoning over complex inputs. Additionally, if not properly trained, a single model may introduce biases, leading to inaccurate evaluations.
+    \item \textbf{Multi-LLM Evaluation Systems~\cite{chu2024pre,chan2023chateval,li2023prd}: } A Multi-LLM evaluation system combines multiple models that work together to perform evaluation tasks.  These models may interact through various mechanisms, such as collaboration, or competition, to refine their outputs and achieve more accurate results. By leveraging the strengths of different models, a multi-model system can cover a broader range of evaluation criteria and provide a more comprehensive assessment. However, this comes at a higher computational cost and requires more resources, making deployment and maintenance more challenging, particularly for large-scale tasks. 
+    Moreover, while cooperation between models often enhances evaluation results, the methods through which these models achieve consensus or resolve differences remain key areas of ongoing exploration.
+    \item \textbf{Human-AI Collaboration System~\cite{li2023collaborative,wang2023large,shankar2024validates}: } In this system, LLMs work alongside human evaluators, combining the efficiency of automated evaluation with the nuanced judgment of human expertise. This configuration allows human evaluators to mitigate potential biases in the LLM's output and provide subjective insights into complex evaluation tasks. While this system offers greater reliability and depth, it comes with challenges in coordinating between the models and humans, ensuring consistent evaluation standards, and integrating feedback. Additionally, the inclusion of human evaluators increases both the cost and time required for the evaluation process, making it less scalable than purely model-based systems.
+\end{itemize}
+
+
+
+\subsection{Evaluation Input}
+In the LLMs-as-judges paradigm, in addition to the evaluation item $\mathcal{X}$, LLM judges typically receive three other types of inputs: Evaluation Type $\mathcal{T}$ , Evaluation Criteria $\mathcal{C}$, and Evaluation References $\mathcal{R}$. The following provides a detailed explanation:
+
+\subsubsection{Evaluation Type $\mathcal{T}$}
+The Evaluation Type $\mathcal{T}$ defines the specific evaluation mode, determining how the evaluation will be conducted. It typically includes three approaches: pointwise, pairwise, and listwise evaluation.
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{Pointwise Evaluation~\cite{wang2023learning,kim2023prometheus,ye2024self}:} This method evaluates each candidate item individually based on the specified criteria.
+For example, in a text summarization task, the LLM might evaluate each generated summary separately, assigning a score based on factors like informativeness, coherence, and conciseness. Although pointwise evaluation is simple and easy to apply, it may fail to capture the relative quality differences between candidates and can be influenced by biases arising from evaluating items in isolation.
+
+
+\item \textbf{Pairwise Evaluation~\cite{saad2023ares,cao2024compassjudger,he2024fedeval,hu2024rethinking}:} This method involves directly comparing two candidate items to determine which one performs better according to the specified criteria. It is commonly used in preference-based tasks. For example, given two summaries of a news article, the LLM may be asked to decide which summary is more coherent or informative. Pairwise evaluation closely mirrors human decision-making processes by focusing on relative preferences rather than assigning absolute scores. This approach is especially effective when the differences between outputs are subtle and difficult to quantify.
+
+
+\item \textbf{Listwise Evaluation~\cite{10.1145/3626772.3657813,yan-etal-2024-consolidating,hou2024large,niu2024judgerank}:} 
+This method is designed to collectively evaluate the entire list of candidate items, evaluating and ranking them based on the specific criteria. It is often applied in ranking tasks, such as document retrieval in search engines, where the objective is to determine the relevance of the documents in relation to a user query. Listwise evaluation takes into account the interactions between multiple candidates, making it well-suited for applications that require holistic analysis. 
+\end{itemize}
+
+In general, these three evaluation modes are not entirely independent. pointwise scores can be aggregated to create pairwise comparisons or used to construct a ranked list. Similarly, pairwise preferences can be organized into a complete ranking list for listwise analysis. 
+However, these transformations are not always reliable within the LLMs-as-judges framework~\cite{liu2024aligning}. For example, in pointwise evaluation, output $A$ may receive a score of 5, while output $B$ receives a score of 4, yet, a direct pairwise comparison might not consistently yield $A > B$ due to potential bias. Additionally, LLM judges do not always satisfy transitivity in their judgments. For instance, given pairwise preferences where $z_i > z_j$  and  $z_j > z_k$ , the LLM may not necessarily yield $z_i > z_k$. These inconsistencies contribute to concerns about the reliability and trustworthiness of the LLM-as-Judge framework, which we will discuss in detail in Section (\S\ref{sec:Limitation}).
+
+
+\begin{figure}[t]
+\includegraphics[width=\linewidth]{figs/llm-as-judges.pdf}
+\caption{Overview of the LLMs-as-judges system.}
+% \vspace{-5mm}
+\label{figure:overreview}
+\end{figure}
+
+
+\subsubsection{Evaluation Criteria $\mathcal{C}$.}
+
+
+The evaluation criteria $\mathcal{C}$ define the specific standards that determine which aspects of the output should be assessed. These criteria are designed to cover a broad range of quality attributes and can be tailored based on the nature of the task. Typically, the criteria encompass the following aspects:
+
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{Linguistic Quality~\cite{fabbri2021summeval,zhang2018personalizing,chhun2022human}:} This category evaluates the language-related features of the output, such as fluency, grammatical accuracy, coherence, and Conciseness. Linguistic quality is crucial in tasks like text generation, machine translation, and summarization, where clarity and readability are essential.
+
+
+\item \textbf{Content Accuracy~\cite{chen2021evaluating,jimenez2023swe,tan2024judgebench}:} This dimension focuses on the correctness and relevance of the content. It includes evaluating aspects such as factual accuracy, ensuring that the output does not contain misleading or incorrect information. Content accuracy is particularly crucial in tasks such as code generation and fact-checking.
+
+
+\item \textbf{Task-Specific Metrics~\cite{ji2024pku,lin2024wildbench,tan2024judgebench}:} In addition to general quality metrics, many tasks require evaluation based on standards specific to their respective domains. These standards may include metrics such as informativeness (assessing whether the output provides comprehensive and valuable information) or completeness (ensuring all key aspects of the input are covered). Other criteria may include diversity, well-structured content, and logical clarity.
+\end{itemize}
+
+
+In addition to providing clear evaluation criteria, offering several examples can also be beneficial for the assessment. By incorporating well-structured examples, LLMs can better align its output with user expectations, especially when handling complex tasks or ambiguous queries.
+
+\subsubsection{Evaluation References $\mathcal{R}$.}
+Evaluation References $\mathcal{R}$ are optional. Depending on the availability of evaluation reference, the evaluation process can be broadly divided into reference-based and reference-free scenarios.
+
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{Reference-Based Evaluation~\cite{freitag2021results,karpinska2023large}: }
+The reference-based evaluation leverages reference data to determine whether the performance meets the expected standards. It is commonly applied in tasks where the quality of the output can be objectively judged by its similarity to established reference. In Natural Language Generation (NLG) tasks, this method is widely used to evaluate the resemblance between generated content and reference content. For example, in machine translation or text summarization, an LLM can compare the generated translations or summaries against high-quality references. The key strength of this approach is its well-defined benchmarking process; however, its effectiveness may be constrained by the quality and variety of the reference data.
+
+\item \textbf{Reference-Free Evaluation~\cite{shen2023opinsummeval,zheng2023judging,he2023socreval}: }
+The reference-free evaluation does not rely on a specific reference $\mathcal{R}$, instead, it evaluates $\mathcal{X}$ based on intrinsic quality standards or its alignment with the source context. For example, when assessing language fluency or content coherence, an LLM can autonomously generate evaluation results using internal grammatical and semantic rules. This method is widely used in fields like sentiment analysis and dialogue generation. The main advantage of this approach is its independence from specific references, providing greater flexibility for open-ended tasks. However, its drawback lies in the difficulty of obtaining satisfactory evaluations in domains where the LLM lacks relevant knowledge.
+\end{itemize}
+
+\subsection{Evaluation Output}
+
+In the LLMs-as-judges paradigm, the LLM typically generates three types of outputs: the evaluation result $\mathcal{Y}$, the explanation $\mathcal{E}$, and the feedback $\mathcal{F}$. Below are detailed descriptions.
+
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Evaluation Result $\mathcal{Y}$~\cite{zhao2024auto,saad2023ares}: } The evaluation result $\mathcal{Y}$ is the primary output, which can take the form of a numerical score, a ranking, a categorical label, or a qualitative assessment. It reflects the quality, relevance, or performance of the candidate items according to the specified evaluation criteria. For example, in a machine translation task, $\mathcal{Y}$ could be a score indicating translation quality, while in a dialogue generation task, it might be a rating of coherence and appropriateness on a scale from 1 to 5. The evaluation result $\mathcal{Y}$ provides a clear measure of performance, enabling researchers to effectively compare different models or outputs.
+    
+    \item \textbf{Explanation $\mathcal{E}$~\cite{ye2024beyond,xie2024improving}: } The explanation $\mathcal{E}$ provides detailed reasoning and justifications for the evaluation result. It offers insights into why certain result received higher or lower scores, highlighting specific features of the candidate item that influenced the evaluation. For example, in a summarization task, the LLM judges might explain that the score was lowered due to missing critical information or the presence of redundant content. The explanation component enhances transparency, allowing users to understand the decision-making process of the LLM and gain deeper insights into the strengths and weaknesses of the evaluated content.
+
+    
+    \item \textbf{Feedback $\mathcal{F}$~\cite{madaan2024self,chen2023teaching}: } The feedback $\mathcal{F}$ consists of actionable suggestions or recommendations aimed at improving the evaluated output. Unlike the evaluation result, which merely indicates performance, the feedback component is designed to guide the refinement of the content. For instance, in a creative writing task, feedback might include recommendations for enhancing the narrative flow or improving clarity. This component is especially valuable for the iterative development of the evaluated item, as it provides concrete pointers that help both the LLM and content creators enhance the quality of the generated outputs.
+\end{itemize}
+
+
+Depending on the intended purpose and specific requirements of the evaluation, the LLM judges can generate various combinations of the three outputs ( $\mathcal{Y}$, $\mathcal{E}$, $\mathcal{F}$ ) for a given task. 
+In most cases, providing explanation $\mathcal{E}$ not only helps users better understand and trust the evaluation results but also leads to more human-aligned and accurate evaluation result $\mathcal{Y}$. Moreover, generating feedback $\mathcal{F}$ generally demands a higher level of model capability, as it requires not only assessing the quality of the input but also providing concrete, actionable recommendations for improvement.
+

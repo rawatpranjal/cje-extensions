@@ -36,6 +36,9 @@ try:
         mean_transport_audit,
         simple_cvar_audit,
         fit_isotonic_mean,
+        fit_isotonic_tail_loss,
+        fit_two_stage_calibrator,
+        fit_two_stage_tail_loss,
     )
     HAVE_CJE = True
 except ImportError:
@@ -46,6 +49,33 @@ from .judge import _judge_path
 from .oracle_design import select_slice, slice_summary, VALID_DESIGNS
 
 DATA_DIR = Path(__file__).parent / "data"
+RESPONSES_DIR = DATA_DIR / "responses"
+
+
+def _load_response_lengths(policy_name: str) -> dict[str, int]:
+    """{prompt_id: response_length_in_chars} for a policy's response file.
+
+    Used as the `response_length` covariate for two-stage calibration
+    (SPEC_SHEET §249, CJE App. impl. `direct+cov`). Char-length is a
+    monotone proxy for token count; the two-stage isotonic stage is
+    invariant to monotone transforms of the covariate, so a tokenizer
+    isn't strictly required here.
+    """
+    path = RESPONSES_DIR / f"{policy_name}_responses.jsonl"
+    if not path.exists():
+        return {}
+    out: dict[str, int] = {}
+    with path.open() as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            d = json.loads(line)
+            pid = d.get("prompt_id")
+            response = d.get("response", "")
+            if pid:
+                out[pid] = len(response)
+    return out
 
 
 def _load_judge_scores(policy_name: str, kind: str) -> dict[str, float]:
@@ -90,6 +120,30 @@ def cvar_alpha(arr: np.ndarray, alpha: float) -> float:
     if remainder > 0:
         head_sum += remainder * float(sorted_y[k])
     return head_sum / target_mass
+
+
+def _atom_split_quantile(arr: np.ndarray, alpha: float) -> float:
+    """Atom-split α-quantile, paired with `cvar_alpha` above.
+
+    The CVaR estimator's saddle-point representation treats the threshold
+    `t` as the value where the lower α·n units of mass cut off. For a
+    sample with ties, the natural "α-quantile" is then the value of
+    `sorted_y[k]` (k = floor(α·n)) — i.e., the value at the right edge
+    of the lower α·n mass. This is the t* we want to compare t̂ against.
+
+    Falls back to `sorted_y[0]` when k = 0 and `sorted_y[-1]` when k ≥ n,
+    so the function is well-defined for tiny n.
+    """
+    if arr.size == 0:
+        return float("nan")
+    n = arr.size
+    sorted_y = np.sort(arr)
+    k = int(np.floor(alpha * n))
+    if k == 0:
+        return float(sorted_y[0])
+    if k >= n:
+        return float(sorted_y[-1])
+    return float(sorted_y[k])
 
 
 def bootstrap_stat(arr: np.ndarray, fn, B: int = 1000, seed: int = 42, ci: float = 0.95) -> tuple[float, float, float]:
@@ -466,6 +520,7 @@ def step5_oracle_calibrated_uniform(
     seed: int = 42,
     verbose: bool = True,
     n_max: int | None = None,
+    bonferroni_k: int = 5,
 ) -> list[dict]:
     """Uniform oracle slice. Atom-split CVaR truth. Single transport audit
     (mean_g1, mean_g2) at t̂ from the FULL target distribution.
@@ -494,6 +549,10 @@ def step5_oracle_calibrated_uniform(
     logger = logger_policy()
     log_pids = sorted(set(_load_judge_scores(logger.name, "cheap")) & set(_load_judge_scores(logger.name, "oracle")))
 
+    # Response-length covariate for two-stage calibration (CJE direct+cov).
+    log_lens = _load_response_lengths(logger.name)
+    log_lengths_full = np.array([float(log_lens.get(pid, 0)) for pid in log_pids])
+
     # If n_max is set, truncate to the first n_max prompts for both the
     # logger panel and (consistently) every target panel later. We keep
     # the prompt_ids set so target panels can be filtered to match.
@@ -504,6 +563,7 @@ def step5_oracle_calibrated_uniform(
         log_pids = [log_pids[i] for i in keep_idx]
         s_log_full = s_log_full[keep_idx]
         y_log_full = y_log_full[keep_idx]
+        log_lengths_full = log_lengths_full[keep_idx]
     log_rows = [
         {"prompt_id": pid, "policy": logger.name, "cheap_score": float(s_log_full[i]),
          "oracle_score": float(y_log_full[i])}
@@ -535,8 +595,10 @@ def step5_oracle_calibrated_uniform(
     s_train = s_log_full[cal_global_idx]
     y_train = y_log_full[cal_global_idx]
     w_train = 1.0 / sel_pi[cal_global_idx]
+    length_train = log_lengths_full[cal_global_idx]
     s_heldout_log = s_log_full[heldout_global_idx]
     y_heldout_log = y_log_full[heldout_global_idx]
+    length_heldout_log = log_lengths_full[heldout_global_idx]
 
     if verbose:
         print(f"=== uniform  cov={coverage}  α={alpha}  seed={seed} ===")
@@ -552,6 +614,9 @@ def step5_oracle_calibrated_uniform(
         if panel is None:
             continue
         pids, s_target, y_target_full = panel
+        # Per-policy response_length covariate aligned with pids.
+        target_lens = _load_response_lengths(p.name)
+        length_target = np.array([float(target_lens.get(pid, 0)) for pid in pids])
         # Mirror the n_max truncation on each target panel so logger and
         # target use the same prompt_id set.
         if keep_pids is not None:
@@ -559,6 +624,7 @@ def step5_oracle_calibrated_uniform(
             pids = [pids[i] for i in mask_idx]
             s_target = s_target[mask_idx]
             y_target_full = y_target_full[mask_idx]
+            length_target = length_target[mask_idx]
         target_rows = [
             {"prompt_id": pid, "policy": p.name, "cheap_score": float(s_target[i]),
              "oracle_score": float(y_target_full[i])}
@@ -576,10 +642,12 @@ def step5_oracle_calibrated_uniform(
         if p.name == logger.name:
             s_audit = s_heldout_log
             y_audit = y_heldout_log
+            length_audit = length_heldout_log
             n_audit_eff = int(len(s_audit))
         else:
             s_audit = s_target[a_mask]
             y_audit = y_target_full[a_mask]
+            length_audit = length_target[a_mask]
             n_audit_eff = int(a_mask.sum())
 
         if n_audit_eff < 3:
@@ -592,6 +660,17 @@ def step5_oracle_calibrated_uniform(
                 s_audit=s_audit, y_audit=y_audit,
                 s_eval_full=s_target,                # FULL target — t̂ from here
                 alpha=alpha, sample_weight_train=w_train,
+            )
+            # +cov variant: same audit but with response_length covariate in
+            # the tail-loss calibrator (CJE direct+cov for CVaR end-to-end).
+            audit_cov = simple_cvar_audit(
+                s_train=s_train, y_train=y_train,
+                s_audit=s_audit, y_audit=y_audit,
+                s_eval_full=s_target,
+                alpha=alpha, sample_weight_train=w_train,
+                length_train=length_train,
+                length_audit=length_audit,
+                length_eval_full=length_target,
             )
         except Exception as e:
             if verbose:
@@ -607,16 +686,46 @@ def step5_oracle_calibrated_uniform(
         # average over the FULL target distribution (Direct Mean CJE estimate);
         # transport audit is the residual mean E[Y - f̂(S)] = 0 on s_audit/y_audit.
         cheap_only_mean = float(s_target.mean())
+        # Headline mean calibrator: isotonic-on-S only. Preserves the α=1
+        # collapse identity (CVaR_α=1 == mean_cje_est) because the CVaR
+        # estimator's tail-loss calibrator is also isotonic-on-S internally.
         mean_pred_full = fit_isotonic_mean(
             s_train, y_train, s_target, sample_weight=w_train,
         )
         mean_cje_est = float(np.asarray(mean_pred_full).mean())
         mean_abs_err = float(abs(mean_cje_est - mean_Y))
+        # +cov companion: two-stage calibrator (CJE `direct+cov`) using
+        # response_length as a covariate. Reported in parallel; α=1 identity
+        # does not hold for the +cov form because the CVaR calibrator stays
+        # isotonic-on-S. See _estimator.fit_two_stage_calibrator.
+        mean_pred_full_cov = fit_two_stage_calibrator(
+            s_train=s_train, length_train=length_train,
+            y_train=y_train,
+            s_pred=s_target, length_pred=length_target,
+            sample_weight=w_train,
+        )
+        mean_cje_est_cov = float(np.asarray(mean_pred_full_cov).mean())
+        mean_abs_err_cov = float(abs(mean_cje_est_cov - mean_Y))
+        # Bonferroni correction on the mean-transport audit: CJE uses α/k where k =
+        # number of target policies tested simultaneously (default k=5: clone, premium,
+        # parallel, unhelpful, risky — base is logger).
         m_audit = mean_transport_audit(
             s_train, y_train, s_audit, y_audit,
             sample_weight_train=w_train,
+            wald_alpha=0.05 / max(bonferroni_k, 1),
+        )
+        # +cov audit: tests transport of the two-stage calibrator separately.
+        m_audit_cov = mean_transport_audit(
+            s_train, y_train, s_audit, y_audit,
+            sample_weight_train=w_train,
+            wald_alpha=0.05 / max(bonferroni_k, 1),
+            length_train=length_train, length_audit=length_audit,
         )
         mean_verdict = "PASS" if not m_audit["reject"] else "FLAG_MEAN"
+
+        # Mean V_aug (one-step augmented) = V_Direct + audit residual mean.
+        # See arxiv 2512.11150 method.tex eq:theta-aug.
+        mean_cje_aug = float(mean_cje_est + m_audit["residual_mean"])
 
         # Bootstrap 95% CIs for the writeup figure error bars. B=200 keeps
         # this fast (≤ a few seconds per policy); the percentile CIs are
@@ -648,6 +757,9 @@ def step5_oracle_calibrated_uniform(
         #     mean_transport_audit doesn't return the SE directly
         #   - Var_audit_cvar = se_g2²  via cvar_audit_analytical_se at
         #     the production t̂ (g2 dominates audit-side uncertainty for V̂_cvar)
+        # f̂ used for the mean-side audit variance term: matches the headline
+        # mean calibrator (isotonic-on-S) so the variance reflects the same
+        # f̂ the headline reports.
         f_hat_audit = fit_isotonic_mean(
             s_train, y_train, s_audit, sample_weight=w_train,
         )
@@ -668,6 +780,88 @@ def step5_oracle_calibrated_uniform(
         mean_se_total = (mean_var_cal + mean_var_audit) ** 0.5 if mean_var_audit == mean_var_audit else float("nan")
         cvar_se_total = (cvar_var_cal + cvar_var_audit) ** 0.5 if cvar_var_audit == cvar_var_audit else float("nan")
 
+        # --- Audit-only baseline (skeptic comparison) ----------------------
+        # If we already paid for n_audit oracle labels, what would CVaR + 95% CI
+        # look like using JUST those labels? No cheap judge, no calibrator,
+        # no t̂ search — just empirical CVaR_α on Y_audit with a percentile
+        # bootstrap. This is the natural reference; if Direct's CI is much
+        # tighter than this one, the calibrator is doing real statistical
+        # work (and not just dressing up the audit slice).
+        # B=2000 because the bootstrap is 1-D and cheap; n_audit can be as
+        # small as 5 (logger held-out slice), so we want stable percentiles.
+        B_AO = 2000
+        rng_ao = np.random.default_rng(seed + 17)
+        y_audit_arr = np.asarray(y_audit)
+        boots_ao = np.empty(B_AO)
+        for b in range(B_AO):
+            idx = rng_ao.integers(0, n_audit_eff, size=n_audit_eff)
+            boots_ao[b] = cvar_alpha(y_audit_arr[idx], alpha)
+        cvar_audit_only = float(cvar_alpha(y_audit_arr, alpha))
+        cvar_audit_only_lo = float(np.quantile(boots_ao, 0.025))
+        cvar_audit_only_hi = float(np.quantile(boots_ao, 0.975))
+        cvar_audit_only_se = float(np.std(boots_ao, ddof=1))
+
+        # --- Cost / sample-efficiency multiplier ---------------------------
+        # n_oracle_equiv = how many pure-oracle rows would be needed for the
+        # audit-only estimator to match Direct's variance.
+        # Var(audit_only) ≈ σ²/n_audit (1-D bootstrap of CVaR_α on Y), so to
+        # make Var(audit_only @ N) = Var(Direct), we need
+        #     N = n_audit · Var(audit_only) / Var(Direct).
+        # Var(Direct) is the honest envelope cvar_se_total² = Var_cal + Var_audit.
+        # cost_ratio_x = N / n_audit; reported as "Direct is X× cheaper".
+        var_audit_only = cvar_audit_only_se ** 2
+        if cvar_se_total == cvar_se_total and cvar_se_total > 0:
+            var_direct_total = cvar_se_total ** 2
+            cost_ratio_x = float(var_audit_only / var_direct_total)
+            n_oracle_equiv = int(np.ceil(n_audit_eff * cost_ratio_x))
+        else:
+            cost_ratio_x = float("nan")
+            n_oracle_equiv = -1
+
+        # --- True α-quantile threshold (t*) --------------------------------
+        # t̂ is the saddle-point threshold the estimator picked from the FULL
+        # cheap target distribution; t* is the atom-split α-quantile of the
+        # full-oracle Y panel. The gap |t̂ − t*| answers "did the calibrator
+        # find the right cutoff?". A small gap = direct cutoff agreement; a
+        # larger gap with low abs_error = the stop-loss residual is silently
+        # correcting via g₂. Mechanism diagnostic; doesn't gate any claim.
+        t_star = _atom_split_quantile(y_target_full, alpha)
+
+        # --- CVaR V_aug (one-step augmented) -------------------------------
+        # V_aug = V_Direct + ḡ_2 where ḡ_2 = mean of (z - f̂_z(S)) on the
+        # audit slice with z = max(t̂ - Y, 0). Matches arxiv 2512.11150
+        # method.tex eq:theta-aug. The bootstrap diagnostic in
+        # _estimator.py:pipeline_bootstrap_cvar already computes this; we
+        # mirror it here so the headline pilot table can surface V_aug
+        # alongside V_Direct.
+        try:
+            t_hat_cvar = float(audit["t_hat"])
+            z_train_cvar = np.maximum(t_hat_cvar - y_train, 0.0)
+            pred_audit_cvar = fit_isotonic_tail_loss(
+                s_train, z_train_cvar, s_audit, sample_weight=w_train,
+            )
+            resid_cvar = np.maximum(t_hat_cvar - y_audit, 0.0) - np.asarray(pred_audit_cvar)
+            gbar2_cvar = float(np.mean(resid_cvar))
+            cvar_est_aug = float(audit["cvar_est"] + gbar2_cvar)
+        except Exception:
+            cvar_est_aug = float("nan")
+            gbar2_cvar = float("nan")
+
+        # +cov V_aug (uses two-stage tail-loss calibrator at audit-cov's t̂_cov):
+        try:
+            t_hat_cov = float(audit_cov["t_hat"])
+            z_train_cov = np.maximum(t_hat_cov - y_train, 0.0)
+            pred_audit_cov = fit_two_stage_tail_loss(
+                s_train, length_train, z_train_cov, s_audit, length_audit,
+                sample_weight=w_train,
+            )
+            resid_cov = np.maximum(t_hat_cov - y_audit, 0.0) - np.asarray(pred_audit_cov)
+            gbar2_cov = float(np.mean(resid_cov))
+            cvar_est_aug_cov = float(audit_cov["cvar_est"] + gbar2_cov)
+        except Exception:
+            cvar_est_aug_cov = float("nan")
+            gbar2_cov = float("nan")
+
         if verbose:
             print(f"  {p.name:28} {n_audit_eff:>8} "
                   f"{audit['cvar_est']:>+10.3f} {full_truth:>+10.3f} "
@@ -678,18 +872,43 @@ def step5_oracle_calibrated_uniform(
             "coverage": float(coverage),
             "n_total": int(len(pids)), "n_slice": int(n_audit_eff),
             "cvar_est": float(audit["cvar_est"]), "t_hat": float(audit["t_hat"]),
+            "cvar_est_aug": cvar_est_aug,
+            "cvar_gbar2": gbar2_cvar,
             "full_oracle_truth": full_truth, "abs_error": abs_err,
+            "abs_error_aug": float(abs(cvar_est_aug - full_truth)) if cvar_est_aug == cvar_est_aug else float("nan"),
             "cheap_only_cvar": cheap_only_cvar_v, "mean_Y": mean_Y,
             "mean_g1": float(audit["mean_g1"]), "mean_g2": float(audit["mean_g2"]),
             "verdict": verdict,
+            # CVaR +cov variant: two-stage tail-loss calibrator with
+            # response_length covariate (CJE direct+cov for the tail estimand).
+            "cvar_est_cov": float(audit_cov["cvar_est"]),
+            "t_hat_cov": float(audit_cov["t_hat"]),
+            "cvar_est_aug_cov": cvar_est_aug_cov,
+            "cvar_gbar2_cov": gbar2_cov,
+            "abs_error_cov": float(abs(audit_cov["cvar_est"] - full_truth)),
+            "abs_error_aug_cov": float(abs(cvar_est_aug_cov - full_truth)) if cvar_est_aug_cov == cvar_est_aug_cov else float("nan"),
+            "mean_g1_cov": float(audit_cov["mean_g1"]),
+            "mean_g2_cov": float(audit_cov["mean_g2"]),
+            "verdict_cov": _verdict(audit_cov["mean_g1"], audit_cov["mean_g2"]),
             # Mean-CJE companion fields
             "cheap_only_mean": cheap_only_mean,
             "mean_cje_est": mean_cje_est,
+            "mean_cje_aug": mean_cje_aug,
             "mean_abs_error": mean_abs_err,
+            "mean_abs_error_aug": float(abs(mean_cje_aug - mean_Y)),
             "mean_audit_residual": float(m_audit["residual_mean"]),
             "mean_audit_p": float(m_audit["p_value"]),
             "mean_audit_reject": bool(m_audit["reject"]),
+            "mean_audit_alpha_bonferroni": float(0.05 / max(bonferroni_k, 1)),
             "mean_verdict": mean_verdict,
+            # +cov variant: two-stage calibrator with response_length covariate
+            # (matches CJE `direct+cov`). α=1 identity does NOT hold for this
+            # variant because the CVaR calibrator stays isotonic-on-S.
+            "mean_cje_est_cov": mean_cje_est_cov,
+            "mean_abs_error_cov": mean_abs_err_cov,
+            "mean_audit_cov_residual": float(m_audit_cov["residual_mean"]),
+            "mean_audit_cov_p": float(m_audit_cov["p_value"]),
+            "mean_audit_cov_reject": bool(m_audit_cov["reject"]),
             # Bootstrap 95% CIs for figure error bars (Var_cal only — narrower)
             "cvar_ci_lo": float(cvar_ci["ci_lo"]),
             "cvar_ci_hi": float(cvar_ci["ci_hi"]),
@@ -705,6 +924,15 @@ def step5_oracle_calibrated_uniform(
             "mean_var_cal": mean_var_cal,
             "mean_var_audit": mean_var_audit,
             "mean_se_total": mean_se_total,
+            # Audit-only skeptic baseline + cost ratio + threshold gap.
+            # See block above for derivations.
+            "cvar_audit_only": cvar_audit_only,
+            "cvar_audit_only_ci_lo": cvar_audit_only_lo,
+            "cvar_audit_only_ci_hi": cvar_audit_only_hi,
+            "cvar_audit_only_se": cvar_audit_only_se,
+            "n_oracle_equiv": n_oracle_equiv,
+            "cost_ratio_x": cost_ratio_x,
+            "t_star": t_star,
         })
     if verbose:
         print()

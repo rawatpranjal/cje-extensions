@@ -1,0 +1,177 @@
+
+\documentclass[acmsmall,screen]{acmart}
+\usepackage{booktabs} % For formal tables
+\usepackage{multirow}
+\usepackage{booktabs} % For formal tables
+\usepackage{multirow}
+\usepackage{subfigure}
+\usepackage{array}
+\usepackage{float}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+
+\usepackage{setspace}
+\usepackage{threeparttable}
+\usepackage{supertabular}
+\usepackage{bm}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{footmisc}
+\usepackage{footnote}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{CJK}
+\usepackage{footnote}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{colortbl}
+\usepackage{tikz}
+\usepackage[edges]{forest}
+
+
+\usetikzlibrary{trees,positioning,shapes,shadows,arrows.meta}
+
+\usepackage[edges]{forest}
+\definecolor{hidden-draw}{RGB}{0,0,0}
+\definecolor{hidden-blue}{RGB}{194,232,247}
+\definecolor{hidden-orange}{RGB}{243,202,120}
+\definecolor{hidden-yellow}{RGB}{242,244,193}
+\definecolor{tree-level-1}{RGB}{245,20,85}
+\definecolor{tree-level-2}{RGB}{246,86,118}
+\definecolor{tree-level-3}{RGB}{248,177,193}
+\definecolor{tree-leaf}{RGB}{176,230,198}
+
+
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+
+
+\begin{document}
+
+\title{LLMs-as-Judges: A Comprehensive Survey on LLM-based Evaluation Methods}
+
+
+\author{Haitao Li}
+\email{liht22@mails.tsinghua.edu.cn}
+\affiliation{%
+  \institution{Department of Computer Science and Technology, Institute for Internet Judiciary, Tsinghua University}
+  \city{Beijing}
+  \country{China}
+}
+
+\author{Qian Dong}
+\email{dq22@mails.tsinghua.edu.cn}
+\affiliation{%
+  \institution{Department of Computer Science and Technology, Institute for Internet Judiciary, Tsinghua University}
+  \city{Beijing}
+  \country{China}
+}
+
+\author{Junjie Chen}
+\email{chenjj826@gmail.com}
+\affiliation{%
+  \institution{Department of Computer Science and Technology, Institute for Internet Judiciary, Tsinghua University}
+  \city{Beijing}
+  \country{China}
+}
+
+
+\author{Huixue Su}
+\email{suhuixue@ruc.edu.cn}
+\affiliation{%
+  \institution{Gaoling School of Artificial Intelligence, Renmin University of China}
+  \city{Beijing}
+  \country{China}
+}
+
+
+\author{Yujia Zhou}
+\email{suhuixue@ruc.edu.cn}
+\affiliation{%
+  \institution{Department of Computer Science and Technology, Institute for Internet Judiciary, Tsinghua University}
+  \city{Beijing}
+  \country{China}
+}
+
+\author{Qingyao Ai}
+\email{aiqy@tsinghua.edu.cn}
+\affiliation{%
+  \institution{Department of Computer Science and Technology, Institute for Internet Judiciary, Tsinghua University}
+  \city{Beijing}
+  \country{China}
+}
+
+\author{Ziyi Ye}
+\email{yeziyi1998@gmail.com}
+\affiliation{%
+  \institution{Department of Computer Science and Technology, Institute for Internet Judiciary, Tsinghua University}
+  \city{Beijing}
+  \country{China}
+}
+\author{Yiqun Liu}
+\email{yiqunliu@tsinghua.edu.cn}
+\affiliation{%
+  \institution{Department of Computer Science and Technology, Institute for Internet Judiciary, Tsinghua University}
+  \city{Beijing}
+  \country{China}
+}
+
+
+
+
+\renewcommand{\shortauthors}{Li, et al.}
+\newcommand{\yzy}[1]{\textcolor{blue}{#1}} 
+
+
+
+
+\begin{abstract}
+
+The rapid advancement of Large Language Models (LLMs) has driven their expanding application across various fields.
+One of the most promising applications is their role as evaluators based on natural language responses, referred to as ``LLMs-as-judges''.
+This framework has attracted growing attention from both academia and industry due to their excellent effectiveness, ability to generalize across tasks, and interpretability in the form of natural language.
+This paper presents a comprehensive survey of the LLMs-as-judges paradigm from five key perspectives: \textbf{Functionality}, \textbf{Methodology}, \textbf{Applications}, \textbf{Meta-evaluation}, and \textbf{Limitations}.
+We begin by providing a systematic definition of LLMs-as-Judges and introduce their functionality~(Why use LLM judges?).
+Then we address methodology to construct an evaluation system with LLMs~(How to use LLM judges?).
+Additionally, we investigate the potential domains for their application (Where to use LLM judges?) and discuss methods for evaluating them in various contexts~(How to evaluate LLM judges?).
+Finally, we provide a detailed analysis of the limitations of LLM judges and discuss potential future directions.
+
+Through a structured and comprehensive analysis, we aim aims to provide insights on the development and application of LLMs-as-judges in both research and practice. We will continue to maintain the relevant resource list at \url{https://github.com/CSHaitao/Awesome-LLMs-as-Judges}.
+\end{abstract}
+
+
+\keywords{Large Language Models, Evaluation, LLMs-as-Judges}
+
+\maketitle
+
+
+\input{sections/Introduction}
+\input{sections/Tax_tree_1}
+\input{sections/Tax_tree_2}
+\input{sections/Preliminaries}
+
+\input{sections/Functionality}
+
+\input{sections/Methodology}
+
+\input{sections/Application}
+
+\input{sections/Meta_evaluation}
+
+\input{sections/reliability}
+
+\input{sections/future}
+
+
+\newpage
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{sample-base}
+
+\end{document}

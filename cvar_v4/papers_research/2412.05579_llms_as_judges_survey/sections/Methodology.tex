@@ -1,0 +1,344 @@
+\definecolor{mygray}{gray}{.9}
+
+\section{Methodology}
+\label{sec:Methodology}
+\par The use of LLM judges requires careful methodological considerations to ensure the accuracy and consistency of judgments. 
+Researchers have developed various approaches according to the complexity and specific requirements of different judgment tasks, each offering unique advantages. 
+In this section, we categorize these methodologies into three broad approaches: \textbf{Single-LLM System} (\S\ref{sec:Single-LLM System}): evaluation by a single-LLM, \textbf{Multi-LLM System} (\S\ref{sec:Multi-LLM System}): evaluation by cooperation among multi-LLMs, and \textbf{Human-AI Collaboration} (\S\ref{sec:Hybrid System}): evaluation by cooperation of LLMs and Human.
+Figure ~\ref{figure:method} presents an overview of methodology.
+
+
+\begin{figure}[t]
+\includegraphics[width=\linewidth]{figs/method.pdf}
+\caption{Overview of the Methodology of LLMs-as-judges.}
+% \vspace{-5mm}
+\label{figure:method}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+\subsection{Single-LLM System}
+\label{sec:Single-LLM System}
+
+\par Single-LLM System relies on a single model to perform judgment tasks, with its effectiveness largely determined by the LLM's capabilities and the strategies used to process input data. This approach can generally be divided into three fundamental components: \textbf{Prompt Engineering} (\S\ref{sec:Prompt Engineering}), \textbf{Tuning} (\S\ref{sec:Tuning}), and \textbf{Post-processing} (\S\ref{sec:Post-processing}) of model outputs.
+
+\subsubsection{Prompt-based}
+\label{sec:Prompt Engineering}
+\par Prompt engineering~\cite{sahoo2024systematic} involves crafting clear and structured input prompts tailored to elicit accurate and contextually appropriate responses from LLM judges. This approach is crucial for ensuring that LLMs grasp the complexities of specific tasks and provide relevant, consistent, and goal-aligned judgments. 
+In many cases, well-designed prompts significantly reduce the need for extensive model training.
+
+
+\textbf{In-Context Learning.} In-Context Learning (ICL) is a distinctive capability of LLMs that allows them to dynamically adapt to evaluation tasks using carefully curated examples or explanations within the prompt~\cite{dong2022survey}. Several recent methods have demonstrated the power of ICL in LLM-as-judges, showcasing how it enhances the flexibility and performance of LLMs in diverse settings. For example, GPTScore~\cite{fu2023gptscore} leverages the few-shot learning capability of generative pre-trained models to evaluate generated text. By using relevant examples to customize prompts, it provides a flexible, training-free approach to assess multiple aspects of text quality.
+Similarly, LLM-EVAL~\cite{lin2023llm} incorporates carefully crafted examples into prompts, proposing a unified, multi-dimensional automatic evaluation method for open-domain dialogue.
+Another notable example is TALEC~\cite{zhang2024talec}, a model-based evaluation method that leverages in-context learning to enable users to set custom evaluation criteria for LLMs in specific domains. Through careful prompt engineering, users can iteratively adjust the examples to refine the evaluation process as needed.
+In addition, Jain et al.~\cite{jain2023multi} proposed the In-Context Learning-based Evaluator (ICE) for multi-dimensional text evaluation. ICE leverages LLMs and a small number of in-context examples to evaluate generated text summaries, achieving competitive results.
+
+While ICL can enable effective evaluation, it is not without challenges. One major issue is that the model's responses may be influenced by the selection of prompt examples, potentially leading to bias~\cite{zhao2021calibrate,zhou2023batch,han2022prototypical,fei2023mitigating}.
+To address this issue, Hasanbeig et al. proposed ALLURE~\cite{hasanbeig2023allure}, a comprehensive protocol designed to mitigate bias in ICL for LLMs during text evaluation. ALLURE~\cite{hasanbeig2023allure} improves evaluator accuracy by iteratively incorporating discrepancies between its assessments and annotated data into the learning context. Moreover, after uncovering the existence of symbol bias within LLM evaluators when using ICL, Song et al.~\cite{song2024can} proposed two effective mitigation strategy prompt templates, Many-Shot with Reference (MSwR) and Many-Shot without Reference (MSoR), to bolster the reliability and precision of LLM-based assessments.
+
+
+
+
+
+
+\textbf{Step-by-step.}
+Step-by-step involves breaking down complex evaluation tasks into fine-grained components, leveraging the reasoning capabilities of LLMs to simplify the evaluation process. The most straightforward example of which is perhaps Chain-of-Thought (CoT)~\cite{wei2022chain,kotonya2023little}. Building on that, frameworks like G-EVAL~\cite{liu2023g} have been proposed to assess the quality of NLG outputs. G-EVAL~\cite{liu2023g} combines CoT with a form-filling paradigm, allowing the LLM to assess outputs in a structured manner.
+Similarly, ICE-Score~\cite{zhuo2023ice} introduces a step-by-step framework for evaluating code, in which the LLM is instructed with task definitions, evaluation criteria, and detailed evaluation steps. By breaking the task down into clear steps, ICE-Score~\cite{zhuo2023ice} improves the quality and consistency of code evaluation. Also, ProtocoLLM~\cite{yi2024protocollm} employs a similar step-by-step approach to evaluate the specialized capabilities of LLMs in generating scientific protocols. 
+Portia~\cite{li2023split} achieves better evaluation results in a lightweight yet effective manner. It divides the answer into multiple parts, aligns similar content between candidate answers, and then merges them back into a single prompt for evaluation by the LLM.
+
+
+Some studies break down evaluations into two steps: ``explanation-rating.'' This approach suggests that providing an explanation enhances the reliability of the rating. Chiang et al.~\cite{chiang2023closer} offer empirical guidelines to improve the quality of LLM evaluations, demonstrating that combining rating with explanation (rate-explain) or explanation with rating (explain-rate) leads to higher correlations with human ratings.
+Another effective strategy is to decompose complex evaluation standards into specific, discrete criteria, allowing the LLM to assess each aspect independently. FineSurE~\cite{song2024finesure} is an advanced example of this method, offering a framework for the fine-grained evaluation of text summarization quality. It breaks down the evaluation into multiple dimensions, such as faithfulness, completeness, and conciseness. Through detailed analysis, including fact-checking and key fact alignment, FineSurE~\cite{song2024finesure} outperforms traditional methods in terms of evaluation accuracy.
+
+
+
+
+\textbf{Definition Augmentation.}
+The Enhanced Definition approach involves refining prompts to inject improved evaluation criteria, establish assessment principles, or incorporate external knowledge into the LLM judge's decision-making process.
+Some studies focus on enriching and clarifying the prompts to ensure that the evaluation criteria are both comprehensive and well-defined.
+
+
+
+For example, Liu et al. propose AUTOCALIBRATE~\cite{liu2023calibrating}, a multi-stage, gradient-free approach. This method involves the drafting, revision, and application of calibrated criteria, and it automatically calibrates and aligns an LLM-based evaluator to match human preferences for NLG quality assessment.
+Furthermore, SALC~\cite{gupta2024unveiling} enables LLMs to autonomously generate context-aware evaluation criteria for self-assessment, overcoming the limitations of static, human-defined metrics. 
+On the other hand, the LLM-as-a-Personalized-Judge approach~\cite{dong2024can} introduces a novel perspective by incorporating diverse evaluative roles and principles. This allows LLMs to adapt to complex, varied evaluation scenarios, resulting in more nuanced and context-sensitive assessments.
+
+Another key aspect of Definition Augmentation is the retrieval of external knowledge, which helps reduce hallucinations and provides more factual support. For instance, BiasAlert~\cite{fan2024biasalert}, a tool designed to detect social bias in LLM-generated open-text outputs. It integrates external human knowledge with the LLM judge's inherent reasoning capabilities to reliably identify and mitigate bias, outperforming GPT4-as-A-Judge across various scenarios.
+Moreover, Chen et al.~\cite{chen2024llms} found that within retrieval-augmented generation (RAG) frameworks, LLM judges do not exhibit a significant self-preference effect during evaluation.
+
+
+\textbf{Multi-turn Optimization.}
+Multi-turn optimization involves iterative interactions between the evaluator and the evaluated entity, refining evaluation results through diverse forms of feedback, thus fostering deeper analysis and a progressive improvement in evaluation quality~\cite{zhou2024fairer}.
+Unlike traditional methods that rely on predefined criteria, Xu et al. proposed ACTIVE-CRITIC~\cite{xu2024large}, enabling LLMs to infer evaluation criteria from data and dynamically optimize prompts through multiple rounds of interaction. Moreover, 
+Some studies~\cite{zhao2024auto,luo2024videoautoarena,bai2024benchmarking,yu2024kieval} leverage LLMs as question designers to engage in dynamic interactions with the evaluated entities, adjusting the questions and task design in real time. This allows for flexible modification of the evaluation content based on the performance of the evaluated entity, thereby enabling more comprehensive assessments.
+
+
+\subsubsection{Tuning-based}
+\label{sec:Tuning}
+\par Tuning involves training a pre-existing LLM on a specialized dataset to adapt it to specific judgment tasks. It's especially useful when the judgment domain involves highly specialized knowledge or nuanced decision-making~\cite{huang2024limitations}.
+
+
+
+
+\textbf{Score-based Tuning.} Score-based tuning involves using data with scores to train models and enhance their ability to predict judgment scores based on specific evaluation criteria~\cite{chen2023adaptation,deshwal2024phudge,wang2023learning}.
+% Supervised Fine-Tuning (SFT) methods leverage labeled data to directly fine-tune language models, enhancing their performance on specific tasks by aligning them with human values and improving factual accuracy.
+
+
+Many studies have explored the enhancement of LLM-as-judges by fine-tuning them on human-labeled datasets. 
+For instance, PHUDGE~\cite{deshwal2024phudge}, fine-tuned from the Phi-3 model, achieves state-of-the-art performance in terms of latency and throughput when automatically evaluating the quality of outputs from LLMs. This fine-tuning process equips the model with the necessary judgment skills, enabling it to assess various types of content in a structured and accurate manner.
+Additionally, ECT~\cite{wang2023learning} introduces a novel method for transferring scoring capabilities from LLMs to lighter models. This allows the lighter models to function as effective reward models for sequence generation tasks, enhancing sequence generation models through reinforcement learning and reranking approaches.
+AttrScore~\cite{yue2023automatic} is another framework for evaluating attribution and identifying specific types of attribution errors, using a curated test set from a generative search engine and simulated examples from existing benchmarks.
+The above research highlights that LLMs can better align their decision-making process with humans through fine-tuning with human-constructed datasets.
+% By leveraging annotated data, LLMs can better align their decision-making process with human reasoning, thereby improving their ability to evaluate tasks with greater accuracy and relevance.
+
+In addition to human-labeled data, some studies have also attempted to fine-tune models using synthetic datasets like SorryBench~\cite{xie2024sorry} generated for evaluation tasks. These datasets are often created through rule-based methods or by generating artificial evaluation examples, which also give rise to some metrics like TIGERScore~\cite{jiang2023tigerscore}.
+SELF-J~\cite{ye2024self} is a self-training framework for developing judge models to evaluate LLMs' adherence to human instructions without human-annotated quality scores. SELF-J~\cite{ye2024self} proposes selective instruction following, allowing systems to decline low-quality instructions.
+FENCE~\cite{xie2024improving} is another factuality evaluator designed to provide claim-level feedback to language model generators. It details a data augmentation approach that enriches public datasets with textual critiques and diverse source documents from various tools, thereby enhancing factuality without introducing lesser-known facts.
+Utilizing synthetic training data to fine-tune lightweight language model judges and employing prediction-powered inference (PPI) for statistical confidence to mitigate potential prediction errors, ARES~\cite{saad2023ares} can automatically assess RAG systems.
+
+
+\textbf{Preference-based Learning.} 
+Preference-based learning focuses on training LLMs to make inferences and learn based on preferences, enabling the development of more adaptive and customizable evaluation capabilities.
+
+Initially, researchers leverage these data in conjunction with advanced techniques like Direct Preference Optimization (DPO)~\cite{rafailov2024direct} to train LLMs for more nuanced evaluative capabilities. In this method, the model is trained to predict which of two outputs is preferred according to human-like values, rather than learning a scalar reward signal. Such self-improving approach is well reflected in Meta-Rewarding~\cite{wu2024meta}.
+Con-J~\cite{ye2024beyond} trains a generative judge by using the DPO loss on contrastive judgments and the SFT loss on positive judgments to align LLMs with human values.
+In terms of evaluating other LLMs effectively in open-ended scenarios, JudgeLM~\cite{zhu2023judgelm} addresses key biases in the fine-tuning process with a high-quality preference dataset.
+Another typical method is PandaLM~\cite{wang2023pandalm}, which is trained on a reliable human-annotated preference dataset, focusing extends beyond just the objective correctness of responses, and addresses vital subjective factors.
+Moreover, Self-Taught~\cite{wang2024self} is another approach to train LLMs as effective evaluators without relying on human-annotated preference judgments, using synthetic training data only. Through an iterative self-improvement scheme, LLM judges are able to produce reasoning traces and final judgments.
+Not quite the same, FedEval-LLM~\cite{he2024fedeval} fine-tunes many personalized LLMs without relying on labeled datasets to provide domain-specific evaluation, mitigating biases associated with single referees. It is designed to assess the performance of LLMs on downstream tasks, at the same time, ensuring privacy preservation.
+
+As research has progressed, newer methods have emerged that combine both score-based and preference-based data to refine model evaluation capabilities, not to mention some novel metrics like INSTRUCTSCORE~\cite{xu2023instructscore}.
+FLAMe~\cite{vu2024foundational} is an example of such an approach. It's a family of Foundational Large Autorater Models which significantly improves generalization to a wide variety of held-out tasks using both pointwise and pairwise methods during training.
+As generative judge model, AUTO-J~\cite{li2023generative} addresses challenges in generality, flexibility, and interpretability by training on a diverse dataset containing scoring and preference.
+To critique and refine the outputs of large language models, Shepherd~\cite{wang2023shepherd} leverages a high-quality feedback dataset to identify errors and suggest improvements across various domains.
+In the domain of NLG, X-EVAL~\cite{liu2023x} consists of a vanilla instruction tuning stage and an enhanced instruction tuning stage that exploits connections between fine-grained evaluation aspects.
+Notably, Themis~\cite{hu2024themis} also achieved outstanding results acting as a reference-free NLG evaluation language model designed for flexibility and interpretability.
+Similarly, CritiqueLLM~\cite{ke2024critiquellm} provides effective and explainable evaluations of LLM outputs, and uses a dialogue-based prompting method to generate high-quality referenced and reference-free evaluation data.
+Self-Rationalization~\cite{trivedi2024self} enhances LLM performance by iteratively fine-tuning the judge via DPO, which allows LLMs to learn from their own reasoning.
+Based on pointwise and pairwise dataset, CompassJudger-1~\cite{cao2024compassjudger} acts as an open-source, versatile LLM for efficient and accurate evaluation of other LLMs.
+Likewise, Zhou et al.~\cite{zhou2024mitigating} introduces a systematic framework for bias reduction, employing calibration for closed-source models and contrastive training for open-source models.
+Apart from that, HALU-J~\cite{wang2024halu} is designed to enhance hallucination detection in LLMs by selecting pertinent evidence and providing detailed critiques.
+PROMETHEUS~\cite{kim2023prometheus} and PROMETHEUS 2~\cite{kim2024prometheus} are open-source LLMs specialized for fine-grained evaluation that can generalize to diverse, real-world scoring rubrics beyond a single-dimensional preference, supporting both direct assessment and pairwise ranking, and can evaluate based on custom criteria. What's more, the following PROMETHEUS-VISION~\cite{lee2024prometheusvision} fills the gap in the visual field.
+As for various multimodal tasks, LLaVA-Critic~\cite{xiong2024llava} demonstrates its effectiveness in providing reliable evaluation scores and generating reward signals for preference learning, highlighting the potential of open-source LMMs in self-critique and evaluation.
+
+
+
+\begin{table*}[t]
+\centering
+\caption{An Overview of Fine-Tuning Methods in Single-LLM Evaluation (Sorted in ascending alphabetical order).}
+\scalebox{0.56}{
+\begin{tabular}{cccccccc}
+\hline
+\multirow{2}{*}{Method} & \multicolumn{3}{c}{Data Construction} & \multicolumn{2}{c}{Tuning Method} & \multirow{2}{*}{Base LLM} \\ \cmidrule(lr){2-4} \cmidrule(lr){5-6}
+&Annotator&Domain&Scale&Evaluation Type&Technique&\\ \hline
+
+ARES~\cite{saad2023ares}&Human \& LLM&RAG System&-&Pairwise&PPI&DeBERTa-v3-Large\\
+
+\rowcolor{mygray}
+AttrScore~\cite{yue2023automatic}&Human&Various&63.8K&Pointwise&SFT&Multiple LLMs\\
+
+AUTO-J~\cite{li2023generative}&Human \& GPT-4&Various&4396&Pointwise \& Pairwise&SFT&Llama2-13B-Chat\\
+
+\rowcolor{mygray}
+&&&&Pointwise, Pairwise,&&\\
+\rowcolor{mygray}
+\multirow{-2}{*}{CompassJudger-1~\cite{cao2024compassjudger}}&\multirow{-2}{*}{Human \& LLM}&\multirow{-2}{*}{Various}&\multirow{-2}{*}{900K}& \& Generative&\multirow{-2}{*}{SFT}&\multirow{-2}{*}{Qwen2.5 Series}\\
+
+Con-J~\cite{ye2024beyond}&Human \& ChatGPT&Creation, Math, \& Code&220K&Pairwise&SFT \& DPO&Qwen2-7B-Instruct\\
+
+\rowcolor{mygray}
+CritiqueLLM~\cite{ke2024critiquellm}&Human \& GPT-4&Various&7722&Pointwise \& Pairwise&SFT&ChatGLM3-6B\\
+
+&&Machine Translation,&&&&\\
+&&Text Style Transfer,&&&&\\
+\multirow{-3}{*}{ECT~\cite{wang2023learning}}&\multirow{-3}{*}{ChatGPT}&\& Summarization&\multirow{-3}{*}{-}&\multirow{-3}{*}{Pointwise}&\multirow{-3}{*}{SFT \& RLHF}&\multirow{-3}{*}{RoBERTa}\\
+
+\rowcolor{mygray}
+&&Instruct-tuning&5K, 10K,&&&\\
+\rowcolor{mygray}
+\multirow{-2}{*}{FedEval-LLM~\cite{he2024fedeval}}&\multirow{-2}{*}{Human}&\& Summary&per client&\multirow{-2}{*}{Pairwise}&\multirow{-2}{*}{LoRA}&\multirow{-2}{*}{Llama-7B}\\
+
+&&Summarization,&&&&\\
+\multirow{-2}{*}{FENCE~\cite{xie2024improving}}&\multirow{-2}{*}{Human \& LLM}&QA, \& Dialogue&\multirow{-2}{*}{-}&\multirow{-2}{*}{Pointwise}&\multirow{-2}{*}{SFT \& DPO}&\multirow{-2}{*}{Llama3-8B-Chat}\\
+
+\rowcolor{mygray}
+&&&&Pointwise, Pairwise,&&\\
+\rowcolor{mygray}
+&&&&Classification,&&\\
+\rowcolor{mygray}
+\multirow{-3}{*}{FLAMe~\cite{vu2024foundational}}&\multirow{-3}{*}{Human}&\multirow{-3}{*}{Various}&\multirow{-3}{*}{5.3M}&\& Open-ended generation&\multirow{-3}{*}{RLHF}&\multirow{-3}{*}{PaLM-2-24B}\\
+
+&GPT-4-Turbo&Multiple-Evidence&&&&\\
+\multirow{-2}{*}{HALU-J~\cite{wang2024halu}}&\& GPT-3.5-Turbo&Hallucination Detection&\multirow{-2}{*}{2663}&\multirow{-2}{*}{Pointwise \& Pairwise}&\multirow{-2}{*}{SFT \& DPO}&\multirow{-2}{*}{Mistral-7B-Instruct}\\
+
+\rowcolor{mygray}
+HelpSteer2~\cite{wang2024helpsteer2}&Human&Various&-&Pointwise \& Pairwise&PPI \& RLHF&Llama3.1-70B-Instruct\\
+
+INSTRUCTSCORE~\cite{xu2023instructscore}&GPT-4&Various&40K&Pointwise \& Pairwise&SFT&Llama-7B\\
+
+\rowcolor{mygray}
+JudgeLM~\cite{zhu2023judgelm}&GPT-4&Open-ended Tasks&100K&Pairwise&SFT&Vicuna Series\\
+
+LLaVA-Critic~\cite{xiong2024llava}&GPT-4o&Various&113K&Pointwise \& Pairwise&DPO&LLaVA-OneVision(OV) 7B \& 72B\\
+
+\rowcolor{mygray}
+Meta-Rewarding~\cite{wu2024meta}&Llama3&Various&20K&Pairwise&DPO&Llama3-8B-Instruct\\
+
+OffsetBias~\cite{park2024offsetbias}&Human \& LLM&Bias Detection&268K&Pairwise&RLHF&Llama3-8B-Instruct\\
+
+\rowcolor{mygray}
+PandaLM~\cite{wang2023pandalm}&Human&Various&300K&Pairwise&SFT&Llama-7B\\
+
+PHUDGE~\cite{deshwal2024phudge}&Human \& GPT-4&NLG&-&Pointwise \& Pairwise&LoRA&Phi-3\\
+
+\rowcolor{mygray}
+PROMETHEUS~\cite{kim2023prometheus}&Human&Various&100K&Pointwise&SFT&Llama2-Chat-7B \& 13B\\
+
+PROMETHEUS2~\cite{kim2024prometheus}&Human&Various&300K&Pointwise \& Paiwise&SFT&Mistral-7B \& Mistral-8x7B\\
+
+\rowcolor{mygray}
+PROMETHEUS-VISION~\cite{lee2024prometheusvision}&GPT-4V&Various&15K&Pointwise&SFT&Llava-1.5\\
+
+&&Common, Coding,&&&&\\
+\multirow{-2}{*}{SELF-J~\cite{ye2024self}}&\multirow{-2}{*}{Human \& GPT-4}&\& Academic&\multirow{-2}{*}{5.7M}&\multirow{-2}{*}{Pointwise}&\multirow{-2}{*}{LoRA}&\multirow{-2}{*}{Llama2-13B}\\
+
+\rowcolor{mygray}
+Self-Rationalization~\cite{trivedi2024self}&LLM&Various&-&Pointwise \& Pairwise&SFT \& DPO&Llama3.1-8B-Instruct\\
+
+Self-Taught~\cite{wang2024self}&LLM&Various&20K&Pairwise&-&Llama3-70B-Instruct\\
+
+\rowcolor{mygray}
+Shepherd~\cite{wang2023shepherd}&Human&Various&-&Pointwise \& Pairwise&SFT&Llama-7B\\
+
+SorryBench~\cite{xie2024sorry}&Human \& GPT-4&Unsafe Topics&2.7K&Pointwise&SFT&Multiple LLMs\\
+
+\rowcolor{mygray}
+Themis~\cite{hu2024themis}&Human \& GPT-4&NLG&67K&Pointwise \& Pairwise&SFT \& DPO&Llama3-8B\\
+
+TIGERScore~\cite{jiang2023tigerscore}&Human \& GPT-4&Text Generation&42K&Pointwise&SFT&Llama2-7B \& 13B\\
+
+\rowcolor{mygray}
+X-EVAL~\cite{liu2023x}&Human&NLG&55,602&Pointwise \& Pairwise&SFT&Flan-T5\\
+
+\hline
+\end{tabular}
+}
+\end{table*}
+
+
+
+\subsubsection{Post-processing}
+\label{sec:Post-processing}
+\par Post-processing involves further refining evaluation results to extract more precise and reliable outcomes. This step typically includes analyzing the initial outputs to identify patterns, inconsistencies, or areas requiring improvement, followed by targeted adjustments and in-depth analysis. By addressing these issues, post-processing ensures that the evaluation results are not only accurate but also aligned with the specific objectives and standards of the task.
+
+
+
+\textbf{Probability Calibration.}
+During the post-hoc process of the model output, some studies use rigorous mathematical derivations to quantify the differences, thereby optimizing them.
+For instance, Daynauth et al.~\cite{daynauth2024aligning} investigates the discrepancy between human preferences and automated evaluations in language model assessments, particularly employs Bayesian statistics and a t-test to quantify bias towards higher token counts, and develops a recalibration procedure to adjust the GPTScorers.
+Apart from that, ProbDiff~\cite{xia2024language} is another novel self-evaluation method for LLMs that assesses model efficacy by computing the probability discrepancy between initial responses and their revised versions.
+Moreover, Liusie et al.~\cite{liusie2024efficient} introduces a Product of Experts (PoE) framework for efficient comparative assessment using LLMs, which yield an expression that can be maximized with respect to the underlying set of candidates. This paper proposes two experts, a soft Bradley-Terry expert and a Gaussian expert that has closed-form solutions.
+Unlike from frameworks above, CRISPR~\cite{yang2024mitigating} is a novel bias mitigation method for LLMs executing instruction-based tasks, which identifies and prunes bias neurons with probability calibration, reducing bad performance without compromising pre-existing knowledge.
+
+
+\textbf{Text Reprocessing.} 
+In LLMs-as-judges, text reprocessing methods are essential for enhancing the accuracy and reliability of evaluation outcomes. Specifically, text processing can improve the evaluation process by integrating multiple evaluation results or outcomes from several rounds of assessment.
+For example, Sottana et al.~\cite{sottana2023evaluation} employs a multi-round evaluation process. Each round involves scoring model outputs based on specific criteria, with the human and GPT-4 evaluations ranking model performances from best to worst and averaging these rankings to mitigate subjectivity.
+For the single-response evaluation, AUTO-J~\cite{li2023generative} employs a "divide-and-conquer" strategy. Critiques that either adhere to or deviate from the scenario-specific criteria are consolidated to form a comprehensive evaluation judgment and then generate the final assessment.
+Consistent with former aforementioned studies, Yan et al.~\cite{yan2024consolidating} introduces a post-processing method to consolidate the relevance labels generated by LLMs. It demonstrates that this approach effectively combines both the ranking and labeling abilities of LLMs through post-processing.
+Furthermore, REVISEVAL~\cite{zhang2024reviseval} is a novel evaluation paradigm that enhances the reliability of LLM Judges by generating response-adapted references through text revision capabilities of LLMs.
+Apart from that, Tessler et al.~\cite{tessler2024ai} explores the use of AI as a mediator in democratic deliberation, aiming to help diverse groups find common ground on complex social and political issues. With the goal of maximizing group approval, the researchers developed the "Habermas Machine", which iteratively generate group statements based on individual opinions.
+
+
+Another category of text reprocessing methods involves task transformation, primarily focusing on the conversion between open-ended and multiple-choice question (MCQ) formats. Ren et al.~\cite{ren2023self} explores the use of self-evaluation to enhance the selective generation capabilities of LLMs. Specifically, the authors reformulate open-ended generation tasks into token-level prediction tasks, reduce sequence-level scores to token-level scores to improve quality calibration.
+Conversely, Myrzakhan et al.~\cite{myrzakhan2024open} introduces the Open-LLM-Leaderboard, a new benchmark for evaluating LLMs using open-style questions, which eliminates selection bias and random guessing issues associated with multiple-choice questions. It presents a method to identify suitable open-style questions and validate the correctness of LLM open-style responses against human-annotated ground-truths.
+
+
+\subsection{Multi-LLM System}
+\label{sec:Multi-LLM System}
+
+\par Multi-LLM Evaluation harnesses the collective intelligence of multiple LLMs to bolster the robustness and reliability of evaluations. By either facilitating inter-model communication or independently aggregating their outputs, these systems can effectively mitigate biases, leverage complementary strengths across different models, refine decision-making precision, and foster a more nuanced understanding of complex judgments.
+
+
+
+\subsubsection{Communication}
+\label{sec:Communication}
+\par Communication means the dynamic flow of information between LLMs, which is pivotal for sparking insights and sharing rationales during the judgment process. 
+Recent research has shown that communication among LLMs can enable emergent abilities through their  interactions~\cite{xu2023towards}, leading to a cohesive decision-making process and better judgment performance.
+% By breaking down the walls of isolated reasoning, these interactions bring LLMs together into a cohesive decision-making entity and lead to better responses.
+The Multi-LLM system can benefit from LLM interactions in two ways: cooperation and competition.
+
+
+\textbf{Cooperation.} 
+Multi-LLMs can work together to achieve a common goal with information and rationales sharing through interactions to enhance the overall evaluation process.
+For example, \citet{zhang2023wider} proposed an architecture named WideDeep to aggregate information at the LLM's neuro-level.
+In addition, \citet{xu2023towards} introduced a multi-agent collaboration strategy that mimics the academic peer review process to enhance complex reasoning in LLMs. 
+The approach involves agents creating solutions, reviewing each other’s work, and revising their initial submissions based on feedback.
+Similarly, ABSEval~\cite{liang2024abseval} utilizes four agents for answer synthesize, critique, execution, and commonsense, to build the overall workflow.
+Although the cooperation can complement each other's strengths between LLMs to a certain degree, this method still includes the risk of groupthink, where similar models reinforce each other’s biases rather than providing diverse insights.
+
+
+\textbf{Competition.} Multi-LLMs systems can also benefit from competitive or adversarial communication, i.e., LLMs argue or debate to evaluate each other's outputs~\cite{zhao2024auto,moniri2024evaluating,chan2023chateval,li2023prd}. 
+Such multi-LLMs systems could be categorized into centralized and decentralized structures~\cite{owens2024multi}.
+
+In the centralized structure, a single central LLM acts as the orchestrator of the conversation, highlighting the efficiency of a unified decision-making process.
+Auto-Arena~\cite{zhao2024auto} is such a novel framework that automates the evaluation of LLMs through agent peer battles and committee discussions, aiming to provide timely and reliable assessments. In detail, the framework conducts multi-round debates between LLM candidates, and uses an LLM judge committee to decide the winner.
+Inspired by courtroom dynamics, \citet{bandi2024adversarial} propose two architectures, MORE and SAMRE, which utilize multiple advocates and iterative debates to dynamically assess LLM outputs.
+
+In contrast, the decentralized structure emphasizes a collective intelligence where all models engage in direct communication, promoting a resilient and distributed decision-making structure.
+In the domain of LLM debates, Moniri et al.~\cite{moniri2024evaluating} introduced a unique automated benchmarking framework, employing another LLM as the judge to assess not only the models' domain knowledge but also their abilities in problem definition and inconsistency recognition.
+ChatEval~\cite{chan2023chateval} is another multi-agent debate framework that utilizes multiple LLMs with diverse role prompts and communication strategies on open-ended questions and traditional NLG tasks, significantly improves evaluation performance compared to single-agent methods.
+Moreover, PRD~\cite{li2023prd} applied peer rank and discussion to address issues like self-enhancement and positional bias in current LLM evaluation methods, leading to better alignment with human judgments and a path for fair model capability ranking.
+
+
+\subsubsection{Aggregation}
+\label{sec:Aggregation}
+
+Alternatively, in multi-LLM systems without communication, judgments are independently generated by multiple models, which are subsequently synthesized into a final decision through various aggregation strategies. Techniques such as majority vote, weighted averages, and prioritizing the highest confidence predictions, each play a crucial role. These methods allow each model to assess without interference, and eventually extract and combine the most effective elements from each model's response.
+
+Simple voting methods, such as majority voting, by selecting the most frequent answers, offers a straightforward approach to synthesize evaluations.
+For example, Badshah et al.~\cite{badshah2024reference} introduced a reference-guided verdict method for evaluating free-form text using multiple LLMs as judges. Combining these LLMs through majority vote significantly improves the reliability and accuracy of evaluations, particularly for complex tasks.
+Furthermore, PoLL~\cite{verga2024replacing} demonstrates that using a diverse panel of smaller models as judges through max voting and average pooling is not only an effective method for evaluating LLM performance, but also reduces intra-model bias of a single large model.
+Language-Model-as-an-Examiner~\cite{bai2024benchmarking} is another benchmarking framework to evaluate the performance of foundation models on open-ended question answering through voting. In the peer-examination mechanism, the LM serves as a knowledgeable examiner that formulates questions and evaluates responses in a reference-free manner.
+What's more, multi-LLM evaluation could also be used in improving dataset quality. Choi et al.~\cite{choi2024multi} provided an enhanced dataset, MULTI-NEWS+, which is the result of a cleansing strategy leveraging CoT and majority voting to identify and exclude irrelevant documents through LLM-based data annotation.
+
+Weighted scoring aggregation involves assigning different importance to different model outputs, either by aggregating multiple overall scores for the same response or by combining assessments of different aspects of the response to form a comprehensive evaluation.
+On the one hand, through a peer-review mechanism, PiCO~\cite{ning2024pico} allows LLMs to answer unlabeled questions and evaluate each other without human annotations. It formalizes the evaluation as a constrained optimization problem, maximizing the consistency between LLMs' capabilities and corresponding weights.
+Likewise, PRE~\cite{chu2024pre,chen2024automaticcostefficientpeerreviewframework} can automatically evaluate LLMs through a peer-review process. It selects qualified LLMs as reviewers through a qualification exam and aggregates their ratings using weights which is proportional to their agreement of humans, demonstrating effectiveness and robustness in evaluating text summarization tasks.
+In the field of recommendation explanations, Zhang et al.~\cite{zhang2024large} suggests that ensembles like averaging ratings of multiple LLMs can enhance evaluation accuracy and stability.
+On the other hand, for example, AIME~\cite{patel2024aime} is an evaluation protocol that utilizes multiple LLMs that each with a specific role independently generate an evaluation on separate criteria and then combine them via concatenation.
+Similarly, a paper introduces HD-EVAL~\cite{liu2024hd}, which iteratively aligns LLM-based evaluators with human preference via Hierarchical Criteria Decomposition. By decomposing a given evaluation task into finer-grained criteria, aggregating them according to estimated human preferences, pruning insignificant criteria with attribution, and further decomposing significant criteria, HD-EVAL demonstrates its superiority.
+
+Apart from weighting methods, there are some other advance mathematical aggregation techniques, such as Bayesian methods and graph-based approaches, offering more robust ways to handle uncertainties and inconsistencies across multiple evaluators.
+Notably, a paper introduces two calibration methods, Bayesian Win Rate Sampling (BWRS) and Bayesian Dawid-Skene~\cite{gao2024bayesian}, to address the win rate estimation bias when using many LLMs as evaluators for text generation quality.
+In addition to that, GED~\cite{hu2024language} addresses inconsistencies in LLM preference evaluations by leveraging multiple weak evaluators to construct preference graphs, and then utilize DAG structure to ensemble and denoise these graphs for better, non-contradictory evaluation results.
+
+LLM-based aggregation is a grand-new perspective like Fusion-Eval~\cite{shu2024fusion}. It's a novel framework that integrates various assistant evaluators using LLMs, each of which specializes in assessing distinct aspects of responses, to enhance the correlation of evaluation scores with human judgments for natural language systems.
+
+In addition to the above direct use of multiple model evaluation, the cascade framework employs a tiered approach, where weaker models are used initially for evaluations, and stronger models are engaged only when higher confidence is required, optimizing resource use and enhancing evaluation precision.
+Jung et al.~\cite{jung2024trust} proposes "Cascaded Selective Evaluation" to ensure high agreement with human judgments while using cheaper models.
+Similar to the work above, Huang et al.~\cite{huang2024limitations} proposes CascadedEval, a novel method integrating proprietary models, in order to compensate for the limitations of fine-tuned judge models.
+
+\subsection{Human-AI Collaboration System}
+\label{sec:Hybrid System}
+
+
+Human-AI Collaboration Systems bridge the gap between automated LLM judgments and the essential need for human oversight, particularly in high-stakes domains such as law, healthcare, and education. Human evaluators act either as the ultimate deciders, or as intermediaries who verify and refine model outputs. By incorporating human insights, Hybrid systems can ensure the final judgment is more reliable and aligned with ethical considerations, and empower continuous model improvement through feedback loops.
+
+In many Human-AI Collaboration systems, human evaluators play a vital role during the evaluation process itself, actively collaborating with the LLMs to review and refine the generated outputs.
+For example, COEVAL\cite{li2023collaborative} introduces a collaborative evaluation pipeline where LLMs generate initial criteria and evaluations for open-ended natural language tasks. These machine-generated outputs are then reviewed and refined by human evaluators to guarantee reliability.
+To address a significant positional bias in LLMs when used as evaluators, Wang et al.~\cite{wang2023large} proposes a calibration framework with three strategies: Multiple Evidence Calibration, Balanced Position Calibration, and Human-in-the-Loop Calibration.
+Similarly, EvalGen\cite{shankar2024validates} integrates human feedback iteratively to refine evaluation criteria, addressing challenges such as  ``criteria drift'', where the standards of evaluation evolve as humans interact with the model.
+These systems allow human evaluators to provide real-time adjustments, enhancing the accuracy and trustworthiness of the evaluation process.
+
+While in other systems, human involvement takes place after the LLM has completed its evaluations, providing a final layer of verification and adjustment. This method ensures that the LLM's judgments are thoroughly scrutinized and aligned with human values.
+EvaluLLM\cite{pan2024human} allows humans to intervene and refine the evaluation results, thereby enhancing trust in the model’s performance while also controlling for potential biases.
+Additionally, Chiang et al.\cite{chiang2024large} tried LLM TAs as an assignment evaluator in a large university course. After students submit assignments and receive LLM-generated feedback, the teaching team reviews and finalizes the evaluation results. This process illustrates how human oversight after the initial automated evaluation can guarantee fairness and consistentcy with academic standards.
+

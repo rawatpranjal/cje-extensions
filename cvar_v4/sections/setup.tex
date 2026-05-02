@@ -1,32 +1,52 @@
-\section{Setup and Estimands}
+\section{Experimental Setup}
 \label{sec:setup}
 
-For prompt $\X$, policy $\ptarget$ generates response $\A_{\ptarget}$. A cheap judge returns score $\Sscore_{\ptarget}$ and an expensive oracle returns label $\Y_{\ptarget}\in[0,1]$. The oracle may be a human, expert panel, downstream metric, or stronger model. We observe cheap judge scores broadly and oracle labels only on a smaller calibration/audit slice.
+\paragraph{Data.}
+HealthBench is a rubric-graded medical-assistant benchmark
+\citep{OpenAI2025HealthBench}. We use the first $n_0 = 500$ prompts
+from the \texttt{oss\_eval} subset. Each prompt carries a list of
+rubric criteria with signed integer point values. The aggregate oracle
+score is $\Y = \sum_c p_c \cdot \one\{c\text{ satisfied}\} /
+\sum_{c:\,p_c>0} p_c$. The score can be negative when negative-points
+criteria fire and positive credit is sparse. We do not clip $\Y$. About
+$93\%$ of prompts have at least one negative-points criterion, and a
+substantial fraction of rows score exactly zero. The boundary atom at
+zero motivates the saddle-point form of $\CVaR$ (\cref{eq:stoploss-cvar})
+and the atom-split truth definition (\cref{app:estimands}).
 
-The mean value of a policy is
-\begin{equation}
-V(\ptarget)=\E_{\ptarget}[\Y].
-\end{equation}
-CJE estimates $V(\ptarget)$ by fitting a calibrated predictor $f(\Sscore,\X)$ of $\Y$ on an oracle slice and averaging it over target-policy responses, subject to a transport audit.
+\paragraph{Policies.}
+We compare five policies on the same prompts. \textsc{base} is
+gpt-4o-mini with a standard medical-assistant system prompt at sampling
+seed 42. \textsc{clone} is identical to \textsc{base} except for the
+sampling seed (43). The two policies should be statistically
+indistinguishable. \textsc{premium} swaps the model to gpt-4.1.
+\textsc{parallel} keeps gpt-4o-mini and replaces the system prompt
+with a terse-clinical variant that is shorter and less hedged.
+\textsc{unhelpful} keeps gpt-4o-mini and replaces the system prompt
+with an off-topic instruction. It is the adversarial probe of the
+safety claim. Sampling temperature is $0.7$ and maximum response length
+is $800$ tokens for all five policies.
 
-For tail risk, let
-\begin{equation}
-q_{\alpha}(\ptarget)=\inf\{t:\Pp_{\ptarget}(\Y\leq t)\geq \alpha\}
-\end{equation}
-be the lower $\alpha$-quantile. When the distribution of $\Y$ is continuous at $q_{\alpha}(\ptarget)$, the lower-tail CVaR is
-\begin{equation}
-\CVaR_{\alpha}(\ptarget)
-=\E_{\ptarget}\!\left[\Y \mid \Y\leq q_{\alpha}(\ptarget)\right].
-\label{eq:conditional-cvar}
-\end{equation}
-Our formal definition is the equivalent optimization form
-\begin{equation}
-\CVaR_{\alpha}(\ptarget)
-=\sup_{t\in\R}\left\{t-\frac{1}{\alpha}\E_{\ptarget}\!\left[\shortfall{t}{\Y}\right]\right\}.
-\label{eq:stoploss-cvar}
-\end{equation}
-The optimizer is an $\alpha$-quantile under standard continuity conditions. This form is the right primitive for estimation because it reduces tail risk to a family of mean shortfall problems.
+\paragraph{Judges and budget.}
+The cheap judge is gpt-4o-mini and the oracle judge is gpt-4.1. The
+cheap judge scores every $(\X, \A)$ pair on the panel ($500$ rows per
+policy, $2{,}500$ in total). We then draw a uniform $25\%$ oracle slice.
+For non-logger targets the audit slice has $n_{\mathrm{audit}} = 132$
+rows; for the \textsc{base} self-audit holdout the calibrator-vs-audit
+split is $80/20$ to break the calibration-vs-audit tautology, leaving
+$n_{\mathrm{audit}} = 26$ (\cref{app:audit-holdout}). On the full panel
+we additionally retain oracle labels on every row. These are used only
+as ground truth for evaluating the estimator. None of the inference
+uses the held-out labels. We treat $\alpha = 0.10$ as the headline tail
+level and $\alpha = 0.20$ as a robustness check, with $B = 2{,}000$
+cluster bootstrap replicates over prompts.
 
-\paragraph{Discrete outcomes.}
-If $\Y$ is a Likert rating or any other atomic outcome, \cref{eq:conditional-cvar} is not the right definition without tie handling. The optimization form in \cref{eq:stoploss-cvar} remains well-defined; the appendix gives the partial-atom version of expected shortfall. The main benchmark therefore targets continuous rubric-style outcomes in $[0,1]$.
-
+\paragraph{On a small panel and a small tail.}
+At $n_0 = 500$ and $\alpha = 0.10$, the lower-tail population
+corresponds to $50$ oracle rows. CVaR-CJE exists \emph{because} small
+budgets make tail estimation otherwise infeasible. The cheap judge
+scores all $500$ rows. The calibrator is anchored on the $132$ oracle
+labels in the audit slice. Together they extract useful tail signal at
+a sample size where pure-oracle CVaR estimation is visibly noisy. The
+headline figure (\cref{fig:mvp}) and the cost-equivalence analysis
+(\cref{sec:results-cost}) make this concrete.

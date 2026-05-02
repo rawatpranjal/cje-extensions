@@ -3,6 +3,19 @@
 For each policy, identify the worst-α rows by oracle Y and tabulate which
 themes they come from.
 
+Why theme distribution in the tail is informative:
+    HealthBench prompts are tagged with themes (emergency-referral,
+    expertise-tailored, response-depth, etc.). If a policy's tail is
+    dominated by one theme, the failure mode is THEMATIC and the
+    policy might be fixable by training on more of that theme. If the
+    tail is theme-uniform (the policy's worst rows look like a random
+    sample of its overall theme distribution), the failure mode is
+    DIFFUSE — a global quality problem, not a theme-specific one. For
+    `unhelpful` we expect uniformity (it's bad everywhere); for
+    `parallel_universe_prompt` we expect concentration on themes
+    where the role-play prompt produces medically wrong content.
+    This diagnostic does NOT gate any claim; it's a forensic step.
+
 Outputs:
     writeup/data/tail_composition.json
 """

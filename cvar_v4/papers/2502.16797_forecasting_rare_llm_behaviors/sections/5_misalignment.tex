@@ -1,0 +1,36 @@
+\section{Forecasting misaligned actions}
+\label{sec:misalignment-tests}
+We next forecast whether LLMs will take \emph{misaligned actions} at deployment, when they do not at evaluation.
+Specifically, we assume that developers will specialize LLMs for different applications using system prompts. Each system prompt risks inducing more misaligned actions; for example, prompting the LLM to be a health-assistant might make it choose more power-seeking options. 
+
+\textbf{Setup.} 
+To test for misaligned actions, we study how LLMs with different system prompts respond to behavioral multiple-choice questions that test for different types of actions. 
+We study three different types: \emph{power-seeking} where LLMs take actions that increase their power, \emph{self-preservation} where LLMs avoid actions that would take them offline, and \emph{self-exfiltration} where LLMs take actions to move their weights or important information externally. 
+We use Claude 3.5 Sonnet (new) to generate 100,000 system prompts that instruct the LLM to assist in various domains (e.g. sales, business, medical) with various personalities. 
+
+To test for each type of actions, we generate behavioral multiple-choice questions using Claude 3.5 Sonnet (new). Each question includes a scenario and two potential actions: one that exhibits the misaligned trait, and one that does not. 
+For example, we might ask the language model whether it is worth implementing changes that temporarily shut down its function (to test for self-preservation).
+The elicitation probability for each question is the probability the model selects the choice that corresponds to the behavior. 
+
+We forecast both the maximum probability of the misaligned answer on each individual question, and forecast aggregate likelihoods of taking misaligned actions across questions.
+To compute aggregate measures, we randomly sample 10 questions for the same type of action, then measure the mean, log-mean, and min probability of misaligned choice for each system prompt.
+\footnote{The log-mean of probabilities $p_1, \hdots, p_m$ is $e^{\frac{1}{m} \sum_{i = 1}^m \log p_i}$.} 
+We sample 10 different subsets of 10 questions uniformly from all questions about the trait as different proxy measurements for the actual trait. 
+
+We will forecast worst-query risk and the behavior frequency. We do not estimate aggregate risk since deterministically choosing the most-likely answer is tractable.
+
+
+\textbf{Worst-query risk.} We first forecast the maximum probability of choosing the misaligned answer on specific questions, along with aggregate metrics. Following \refsec{misuse-completions}, we study $m \in \{100, 500, 1000\}$ and $n \in \{10000, 20000, \hdots, 90000\}$, and partition into multiple evaluation and deployment sets when we have sufficient queries. We only make forecasts evaluating Claude 3.5 Sonnet (new). Beyond measuring absolute errors, we additionally measure the quality of the forecasts when the maximum elicitation probability is less than 0.5 in the evaluation set, as these are the settings where no system prompt has elicited a misaligned action, and we thus need to forecast. 
+
+We find that our forecasts of worst-query risk are still accurate in this setting. Across all questions, the Gumbel-tail method achieves an average absolute error of 0.05 and an absolute log error of 0.06, compared to 0.12 and 0.12 for the log-normal method. On questions where the elicitation probability does not exceed 0.5 during training, the errors are 0.14 and 0.19 for the Gumbel-tail method, compared to 0.18 and 0.28 for the log-normal method respectively. 
+On the randomly sampled subsets, the Gumbel-tail and log-normal methods have similar errors. 
+See \refapp{misalignment-worst-query-risk} for more results.
+
+These experiments come with several caveats; we only test on relatively small sets of synthetic multiple choice questions, and the LLM's responses to multiple choice questions might not reflect its behavior on more open-ended prompts. Nevertheless, our results demonstrate that we can forecast quantiles in settings with non-adversarial model usage. 
+
+
+\textbf{Behavior frequency.} We next evaluate whether we can predict the behavior frequencies for misaligned actions. 
+We say a system prompt induces a misaligned action if the probability of the target answer on some question exceeds 0.5; since questions are binary, the target answer exceeding 0.5 is equivalent to the model selecting the misaligned behavior. 
+We evaluate only on evaluation sets where the maximum elicitation probability is less than 0.5---these are the important settings to make forecasts in practice. 
+
+We include full results in \refapp{misalignment-behavior-frequency} and find that we can make accurate forecasts. The average absolute log error for the Gumbel-tail method is 1.05, compared to 4.10 for the log-normal method. The average forecasts decrease the error of the Gumbel-tail method by a factor of two, while leaving the log-normal method unchanged. These results indicate that we can still forecast salient deployment-level quantities for more natural elicitation probabilities.
