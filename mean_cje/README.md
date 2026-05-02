@@ -79,18 +79,34 @@ better.
 
 ## Findings
 
-### 1. AIPW is doing nothing measurable on this DGP
+### 1. AIPW is doing nothing measurable on this DGP — and slightly hurts RMSE
 
-Compare configs 1 vs 3 (no jackknife) and 2 vs 4 (with jackknife) and
-5 vs 6 (bootstrap): **identical coverage**, **identical bias** at every
-cell. The AIPW residual term contributes a few decimal-fourth-place
-adjustments and that's it.
+Compare configs 1 vs 3, 2 vs 4, 5 vs 6: **identical coverage**, **identical
+mean bias** at every cell. The AIPW residual term contributes a few
+decimal-fourth-place adjustments to the point estimate.
 
-The paper's headline claim is "bootstrap with `θ̂_aug` gets ~95%, jackknife
-only gets 70-89%". On our DGP, the jackknife alone gets to **89–92%**
-and AIPW makes no difference. The "AIPW corrects bias" story isn't
-visible here — the plug-in is already unbiased on this synthetic DGP
-because PAVA + linear S|Y is a friendly setup for isotonic.
+Per-rep, AIPW and plug-in DO disagree (100% of cases, std of difference
+~0.006 at n=50), but the differences average to zero. So AIPW is adding
+**mean-zero noise** without removing bias.
+
+Empirical RMSE comparison (plug-in vs AIPW v_hat):
+
+| n_oracle | plug-in RMSE | AIPW RMSE | Δ |
+|---|---|---|---|
+| 50 | 0.02181 | 0.02251 | **+3.2%** |
+| 100 | 0.01539 | 0.01577 | +2.5% |
+| 250 | 0.01016 | 0.01029 | +1.3% |
+| 500 | 0.00788 | 0.00793 | +0.7% |
+| 1000 | 0.00663 | 0.00663 | +0.1% |
+
+AIPW is **strictly worse** on this DGP — adds noise, removes no bias.
+
+The paper's headline ("bootstrap with `θ̂_aug` gets ~95%") IS reproduced
+in our coverage table — but it's the **bootstrap** doing the work, not
+the AIPW. The "AIPW corrects bias" story isn't visible here because the
+plug-in is already unbiased: PAVA's mean-preservation + linear S|Y means
+`mean(f̂(s_oracle))` exactly equals `mean(y_oracle)`, and the symmetric
+DGP makes plug-in unbiased on fresh eval too.
 
 ### 2. Jackknife `V̂_cal` is the load-bearing piece
 
