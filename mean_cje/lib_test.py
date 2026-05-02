@@ -115,3 +115,7 @@ def test_wald_ci_widens_with_variance() -> None:
     lo1, hi1 = wald_ci(0.5, 0.001)
     lo2, hi2 = wald_ci(0.5, 0.01)
     assert (hi2 - lo2) > (hi1 - lo1)
+
+
+def test_exp_coverage_module_imports() -> None:
+    import mean_cje.exp_coverage  # noqa: F401
