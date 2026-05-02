@@ -297,6 +297,32 @@ def two_moment_wald_audit(
             s, y, H, t_grid, t_idx, t_hat, alpha, B, seed,
             remax=True, ridge=False,
         )
+    elif omega_estimator == "boot_remax_oua":
+        # Layer jackknife V̂_cal on top of bootstrap-with-remax.
+        # Captures audit-side variance + argmax nuisance (bootstrap)
+        # AND calibrator-fit nuisance (jackknife). Closest analog to
+        # mean_cje's "bootstrap + jackknife" stack.
+        omega_boot, g_bar = _bootstrap_omega(
+            s, y, H, t_grid, t_idx, t_hat, alpha, B, seed,
+            remax=True, ridge=False,
+        )
+        # Reuse the analytical_oua jackknife to add V̂_cal_g.
+        # We discard its g_bar (matches the bootstrap one) and take only V̂_cal.
+        if calibrator.n_folds < 2:
+            raise ValueError(
+                "boot_remax_oua requires a cross-fit calibrator with K ≥ 2"
+            )
+        folded_at_t = calibrator._folded[t_idx]
+        g_per_fold = np.empty((calibrator.n_folds, 2), dtype=np.float64)
+        for k, ir_k in enumerate(folded_at_t):
+            h_t_k = ir_k.predict(s)
+            g1_k, g2_k = _g_pair_fixed_t(s, y, h_t_k, t_hat, alpha)
+            g_per_fold[k, 0] = g1_k.mean()
+            g_per_fold[k, 1] = g2_k.mean()
+        diffs = g_per_fold - g_per_fold.mean(axis=0)
+        K = calibrator.n_folds
+        v_cal = ((K - 1) / K) * (diffs.T @ diffs)
+        omega = omega_boot + v_cal
     elif omega_estimator == "boot_fixed":
         omega, g_bar = _bootstrap_omega(
             s, y, H, t_grid, t_idx, t_hat, alpha, B, seed,

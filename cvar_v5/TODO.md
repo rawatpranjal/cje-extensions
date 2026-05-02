@@ -122,7 +122,7 @@ Provenance: `cvar_v5/mc/runs/2026-05-02T153030_omega_n_audit/`.
 
 **Implication**: increasing n_audit on this audit machinery is the wrong fix. The structural problem is that the audit's null doesn't account for finite-sample calibrator bias. This escalates to `[omega-research-derivation]`.
 
-### Sub-anchor: `[omega-research-derivation]` — in progress (mean_cje 2026-05-02)
+### Sub-anchor: `[omega-research-derivation]` — partial calibration achieved 2026-05-02
 
 Re-derive the audit so its null accounts for finite-sample calibrator bias.
 
@@ -150,6 +150,24 @@ Concrete approaches to apply to the cvar_v5 audit Ω̂:
 3. **Argmax remax + V̂_cal** combined. The mean_cje study didn't have an argmax nuisance; cvar audit does. May need both.
 
 Until size calibrates, **no audit-validated claims at production n_audit**. Default stays `boot_remax_ridge` (conservative, zero detection).
+
+**Update 2026-05-02 — `boot_remax_oua` calibrates at original n_audit scale (249):**
+
+| n_audit | analytical | analytical_oua | boot_remax_no_ridge | **boot_remax_oua** | boot_remax_ridge |
+|---|---|---|---|---|---|
+| 249  | 0.165 | 0.120 | 0.120 | **0.090** | 0.000 |
+| 504  | 0.230 | 0.200 | 0.150 | 0.110 | 0.000 |
+| 1002 | 0.410 | 0.360 | 0.190 | 0.175 | 0.000 |
+
+`boot_remax_oua` = bootstrap-with-remax (captures argmax nuisance) + jackknife V̂_cal_g (captures calibrator-fit nuisance, additive). The two corrections compose: each captures a distinct nuisance the other misses.
+
+At n_audit ≈ 249 (original spec scale): **size_dev = 0.040 < 0.050 — calibrates per the lock-in threshold.** At larger n_audit (504, 1002), residual bias-into-null leaks through (calibrator's `ε_calib` enters as a center shift, not a variance issue, and grows in `√n_audit · ε_calib` units).
+
+**Provenance**: `cvar_v5/mc/runs/2026-05-02T194018_omega_n_audit/`.
+
+**Decision (pending)**:
+- Lock `boot_remax_oua` as the default for n_audit ≤ ~250 (the canonical workhorse audit size).
+- For larger n_audit, options remain: (a) bias-correct ḡ via the same jackknife (subtract estimated calibrator bias before forming W); (b) calibrate the null empirically; (c) use a one-sided test on g_1 only.
 
 ## `[joint-calibrator]` — closed 2026-05-02
 

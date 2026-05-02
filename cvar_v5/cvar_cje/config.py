@@ -28,6 +28,7 @@ OmegaEstimator = Literal[
     "boot_remax_ridge",
     "boot_remax_no_ridge",
     "boot_fixed",
+    "boot_remax_oua",
 ]
 
 

@@ -83,8 +83,10 @@ _ALPHA = 0.10
 _K = 5
 _OMEGA_VARIANTS: tuple[OmegaEstimator, ...] = (
     "analytical",
+    "analytical_oua",
     "boot_remax_ridge",
     "boot_remax_no_ridge",
+    "boot_remax_oua",
     "boot_fixed",
 )
 _NOMINAL_ETA = 0.05
