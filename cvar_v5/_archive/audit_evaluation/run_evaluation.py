@@ -1,15 +1,20 @@
 """
-Audit-Ω̂ evaluation runner.
+Audit-Ω̂ evaluation runner — clean separation between bias and variance.
 
 Order of operations:
-    1. Run sanity probes S1–S6 (test the test). If any FAIL, halt.
-    2. Run R reps under H_0 → compute Σ_full, ε empirically.
-    3. Compute Σ_oracle (closed form / quadrature) for cross-check.
-    4. For each candidate Ω̂ method M, compute the 4-axis diagnostic.
-    5. Write summary CSV + report markdown to mc/runs/<ts>_audit_evaluation/.
+    1. Run sanity probes S1–S9 (test the test). If any FAIL, log warning.
+    2. Run R reps under H_0 → collect per-method Ω̂_M and per-bias-correction
+       ḡ_used vectors. Compute Σ_full empirically.
+    3. Compute Σ_oracle (closed form / quadrature) for cross-check (truth.csv).
+    4. Run three diagnostics, each writing its own CSV:
+        - bias_report.csv         : per (variance, bias_correction) pair, the
+                                    center of ḡ_used and its z-score.
+        - variance_report.csv     : per variance method only, |Ω̂ − target|.
+        - size_report.csv         : full cross of (variance × bias correction):
+                                    empirical and per-rep-Ω̂ predicted size.
 
 CLI:
-    python -m cvar_v5._archive.audit_evaluation.run_evaluation
+    python -m cvar_v5._archive.audit_evaluation.run_evaluation [--R 300] [--B 100]
 """
 
 from __future__ import annotations
@@ -22,13 +27,26 @@ from pathlib import Path
 import numpy as np
 import polars as pl
 
-from ._diagnostics import diagnose_method, jackknife_bias_correct
+from ._bias_corrections import bc_jk_cal, bc_jk_full, bc_boot
+from ._bias_diagnostic import diagnose_bias
 from ._harness import run_one_rep
 from ._sanity import run_all_probes, _empirical_sigma_full_and_eps
+from ._size_diagnostic import diagnose_size
 from ._truths import DGPParams, TargetPert, sigma_oracle, t_star
+from ._variance_diagnostic import diagnose_variance
 
 
 LOG = logging.getLogger(__name__)
+
+
+# Variance-side methods (Ω̂ estimators).
+_VAR_METHODS = [
+    "analytical", "boot_remax", "boot_remax_ridge",
+    "analytical_oua", "boot_remax_oua",
+]
+
+# Bias-correction labels.
+_BC_LABELS = ["none", "bc_jk_cal", "bc_jk_full", "bc_boot"]
 
 
 def _make_run_dir() -> Path:
@@ -56,34 +74,50 @@ def _setup_logging(run_dir: Path):
     )
 
 
+def _apply_bc(label: str, rep, t_grid, alpha, K, B_boot, seed):
+    """Dispatch from a bias-correction label to the corresponding ḡ_used."""
+    if label == "none":
+        return rep.ḡ
+    if label == "bc_jk_cal":
+        return bc_jk_cal(rep)
+    if label == "bc_jk_full":
+        return bc_jk_full(rep)
+    if label == "bc_boot":
+        return bc_boot(rep, t_grid, alpha, K, B_boot, seed=seed)
+    raise ValueError(f"unknown bias correction label: {label!r}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="audit-Ω̂ evaluation harness")
     parser.add_argument("--R", type=int, default=300,
-                        help="MC reps for Σ_full / ε / per-method axes")
+                        help="MC reps for Σ_full / per-method axes")
     parser.add_argument("--n-calib", type=int, default=600)
     parser.add_argument("--n-audit", type=int, default=250)
     parser.add_argument("--n-eval", type=int, default=1000)
     parser.add_argument("--alpha", type=float, default=0.10)
     parser.add_argument("--K", type=int, default=5)
-    parser.add_argument("--B", type=int, default=200,
-                        help="Bootstrap reps per Ω̂_M (per outer rep)")
+    parser.add_argument("--B", type=int, default=100,
+                        help="Bootstrap reps INSIDE per-method Ω̂ (boot_remax variants)")
+    parser.add_argument("--B-boot-bc", type=int, default=80,
+                        help="Bootstrap reps for bc_boot's bias estimate")
     parser.add_argument("--seed-base", type=int, default=20260503)
     parser.add_argument("--skip-sanity", action="store_true",
-                        help="skip sanity probes (only run main eval)")
+                        help="skip sanity probes S1-9 (only run main eval)")
     args = parser.parse_args()
 
     out_dir = _make_run_dir()
     _setup_logging(out_dir)
-    LOG.info("audit-Ω̂ evaluation; out_dir=%s; R=%d, n_calib=%d, n_audit=%d, n_eval=%d, B=%d",
-             out_dir, args.R, args.n_calib, args.n_audit, args.n_eval, args.B)
+    LOG.info("audit-Ω̂ evaluation; out_dir=%s", out_dir)
+    LOG.info("R=%d, n_calib=%d, n_audit=%d, n_eval=%d, B=%d, B_boot_bc=%d",
+             args.R, args.n_calib, args.n_audit, args.n_eval, args.B, args.B_boot_bc)
 
-    p = DGPParams(a=1.0, b=1.0)            # uniform policy as the workhorse DGP
-    pert = TargetPert()                    # H_0: transport holds at population
-    t_grid = np.linspace(0.0, 1.0, 121)    # finer than usual to reduce grid bias
+    p = DGPParams(a=1.0, b=1.0)
+    pert = TargetPert()
+    t_grid = np.linspace(0.0, 1.0, 121)
 
     # ---------------- Sanity probes (test the test) ----------------
     if not args.skip_sanity:
-        LOG.info("running sanity probes S1–S6...")
+        LOG.info("running sanity probes S1–S9...")
         probes = run_all_probes(
             p, args.alpha, args.n_calib, args.n_audit, args.n_eval,
             t_grid, args.K, args.B, R=args.R, seed_base=args.seed_base,
@@ -98,108 +132,126 @@ def main():
         pl.DataFrame(sanity_rows).write_csv(out_dir / "sanity.csv")
         all_passed = all(r["passed"] for r in sanity_rows)
         if not all_passed:
-            LOG.warning("Some sanity probes FAILED. Continuing anyway, but trust the "
-                        "main eval results with caution.")
+            LOG.warning("Some sanity probes FAILED. Continuing; trust eval results with caution.")
 
-    # ---------------- Main eval: methods on H_0 ----------------
-    LOG.info("computing Σ_oracle (closed-form / quadrature)...")
+    # ---------------- Truth (Σ_oracle, t*) -------------------------
+    LOG.info("computing population truths (Σ_oracle, t*)...")
     Sigma_oracle = sigma_oracle(p, pert, args.alpha)
-    LOG.info("Σ_oracle =\n%s", Sigma_oracle)
+    t_pop = t_star(p, pert, args.alpha)
+    LOG.info("Σ_oracle = %s, t* = %.5f", Sigma_oracle.tolist(), t_pop)
 
+    # ---------------- Run R reps and collect everything ------------
     LOG.info("running R=%d MC reps under H_0...", args.R)
-    eps, sigma_full, g_arr, g_per_fold_all = _empirical_sigma_full_and_eps(
-        p, pert, args.alpha, args.n_calib, args.n_audit, args.n_eval,
-        t_grid, args.K, args.B, args.R, args.seed_base + 100,
-    )
-    LOG.info("ε (empirical bias) = %s", eps.tolist())
-    LOG.info("Σ_full = n_audit · sample-cov(ḡ):\n%s", sigma_full)
+    omegas: dict = {m: [] for m in _VAR_METHODS}
+    g_used: dict = {bc: [] for bc in _BC_LABELS}
+    g_realized: list = []
 
-    # We need the omegas already collected during reps. Re-run to gather.
-    LOG.info("collecting per-method Ω̂ across reps (this duplicates the H_0 reps)...")
-    method_names = ["analytical", "boot_remax", "boot_remax_ridge",
-                    "analytical_oua", "boot_remax_oua"]
-    omegas_per_method = {m: [] for m in method_names}
-    g_realized = []
-    g_per_fold_collected = []
     for r in range(args.R):
         seed = args.seed_base + 100 + 9007 * r
-        res = run_one_rep(p, pert, args.alpha, args.n_calib, args.n_audit, args.n_eval,
-                          t_grid, args.K, args.B, seed)
-        for m in method_names:
-            omegas_per_method[m].append(res.omegas[m])
-        g_realized.append(res.ḡ)
-        g_per_fold_collected.append(res.g_per_fold_at_t_hat)
+        rep = run_one_rep(
+            p, pert, args.alpha, args.n_calib, args.n_audit, args.n_eval,
+            t_grid, args.K, args.B, seed,
+        )
+        for m in _VAR_METHODS:
+            omegas[m].append(rep.omegas[m])
+        g_realized.append(rep.ḡ)
+        for bc in _BC_LABELS:
+            g_used[bc].append(_apply_bc(bc, rep, t_grid, args.alpha,
+                                         args.K, args.B_boot_bc, seed=seed + 5))
         if (r + 1) % max(1, args.R // 10) == 0:
             LOG.info("  rep %d / %d", r + 1, args.R)
-    g_realized = np.stack(g_realized)
-    eps_recomputed = g_realized.mean(axis=0)
-    sigma_full_rec = args.n_audit * np.cov(g_realized, rowvar=False, ddof=1)
 
-    # 4-axis diagnostic per method (ḡ uncorrected by default)
-    LOG.info("computing 4-axis diagnostic per method (no bias correction)...")
-    diag_rows = []
-    for m in method_names:
-        diag = diagnose_method(
-            name=m,
-            omegas=omegas_per_method[m],
-            g_used=[g_realized[r] for r in range(args.R)],
-            sigma_full=sigma_full_rec,
-            n_audit=args.n_audit,
-        )
-        diag_rows.append({
-            "method": diag.name,
-            "var_bias_trace": float(np.trace(diag.var_bias)),
-            "var_bias_11": float(diag.var_bias[0, 0]),
-            "var_bias_22": float(diag.var_bias[1, 1]),
-            "center_bias_g1": float(diag.center_bias[0]),
-            "center_bias_g2": float(diag.center_bias[1]),
-            "empirical_size": diag.empirical_size,
-            "predicted_size": diag.predicted_size,
+    g_arr = np.stack(g_realized, axis=0)
+    sigma_full = args.n_audit * np.cov(g_arr, rowvar=False, ddof=1)
+    eps = g_arr.mean(axis=0)
+    LOG.info("ε (raw center)  = %s", eps.tolist())
+    LOG.info("Σ_full / n_audit = %s", (sigma_full / args.n_audit).tolist())
+    LOG.info("Σ_oracle         = %s", Sigma_oracle.tolist())
+
+    # ---------------- (1) Bias diagnostic per (variance, bc) -----
+    # Bias depends only on bc (not on variance method), but we list all
+    # variance × bc rows for traceability and so the size table joins cleanly.
+    LOG.info("computing bias diagnostic per (variance, bc) pair...")
+    bias_rows = []
+    for bc in _BC_LABELS:
+        bd = diagnose_bias(f"bc={bc}", g_used[bc], bias_correction=bc)
+        # one row per variance method × bc combination
+        for m in _VAR_METHODS:
+            bias_rows.append({
+                "variance": m,
+                "bias_correction": bc,
+                "center_g1": float(bd.center[0]),
+                "center_g2": float(bd.center[1]),
+                "se_g1": float(bd.se[0]),
+                "se_g2": float(bd.se[1]),
+                "z_g1": float(bd.z[0]),
+                "z_g2": float(bd.z[1]),
+                "passed": bd.passed,
+            })
+        LOG.info("  bias bc=%-12s center=(%+.5f, %+.5f) z=(%+.2f, %+.2f) passed=%s",
+                 bc, bd.center[0], bd.center[1], bd.z[0], bd.z[1], bd.passed)
+    pl.DataFrame(bias_rows).write_csv(out_dir / "bias_report.csv")
+
+    # ---------------- (2) Variance diagnostic per variance method --
+    LOG.info("computing variance diagnostic per variance method...")
+    var_rows = []
+    for m in _VAR_METHODS:
+        vd = diagnose_variance(m, omegas[m], sigma_full, args.n_audit)
+        var_rows.append({
+            "variance": m,
+            "frob_rel_err": vd.frob_rel_err,
+            "spectral_ratio": vd.spectral_ratio,
+            "var_bias_11": float(vd.var_bias[0, 0]),
+            "var_bias_22": float(vd.var_bias[1, 1]),
+            "var_bias_12": float(vd.var_bias[0, 1]),
+            "dispersion_11": float(vd.dispersion[0, 0]),
+            "dispersion_22": float(vd.dispersion[1, 1]),
+            "passed": vd.passed,
         })
-        LOG.info("  %s: emp_size=%.3f predicted=%.3f var_bias_trace=%+.3e center=(%+.4f, %+.4f)",
-                 diag.name, diag.empirical_size, diag.predicted_size,
-                 float(np.trace(diag.var_bias)),
-                 float(diag.center_bias[0]), float(diag.center_bias[1]))
+        LOG.info("  variance %-22s frob_rel_err=%.3f spectral_ratio=%.3f passed=%s",
+                 m, vd.frob_rel_err, vd.spectral_ratio, vd.passed)
+    pl.DataFrame(var_rows).write_csv(out_dir / "variance_report.csv")
 
-    # Same diagnostic with jackknife bias-correction overlay
-    LOG.info("computing 4-axis diagnostic per method with jackknife bias-correction...")
-    g_bc = [jackknife_bias_correct(g_realized[r], g_per_fold_collected[r])
-            for r in range(args.R)]
-    for m in method_names:
-        diag_bc = diagnose_method(
-            name=m + "+_bc",
-            omegas=omegas_per_method[m],
-            g_used=g_bc,
-            sigma_full=sigma_full_rec,
-            n_audit=args.n_audit,
-        )
-        diag_rows.append({
-            "method": diag_bc.name,
-            "var_bias_trace": float(np.trace(diag_bc.var_bias)),
-            "var_bias_11": float(diag_bc.var_bias[0, 0]),
-            "var_bias_22": float(diag_bc.var_bias[1, 1]),
-            "center_bias_g1": float(diag_bc.center_bias[0]),
-            "center_bias_g2": float(diag_bc.center_bias[1]),
-            "empirical_size": diag_bc.empirical_size,
-            "predicted_size": diag_bc.predicted_size,
-        })
-        LOG.info("  %s: emp_size=%.3f predicted=%.3f var_bias_trace=%+.3e center_bc=(%+.4f, %+.4f)",
-                 diag_bc.name, diag_bc.empirical_size, diag_bc.predicted_size,
-                 float(np.trace(diag_bc.var_bias)),
-                 float(diag_bc.center_bias[0]), float(diag_bc.center_bias[1]))
+    # ---------------- (3) Size diagnostic per (variance × bc) -----
+    LOG.info("computing size diagnostic per (variance × bias_correction) pair...")
+    size_rows = []
+    for m in _VAR_METHODS:
+        for bc in _BC_LABELS:
+            sd = diagnose_size(
+                f"{m}+{bc}", omegas[m], g_used[bc],
+                bias_correction=bc, pred_seed=hash((m, bc)) & 0xFFFF_FFFF,
+            )
+            size_rows.append({
+                "variance": m,
+                "bias_correction": bc,
+                "empirical_size": sd.empirical_size,
+                "predicted_size": sd.predicted_size,
+                "abs_error": sd.abs_error,
+                "size_dev": abs(sd.empirical_size - 0.05),
+                "passed": sd.passed,
+            })
+            LOG.info("  size %-22s+%-12s emp=%.3f pred=%.3f |Δ|=%.3f size_dev=%.3f passed=%s",
+                     m, bc, sd.empirical_size, sd.predicted_size,
+                     sd.abs_error, abs(sd.empirical_size - 0.05), sd.passed)
+    pl.DataFrame(size_rows).write_csv(out_dir / "size_report.csv")
 
-    pl.DataFrame(diag_rows).write_csv(out_dir / "diagnostic.csv")
-
-    # Provenance table
+    # Provenance / truth values
     pl.DataFrame([{
         "Sigma_oracle_11": float(Sigma_oracle[0, 0]),
-        "Sigma_oracle_12": float(Sigma_oracle[0, 1]),
         "Sigma_oracle_22": float(Sigma_oracle[1, 1]),
-        "Sigma_full_11":   float(sigma_full_rec[0, 0]),
-        "Sigma_full_12":   float(sigma_full_rec[0, 1]),
-        "Sigma_full_22":   float(sigma_full_rec[1, 1]),
-        "eps_g1":          float(eps_recomputed[0]),
-        "eps_g2":          float(eps_recomputed[1]),
+        "Sigma_oracle_12": float(Sigma_oracle[0, 1]),
+        "Sigma_full_11": float(sigma_full[0, 0]),
+        "Sigma_full_22": float(sigma_full[1, 1]),
+        "Sigma_full_12": float(sigma_full[0, 1]),
+        "eps_g1": float(eps[0]),
+        "eps_g2": float(eps[1]),
+        "t_star": t_pop,
+        "alpha": args.alpha,
+        "n_calib": args.n_calib,
+        "n_audit": args.n_audit,
+        "n_eval": args.n_eval,
+        "R": args.R,
+        "B": args.B,
     }]).write_csv(out_dir / "truth.csv")
 
     LOG.info("done. outputs in %s", out_dir)

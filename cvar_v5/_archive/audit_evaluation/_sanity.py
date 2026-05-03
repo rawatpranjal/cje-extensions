@@ -12,6 +12,12 @@ S3  artificially-inflated Ω̂ under-rejects   size ≪ η, predicted ≪ η
 S4  Σ_full decomposition by ablation        V_audit + V_calib + V_eval ≈ Σ_full
 S5  ε vanishes as n_calib → ∞               monotone shrink at isotonic rate
 S6  oracle ε at population (h*, t*) is 0    within MC noise
+
+Bias-correction probes (NEW, step 6):
+
+S7  BC-jk-cal corrects g_2 only             ε̂_A[g_1] == 0 exactly
+S8  BC-jk-full reduces |center| on both     |center_bc_B| < |center_raw|
+S9  BC-boot ≈ BC-jk-full directionally      |center_bc_C - center_bc_B| < 2σ_MC
 """
 
 from __future__ import annotations
@@ -321,6 +327,138 @@ def probe_S6_population_oracle_eps_zero(
     return ProbeResult(name="S6 population ε ≈ 0", passed=passed, detail=detail)
 
 
+def probe_S7_bc_jk_cal_corrects_g2_only(
+    p: DGPParams, alpha: float, n_calib: int, n_audit: int, n_eval: int,
+    t_grid: np.ndarray, K: int, B: int, R: int, seed_base: int,
+) -> ProbeResult:
+    """
+    BC-jk-cal must:
+        - leave g_1 component EXACTLY unchanged (g_1 = 1{Y ≤ t̂_pooled} − α
+          does not depend on ĥ).
+        - shift g_2 component by a non-zero amount on average.
+
+    Math
+    ----
+        For every rep r:
+            ḡ^(r) − ḡ_bc_A^(r)        =  (K − 1) · ( mean_k(ḡ^(-k)_A) − ḡ )
+        Component 0 of this difference is identically 0 (since g_1^(-k) = g_1).
+        Component 1 of this difference is generally non-zero.
+
+    We verify the per-rep zeroness directly (no MC averaging needed for g_1),
+    then check that g_2's mean shift is non-trivial.
+    """
+    from ._bias_corrections import bc_jk_cal
+    from ._harness import run_one_rep
+
+    pert = TargetPert()
+    deltas_g1, deltas_g2 = [], []
+    for r in range(R):
+        seed = seed_base + 9007 * r
+        res = run_one_rep(p, pert, alpha, n_calib, n_audit, n_eval, t_grid, K, B, seed)
+        g_bc = bc_jk_cal(res)
+        deltas_g1.append(float(g_bc[0] - res.ḡ[0]))
+        deltas_g2.append(float(g_bc[1] - res.ḡ[1]))
+
+    arr_g1 = np.asarray(deltas_g1)
+    arr_g2 = np.asarray(deltas_g2)
+    g1_unchanged = bool(np.max(np.abs(arr_g1)) < 1e-12)        # exact zero per rep
+    g2_active = bool(np.max(np.abs(arr_g2)) > 1e-9)            # at least some shift
+    passed = g1_unchanged and g2_active
+    return ProbeResult(
+        name="S7 BC-jk-cal corrects g_2 only",
+        passed=passed,
+        detail=(f"max|Δg_1| = {np.max(np.abs(arr_g1)):.3e} (must be 0); "
+                f"max|Δg_2| = {np.max(np.abs(arr_g2)):.3e} (must be > 0); "
+                f"mean Δg_2 = {arr_g2.mean():+.5f}"),
+    )
+
+
+def probe_S8_bc_jk_full_corrects_both(
+    p: DGPParams, alpha: float, n_calib: int, n_audit: int, n_eval: int,
+    t_grid: np.ndarray, K: int, B: int, R: int, seed_base: int,
+) -> ProbeResult:
+    """
+    BC-jk-full must shift the average ḡ closer to zero on BOTH components.
+
+    Math
+    ----
+        center_raw[c]   :=  mean_r ( ḡ^(r)[c] )
+        center_bc_B[c]  :=  mean_r ( ḡ_bc_B^(r)[c] )
+        Pass:  | center_bc_B[c] |  <  | center_raw[c] | + tolerance,  for c ∈ {0, 1},
+               with tolerance set to 1.5 · max-component MC SE  to absorb noise.
+    """
+    from ._bias_corrections import bc_jk_full
+    from ._harness import run_one_rep
+
+    pert = TargetPert()
+    g_raw, g_bc = [], []
+    for r in range(R):
+        seed = seed_base + 9007 * r
+        res = run_one_rep(p, pert, alpha, n_calib, n_audit, n_eval, t_grid, K, B, seed)
+        g_raw.append(res.ḡ)
+        g_bc.append(bc_jk_full(res))
+    raw = np.stack(g_raw, axis=0)
+    bc = np.stack(g_bc, axis=0)
+    center_raw = raw.mean(axis=0)
+    center_bc = bc.mean(axis=0)
+    se_bc = bc.std(axis=0, ddof=1) / np.sqrt(R)
+    tol = 1.5 * float(se_bc.max())
+
+    g1_better = abs(center_bc[0]) < abs(center_raw[0]) + tol
+    g2_better = abs(center_bc[1]) < abs(center_raw[1]) + tol
+    passed = bool(g1_better and g2_better)
+    return ProbeResult(
+        name="S8 BC-jk-full reduces |center| on both components",
+        passed=passed,
+        detail=(f"raw center = {center_raw.tolist()}; "
+                f"bc center = {center_bc.tolist()}; tol = {tol:.5f}"),
+    )
+
+
+def probe_S9_bc_boot_matches_bc_jk_full(
+    p: DGPParams, alpha: float, n_calib: int, n_audit: int, n_eval: int,
+    t_grid: np.ndarray, K: int, B: int, R: int, seed_base: int,
+    *, B_boot: int = 80,
+) -> ProbeResult:
+    """
+    BC-boot and BC-jk-full target the same population quantity (E[ḡ_realized]).
+    They use different estimators of ε but should agree directionally.
+
+    Math
+    ----
+        For r = 1..R:
+            ḡ_bc_B^(r)  =  jackknife-corrected (full)
+            ḡ_bc_C^(r)  =  bootstrap-corrected
+        center_diff  :=  mean_r ( ḡ_bc_C^(r) − ḡ_bc_B^(r) )
+        se_diff      :=  std_r ( ḡ_bc_C^(r) − ḡ_bc_B^(r) ) / sqrt(R)
+        Pass: max | center_diff[c] | / se_diff[c] ≤ 2 (componentwise)
+
+    B_boot is kept small (default 80) to keep this probe affordable.
+    """
+    from ._bias_corrections import bc_jk_full, bc_boot
+    from ._harness import run_one_rep
+
+    pert = TargetPert()
+    diffs = []
+    for r in range(R):
+        seed = seed_base + 9007 * r
+        res = run_one_rep(p, pert, alpha, n_calib, n_audit, n_eval, t_grid, K, B, seed)
+        g_B = bc_jk_full(res)
+        g_C = bc_boot(res, t_grid, alpha, K, B_boot, seed=seed + 7)
+        diffs.append(g_C - g_B)
+    arr = np.stack(diffs, axis=0)
+    center_diff = arr.mean(axis=0)
+    se_diff = arr.std(axis=0, ddof=1) / np.sqrt(R)
+    z = np.abs(center_diff) / np.maximum(se_diff, 1e-30)
+    passed = bool((z <= 2.5).all())
+    return ProbeResult(
+        name="S9 BC-boot ≈ BC-jk-full directionally",
+        passed=passed,
+        detail=(f"center_diff (boot − jk_full) = {center_diff.tolist()}; "
+                f"z-scores = {z.tolist()}; pass if max z ≤ 2.5"),
+    )
+
+
 def run_all_probes(
     p: DGPParams, alpha: float, n_calib: int, n_audit: int, n_eval: int,
     t_grid: np.ndarray, K: int, B: int, R: int, seed_base: int,
@@ -332,4 +470,7 @@ def run_all_probes(
         probe_S4_sigma_decomposition(p, alpha, n_calib, n_audit, n_eval, t_grid, K, B, R, seed_base + 3000),
         probe_S5_eps_vanishes(p, alpha, n_audit, n_eval, t_grid, K, B, R, seed_base + 4000),
         probe_S6_population_oracle_eps_zero(p, alpha, n_audit, n_eval, t_grid, R, seed_base + 5000),
+        probe_S7_bc_jk_cal_corrects_g2_only(p, alpha, n_calib, n_audit, n_eval, t_grid, K, B, R, seed_base + 6000),
+        probe_S8_bc_jk_full_corrects_both(p, alpha, n_calib, n_audit, n_eval, t_grid, K, B, R, seed_base + 7000),
+        probe_S9_bc_boot_matches_bc_jk_full(p, alpha, n_calib, n_audit, n_eval, t_grid, K, B, R, seed_base + 8000),
     ]
