@@ -274,6 +274,111 @@ not its mean. By Fubini, this equals the per-rep nested-mean prediction.
 ḡ), so any variance amplification introduced by bias correction is
 captured automatically.
 
+### 3.6 Why we have `analytical_oua` (and why it adds nothing on uniform Y)
+
+`analytical` and `analytical_oua` are the cheapest variance methods.
+Walking through them precisely:
+
+#### `analytical` — per-row sample covariance, ĥ and t̂ fixed
+
+For each audit row `i`, the per-row moment vector is
+```
+g_i  =  ( g_1i,  g_2i )ᵀ    where    g_1i = 1{Y_i ≤ t̂} − α
+                                      g_2i = (t̂ − Y_i)_+ − ĥ_t̂(s_i)
+```
+
+The per-row sample covariance:
+```
+Σ̂_per_row[a,b]  =  (1 / (n_audit − 1)) · Σ_i  (g_i[a] − ḡ[a]) · (g_i[b] − ḡ[b])
+                                        ∈ R^{2×2}
+Ω̂_analytical    =  Σ̂_per_row  /  n_audit
+```
+
+Captures **N1** (audit-side sampling variance, treating ĥ and t̂ as
+fixed) only. By the central limit theorem, `√n_audit · ḡ` is
+asymptotically `N(0, Σ_per_row)` *if* the calibrator and threshold are
+known — but they're not. The miss: N2 (calibrator-fit variance) and N3
+(argmax-on-grid variance).
+
+#### `analytical_oua` — adds delete-one-fold jackknife V̂_cal_g
+
+"OUA" stands for **Oracle Uncertainty Adjustment** — borrowed from the
+original CJE paper for Mean-CJE
+(`cvar_v4/papers/2512.11150_causal_judge_evaluation/sections/method.tex:124-134`).
+We adapt the idea to the 2-vector audit moment.
+
+For each oracle fold `k = 1..K`, the cross-fit calibrator already has
+a held-out fit `ĥ^(-k)` cached (no refit). We evaluate it on AUDIT at
+the original t̂:
+```
+For k = 1..K:
+    h_t̂^(-k)(s_i)    leave-one-fold prediction at the original t̂
+    g_i^(-k)         (1{Y_i ≤ t̂} − α,  (t̂ − Y_i)_+ − ĥ_t̂^(-k)(s_i))
+    ḡ^(-k)          (1 / n_audit) · Σ_i  g_i^(-k)        ∈ R²
+
+ḡ̄_jk     =  (1 / K) · Σ_k  ḡ^(-k)
+V̂_cal_g  =  ((K − 1) / K) · Σ_k  (ḡ^(-k) − ḡ̄_jk)(ḡ^(-k) − ḡ̄_jk)ᵀ
+
+Ω̂_analytical_oua  =  Ω̂_analytical  +  V̂_cal_g
+```
+
+The motivation: under independence of CALIB and AUDIT slices (the
+partition guarantees this), the law-of-total-variance gives
+```
+Var(ḡ)  =  E_calib[ Var_audit(ḡ | calib) ]    +    Var_calib[ E_audit(ḡ | calib) ]
+        ≈    Σ̂_per_row / n_audit              +    V̂_cal_g
+              ↑ N1                                  ↑ N2 (jackknife approximates this)
+```
+
+The argmax nuisance (N3) is still missed. `analytical_oua` is meant
+to be a strict improvement over `analytical` whenever calibrator-fit
+variance contributes meaningfully to `Var(ḡ)`.
+
+#### Why it adds nothing on uniform Y (the diagnosis)
+
+The empirical R=300 result on uniform Y:
+
+```
+mean(Ω̂_analytical)      [g_1,g_1]  =  0.000361
+mean(Ω̂_analytical_oua)  [g_1,g_1]  =  0.000361        ← essentially identical
+Σ_full / n_audit         [g_1,g_1]  =  0.000494        ← truth
+```
+
+Two reasons V̂_cal_g comes out near zero:
+
+1. **g_1 ⊥ ĥ.** The first component `g_1 = 1{Y_i ≤ t̂} − α` does not
+   depend on the calibrator at all. Across leave-one-out folds, `g_1^(-k)`
+   is identical to `g_1`. So `V̂_cal_g[g_1, g_1] = 0` exactly. This
+   means analytical_oua and analytical agree exactly on the variance of
+   ḡ_1 — confirmed numerically.
+
+2. **g_2's calibrator dependence is small on uniform Y.** Each fold's
+   ĥ^(-k) is trained on n_calib · (4/5) = 480 oracle rows; they share
+   3/5 of their data; uniform Y has no boundary issues for isotonic.
+   So `V̂_cal_g[g_2, g_2]` is a tiny number reflecting only the small
+   variability of the per-fold calibrator at points used for AUDIT.
+
+But the TRUE V_calib (variance of ḡ when CALIB is *independently
+re-sampled* from the DGP) is much larger than this. We measured it via
+the S4 ablation: `V_calib ≈ 30%` of total variance on uniform Y at
+this scale.
+
+#### The structural problem: jackknife under-estimates V_calib for isotonic
+
+Standard jackknife consistency results assume *smooth* (Hadamard-
+differentiable) functionals with leading 1/n bias and variance terms.
+Isotonic regression is non-smooth: PAVA breakpoints make the estimator
+piecewise-constant, with derivatives that don't exist at the
+breakpoints. Standard jackknife is known to under-estimate variance
+on such functionals (Efron 1992).
+
+The principled fix is to **bootstrap V_cal directly** rather than
+jackknife it. Bootstrap-resample CALIB rows (with replacement, full
+size n_calib, 0.63 effective coverage), refit the calibrator on each
+resample, and take sample covariance of the resulting `ḡ^(b)`. This
+captures `Var_CALIB(ḡ)` correctly even for non-smooth functionals.
+That's what §3.7 (`boot_v_cal_oua`) implements.
+
 ## 4. The unified diagnostic per method
 
 For each candidate Ω̂ method M, we compute four axes against the DGP truth:
