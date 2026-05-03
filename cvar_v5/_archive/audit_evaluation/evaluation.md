@@ -379,6 +379,111 @@ resample, and take sample covariance of the resulting `ḡ^(b)`. This
 captures `Var_CALIB(ḡ)` correctly even for non-smooth functionals.
 That's what §3.7 (`boot_v_cal_oua`) implements.
 
+### 3.7 Two new variance methods
+
+#### `boot_v_cal_oua` — analytical Ω̂_audit + bootstrap V̂_cal_g
+
+```
+For b = 1..B_cal:
+    idx_b      ~ Multinomial(n_calib, 1/n_calib · 1)
+    ĥ^(b)      := refit isotonic on (s_c[idx_b], y_c[idx_b]) per t in T_grid
+    h_t̂^(b)(s_audit) := apply at the ORIGINAL t̂  (no re-max)
+    g_i^(b)    := (1{Y_i ≤ t̂} − α,  (t̂ − Y_i)_+ − h_t̂^(b)(s_i))
+    ḡ^(b)      := (1 / n_audit) · Σ_i  g_i^(b)             ∈ R²
+
+V̂_cal_g_boot   :=  sample-cov_b(ḡ^(b))                       ∈ R^{2×2}
+Ω̂_boot_v_cal_oua  :=  Ω̂_analytical  +  V̂_cal_g_boot
+```
+
+Captures N1 + N2 (bootstrap version of analytical_oua, fixes the
+non-smooth-functional issue). Cannot capture N3 because t̂ is fixed
+at the original value.
+
+**Empirical result (R=300, uniform Y, n_calib=600, n_audit=250)**:
+
+| | frob_rel_err | spectral_ratio | var_bias_11 | size@bc=none |
+|---|---|---|---|---|
+| analytical_oua | 0.270 | 0.73 | -0.000133 | 0.070 |
+| boot_v_cal_oua | 0.270 | 0.73 | -0.000133 | 0.073 |
+
+**Indistinguishable from analytical_oua at the matrix level.** Why? The
+g_1 component dominates the matrix's Frobenius norm. Both methods leave
+`Ω̂[g_1, g_1]` identical to `Ω̂_analytical[g_1, g_1]` because g_1 ⊥ ĥ.
+The bootstrap captures more variance on g_2 (component-wise improvement
+visible in `var_bias_22`: -4.3e-7 → +7.8e-9), but that's a small piece
+of trace.
+
+**Lesson**: V_cal_g (jackknife or bootstrap) cannot fix the variance
+gap on this DGP because the dominant gap is on g_1, which is not
+calibrator-side.
+
+#### `full_pipeline_boot` — integrated bootstrap covariance
+
+```
+For b = 1..B_full:
+    idx_c^(b)  ~ Multinomial(n_calib, 1/n_calib · 1)
+    idx_e^(b)  ~ Multinomial(n_eval,  1/n_eval  · 1)
+    idx_a^(b)  ~ Multinomial(n_audit, 1/n_audit · 1)
+    ĥ^(b)      := refit isotonic on bootstrap CALIB
+    t̂^(b)      := argmax on bootstrap EVAL with ĥ^(b)
+    ḡ^(b)      := mean over bootstrap AUDIT at (ĥ^(b), t̂^(b))   ∈ R²
+
+Ω̂_full_pipeline_boot  :=  sample-cov_b(ḡ^(b))               ∈ R^{2×2}
+```
+
+This is the only method that **re-maxes t̂ across bootstrap reps**, so
+it captures N3 and all three nuisances jointly INCLUDING cross-terms.
+This is the cvar_v4 paper's prescription
+(`appendix_algorithms.tex:101-118`).
+
+**Empirical result (R=300)**:
+
+| | frob_rel_err | spectral_ratio | var_bias_11 | size@bc=none | size_dev |
+|---|---|---|---|---|---|
+| analytical | 0.270 | 0.73 | -0.000133 | 0.143 | 0.093 |
+| analytical_oua | 0.270 | 0.73 | -0.000133 | 0.070 | 0.020 |
+| boot_v_cal_oua | 0.270 | 0.73 | -0.000133 | 0.073 | 0.023 |
+| **full_pipeline_boot** | **0.083** | **1.08** | **+0.000041** | **0.057** | **0.007** ✓ |
+
+**This is the only variance method that simultaneously achieves**:
+- `frob_rel_err < 0.10` (variance recovered to within 8% of truth)
+- `spectral_ratio in [0.85, 1.20]` (1.08, slight over-shoot)
+- `size_dev < 0.02` at η = 0.05 (size = 0.057)
+
+It's the lock-in candidate.
+
+**Why it works on g_1**: by re-maxing t̂ across reps, the bootstrap
+captures the variance contribution from t̂'s argmax fluctuation. The
+other six methods all hold t̂ fixed and miss this.
+
+**Why analytical_oua "passes" size despite under-estimating variance**:
+the variance under-estimate by 27% pushes size UP, but the size-pred
+shows it lands at 0.087. Empirical 0.070 is 1.7σ_MC below that. So
+analytical_oua's size_dev = 0.020 is partly luck (variance error
+partially offsets the residual non-centrality from ε ≠ 0). It's not
+a robust calibration.
+
+#### Truth decomposition (S4 ablation, first-class)
+
+```
+Σ_full       trace = 0.122       (joint MC, 300 reps)
+V_audit_only trace = 0.089  (73%)
+V_calib_only trace = 0.047  (38%)
+V_eval_only  trace = 0.010  ( 8%)
+sum (additive) = 0.146  (119%)
+cross_residual = −0.024 (−19%)   ← anti-correlation
+```
+
+The additive sum OVER-estimates Σ_full by 19%. There is a meaningful
+*negative* covariance between (calibrator-shift, argmax-shift) under
+joint resampling — when ĥ shifts, t̂ shifts to compensate, dampening
+ḡ's variance. This is the structural reason additive methods cannot
+land at exactly 100% of trace_full on this DGP.
+
+`full_pipeline_boot` captures this anti-correlation correctly because
+it integrates over the joint randomness rather than summing component
+variances.
+
 ## 4. The unified diagnostic per method
 
 For each candidate Ω̂ method M, we compute four axes against the DGP truth:
