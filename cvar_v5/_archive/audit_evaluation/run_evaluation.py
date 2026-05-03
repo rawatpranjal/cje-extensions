@@ -128,7 +128,7 @@ def main():
         for m in method_names:
             omegas_per_method[m].append(res.omegas[m])
         g_realized.append(res.ḡ)
-        g_per_fold_collected.append(res.g_per_fold)
+        g_per_fold_collected.append(res.g_per_fold_at_t_hat)
         if (r + 1) % max(1, args.R // 10) == 0:
             LOG.info("  rep %d / %d", r + 1, args.R)
     g_realized = np.stack(g_realized)

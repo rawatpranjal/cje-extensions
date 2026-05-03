@@ -152,10 +152,99 @@ def omega_full_pipeline_boot(p: DGPParams, pert: TargetPert, alpha, n_calib, n_a
 
 @dataclass
 class RepResult:
-    ḡ: np.ndarray                  # (2,)
+    """
+    Output of one MC rep of the audit pipeline.
+
+    Math contract:
+        ḡ            =  (1/n_audit) · Σ_i  g_i( t̂ ; ĥ )            ∈ R²
+        t̂            =  argmax over T_grid of [ t − mean_eval(ĥ_t(s_e)) / α ]
+
+        Per-fold quantities (for K-fold cross-fit calibrator):
+            ĥ^(-k)         calibrator with fold k held out (cached on cal.folded)
+            t̂^(-k)         argmax over T_grid of [ t − mean_eval( ĥ_t^(-k)(s_e) ) / α ]
+            ḡ^(-k)_at_t̂   = (1/n_audit) · Σ_i  g_i( t̂ ; ĥ^(-k) )      (varies ĥ only)
+            ḡ^(-k)_at_t̂_k = (1/n_audit) · Σ_i  g_i( t̂^(-k) ; ĥ^(-k) ) (varies ĥ AND t̂)
+
+        Raw arrays are kept so bootstrap-based bias correctors can resample
+        them without re-drawing from the DGP each rep (the raw draw IS the rep).
+
+    Fields:
+        ḡ                   the realized audit moment vector
+        t_hat               saddle-point optimum on EVAL with pooled ĥ
+        omegas              per-method Ω̂ estimates (variance-side)
+        g_per_fold_at_t_hat ḡ^(-k) computed at the original t̂ (for BC-jk-cal)
+        g_per_fold_at_t_k   ḡ^(-k) computed at fold-specific t̂^(-k) (for BC-jk-full)
+        t_hat_per_fold      t̂^(-k), one per fold k
+        s_calib, y_calib    raw CALIB rows (for BC-boot)
+        s_eval              raw EVAL rows (for BC-boot)
+        s_audit, y_audit    raw AUDIT rows (for BC-boot)
+    """
+
+    ḡ: np.ndarray                       # (2,)
     t_hat: float
-    omegas: dict                   # method_name -> Ω̂ (2x2)
-    g_per_fold: np.ndarray         # (K, 2) for jackknife-bias-correction layer
+    omegas: dict                        # method_name -> Ω̂ (2x2)
+    g_per_fold_at_t_hat: np.ndarray     # (K, 2) — bias correction A: ĥ varies, t̂ fixed
+    g_per_fold_at_t_k: np.ndarray       # (K, 2) — bias correction B: ĥ AND t̂ vary
+    t_hat_per_fold: np.ndarray          # (K,)   — fold-specific t̂^(-k)
+    # Raw arrays for bootstrap-based bias correctors (BC-boot):
+    s_calib: np.ndarray                 # (n_calib,)
+    y_calib: np.ndarray                 # (n_calib,)
+    s_eval: np.ndarray                  # (n_eval,)
+    s_audit: np.ndarray                 # (n_audit,)
+    y_audit: np.ndarray                 # (n_audit,)
+    # The first column of g_per_fold_at_t_hat will equal ḡ[0] in every entry,
+    # since g_1 = 1{Y ≤ t̂} − α does not depend on ĥ.
+
+
+def _per_fold_quantities(
+    cal: Calibrator, s_audit: np.ndarray, y_audit: np.ndarray,
+    s_eval: np.ndarray, t_grid: np.ndarray, t_idx_pooled: int, t_hat_pooled: float,
+    alpha: float,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    For each oracle fold k = 1..K, compute:
+        h_t_k_at_audit                          ĥ_t^(-k)(s_audit) for all t in T_grid
+        t̂^(-k)  := argmax  [ t − mean_e ĥ_t^(-k)(s_e) / α ]   (re-max on EVAL with ĥ^(-k))
+        ḡ^(-k) at t̂_pooled                    g_i evaluated at t̂_pooled, ĥ^(-k)
+        ḡ^(-k) at t̂^(-k)                      g_i evaluated at t̂^(-k),    ĥ^(-k)
+
+    Returns:
+        g_per_fold_at_t_hat  (K, 2) — g_1 column equals (1{Y≤t̂}−α).mean() for every k
+        g_per_fold_at_t_k    (K, 2) — g_1 column varies with t̂^(-k)
+        t_hat_per_fold       (K,)   — t̂^(-k) values
+    """
+    K = cal.K
+    g_at_t_hat = np.empty((K, 2), dtype=np.float64)
+    g_at_t_k = np.empty((K, 2), dtype=np.float64)
+    t_hat_per_fold = np.empty(K, dtype=np.float64)
+
+    for k in range(K):
+        # ĥ_t^(-k) on every t in T_grid — needed for argmax on EVAL.
+        # Each cal.folded[j][k] is the fitted IsotonicRegression for the j-th t,
+        # k-th held-out fold.
+        H_eval_k = np.empty((len(s_eval), len(t_grid)), dtype=np.float64)
+        H_audit_k = np.empty((len(s_audit), len(t_grid)), dtype=np.float64)
+        for j in range(len(t_grid)):
+            ir_jk = cal.folded[j][k]
+            H_eval_k[:, j] = ir_jk.predict(s_eval)
+            H_audit_k[:, j] = ir_jk.predict(s_audit)
+
+        # ḡ^(-k) at the original t̂ (BC-jk-cal style, varies ĥ only)
+        h_t_audit_k = H_audit_k[:, t_idx_pooled]
+        g1_a, g2_a = g_pair(s_audit, y_audit, h_t_audit_k, t_hat_pooled, alpha)
+        g_at_t_hat[k] = [g1_a.mean(), g2_a.mean()]
+
+        # ḡ^(-k) at fold-specific t̂^(-k) (BC-jk-full style, varies both)
+        # t̂^(-k) := argmax  t − (1/(α n_eval)) Σ ĥ_t^(-k)(s_e)
+        psi_k = t_grid - H_eval_k.mean(axis=0) / alpha
+        j_k = int(np.argmax(psi_k))
+        t_hat_k = float(t_grid[j_k])
+        h_t_audit_at_k = H_audit_k[:, j_k]
+        g1_b, g2_b = g_pair(s_audit, y_audit, h_t_audit_at_k, t_hat_k, alpha)
+        g_at_t_k[k] = [g1_b.mean(), g2_b.mean()]
+        t_hat_per_fold[k] = t_hat_k
+
+    return g_at_t_hat, g_at_t_k, t_hat_per_fold
 
 
 def run_one_rep(
@@ -164,13 +253,21 @@ def run_one_rep(
     t_grid: np.ndarray, K: int, B: int, seed: int,
 ) -> RepResult:
     """
-    One pipeline rep:
-        CALIB ← logger (always unperturbed; we test against pert in target).
-        EVAL  ← target (with pert).
-        AUDIT ← target (with pert).
+    One pipeline rep.
 
-    Returns ḡ, t̂, all Ω̂_method, plus per-fold ḡ^(-k) for downstream
-    bias-correction.
+    Slices:
+        CALIB ← logger (always unperturbed; calibrator is fit here).
+        EVAL  ← target (with pert).  Drives t̂ via the saddle objective.
+        AUDIT ← target (with pert).  Y observed; where g_i moments are evaluated.
+
+    Computed:
+        ĥ_t        pooled IsotonicRegression(decreasing) per t in T_grid
+        t̂          argmax_t  [ t − mean_eval(ĥ_t(s_e)) / α ]
+        ḡ          (1/n_audit) Σ_i  g_i(t̂; ĥ)
+        Ω̂_method   five Ω̂ estimators (analytical, boot_remax, ridge, oua-variants)
+        ḡ^(-k) at t̂_pooled       per-fold (BC-jk-cal)
+        ḡ^(-k) at fold-specific t̂^(-k)  per-fold (BC-jk-full)
+        Raw arrays kept for BC-boot.
     """
     s_c, y_c = sample_logger(p, n_calib, seed=seed)
     cal = fit_calibrator(s_c, y_c, t_grid, K, seed=seed)
@@ -185,21 +282,30 @@ def run_one_rep(
     g1, g2 = g_pair(s_a, y_a, h_t_a, t_hat, alpha)
     ḡ = np.array([g1.mean(), g2.mean()])
 
+    # Variance-side Ω̂ estimators (orthogonal to bias correction).
     omegas: dict = {}
-
     omegas["analytical"] = omega_analytical(g1, g2)
-
     omegas["boot_remax"] = omega_boot_remax(
         s_a, y_a, H_a, t_grid, t_idx, t_hat, alpha, B, seed=seed + 3, ridge=False,
     )
     omegas["boot_remax_ridge"] = omega_boot_remax(
         s_a, y_a, H_a, t_grid, t_idx, t_hat, alpha, B, seed=seed + 3, ridge=True,
     )
-
-    v_cal, g_per_fold = v_cal_jackknife_g(cal, s_a, y_a, t_idx, t_hat, alpha)
+    v_cal, _ = v_cal_jackknife_g(cal, s_a, y_a, t_idx, t_hat, alpha)
     omegas["analytical_oua"] = omegas["analytical"] + v_cal
     omegas["boot_remax_oua"] = omegas["boot_remax"] + v_cal
 
+    # Per-fold quantities for BC-jk-cal and BC-jk-full.
+    g_at_t_hat, g_at_t_k, t_per_fold = _per_fold_quantities(
+        cal, s_a, y_a, s_e, t_grid, t_idx, t_hat, alpha,
+    )
+
     return RepResult(
-        ḡ=ḡ, t_hat=t_hat, omegas=omegas, g_per_fold=g_per_fold,
+        ḡ=ḡ, t_hat=t_hat, omegas=omegas,
+        g_per_fold_at_t_hat=g_at_t_hat,
+        g_per_fold_at_t_k=g_at_t_k,
+        t_hat_per_fold=t_per_fold,
+        s_calib=s_c, y_calib=y_c,
+        s_eval=s_e,
+        s_audit=s_a, y_audit=y_a,
     )

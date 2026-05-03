@@ -47,7 +47,8 @@ def _empirical_sigma_full_and_eps(
         seed = seed_base + 9007 * r
         res = run_one_rep(p, pert, alpha, n_calib, n_audit, n_eval, t_grid, K, B, seed)
         g_realized.append(res.ḡ)
-        g_per_fold_all.append(res.g_per_fold)
+        # Back-compat: BC-jk-cal style (ĥ varies, t̂ fixed at t̂_pooled)
+        g_per_fold_all.append(res.g_per_fold_at_t_hat)
     g_arr = np.stack(g_realized, axis=0)
     eps = g_arr.mean(axis=0)
     sigma_full = n_audit * np.cov(g_arr, rowvar=False, ddof=1)
