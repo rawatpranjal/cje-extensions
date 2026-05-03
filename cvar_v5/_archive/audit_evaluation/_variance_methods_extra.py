@@ -33,9 +33,48 @@ from __future__ import annotations
 
 import numpy as np
 
+from sklearn.isotonic import IsotonicRegression
+
 from ._harness import (
     RepResult, fit_calibrator, g_pair, omega_analytical, saddle_argmax,
 )
+
+
+def _fit_pooled_only(s_calib, y_calib, t_grid):
+    """
+    Fit ONLY the pooled isotonic per t (no cross-fit folds).
+
+    Math:
+        For each t in t_grid:
+            z_i  =  max(t − y_calib_i, 0)
+            ĥ_t  =  IsotonicRegression(decreasing).fit(s_calib, z)
+
+    Returns a list of IsotonicRegression objects, one per t in t_grid.
+    Used inside full_pipeline_boot's bootstrap loop, where per-fold fits
+    are never consumed (Calibrator.predict() uses only the pooled fit).
+
+    Verified empirically: full_pipeline_boot's Ω̂ output is bitwise-identical
+    whether the inner-bootstrap calibrator is K=5 cross-fitted or K=1
+    pooled-only. The K=5 path was wasted compute — see
+    `_compare_kfold_in_boot.py` (60 reps, ratio 1.0000 ± 0.0000).
+    """
+    pooled = []
+    for t in t_grid:
+        z = np.maximum(t - y_calib, 0.0)
+        ir = IsotonicRegression(increasing=False, out_of_bounds="clip").fit(
+            s_calib, z,
+        )
+        pooled.append(ir)
+    return pooled
+
+
+def _predict_pooled(pooled_list, s):
+    """Apply a pooled-isotonic list to s; returns shape (n_s, |T|)."""
+    s = np.asarray(s).ravel()
+    out = np.empty((len(s), len(pooled_list)), dtype=np.float64)
+    for j, ir in enumerate(pooled_list):
+        out[:, j] = ir.predict(s)
+    return out
 
 
 def boot_v_cal_oua(
@@ -179,7 +218,15 @@ def full_pipeline_boot(
     ----
     B_full · |T_grid| isotonic fits per audit verdict, plus B_full saddle
     argmaxes on the bootstrap eval slice. At B_full=80, n_calib=600,
-    |T_grid|=121, this is about 30 sec per rep on one core.
+    |T_grid|=121, this is about 4 sec per rep on one core.
+
+    Implementation note (verified empirically in
+    `_compare_kfold_in_boot.py`, 60 reps): we use a POOLED-ONLY isotonic
+    fit inside the bootstrap (no K-fold partition). The K-fold structure
+    is irrelevant here because Calibrator.predict() only uses the pooled
+    fit, never the per-fold fits. The K-vs-1 ratio of Ω̂ was 1.0000 ±
+    0.0000 across 60 reps. Going pooled-only saves ~K× compute with no
+    numerical change.
     """
     n_c = len(rep.s_calib)
     n_e = len(rep.s_eval)
@@ -199,15 +246,17 @@ def full_pipeline_boot(
         s_a_b = rep.s_audit[idx_a]
         y_a_b = rep.y_audit[idx_a]
 
-        # Refit calibrator on bootstrap CALIB.
-        cal_b = fit_calibrator(s_c_b, y_c_b, t_grid, K=K, seed=seed + b)
+        # Pooled-only fit (no folds). Cross-fit doesn't help here because
+        # Calibrator.predict() never consumes the per-fold list.
+        pooled_b = _fit_pooled_only(s_c_b, y_c_b, t_grid)
 
         # Re-max t̂^(b) on bootstrap EVAL with bootstrap calibrator.
-        H_e_b = cal_b.predict(s_e_b)
+        H_e_b = _predict_pooled(pooled_b, s_e_b)
         j_b, t_b = saddle_argmax(H_e_b, t_grid, alpha)
 
         # Compute ḡ^(b) on bootstrap AUDIT at (ĥ^(b), t̂^(b)).
-        h_t_a_b = cal_b.predict(s_a_b)[:, j_b]
+        H_a_b = _predict_pooled(pooled_b, s_a_b)
+        h_t_a_b = H_a_b[:, j_b]
         g1_b, g2_b = g_pair(s_a_b, y_a_b, h_t_a_b, t_b, alpha)
         g_b_per_rep[b] = [g1_b.mean(), g2_b.mean()]
 
