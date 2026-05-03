@@ -157,6 +157,123 @@ estimators (ĥ, t̂) instead of the truth (h*, t*).
 The size of |ε| relative to √(Var(ḡ)) determines the non-centrality
 of the Wald statistic.
 
+### 3.4 Three bias-correction methods
+
+Each method produces a corrected `ḡ_used := ḡ − ε̂` from a different
+estimate ε̂ of the bias-into-null. Bias correction is orthogonal to the
+choice of Ω̂ method.
+
+#### BC-jk-cal — jackknife on calibrator only
+
+For each oracle fold `k = 1..K`, using cached `ĥ^(-k)` (held-out fit):
+
+```
+ḡ^(-k)_A   :=  (1 / n_audit) · Σ_i  g_i( t̂_pooled ;  ĥ^(-k) )
+              ↑ keeps t̂ fixed at the original t̂ from the pooled calibrator,
+              varies only the calibrator across folds.
+
+ε̂_A        :=  (K − 1) · ( mean_k(ḡ^(-k)_A)  −  ḡ )
+ḡ_bc_A     :=  ḡ  −  ε̂_A
+            =  K · ḡ  −  (K − 1) · mean_k(ḡ^(-k)_A)
+```
+
+Crucially, `g_1 = 1{Y ≤ t̂_pooled} − α` does NOT depend on ĥ. So
+`ḡ^(-k)_A[g_1] = ḡ[g_1]` for every k, and the correction on g_1
+component is identically zero. **BC-jk-cal corrects g_2 only.**
+
+This is the canonical OUA jackknife adaptation from Mean-CJE — it works
+when the bias is concentrated in g_2 (calibrator-fit bias). For our DGP,
+the bias is concentrated in g_1 (argmax-induced), so BC-jk-cal is inert.
+
+#### BC-jk-full — jackknife on calibrator AND threshold (NEW)
+
+For each fold `k`, also re-compute the saddle threshold using ĥ^(-k):
+
+```
+t̂^(-k)     :=  argmax_t   [ t  −  mean_eval( ĥ_t^(-k)(s_e) )  /  α ]
+              ↑ uses the SAME EVAL slice but the leave-one-out calibrator.
+
+ḡ^(-k)_B   :=  (1 / n_audit) · Σ_i  g_i( t̂^(-k) ;  ĥ^(-k) )
+              ↑ NOW g_1^(-k) DOES vary across folds, since 1{Y ≤ t̂^(-k)} − α
+              shifts when t̂^(-k) shifts.
+
+ε̂_B        :=  (K − 1) · ( mean_k(ḡ^(-k)_B)  −  ḡ )
+ḡ_bc_B     :=  ḡ  −  ε̂_B
+            =  K · ḡ  −  (K − 1) · mean_k(ḡ^(-k)_B)
+```
+
+Captures both the calibrator-fit and argmax contributions to bias.
+**This is the piece needed to bias-correct g_1.**
+
+Cost: K evaluations of the saddle objective on EVAL — cheap, since
+the per-fold ĥ^(-k) is already cached.
+
+Caveat: the formula `K · ḡ − (K − 1) · ḡ_jk` AMPLIFIES per-rep variance.
+With K = 5, the bias-corrected estimator has roughly K² · Var(ḡ) on
+components where ḡ_jk is uncorrelated with ḡ, and intermediate values
+when correlation is partial. The size diagnostic must use the empirical
+Var(ḡ_used) of the corrected statistic — not Var(ḡ) — to predict size
+correctly.
+
+#### BC-boot — full-pipeline bootstrap (NEW)
+
+For `b = 1..B` (B ~ 100 typically):
+
+```
+For b = 1..B:
+    Resample CALIB rows  →  refit  ĥ^(b)
+    Resample EVAL rows   →  re-max t̂^(b) on bootstrap eval with ĥ^(b)
+    Resample AUDIT rows  →  ḡ^(b) := mean over bootstrap audit at (ĥ^(b), t̂^(b))
+
+bias_boot   :=  mean_b(ḡ^(b))  −  ḡ
+ε̂_C         :=  bias_boot
+ḡ_bc_C      :=  ḡ  −  bias_boot
+              =  2 · ḡ  −  mean_b(ḡ^(b))
+```
+
+Captures all three nuisances jointly INCLUDING cross-terms (the bias
+estimate sees the full pipeline's joint randomness). Cost: B
+calibrator refits per audit verdict (vs K for the jackknife methods).
+
+Empirical question: does the bootstrap mean-shift correction work
+better than jackknife on non-smooth (isotonic + argmax) estimators?
+The standard theory assumes smooth bias expansions; isotonic doesn't
+have one, so this is a measurement, not a proof.
+
+### 3.5 Per-rep Ω̂ in the predicted-size formula (Jensen-correct)
+
+Earlier draft used `mean_r(Ω̂_M^(r))` as the inverse in the predicted
+Wald statistic:
+
+```
+size_pred_naive  =  Pr(  ḡ̃ᵀ (mean Ω̂_M)⁻¹ ḡ̃  >  c  )
+                    ḡ̃ ~ N(center, true_var)
+```
+
+This systematically under-predicts empirical size because by Jensen on
+the convex map `Ω → Ω⁻¹`, `(mean Ω̂)⁻¹` is *smaller* than
+`mean(Ω̂⁻¹)`, so the smoothed prediction misses the per-rep tail
+behavior where small Ω̂ realizations cause easy rejections.
+
+The Jensen-correct version uses per-rep Ω̂ samples:
+
+```
+For r_sim = 1..n_sim:
+    idx   ~  Uniform({1, ..., R})           sample a rep uniformly
+    Ω̂    :=  Ω̂_M^(idx)                     (NOT the average)
+    ḡ̃   ~  N(center, true_var)
+    W    :=  ḡ̃ᵀ Ω̂⁻¹ ḡ̃
+
+size_pred  :=  (1 / n_sim) · Σ_{r_sim}  1{ W  >  c }
+```
+
+The Wald inverse is drawn from the empirical distribution of `Ω̂_M^(r)`,
+not its mean. By Fubini, this equals the per-rep nested-mean prediction.
+
+`true_var` here is computed from `ḡ_used_per_rep` itself (not from raw
+ḡ), so any variance amplification introduced by bias correction is
+captured automatically.
+
 ## 4. The unified diagnostic per method
 
 For each candidate Ω̂ method M, we compute four axes against the DGP truth:
@@ -299,6 +416,48 @@ Use the closed-form h* and t* in place of (ĥ, t̂). Compute ḡ on R reps,
 take mean. **Result must be ≈ 0** (within MC noise σ_MC = std(ḡ) / √R).
 If non-zero, our population-truth computation is wrong (e.g., quadrature
 error in h* or wrong t*).
+
+### 6.7 Probe S7: BC-jk-cal corrects g_2 only
+
+For every rep:
+```
+Δg_1^(r)  :=  ḡ_bc_A^(r)[g_1] − ḡ^(r)[g_1]
+Δg_2^(r)  :=  ḡ_bc_A^(r)[g_2] − ḡ^(r)[g_2]
+```
+Pass:
+- `max_r |Δg_1^(r)|  <  1e-12`   (g_1 ⊥ ĥ; per-rep zero)
+- `max_r |Δg_2^(r)|  >  1e-9`    (correction does something on g_2)
+
+Falsifies if the implementation accidentally includes some t̂ variation
+in BC-jk-cal.
+
+### 6.8 Probe S8: BC-jk-full reduces |center| on both components
+
+```
+center_raw[c]   :=  mean_r ( ḡ^(r)[c] )
+center_bc_B[c]  :=  mean_r ( ḡ_bc_B^(r)[c] )
+tol             :=  1.5 · max(SE_bc_B)
+Pass: |center_bc_B[c]| < |center_raw[c]| + tol  for c ∈ {0, 1}
+```
+
+The tolerance allows for MC noise. If BC-jk-full doesn't reduce the
+center on at least one component (especially g_1, which is the point),
+something's wrong with the formula or the per-fold t̂^(-k) computation.
+
+### 6.9 Probe S9: BC-boot ≈ BC-jk-full directionally
+
+```
+Δ^(r)        :=  ḡ_bc_C^(r) − ḡ_bc_B^(r)         per rep
+center_diff  :=  mean_r ( Δ^(r) )                ∈ R²
+se_diff[c]   :=  std_r ( Δ^(r)[c] ) / sqrt(R)
+z[c]         :=  | center_diff[c] | / se_diff[c]
+Pass:  max_c z[c]  ≤  2.5
+```
+
+The two correctors estimate the same population quantity ε via different
+finite-sample formulas. They should agree directionally; persistent
+disagreement (z > 2.5) suggests one of them targets the wrong quantity
+on this DGP.
 
 ## 7. End-to-end procedure
 
