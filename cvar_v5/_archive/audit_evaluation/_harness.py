@@ -294,6 +294,10 @@ def run_one_rep(
     v_cal, _ = v_cal_jackknife_g(cal, s_a, y_a, t_idx, t_hat, alpha)
     omegas["analytical_oua"] = omegas["analytical"] + v_cal
     omegas["boot_remax_oua"] = omegas["boot_remax"] + v_cal
+    # The two NEW variance methods from _variance_methods_extra are NOT
+    # computed here — they require knowing B_cal / B_full at call time
+    # and consume the raw arrays. The caller (run_evaluation) computes
+    # them after run_one_rep returns, using the raw arrays exposed below.
 
     # Per-fold quantities for BC-jk-cal and BC-jk-full.
     g_at_t_hat, g_at_t_k, t_per_fold = _per_fold_quantities(

@@ -33,17 +33,23 @@ from ._bias_diagnostic import diagnose_bias
 from ._harness import run_one_rep
 from ._sanity import run_all_probes
 from ._size_diagnostic import diagnose_size
+from ._truth_decomp import compute_truth_decomposition
 from ._truths import DGPParams, TargetPert, sigma_oracle, t_star
 from ._variance_diagnostic import diagnose_variance
+from ._variance_methods_extra import boot_v_cal_oua, full_pipeline_boot
 
 
 LOG = logging.getLogger(__name__)
 
 
-# Variance-side methods (Ω̂ estimators).
+# Variance-side methods (Ω̂ estimators). The first 5 are computed inside
+# run_one_rep; the last 2 are computed by the runner after the rep returns
+# (they need B_cal / B_full and consume the raw rep arrays).
 _VAR_METHODS = [
     "analytical", "boot_remax", "boot_remax_ridge",
     "analytical_oua", "boot_remax_oua",
+    "boot_v_cal_oua",            # NEW (additive: V_audit + bootstrap V_cal)
+    "full_pipeline_boot",        # NEW (integrated; captures cross-terms)
 ]
 
 # Bias-correction labels.
@@ -91,8 +97,10 @@ def _apply_bc(label: str, rep, t_grid, alpha, K, B_boot, seed):
 def _run_one_rep_worker(payload: dict) -> dict:
     """
     Worker for parallel pool. Takes a fully-populated payload dict and returns
-    a results dict with the per-method Ω̂s and per-bc ḡ_used vectors plus
-    the raw ḡ.
+    a results dict with:
+        - per-method Ω̂s (5 from rep.omegas + 2 NEW computed here)
+        - per-bc ḡ_used vectors
+        - raw ḡ
 
     All inputs are pickle-safe (numpy arrays, primitives, dataclasses).
     """
@@ -106,14 +114,25 @@ def _run_one_rep_worker(payload: dict) -> dict:
     K = payload["K"]
     B = payload["B"]
     B_boot_bc = payload["B_boot_bc"]
+    B_cal_var = payload["B_cal_var"]
+    B_full_var = payload["B_full_var"]
     seed = payload["seed"]
     bc_labels = payload["bc_labels"]
-    var_methods = payload["var_methods"]
 
     rep = run_one_rep(
         p, pert, alpha, n_calib, n_audit, n_eval, t_grid, K, B, seed,
     )
-    omegas = {m: rep.omegas[m] for m in var_methods}
+    # Existing 5 variance methods are on rep.omegas already.
+    omegas = dict(rep.omegas)
+    # The two NEW variance methods consume the raw arrays + their own bootstrap
+    # budgets. Compute them here so the worker stays self-contained.
+    omegas["boot_v_cal_oua"] = boot_v_cal_oua(
+        rep, t_grid, alpha, K, B_cal_var, seed=seed + 11,
+    )
+    omegas["full_pipeline_boot"] = full_pipeline_boot(
+        rep, t_grid, alpha, K, B_full_var, seed=seed + 13,
+    )
+
     g_used = {
         bc: _apply_bc(bc, rep, t_grid, alpha, K, B_boot_bc, seed=seed + 5)
         for bc in bc_labels
@@ -141,8 +160,14 @@ def main():
     parser.add_argument("--seed-base", type=int, default=20260503)
     parser.add_argument("--skip-sanity", action="store_true",
                         help="skip sanity probes S1-9 (only run main eval)")
+    parser.add_argument("--skip-truth-decomp", action="store_true",
+                        help="skip ground-truth decomposition (4·R extra reps)")
     parser.add_argument("-w", "--n-workers", type=int, default=1,
                         help="MC reps run in parallel (multiprocessing fork pool)")
+    parser.add_argument("--B-cal-var", type=int, default=80,
+                        help="Bootstrap reps for boot_v_cal_oua (per audit verdict)")
+    parser.add_argument("--B-full-var", type=int, default=80,
+                        help="Bootstrap reps for full_pipeline_boot (per audit verdict)")
     args = parser.parse_args()
 
     out_dir = _make_run_dir()
@@ -174,11 +199,47 @@ def main():
         if not all_passed:
             LOG.warning("Some sanity probes FAILED. Continuing; trust eval results with caution.")
 
-    # ---------------- Truth (Σ_oracle, t*) -------------------------
+    # ---------------- Truth (Σ_oracle, t*, ground-truth decomp) -----
     LOG.info("computing population truths (Σ_oracle, t*)...")
     Sigma_oracle = sigma_oracle(p, pert, args.alpha)
     t_pop = t_star(p, pert, args.alpha)
     LOG.info("Σ_oracle = %s, t* = %.5f", Sigma_oracle.tolist(), t_pop)
+
+    if not args.skip_truth_decomp:
+        LOG.info("computing ground-truth variance decomposition (4·R reps)...")
+        td = compute_truth_decomposition(
+            p, pert, args.alpha, args.n_calib, args.n_audit, args.n_eval,
+            args.K, t_grid, args.B, R=args.R, seed_base=args.seed_base + 50000,
+        )
+        LOG.info(
+            "  trace(Σ_full)=%.5f  V_audit=%.5f (%.0f%%)  V_calib=%.5f (%.0f%%)  "
+            "V_eval=%.5f (%.0f%%)  cross_residual=%.5f (%.0f%%)",
+            td.trace_full,
+            td.trace_audit, 100 * td.trace_audit / td.trace_full,
+            td.trace_calib, 100 * td.trace_calib / td.trace_full,
+            td.trace_eval,  100 * td.trace_eval  / td.trace_full,
+            td.trace_full - td.trace_predicted,
+            100 * (td.trace_full - td.trace_predicted) / td.trace_full,
+        )
+        # Persist the decomposition for downstream analysis.
+        pl.DataFrame([{
+            "trace_full":    td.trace_full,
+            "trace_audit":   td.trace_audit,
+            "trace_calib":   td.trace_calib,
+            "trace_eval":    td.trace_eval,
+            "trace_predicted": td.trace_predicted,
+            "rel_err_predicted": td.rel_err_predicted,
+            "Sigma_full_11":  float(td.Sigma_full[0, 0]),
+            "Sigma_full_22":  float(td.Sigma_full[1, 1]),
+            "V_audit_11":     float(td.V_audit_only[0, 0]),
+            "V_audit_22":     float(td.V_audit_only[1, 1]),
+            "V_calib_11":     float(td.V_calib_only[0, 0]),
+            "V_calib_22":     float(td.V_calib_only[1, 1]),
+            "V_eval_11":      float(td.V_eval_only[0, 0]),
+            "V_eval_22":      float(td.V_eval_only[1, 1]),
+            "cross_11":       float(td.cross_residual[0, 0]),
+            "cross_22":       float(td.cross_residual[1, 1]),
+        }]).write_csv(out_dir / "truth_decomp.csv")
 
     # ---------------- Run R reps and collect everything ------------
     LOG.info("running R=%d MC reps under H_0 (workers=%d)...",
@@ -193,9 +254,10 @@ def main():
             "n_calib": args.n_calib, "n_audit": args.n_audit, "n_eval": args.n_eval,
             "t_grid": t_grid, "K": args.K, "B": args.B,
             "B_boot_bc": args.B_boot_bc,
+            "B_cal_var": args.B_cal_var,
+            "B_full_var": args.B_full_var,
             "seed": args.seed_base + 100 + 9007 * r,
             "bc_labels": _BC_LABELS,
-            "var_methods": _VAR_METHODS,
         }
         for r in range(args.R)
     ]
