@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import logging
 from datetime import datetime
+from multiprocessing import get_context
 from pathlib import Path
 
 import numpy as np
@@ -30,7 +31,7 @@ import polars as pl
 from ._bias_corrections import bc_jk_cal, bc_jk_full, bc_boot
 from ._bias_diagnostic import diagnose_bias
 from ._harness import run_one_rep
-from ._sanity import run_all_probes, _empirical_sigma_full_and_eps
+from ._sanity import run_all_probes
 from ._size_diagnostic import diagnose_size
 from ._truths import DGPParams, TargetPert, sigma_oracle, t_star
 from ._variance_diagnostic import diagnose_variance
@@ -87,6 +88,43 @@ def _apply_bc(label: str, rep, t_grid, alpha, K, B_boot, seed):
     raise ValueError(f"unknown bias correction label: {label!r}")
 
 
+def _run_one_rep_worker(payload: dict) -> dict:
+    """
+    Worker for parallel pool. Takes a fully-populated payload dict and returns
+    a results dict with the per-method Ω̂s and per-bc ḡ_used vectors plus
+    the raw ḡ.
+
+    All inputs are pickle-safe (numpy arrays, primitives, dataclasses).
+    """
+    p = payload["p"]
+    pert = payload["pert"]
+    alpha = payload["alpha"]
+    n_calib = payload["n_calib"]
+    n_audit = payload["n_audit"]
+    n_eval = payload["n_eval"]
+    t_grid = payload["t_grid"]
+    K = payload["K"]
+    B = payload["B"]
+    B_boot_bc = payload["B_boot_bc"]
+    seed = payload["seed"]
+    bc_labels = payload["bc_labels"]
+    var_methods = payload["var_methods"]
+
+    rep = run_one_rep(
+        p, pert, alpha, n_calib, n_audit, n_eval, t_grid, K, B, seed,
+    )
+    omegas = {m: rep.omegas[m] for m in var_methods}
+    g_used = {
+        bc: _apply_bc(bc, rep, t_grid, alpha, K, B_boot_bc, seed=seed + 5)
+        for bc in bc_labels
+    }
+    return {
+        "omegas": omegas,
+        "g_used": g_used,
+        "g_realized": rep.ḡ,
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description="audit-Ω̂ evaluation harness")
     parser.add_argument("--R", type=int, default=300,
@@ -103,6 +141,8 @@ def main():
     parser.add_argument("--seed-base", type=int, default=20260503)
     parser.add_argument("--skip-sanity", action="store_true",
                         help="skip sanity probes S1-9 (only run main eval)")
+    parser.add_argument("-w", "--n-workers", type=int, default=1,
+                        help="MC reps run in parallel (multiprocessing fork pool)")
     args = parser.parse_args()
 
     out_dir = _make_run_dir()
@@ -141,25 +181,55 @@ def main():
     LOG.info("Σ_oracle = %s, t* = %.5f", Sigma_oracle.tolist(), t_pop)
 
     # ---------------- Run R reps and collect everything ------------
-    LOG.info("running R=%d MC reps under H_0...", args.R)
+    LOG.info("running R=%d MC reps under H_0 (workers=%d)...",
+             args.R, args.n_workers)
     omegas: dict = {m: [] for m in _VAR_METHODS}
     g_used: dict = {bc: [] for bc in _BC_LABELS}
     g_realized: list = []
 
-    for r in range(args.R):
-        seed = args.seed_base + 100 + 9007 * r
-        rep = run_one_rep(
-            p, pert, args.alpha, args.n_calib, args.n_audit, args.n_eval,
-            t_grid, args.K, args.B, seed,
-        )
-        for m in _VAR_METHODS:
-            omegas[m].append(rep.omegas[m])
-        g_realized.append(rep.ḡ)
-        for bc in _BC_LABELS:
-            g_used[bc].append(_apply_bc(bc, rep, t_grid, args.alpha,
-                                         args.K, args.B_boot_bc, seed=seed + 5))
-        if (r + 1) % max(1, args.R // 10) == 0:
-            LOG.info("  rep %d / %d", r + 1, args.R)
+    payloads = [
+        {
+            "p": p, "pert": pert, "alpha": args.alpha,
+            "n_calib": args.n_calib, "n_audit": args.n_audit, "n_eval": args.n_eval,
+            "t_grid": t_grid, "K": args.K, "B": args.B,
+            "B_boot_bc": args.B_boot_bc,
+            "seed": args.seed_base + 100 + 9007 * r,
+            "bc_labels": _BC_LABELS,
+            "var_methods": _VAR_METHODS,
+        }
+        for r in range(args.R)
+    ]
+
+    import time
+    t0 = time.time()
+
+    if args.n_workers <= 1:
+        # Single-threaded path.
+        for r, payload in enumerate(payloads):
+            res = _run_one_rep_worker(payload)
+            for m in _VAR_METHODS:
+                omegas[m].append(res["omegas"][m])
+            g_realized.append(res["g_realized"])
+            for bc in _BC_LABELS:
+                g_used[bc].append(res["g_used"][bc])
+            if (r + 1) % max(1, args.R // 10) == 0:
+                LOG.info("  rep %d / %d  (%.1fs)", r + 1, args.R, time.time() - t0)
+    else:
+        # Multiprocessing fork pool. Order of results is irrelevant for
+        # the per-method aggregate stats; we use imap_unordered for
+        # efficiency.
+        ctx = get_context("fork")
+        with ctx.Pool(processes=args.n_workers) as pool:
+            for i, res in enumerate(pool.imap_unordered(
+                _run_one_rep_worker, payloads, chunksize=1,
+            )):
+                for m in _VAR_METHODS:
+                    omegas[m].append(res["omegas"][m])
+                g_realized.append(res["g_realized"])
+                for bc in _BC_LABELS:
+                    g_used[bc].append(res["g_used"][bc])
+                if (i + 1) % max(1, args.R // 10) == 0:
+                    LOG.info("  rep %d / %d  (%.1fs)", i + 1, args.R, time.time() - t0)
 
     g_arr = np.stack(g_realized, axis=0)
     sigma_full = args.n_audit * np.cov(g_arr, rowvar=False, ddof=1)
