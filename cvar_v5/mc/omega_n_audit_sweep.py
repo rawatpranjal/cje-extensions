@@ -113,20 +113,23 @@ def _run_cell(args: tuple) -> list[dict]:
 
     rows: list[dict] = []
     for omega in _OMEGA_VARIANTS:
-        verdict = two_moment_wald_audit(
-            audit_slice, cg, estimate.threshold, _ALPHA,
-            omega_estimator=omega, B=_AUDIT_B, seed=seed,
-        )
-        rows.append({
-            "n_oracle": n_oracle,
-            "n_audit": audit_slice.n(),
-            "policy": policy,
-            "rep": rep,
-            "omega_estimator": omega,
-            "audit_W": verdict.W_n,
-            "audit_p": verdict.p_value,
-            "audit_decision": verdict.decision,
-        })
+        for moments in ("g1g2", "g2_only"):
+            verdict = two_moment_wald_audit(
+                audit_slice, cg, estimate.threshold, _ALPHA,
+                omega_estimator=omega, B=_AUDIT_B, seed=seed,
+                moments=moments,
+            )
+            rows.append({
+                "n_oracle": n_oracle,
+                "n_audit": audit_slice.n(),
+                "policy": policy,
+                "rep": rep,
+                "omega_estimator": omega,
+                "moments": moments,
+                "audit_W": verdict.W_n,
+                "audit_p": verdict.p_value,
+                "audit_decision": verdict.decision,
+            })
     return rows
 
 
@@ -173,13 +176,13 @@ def run_sweep(n_workers: int = 1, out_dir: Path | None = None) -> Path:
     # Aggregate over policies and reps; n_audit varies a few per cell due to
     # hash-partition discreteness, so we just record the median.
     summary = (
-        df.group_by(["n_oracle", "omega_estimator"])
+        df.group_by(["n_oracle", "omega_estimator", "moments"])
         .agg([
             (pl.col("audit_decision") == "REFUSE-LEVEL").mean().alias("mean_size"),
             pl.col("n_audit").median().alias("n_audit_median"),
         ])
         .with_columns((pl.col("mean_size") - _NOMINAL_ETA).abs().alias("size_dev"))
-        .sort(["n_oracle", "omega_estimator"])
+        .sort(["n_oracle", "omega_estimator", "moments"])
     )
     summary.write_csv(out_dir / "summary.csv")
 

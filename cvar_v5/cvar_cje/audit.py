@@ -72,12 +72,17 @@ and appendix_c_audit.tex):
 
 from __future__ import annotations
 
+from typing import Literal
+
 import numpy as np
 from scipy import stats
 
 from .calibrator import CalibratorGrid
 from .config import OmegaEstimator
 from .schema import AuditVerdict, Slice
+
+
+AuditMoments = Literal["g1g2", "g2_only"]
 
 
 # ----- shared helpers ----------------------------------------------------------
@@ -259,9 +264,20 @@ def two_moment_wald_audit(
     B: int,
     seed: int,
     eta: float = 0.05,
+    moments: AuditMoments = "g1g2",
 ) -> AuditVerdict:
     """
-    Joint two-moment Wald audit. χ²_2 limit. Returns an AuditVerdict.
+    Joint two-moment Wald audit. χ²_2 limit (or χ²_1 if moments="g2_only").
+
+    Args:
+        moments:
+            "g1g2"    (default) - the canonical 2-moment Wald, χ²_2.
+            "g2_only" - drop g_1 (tail-mass deviation), test only the
+                        shortfall transport residual g_2 against χ²_1.
+                        Useful when audit-side argmax noise in g_1 is
+                        inflating size.
+
+    Returns an AuditVerdict.
     """
     if audit_slice.role != "audit":
         raise ValueError(
@@ -331,10 +347,22 @@ def two_moment_wald_audit(
     else:
         raise ValueError(f"unknown omega_estimator: {omega_estimator!r}")
 
-    # Wald statistic. pinv for safety against near-singular Ω̂.
-    omega_inv = np.linalg.pinv(omega)
-    W_n = float(g_bar @ omega_inv @ g_bar)
-    p_value = float(1.0 - stats.chi2.cdf(W_n, df=2))
+    # Wald statistic.
+    if moments == "g1g2":
+        # 2-moment, χ²_2. pinv for safety against near-singular Ω̂.
+        omega_inv = np.linalg.pinv(omega)
+        W_n = float(g_bar @ omega_inv @ g_bar)
+        df = 2
+    elif moments == "g2_only":
+        # 1-moment on g_2 alone. Σ̂_22 is the (1,1) entry of the 2x2 Ω̂.
+        var_g2 = float(omega[1, 1])
+        if var_g2 <= 0:
+            raise ValueError(f"Σ̂_22 must be > 0 for g2_only audit; got {var_g2}")
+        W_n = float(g_bar[1] ** 2 / var_g2)
+        df = 1
+    else:
+        raise ValueError(f"unknown moments: {moments!r}")
+    p_value = float(1.0 - stats.chi2.cdf(W_n, df=df))
     decision = "REFUSE-LEVEL" if p_value < eta else "PASS"
 
     return AuditVerdict(

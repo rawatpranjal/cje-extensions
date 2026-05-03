@@ -43,3 +43,7 @@ texput.log
 # Exception: keep results-side runtime logs that we ship as data
 !cvar*/*results*.log
 hf.txt
+
+# MC and experiment runtime output dirs (large, regeneratable)
+cvar_v5/mc/runs/
+mean_cje/runs/
