@@ -158,6 +158,9 @@ def main():
     parser.add_argument("--B-boot-bc", type=int, default=80,
                         help="Bootstrap reps for bc_boot's bias estimate")
     parser.add_argument("--seed-base", type=int, default=20260503)
+    parser.add_argument("--policy", default="uniform",
+                        choices=["uniform", "right_skew", "left_skew", "tail_heavy"],
+                        help="DGP policy. Beta(a, b) parameters per the cvar_v5 panel.")
     parser.add_argument("--skip-sanity", action="store_true",
                         help="skip sanity probes S1-9 (only run main eval)")
     parser.add_argument("--skip-truth-decomp", action="store_true",
@@ -176,9 +179,17 @@ def main():
     LOG.info("R=%d, n_calib=%d, n_audit=%d, n_eval=%d, B=%d, B_boot_bc=%d",
              args.R, args.n_calib, args.n_audit, args.n_eval, args.B, args.B_boot_bc)
 
-    p = DGPParams(a=1.0, b=1.0)
+    # Map policy name to DGPParams (mirrors cvar_v5/mc/dgp.py panel).
+    _POLICY_PARAMS = {
+        "uniform":    DGPParams(a=1.0, b=1.0),
+        "right_skew": DGPParams(a=2.0, b=5.0),
+        "left_skew":  DGPParams(a=5.0, b=2.0),
+        "tail_heavy": DGPParams(a=0.5, b=0.5),
+    }
+    p = _POLICY_PARAMS[args.policy]
     pert = TargetPert()
     t_grid = np.linspace(0.0, 1.0, 121)
+    LOG.info("policy = %s; DGPParams = %s", args.policy, p)
 
     # ---------------- Sanity probes (test the test) ----------------
     if not args.skip_sanity:
