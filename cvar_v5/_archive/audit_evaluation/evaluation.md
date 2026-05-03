@@ -497,3 +497,70 @@ n_audit · ε² → 0   ⇔   n_audit · n_calib^{-2/3} → 0   ⇔   n_audit = 
 Empirically we test only finite (n_audit, n_calib); this rate analysis
 just tells us which scaling regimes to NOT test (those where size
 inflation is asymptotic, regardless of method).
+
+## 7 — Bias-correction findings — parked 2026-05-03
+
+### What we tried
+
+Three bias-correction methods (BC-jk-cal, BC-jk-full, BC-boot) — see
+§3.4 — implemented in `_bias_corrections.py` and run at R=300 on the
+uniform DGP at n_calib=600, n_audit=250, n_eval=1000.
+
+### What we found
+
+**Bias-into-null is below the noise floor on this DGP.**
+
+```
+bc_label        center_g1     center_g2     z_g1    z_g2    passed
+none            +0.000373     +0.000098     +0.29   +1.41   yes
+bc_jk_cal       +0.000373     +0.000100     +0.29   +1.42   yes
+bc_jk_full      −0.000587     −0.000025     −0.33   −0.33   yes
+bc_boot         −0.000214     −0.000008     −0.15   −0.12   yes
+```
+
+All four are within 1.5σ_MC of zero. The raw center is ~0.0004 on g_1
+and ~0.0001 on g_2 — too small to matter operationally on this DGP.
+
+**Bias-correction either doesn't help or actively hurts size.** The
+jackknife formula `K·ḡ − (K−1)·ḡ_jk` amplifies per-rep fluctuations:
+
+```
+analytical_oua + none           size = 0.070  (best)
+analytical_oua + bc_jk_cal      size = 0.067
+analytical_oua + bc_jk_full     size = 0.193  ← variance amplified
+analytical_oua + bc_boot        size = 0.117
+```
+
+bc_jk_cal does essentially nothing because g_2 was already centered.
+bc_jk_full and bc_boot move the center slightly but inflate per-rep
+variance by ~2×, which dominates and inflates size.
+
+**The headline failure is variance estimation, not bias.**
+
+```
+spectral_ratio (mean(Ω̂) / Σ_full):
+analytical            0.731
+boot_remax            0.621
+analytical_oua        0.731   ← OUA jackknife adds nothing (see §3.6)
+boot_remax_oua        0.622   ← same
+boot_remax_ridge     16.78    ← way over-shoots
+```
+
+Every non-ridge method captures only 60–75% of the true variance.
+That is the size-inflation mechanism on this DGP.
+
+### Where the code went
+
+Preserved at:
+- `_bias_corrections.py` — all three methods.
+- `_bias_diagnostic.py` — center-of-test diagnostic.
+- `_size_diagnostic.py` — Jensen-correct predicted size.
+- Sanity probes S7-S9 — all pass.
+
+Provenance: `cvar_v5/mc/runs/2026-05-03T070835_audit_evaluation/`.
+
+### Do not re-investigate
+
+Unless a future DGP shows materially larger bias (heteroscedastic S|Y,
+very small n_calib, skewed Y), the bias side is solved on uniform Y.
+The next iteration tackles the variance gap.

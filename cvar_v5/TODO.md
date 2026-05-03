@@ -2,6 +2,45 @@
 
 Anchors in this file are referenced from `NotImplementedError` strings in code. When a flag in `Config` is set to True for a deferred feature, the corresponding `[anchor]` here describes what's missing.
 
+## `[audit-bias-correction]` — parked 2026-05-03
+
+Hypothesis: the audit's W_n size inflation is partly driven by a non-zero center `ε := E[ḡ_realized]` at finite (n_calib, n_eval). Three bias-correction methods were implemented and evaluated:
+
+- `bc_jk_cal`  — delete-one-fold jackknife on the calibrator only (g_1 unchanged by construction since g_1 ⊥ ĥ).
+- `bc_jk_full` — delete-one-fold jackknife on calibrator AND threshold (per-fold `t̂^(-k)`). Captures both nuisances.
+- `bc_boot`    — full-pipeline cluster bootstrap; ε̂ = mean_b(ḡ^(b)) − ḡ.
+
+**Empirical finding (R=300, uniform DGP, n_calib=600, n_audit=250)**: the bias-into-null is below the noise floor on this DGP.
+
+```
+bc_label        center_g1      center_g2      z_g1     z_g2
+none            +0.000373      +0.000098      +0.29    +1.41
+bc_jk_cal       +0.000373      +0.000100      +0.29    +1.42
+bc_jk_full      −0.000587      −0.000025      −0.33    −0.33
+bc_boot         −0.000214      −0.000008      −0.15    −0.12
+```
+
+All four pass `|z| ≤ 3`. The raw bias is ~1-2σ_MC from zero — indistinguishable from MC noise.
+
+**Net effect on size**: bias correction does not help, and the variance-amplifying jackknife formula `K·ḡ − (K−1)·ḡ_jk` actively hurts:
+
+```
+analytical_oua + none          size = 0.070   (best)
+analytical_oua + bc_jk_cal     size = 0.067
+analytical_oua + bc_jk_full    size = 0.193   ← variance amplified
+analytical_oua + bc_boot       size = 0.117
+```
+
+**Conclusion**: bias is not the dominant failure mode on uniform Y. The variance estimator `Ω̂` under-shoots `Σ_full` by 25–37% — that's where the size inflation comes from.
+
+**Provenance**: `cvar_v5/mc/runs/2026-05-03T070835_audit_evaluation/`.
+
+**Code preserved at** `cvar_v5/_archive/audit_evaluation/_bias_corrections.py` (three methods with math docstrings) and `_bias_diagnostic.py` (center-of-test diagnostic, reusable). All sanity probes S7-S9 pass when run.
+
+**Do not re-investigate** unless a future DGP shows materially larger bias (e.g., heteroscedastic S|Y, very small n_calib, or skewed Y where calibrator boundary bias is large).
+
+Next iteration tackles the variance gap directly via `boot_v_cal_oua` and `full_pipeline_boot`.
+
 ## `[grid-tail-dense]` — closed 2026-05-02
 
 Hypothesis: at small α the optimum t̂_α = q_α(Y) sits in [0, 0.1], where the population saddle objective Ψ_α(t) has curvature −p_Y(t)/α — so any grid spacing wider than ~√(α / p_Y) introduces discretization bias on the argmax. Default uniform 61-point grid has spacing 1/60 ≈ 0.017, which over uniform-Y at α=0.01 produces a population (no-MC) ĈVaR underestimate of ~0.002.
