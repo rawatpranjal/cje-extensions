@@ -191,6 +191,13 @@ def main():
                         help="m for m-out-of-n bootstrap on eval slice (default: n_eval^{2/3})")
     parser.add_argument("--m-audit", type=int, default=None,
                         help="m for m-out-of-n bootstrap on audit slice (default: n_audit^{2/3})")
+    parser.add_argument("--delta-y", type=float, default=0.0,
+                        help="Perturbation to target Beta b parameter. δ=0 → H_0 (size); "
+                             "δ>0 → H_1 (power). Same axis as the cvar_v5 omega_sweep.")
+    parser.add_argument("--delta-scale", type=float, default=0.0,
+                        help="Perturbation to s = scale·(Y-0.5) signal amplitude.")
+    parser.add_argument("--delta-sigma", type=float, default=0.0,
+                        help="Perturbation to s noise σ.")
     args = parser.parse_args()
 
     out_dir = _make_run_dir()
@@ -207,9 +214,14 @@ def main():
         "tail_heavy": DGPParams(a=0.5, b=0.5),
     }
     p = _POLICY_PARAMS[args.policy]
-    pert = TargetPert()
+    pert = TargetPert(
+        delta_y=args.delta_y,
+        delta_scale=args.delta_scale,
+        delta_sigma=args.delta_sigma,
+    )
     t_grid = np.linspace(0.0, 1.0, 121)
     LOG.info("policy = %s; DGPParams = %s", args.policy, p)
+    LOG.info("TargetPert = %s (δ=0 → H_0/size; δ>0 → H_1/power)", pert)
 
     # ---------------- Sanity probes (test the test) ----------------
     if not args.skip_sanity:
