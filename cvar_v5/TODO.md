@@ -208,6 +208,36 @@ At n_audit ≈ 249 (original spec scale): **size_dev = 0.040 < 0.050 — calibra
 - Lock `boot_remax_oua` as the default for n_audit ≤ ~250 (the canonical workhorse audit size).
 - For larger n_audit, options remain: (a) bias-correct ḡ via the same jackknife (subtract estimated calibrator bias before forming W); (b) calibrate the null empirically; (c) use a one-sided test on g_1 only.
 
+**Update 2026-05-03 — `full_pipeline_boot` is the principled fix**:
+
+Built the full evaluation framework at `cvar_v5/_archive/audit_evaluation/`:
+- ground-truth variance decomposition via 4·R-rep ablation (V_audit, V_calib, V_eval, cross_residual)
+- six self-consistency probes (S1-S6, all passing)
+- per-method 4-axis diagnostic (variance bias, dispersion, center, size)
+- per-rep Ω̂ Jensen-correct predicted-size formula
+
+Empirical R=300 result on uniform DGP at (n_calib=600, n_audit=250, n_eval=1000):
+
+| variance method | frob_rel_err | spectral_ratio | size@bc=none | size_dev |
+|---|---|---|---|---|
+| analytical | 0.270 | 0.73 | 0.143 | 0.093 |
+| boot_remax | 0.379 | 0.62 | 0.187 | 0.137 |
+| analytical_oua | 0.270 | 0.73 | 0.070 | 0.020 |
+| boot_remax_oua | 0.379 | 0.62 | 0.113 | 0.063 |
+| boot_v_cal_oua (NEW) | 0.270 | 0.73 | 0.073 | 0.023 |
+| **full_pipeline_boot (NEW)** | **0.083** | **1.08** | **0.057** | **0.007** ✓ |
+
+`full_pipeline_boot` is the cvar_v4 paper's prescription: per bootstrap rep, refit ĥ + re-max t̂ + recompute ḡ; Ω̂ = sample-cov_b(ḡ^(b)). It's the only method that simultaneously recovers variance to <10% AND achieves nominal size. Cost: B_full ≈ 80 calibrator refits per audit verdict, ~30 sec at MEDIUM scale.
+
+Key insights:
+- **g_1 ⊥ ĥ**: any method varying ĥ but holding t̂ fixed cannot improve Var̂(g_1). Only re-maxing t̂ across bootstrap reps captures the g_1 variance.
+- **Cross-residual = -19%**: V_audit + V_calib + V_eval over-estimates Σ_full because t̂ shifts to compensate when ĥ shifts. Additive methods structurally cannot land at exactly Σ_full.
+- **boot_remax_oua at n_audit=249 was misleading**: size 0.09 came partly from luck (variance under-estimate offsetting bias residual). full_pipeline_boot lands at 0.057 by correctness.
+
+**Provenance**: `cvar_v5/mc/runs/2026-05-03T081808_audit_evaluation/`.
+
+**Promotion to production audit.py is a separate spec amendment** (verify holds across 4 policies + multiple n_audit, then add `full_pipeline_boot` as an `OmegaEstimator` option in `cvar_cje/config.py` and `audit.py`). For now, `boot_remax_ridge` stays the default in production audit.py to preserve conservativeness.
+
 ## `[joint-calibrator]` — closed 2026-05-02
 
 Hypothesis: a joint `ĝ(s, t)` exploiting structure across `t` (smoothness, monotonicity, parametric form) could cut `var_calib` materially below per-t isotonic. **Falsified.**
