@@ -36,7 +36,10 @@ from ._size_diagnostic import diagnose_size
 from ._truth_decomp import compute_truth_decomposition
 from ._truths import DGPParams, TargetPert, sigma_oracle, t_star
 from ._variance_diagnostic import diagnose_variance
-from ._variance_methods_extra import boot_v_cal_oua, full_pipeline_boot
+from ._variance_methods_extra import (
+    boot_v_cal_oua, full_pipeline_boot,
+    full_pipeline_boot_mn, full_pipeline_boot_bayes,
+)
 
 
 LOG = logging.getLogger(__name__)
@@ -48,8 +51,10 @@ LOG = logging.getLogger(__name__)
 _VAR_METHODS = [
     "analytical", "boot_remax", "boot_remax_ridge",
     "analytical_oua", "boot_remax_oua",
-    "boot_v_cal_oua",            # NEW (additive: V_audit + bootstrap V_cal)
-    "full_pipeline_boot",        # NEW (integrated; captures cross-terms)
+    "boot_v_cal_oua",            # additive: V_audit + bootstrap V_cal
+    "full_pipeline_boot",        # integrated; captures cross-terms (lock-in)
+    "full_pipeline_boot_mn",     # NEW: m-out-of-n (Bickel-Sakov 2008)
+    "full_pipeline_boot_bayes",  # NEW: Dirichlet-weight bootstrap
 ]
 
 # Bias-correction labels.
@@ -132,6 +137,15 @@ def _run_one_rep_worker(payload: dict) -> dict:
     omegas["full_pipeline_boot"] = full_pipeline_boot(
         rep, t_grid, alpha, K, B_full_var, seed=seed + 13,
     )
+    omegas["full_pipeline_boot_mn"] = full_pipeline_boot_mn(
+        rep, t_grid, alpha, K, B_full_var, seed=seed + 17,
+        m_calib=payload.get("m_calib"),
+        m_eval=payload.get("m_eval"),
+        m_audit=payload.get("m_audit"),
+    )
+    omegas["full_pipeline_boot_bayes"] = full_pipeline_boot_bayes(
+        rep, t_grid, alpha, K, B_full_var, seed=seed + 19,
+    )
 
     g_used = {
         bc: _apply_bc(bc, rep, t_grid, alpha, K, B_boot_bc, seed=seed + 5)
@@ -171,6 +185,12 @@ def main():
                         help="Bootstrap reps for boot_v_cal_oua (per audit verdict)")
     parser.add_argument("--B-full-var", type=int, default=80,
                         help="Bootstrap reps for full_pipeline_boot (per audit verdict)")
+    parser.add_argument("--m-calib", type=int, default=None,
+                        help="m for m-out-of-n bootstrap on calib slice (default: n_calib^{2/3})")
+    parser.add_argument("--m-eval", type=int, default=None,
+                        help="m for m-out-of-n bootstrap on eval slice (default: n_eval^{2/3})")
+    parser.add_argument("--m-audit", type=int, default=None,
+                        help="m for m-out-of-n bootstrap on audit slice (default: n_audit^{2/3})")
     args = parser.parse_args()
 
     out_dir = _make_run_dir()
@@ -267,6 +287,9 @@ def main():
             "B_boot_bc": args.B_boot_bc,
             "B_cal_var": args.B_cal_var,
             "B_full_var": args.B_full_var,
+            "m_calib": args.m_calib,
+            "m_eval": args.m_eval,
+            "m_audit": args.m_audit,
             "seed": args.seed_base + 100 + 9007 * r,
             "bc_labels": _BC_LABELS,
         }
